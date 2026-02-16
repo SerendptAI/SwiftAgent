@@ -1,0 +1,48 @@
+"use client";
+
+import { Mic, MoreHorizontal, PhoneOff, Volume2 } from "lucide-react";
+
+export function Phone() {
+  return (
+    <div className="mx-auto h-[90%] w-[400px] overflow-hidden rounded-[40px] border-8 border-gray-900 bg-white shadow-xl">
+      {/* Main Content */}
+      <div className="flex h-full flex-col items-center pt-10">
+        <div className="mb-8 flex w-full items-start justify-between px-6">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
+            <span className="text-xs text-gray-500">✕</span>
+          </div>
+        </div>
+
+        <div className="mb-12 space-y-1 text-center">
+          <h3 className="text-lg font-semibold text-gray-900">
+            Unknown Company
+          </h3>
+          <p className="text-sm text-gray-400">Calling...</p>
+        </div>
+
+        {/* Gradient Circle */}
+        <div className="relative mb-auto flex items-center justify-center">
+          <div className="h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-orange-300 via-purple-300 to-blue-300 opacity-80 blur-sm"></div>
+        </div>
+
+        {/* Call Controls */}
+        <div className="mb-12 w-full px-6">
+          <div className="flex items-center justify-between rounded-full bg-gray-50 px-6 py-4 shadow-sm">
+            <button className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300">
+              <MoreHorizontal className="h-5 w-5" />
+            </button>
+            <button className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300">
+              <Volume2 className="h-5 w-5" />
+            </button>
+            <button className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300">
+              <Mic className="h-5 w-5" />
+            </button>
+            <button className="flex h-12 w-12 items-center justify-center rounded-full bg-red-500 text-white shadow-md hover:bg-red-600">
+              <PhoneOff className="h-6 w-6" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
