@@ -20,14 +20,14 @@ export function NavItem({ href, icon, label }: NavItemProps) {
     <Link
       href={href}
       className={cn(
-        "hover:bg-muted flex h-10 w-10 items-center justify-center rounded-xl transition-colors",
+        "hover:bg-muted flex h-12 w-12 items-center justify-center rounded-2xl transition-colors",
         isActive
           ? "bg-muted text-primary"
           : "text-muted-foreground hover:text-primary",
       )}
       title={label}
     >
-      {createElement(icon, { className: "h-5 w-5" })}
+      {createElement(icon, { className: "h-6 w-6" })}
       <span className="sr-only">{label}</span>
     </Link>
   );

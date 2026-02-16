@@ -22,14 +22,14 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="bg-background hidden w-20 flex-col border-r py-6 md:flex">
+    <aside className="bg-background hidden w-24 flex-col border-r py-8 md:flex">
       <div className="flex w-full items-center justify-center p-2">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-black text-white">
-          <span className="font-bold">SA</span>
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-black text-white">
+          <span className="text-xl font-bold">SA</span>
         </div>
       </div>
-      <div className="flex-1 overflow-auto py-8">
-        <nav className="flex flex-col items-center gap-4 px-2">
+      <div className="flex-1 overflow-auto py-12">
+        <nav className="flex flex-col items-center gap-8 px-2">
           {navItems.map((item) => (
             <NavItem key={item.href} {...item} />
           ))}

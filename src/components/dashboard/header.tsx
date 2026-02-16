@@ -1,4 +1,4 @@
-import { Bell, HelpCircle, Search, User } from "lucide-react";
+import { Bell, HelpCircle, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
