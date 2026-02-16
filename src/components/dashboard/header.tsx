@@ -4,15 +4,16 @@ import { Button } from "@/components/ui/button";
 
 export function Header() {
   return (
-    <header className="bg-background flex h-20 items-center justify-between gap-4 border-b px-6 lg:h-[80px]">
+    <header className="flex h-20 items-center justify-between gap-4 px-6 lg:h-[90px]">
       <div className="flex w-full max-w-lg items-center">
         <div className="relative w-full">
           <input
             type="search"
             placeholder="Search your dashboard"
-            className="bg-muted/50 focus:ring-primary/20 h-10 w-full rounded-full px-4 pr-10 text-sm outline-none focus:ring-2"
+            className="focus:ring-primary/20 h-10 w-full rounded-full bg-[#EDEDED] px-4 pr-10 text-sm outline-none focus:ring-2"
           />
-          <Search className="text-muted-foreground absolute top-2.5 right-3 h-5 w-5" />
+          {/* the search icon should be in the center vertically */}
+          <Search className="text-muted-foreground absolute -top-0.5 right-0 m-1 h-[86%] w-15 rounded-full bg-white p-2" />
         </div>
       </div>
       <div className="flex items-center gap-4">

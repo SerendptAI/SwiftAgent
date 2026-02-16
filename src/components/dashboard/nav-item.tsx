@@ -1,6 +1,5 @@
 "use client";
 
-import { type LucideIcon } from "lucide-react";
 import { createElement } from "react";
 
 import { Link, usePathname } from "@/i18n/navigation";
@@ -8,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 interface NavItemProps {
   href: string;
-  icon: LucideIcon;
+  icon: React.ElementType;
   label: string;
 }
 

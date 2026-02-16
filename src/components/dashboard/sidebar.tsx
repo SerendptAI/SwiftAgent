@@ -1,31 +1,62 @@
 "use client";
 
-import { Book, Bot, Building2, LayoutDashboard, Settings } from "lucide-react";
+import {
+  DashboardSquare01Icon,
+  Invoice01Icon,
+  Settings01Icon,
+  Ticket02Icon,
+} from "hugeicons-react";
+import Image from "next/image";
 
 import { NavItem } from "@/components/dashboard/nav-item";
+import { HugeiconsIcon } from "@/components/ui/hugeicons-icon";
 
 export function Sidebar() {
   const navItems = [
-    { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
     {
-      href: "/dashboard/company-info",
-      icon: Building2,
-      label: "Company Information",
+      href: "/dashboard",
+      icon: (props: { className?: string }) => (
+        <HugeiconsIcon icon={DashboardSquare01Icon} {...props} />
+      ),
+      label: "Dashboard",
     },
-    { href: "/dashboard/identity", icon: Bot, label: "Company Identity" },
+
+    {
+      href: "/dashboard/identity",
+      icon: (props: { className?: string }) => (
+        <HugeiconsIcon icon={Ticket02Icon} {...props} />
+      ),
+      label: "Company Identity",
+    },
     {
       href: "/dashboard/knowledge",
-      icon: Book,
+      icon: (props: { className?: string }) => (
+        <HugeiconsIcon icon={Invoice01Icon} {...props} />
+      ),
       label: "Knowledge Sources",
     },
-    { href: "/dashboard/settings", icon: Settings, label: "Settings" },
+    {
+      href: "/dashboard/settings",
+      icon: (props: { className?: string }) => (
+        <HugeiconsIcon icon={Settings01Icon} {...props} />
+      ),
+      label: "Settings",
+    },
   ];
 
   return (
-    <aside className="bg-background hidden w-24 flex-col border-r py-8 md:flex">
+    <aside className="hidden w-30 flex-col py-4 md:flex">
       <div className="flex w-full items-center justify-center p-2">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-black text-white">
-          <span className="text-xl font-bold">SA</span>
+        <div className="flex h-16 w-16 items-center justify-center bg-black transition-none">
+          <div className="relative h-8 w-8">
+            <Image
+              src="/images/mask.svg"
+              alt="Loading..."
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
         </div>
       </div>
       <div className="flex-1 overflow-auto py-12">
