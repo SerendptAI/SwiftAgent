@@ -10,5 +10,8 @@
     "logInToYourAccount": "Log in to your account",
     "googleLogin": "Sign up/log In with Google",
     "serendptLogin": "Sign up/log In with Serendpt"
+  },
+  "dashboard": {
+    "welcomeMessage": "Welcome to your Dashboard"
   }
 }
