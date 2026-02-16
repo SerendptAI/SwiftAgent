@@ -120,5 +120,5 @@
 }
 
 @utility container {
-  @apply max-w-screen-xl mx-auto p-5;
+  @apply mx-auto max-w-screen-xl p-5;
 }

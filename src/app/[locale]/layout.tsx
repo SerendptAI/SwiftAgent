@@ -62,7 +62,11 @@ const RootLayout = async ({
     <html lang={locale} suppressHydrationWarning>
       <body className={cn("min-h-screen font-sans", fonts)}>
         <NextIntlClientProvider>
-          <ThemeProvider attribute="class">
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem={false}
+          >
             {children}
             <LangSwitcher className="absolute right-5 bottom-16 z-10" />
             <ThemeSwitcher className="absolute right-5 bottom-5 z-10" />
