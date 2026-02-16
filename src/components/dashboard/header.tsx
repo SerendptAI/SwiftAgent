@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 export function Header() {
   return (
-    <header className="flex h-28 items-center justify-between gap-4 px-6 lg:h-[120px]">
+    <header className="flex h-20 items-center justify-between gap-4 px-6 lg:h-[90px]">
       <div className="mt-6 flex w-[60%] items-center gap-6">
         <div className="relative w-full">
           <input

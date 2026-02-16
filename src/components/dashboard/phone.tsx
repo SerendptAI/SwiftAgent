@@ -4,7 +4,7 @@ import { Mic, MoreHorizontal, PhoneOff, Volume2 } from "lucide-react";
 
 export function Phone() {
   return (
-    <div className="relative mx-auto h-[90%] w-[400px] overflow-hidden rounded-[40px] border-8 border-gray-900 bg-white shadow-xl">
+    <div className="relative mx-auto h-[90%] w-[350px] overflow-hidden rounded-[40px] border-8 border-gray-900 bg-white shadow-xl">
       {/* Main Content */}
       <div className="flex h-full flex-col items-center pt-10">
         <div className="absolute mb-8 flex w-full items-start justify-between px-6">

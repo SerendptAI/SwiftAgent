@@ -2,10 +2,13 @@
 
 import {
   DashboardSquare01Icon,
+  InboxCheckIcon,
+  InboxDownloadIcon,
   Invoice01Icon,
   Settings01Icon,
   Ticket02Icon,
 } from "hugeicons-react";
+import { Inbox } from "lucide-react";
 import Image from "next/image";
 
 import { NavItem } from "@/components/dashboard/nav-item";
@@ -15,9 +18,7 @@ export function Sidebar() {
   const navItems = [
     {
       href: "/dashboard",
-      icon: (props: { className?: string }) => (
-        <HugeiconsIcon icon={DashboardSquare01Icon} {...props} />
-      ),
+      icon: (props: { className?: string }) => <Inbox {...props} />,
       label: "Dashboard",
     },
 
