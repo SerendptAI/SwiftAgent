@@ -4,12 +4,12 @@ import { Mic, MoreHorizontal, PhoneOff, Volume2 } from "lucide-react";
 
 export function Phone() {
   return (
-    <div className="mx-auto h-[90%] w-[400px] overflow-hidden rounded-[40px] border-8 border-gray-900 bg-white shadow-xl">
+    <div className="relative mx-auto h-[90%] w-[400px] overflow-hidden rounded-[40px] border-8 border-gray-900 bg-white shadow-xl">
       {/* Main Content */}
       <div className="flex h-full flex-col items-center pt-10">
-        <div className="mb-8 flex w-full items-start justify-between px-6">
+        <div className="absolute mb-8 flex w-full items-start justify-between px-6">
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
-            <span className="text-xs text-gray-500">✕</span>
+            <span className="text-lg text-gray-500">✕</span>
           </div>
         </div>
 
@@ -21,13 +21,13 @@ export function Phone() {
         </div>
 
         {/* Gradient Circle */}
-        <div className="relative mb-auto flex items-center justify-center">
+        <div className="relative flex w-full flex-1 items-center justify-center">
           <div className="h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-orange-300 via-purple-300 to-blue-300 opacity-80 blur-sm"></div>
         </div>
 
         {/* Call Controls */}
         <div className="mb-12 w-full px-6">
-          <div className="flex items-center justify-between rounded-full bg-gray-50 px-6 py-4 shadow-sm">
+          <div className="flex items-center justify-between rounded-[30px] bg-gray-50 px-6 py-4 shadow-[-3px_3px_0px_0px_#000000]">
             <button className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300">
               <MoreHorizontal className="h-5 w-5" />
             </button>
