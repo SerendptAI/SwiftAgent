@@ -45,7 +45,7 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="hidden w-30 flex-col py-4 md:flex">
+    <aside className="hidden w-46 flex-col py-8 md:flex">
       <div className="flex w-full items-center justify-center p-2">
         <div className="flex h-16 w-16 items-center justify-center bg-black transition-none">
           <div className="relative h-8 w-8">

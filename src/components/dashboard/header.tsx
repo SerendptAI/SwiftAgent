@@ -4,34 +4,28 @@ import { Button } from "@/components/ui/button";
 
 export function Header() {
   return (
-    <header className="flex h-20 items-center justify-between gap-4 px-6 lg:h-[90px]">
-      <div className="flex w-full max-w-lg items-center">
+    <header className="flex h-28 items-center justify-between gap-4 px-6 lg:h-[120px]">
+      <div className="mt-6 flex w-[60%] items-center gap-6">
         <div className="relative w-full">
           <input
             type="search"
             placeholder="Search your dashboard"
-            className="focus:ring-primary/20 h-10 w-full rounded-full bg-[#EDEDED] px-4 pr-10 text-sm outline-none focus:ring-2"
+            className="focus:ring-primary/20 h-14 w-full rounded-full bg-[#EDEDED] px-4 pr-10 text-lg outline-none focus:ring-2"
           />
           {/* the search icon should be in the center vertically */}
-          <Search className="text-muted-foreground absolute -top-0.5 right-0 m-1 h-[86%] w-15 rounded-full bg-white p-2" />
+          <Search className="text-muted-foreground absolute -top-0.5 right-0 m-1 h-[90%] w-20 rounded-full bg-white p-2" />
+        </div>
+        <div className="hover:bg-muted/80 flex h-14 items-center gap-2 rounded-full bg-[#EDEDED] px-1 py-1">
+          <HelpCircle className="mr-2 h-12 w-12 rounded-full bg-white p-2" />
+          <span className="pr-2 text-lg font-medium whitespace-nowrap">
+            How to use?
+          </span>
         </div>
       </div>
-      <div className="flex items-center gap-4">
-        <Button
-          variant="ghost"
-          className="bg-muted/50 hover:bg-muted/80 h-10 rounded-full px-4"
-        >
-          <HelpCircle className="mr-2 h-4 w-4" />
-          <span className="text-sm font-medium">How to use?</span>
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="hover:bg-muted/50 h-10 w-10 rounded-full"
-        >
-          <Bell className="h-5 w-5" />
-          <span className="sr-only">Notifications</span>
-        </Button>
+      <div className="mt-6 flex items-center gap-4">
+        <div className="hover:bg-muted/50 flex h-14 w-14 items-center justify-center rounded-md bg-[#EDEDED]">
+          <Bell className="h-12 w-12 p-2" />
+        </div>
         <Button
           variant="ghost"
           size="icon"
