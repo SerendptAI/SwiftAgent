@@ -1,6 +1,6 @@
-import { Upload } from "lucide-react";
 import { useState } from "react";
 
+import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
 import { NextButton } from "./ui-elements";
@@ -16,38 +16,29 @@ export function KnowledgeSourcesStep({ onNext }: KnowledgeSourcesStepProps) {
     <div className="mx-auto w-full max-w-4xl pb-4">
       {/* Company Type Toggle */}
       <div className="mb-12 flex justify-center">
-        <div className="relative flex h-16 items-center rounded-2xl bg-gray-100 p-1.5 shadow-sm">
+        <div className="relative flex items-center gap-8 rounded-2xl bg-gray-100 p-4 shadow-sm">
           <button
             onClick={() => setCompanyType("saas")}
             className={cn(
-              "relative z-10 flex h-full items-center gap-2 rounded-xl px-8 text-sm font-bold uppercase transition-all duration-300",
+              "relative z-10 flex h-10 items-center gap-2 rounded-xl px-2 text-sm font-bold uppercase transition-all duration-300",
               companyType === "saas"
-                ? "bg-white text-gray-900 shadow-sm ring-1 ring-black/5"
+                ? "bg-white text-gray-900 shadow-[-6px_6px_0px_0px_#000000] ring-1 ring-black/5"
                 : "text-gray-400 hover:text-gray-600",
             )}
           >
-            <span className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-current">
-              $
-            </span>
+            <Icons.dollarbill />
             Saas/Finance
           </button>
           <button
             onClick={() => setCompanyType("crypto")}
             className={cn(
-              "relative z-10 flex h-full items-center gap-2 rounded-xl px-8 text-sm font-bold uppercase transition-all duration-300",
+              "relative z-10 flex h-10 items-center gap-2 rounded-xl px-2 text-sm font-bold uppercase transition-all duration-300",
               companyType === "crypto"
-                ? "bg-white text-gray-900 shadow-sm ring-1 ring-black/5"
+                ? "bg-white text-gray-900 shadow-[-6px_6px_0px_0px_#000000] ring-1 ring-black/5"
                 : "text-gray-400 hover:text-gray-600",
             )}
           >
-            <span className="grid h-6 w-6 place-items-center">
-              <div className="grid h-2 w-2 grid-cols-2 gap-0.5">
-                <div className="rounded-[1px] bg-current" />
-                <div className="rounded-[1px] bg-current" />
-                <div className="rounded-[1px] bg-current" />
-                <div className="rounded-[1px] bg-current" />
-              </div>
-            </span>
+            <Icons.dollar />
             Crypto Based Company
           </button>
         </div>
@@ -89,7 +80,7 @@ function UploadSection({ color, label }: UploadSectionProps) {
   return (
     <div
       className={cn(
-        "flex items-center justify-between rounded-full px-8 py-5 text-white shadow-md transition-transform hover:scale-[1.01]",
+        "flex items-center justify-between rounded-lg px-8 py-2 text-white shadow-[-6px_6px_0px_0px_#000000] transition-transform hover:scale-[1.01]",
         color,
       )}
     >
@@ -99,11 +90,9 @@ function UploadSection({ color, label }: UploadSectionProps) {
         </div>
         <span className="text-lg font-medium">{label}</span>
       </div>
-      <button className="group flex items-center gap-2 rounded-lg bg-white/20 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/30">
+      <button className="group flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/30">
         Upload
-        <div className="grid h-6 w-6 place-items-center rounded bg-white text-gray-900">
-          <Upload className="h-4 w-4" />
-        </div>
+        <Icons.upload className="h-8 w-8" />
       </button>
     </div>
   );
