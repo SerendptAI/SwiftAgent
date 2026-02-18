@@ -61,3 +61,37 @@ export const FormSelect = forwardRef<
   );
 });
 FormSelect.displayName = "FormSelect";
+
+export const FormTextarea = forwardRef<
+  HTMLTextAreaElement,
+  ComponentProps<"textarea">
+>(({ className, ...props }, ref) => {
+  return (
+    <textarea
+      ref={ref}
+      className={cn(
+        "min-h-[120px] w-full rounded-md border-0 bg-gray-100 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-purple-600 focus:outline-hidden",
+        className,
+      )}
+      {...props}
+    />
+  );
+});
+FormTextarea.displayName = "FormTextarea";
+
+export const NextButton = ({
+  className,
+  ...props
+}: ComponentProps<"button">) => {
+  return (
+    <button
+      className={cn(
+        "w-full cursor-pointer rounded-xl bg-[#6433CC] py-4 text-center font-semibold text-white shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-purple-700",
+        className,
+      )}
+      {...props}
+    >
+      Next
+    </button>
+  );
+};

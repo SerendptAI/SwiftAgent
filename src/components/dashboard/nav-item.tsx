@@ -26,7 +26,7 @@ export function NavItem({ href, icon, label }: NavItemProps) {
       )}
       title={label}
     >
-      {createElement(icon, { className: "h-6 w-6" })}
+      {createElement(icon, { className: "h-8 w-8" })}
       <span className="sr-only">{label}</span>
     </Link>
   );

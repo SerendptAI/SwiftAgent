@@ -2,17 +2,13 @@ import { Pencil } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
 
-import { FormInput, FormLabel, FormSelect } from "./ui-elements";
+import { FormInput, FormLabel, FormSelect, NextButton } from "./ui-elements";
 
 interface CompanyInfoStepProps {
-  currentStep?: number;
-  totalSteps?: number;
+  onNext?: () => void;
 }
 
-export function CompanyInfoStep({
-  currentStep = 0,
-  totalSteps = 5,
-}: CompanyInfoStepProps) {
+export function CompanyInfoStep({ onNext }: CompanyInfoStepProps) {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -28,19 +24,7 @@ export function CompanyInfoStep({
   };
 
   return (
-    <div className="mx-auto max-w-4xl pb-4">
-      <div className="mb-6 flex items-center space-x-4">
-        <div className="h-4 w-full max-w-[90px] rounded-full bg-gray-100">
-          <div
-            className="h-full rounded-l-full bg-[#6433CC] transition-all duration-300 ease-in-out"
-            style={{ width: `${((currentStep + 1) / totalSteps) * 100}%` }}
-          />
-        </div>
-        <h2 className="text-sm font-semibold tracking-wider text-gray-900 uppercase">
-          Company Setup
-        </h2>
-      </div>
-
+    <div className="max-w-4xl pb-4">
       <div className="mb-6">
         <div className="flex items-start gap-6">
           <div className="relative flex h-32 w-32 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-gray-200 bg-gray-50">
@@ -186,9 +170,7 @@ export function CompanyInfoStep({
       </div>
 
       <div className="mt-6">
-        <button className="w-full cursor-pointer rounded-xl bg-[#6433CC] py-4 text-center font-semibold text-white shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-purple-700">
-          Next
-        </button>
+        <NextButton onClick={onNext} />
       </div>
     </div>
   );
