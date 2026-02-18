@@ -1,7 +1,8 @@
 import { Header } from "@/components/dashboard/header";
+import { Phone } from "@/components/dashboard/phone";
 import { Sidebar } from "@/components/dashboard/sidebar";
 
-export default function DashboardLayout({
+export default function OnboardingLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -12,8 +13,13 @@ export default function DashboardLayout({
       <div className="flex h-full flex-col">
         <Header />
         <main className="flex h-full flex-1 gap-4 overflow-hidden p-4 lg:gap-6 lg:p-6">
-          <div className="h-full flex-1 overflow-y-auto rounded-3xl p-6">
+          <div className="h-full flex-1 overflow-y-auto rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
             {children}
+          </div>
+          <div className="hidden h-full shrink-0 items-center justify-center lg:flex">
+            <div className="flex h-full items-start">
+              <Phone />
+            </div>
           </div>
         </main>
       </div>
