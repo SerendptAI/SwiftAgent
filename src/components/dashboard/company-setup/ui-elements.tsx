@@ -81,6 +81,7 @@ FormTextarea.displayName = "FormTextarea";
 
 export const NextButton = ({
   className,
+  children,
   ...props
 }: ComponentProps<"button">) => {
   return (
@@ -91,7 +92,7 @@ export const NextButton = ({
       )}
       {...props}
     >
-      Next
+      {children || "Next"}
     </button>
   );
 };

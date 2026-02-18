@@ -3,7 +3,11 @@ interface ProgressBarProps {
   totalSteps: number;
 }
 
-export function ProgressBar({ currentStep, totalSteps = 5 }: ProgressBarProps) {
+export function ProgressBar({
+  currentStep,
+  totalSteps = 5,
+  label,
+}: ProgressBarProps & { label?: string }) {
   return (
     <div className="mb-6 flex items-center space-x-4">
       <div className="h-4 w-full max-w-[90px] rounded-full bg-gray-100">
@@ -13,7 +17,7 @@ export function ProgressBar({ currentStep, totalSteps = 5 }: ProgressBarProps) {
         />
       </div>
       <h2 className="text-sm font-semibold tracking-wider text-gray-900 uppercase">
-        Company Setup
+        {label || "Company Setup"}
       </h2>
     </div>
   );
