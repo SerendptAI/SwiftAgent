@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { AnswerBoundariesStep } from "./answer-boundaries-step";
 import { CompanyIdentityStep } from "./company-identity-step";
 import { CompanyInfoStep } from "./company-info-step";
 import { KnowledgeSourcesStep } from "./knowledge-sources-step";
@@ -36,8 +37,9 @@ export function SetupWizard() {
         {currentStep === 0 && <CompanyInfoStep onNext={handleNext} />}
         {currentStep === 1 && <CompanyIdentityStep onNext={handleNext} />}
         {currentStep === 2 && <KnowledgeSourcesStep onNext={handleNext} />}
+        {currentStep === 3 && <AnswerBoundariesStep onNext={handleNext} />}
         {/* Placeholder for other steps */}
-        {currentStep > 2 && (
+        {currentStep > 3 && (
           <div className="flex h-full items-center justify-center text-gray-400">
             Step {currentStep + 1} Content Coming Soon
           </div>

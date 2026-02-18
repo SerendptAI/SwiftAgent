@@ -45,27 +45,72 @@ export function KnowledgeSourcesStep({ onNext }: KnowledgeSourcesStepProps) {
       </div>
 
       {/* Upload Sections */}
+      {/* Upload Sections */}
       <div className="space-y-6">
-        <UploadSection
-          color="bg-[#6433CC]" // Purple
-          label="Upload FAQ documents"
-        />
-        <UploadSection
-          color="bg-[#FF7043]" // Orange
-          label="Upload Manuals"
-        />
-        <UploadSection
-          color="bg-[#FFB74D]" // Yellow
-          label="Upload policies"
-        />
-        <UploadSection
-          color="bg-[#64B5F6]" // Blue
-          label="Upload internal SOPs"
-        />
+        {companyType === "saas" ? (
+          <>
+            <UploadSection
+              color="bg-[#6433CC]" // Purple
+              label="Upload FAQ documents"
+            />
+            <UploadSection
+              color="bg-[#FF7043]" // Orange
+              label="Upload Manuals"
+            />
+            <UploadSection
+              color="bg-[#FFB74D]" // Yellow
+              label="Upload policies"
+            />
+            <UploadSection
+              color="bg-[#64B5F6]" // Blue
+              label="Upload internal SOPs"
+            />
+          </>
+        ) : (
+          <>
+            <UploadSection
+              color="bg-[#6433CC]" // Purple
+              label="Upload FAQ documents"
+            />
+            <UploadSection
+              color="bg-[#FF7043]" // Orange
+              label="Upload Whitepaper"
+            />
+            <UploadSection
+              color="bg-[#FFB74D]" // Yellow
+              label="Tokenomics Documentation"
+            />
+            <UploadSection
+              color="bg-[#64B5F6]" // Blue
+              label="Tokenomics Documentation"
+            />
+            <UploadSection
+              color="bg-[#6433CC]" // Purple
+              label="Blockchain Explorer Links"
+            />
+          </>
+        )}
       </div>
 
       <div className="mt-12">
-        <NextButton onClick={onNext} />
+        {companyType === "saas" ? (
+          <NextButton onClick={onNext} />
+        ) : (
+          <div className="flex items-center gap-4">
+            <button
+              onClick={onNext}
+              className="w-full cursor-pointer rounded-xl bg-[#8DA4FF] py-4 text-center font-semibold text-white shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-blue-400"
+            >
+              Next
+            </button>
+            <button
+              onClick={onNext}
+              className="flex h-[56px] w-[80px] cursor-pointer items-center justify-center rounded-xl bg-[#D6E4FF] shadow-[-6px_6px_0px_0px_#00000033] transition-colors hover:bg-blue-200"
+            >
+              <div className="h-0 w-0 border-t-8 border-b-8 border-l-12 border-t-transparent border-b-transparent border-l-white" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
