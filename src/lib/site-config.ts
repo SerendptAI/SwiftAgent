@@ -1,8 +1,16 @@
 export const siteConfig = {
-  title: "Next.js Starter",
+  title: "SwiftAgent - AI-Powered Customer Engagement",
   description:
-    "A Next.js starter template, packed with features like TypeScript, Tailwind CSS, Eslint, testing tools and more. Jumpstart your project with efficiency and style.",
-  keywords: ["Next.js", "TypeScript", "Tailwind CSS"],
-  url: process.env.APP_URL || "http://localhost:3000",
+    "Transform your customer experience with intelligent AI agents. Automate support, sales, and engagement with SwiftAgent by Serendpt AI.",
+  keywords: [
+    "AI Agents",
+    "Customer Support",
+    "Automation",
+    "Chatbots",
+    "Serendpt AI",
+    "SwiftAgent",
+    "Business Intelligence",
+  ],
+  url: process.env.APP_URL || "https://swiftagents.org",
   googleSiteVerificationId: process.env.GOOGLE_SITE_VERIFICATION_ID || "",
 };
