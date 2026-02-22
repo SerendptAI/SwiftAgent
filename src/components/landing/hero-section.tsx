@@ -7,6 +7,28 @@ import { useEffect, useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// --- Constants (hoisted outside component to avoid re-creation) ---
+
+const HEADLINE_WORDS = [
+  "CUSTOMER",
+  "SERVICE",
+  "FOR",
+  "YOUR",
+  "WEB3",
+  "WEBSITE",
+];
+const WIDE_SPACING_WORDS = new Set(["FOR", "YOUR", "SERVICE"]);
+
+// 0 = white, 1 = accent — 7 rows × 5 cols
+const CHECKER_GRID = [
+  0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0,
+  0, 1, 1, 1, 0, 0, 1, 1, 1,
+];
+
+const CHECKER_BG = ["bg-white", "bg-[#E8442A]"] as const;
+
+// --- Component ---
+
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
@@ -18,19 +40,18 @@ export function HeroSection() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Nav entrance
+      // Entrance animations
       gsap.from(navRef.current, {
         y: -40,
         opacity: 0,
         duration: 1,
         ease: "power3.out",
         delay: 0.2,
+        clearProps: "all",
       });
 
-      // Headline — split into words and animate
       if (headlineRef.current) {
-        const words = headlineRef.current.querySelectorAll(".hero-word");
-        gsap.from(words, {
+        gsap.from(headlineRef.current.querySelectorAll(".hero-word"), {
           y: 120,
           opacity: 0,
           rotateX: -90,
@@ -38,19 +59,19 @@ export function HeroSection() {
           duration: 1.2,
           ease: "power4.out",
           delay: 0.4,
+          clearProps: "transform,opacity",
         });
       }
 
-      // Subtitle
       gsap.from(subtitleRef.current, {
         y: 40,
         opacity: 0,
         duration: 1,
         ease: "power3.out",
         delay: 1.2,
+        clearProps: "all",
       });
 
-      // CTA buttons
       if (ctaRef.current) {
         gsap.from(ctaRef.current.children, {
           y: 30,
@@ -59,22 +80,19 @@ export function HeroSection() {
           duration: 0.8,
           ease: "power3.out",
           delay: 1.5,
+          clearProps: "all",
         });
       }
 
-      // Checkerboard blocks
       if (checkerRef.current) {
-        const blocks = checkerRef.current.querySelectorAll(".checker-block");
-        gsap.from(blocks, {
+        gsap.from(checkerRef.current.querySelectorAll(".checker-block"), {
           scale: 0,
           opacity: 0,
-          stagger: {
-            each: 0.1,
-            from: "random",
-          },
+          stagger: { each: 0.1, from: "random" },
           duration: 0.8,
           ease: "back.out(1.7)",
           delay: 0.6,
+          clearProps: "all",
         });
       }
 
@@ -88,38 +106,23 @@ export function HeroSection() {
         delay: 2,
       });
 
-      // Parallax on scroll — checkerboard moves slower
+      // Parallax on scroll
       ScrollTrigger.create({
         trigger: sectionRef.current,
         start: "top top",
         end: "bottom top",
         scrub: true,
         onUpdate: (self) => {
-          if (checkerRef.current) {
-            gsap.set(checkerRef.current, {
-              y: self.progress * 150,
-            });
-          }
-          if (headlineRef.current) {
-            gsap.set(headlineRef.current, {
-              y: self.progress * 80,
-            });
-          }
+          if (checkerRef.current)
+            gsap.set(checkerRef.current, { y: self.progress * 150 });
+          if (headlineRef.current)
+            gsap.set(headlineRef.current, { y: self.progress * 80 });
         },
       });
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
-
-  const headlineWords = [
-    "CUSTOMER",
-    "SERVICE",
-    "FOR",
-    "YOUR",
-    "WEB3",
-    "WEBSITE",
-  ];
 
   return (
     <section
@@ -160,23 +163,23 @@ export function HeroSection() {
       </nav>
 
       {/* Hero Content */}
-      <div className="relative z-10 flex min-h-[calc(100vh-88px)] items-center">
-        <div className="w-full px-8 md:w-3/5 md:px-12 lg:px-16">
-          {/* Headline */}
+      <div className="relative z-10 flex min-h-screen items-center">
+        <div className="w-full px-8 pt-20 md:w-3/5 md:px-12 lg:px-16">
           <h1
             ref={headlineRef}
-            className="mb-8 text-5xl leading-[0.95] font-black tracking-tight text-gray-900 uppercase md:text-6xl lg:text-7xl xl:text-8xl"
-            style={{ perspective: "1000px" }}
+            className="font-instrument relative z-20 mb-8 text-4xl leading-[1.4] font-black tracking-tight text-gray-900 uppercase md:text-6xl lg:text-6xl xl:text-6xl"
+            style={{
+              perspective: "1000px",
+              transform: "scaleY(1.2)",
+              transformOrigin: "top",
+            }}
           >
-            {headlineWords.map((word, i) => (
+            {HEADLINE_WORDS.map((word, i) => (
               <span
                 key={i}
                 className="hero-word inline-block"
                 style={{
-                  marginRight:
-                    word === "FOR" || word === "YOUR" || word === "SERVICE"
-                      ? "0.3em"
-                      : "0.25em",
+                  marginRight: WIDE_SPACING_WORDS.has(word) ? "0.4em" : "0.2em",
                 }}
               >
                 {word}
@@ -184,100 +187,45 @@ export function HeroSection() {
             ))}
           </h1>
 
-          {/* Subtitle */}
           <p
             ref={subtitleRef}
-            className="mb-10 max-w-lg text-sm leading-relaxed text-gray-600 md:text-base"
+            className="mb-10 max-w-sm text-lg leading-relaxed text-gray-600 md:text-base"
           >
             Imagine a world where AI handles inquiries, providing instant
             support. They resolve issues, answer questions, and learn to enhance
             satisfaction.
           </p>
 
-          {/* CTA Buttons */}
           <div ref={ctaRef} className="flex flex-wrap gap-4">
             <Link
               href="/en/login"
-              className="group relative overflow-hidden rounded-full border-2 border-gray-900 px-8 py-3.5 text-xs font-bold tracking-[0.15em] text-gray-900 uppercase transition-all hover:text-white"
+              className="group relative overflow-hidden rounded-lg border border-gray-900 px-8 py-3.5 text-xs font-bold tracking-[0.15em] text-gray-900 uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:text-white"
             >
               <span className="absolute inset-0 -translate-x-full bg-gray-900 transition-transform duration-300 group-hover:translate-x-0" />
               <span className="relative">GET STARTED</span>
             </Link>
             <Link
               href="#how-it-works"
-              className="group relative overflow-hidden rounded-full bg-[#E8442A] px-8 py-3.5 text-xs font-bold tracking-[0.15em] text-white uppercase transition-all hover:bg-[#d13a22]"
+              className="group relative overflow-hidden rounded-lg bg-[#E8442A] px-8 py-3.5 text-xs font-bold tracking-[0.15em] text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-[#d13a22]"
             >
               <span className="relative">HOW IT WORKS?</span>
             </Link>
           </div>
         </div>
 
-        {/* Checkerboard Pattern */}
+        {/* Checkerboard Pattern — generated from data */}
         <div
           ref={checkerRef}
           className="absolute top-0 right-0 hidden w-1/2 md:block"
         >
           <div className="grid w-full grid-cols-5">
-            {/* Row 1 */}
-            <div className="checker-block aspect-square bg-white" />
-            <div className="checker-block aspect-square bg-white" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            {/* Row 2 */}
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            {/* Row 3 */}
-            <div className="checker-block aspect-square bg-white" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            {/* Row 4 */}
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            <div className="checker-block aspect-square bg-white" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            {/* Row 5 */}
-            <div className="checker-block aspect-square bg-white" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            {/* Row 6 */}
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            <div className="checker-block aspect-square bg-white" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            {/* Row 7 */}
-            <div className="checker-block aspect-square bg-white" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
-            <div className="checker-block aspect-square bg-[#E8442A]" />
+            {CHECKER_GRID.map((color, i) => (
+              <div
+                key={i}
+                className={`checker-block aspect-square ${CHECKER_BG[color]}`}
+              />
+            ))}
           </div>
-        </div>
-      </div>
-
-      {/* Bottom label */}
-      <div className="absolute bottom-6 left-8 z-10 md:left-12 lg:left-16">
-        <span className="text-xs font-bold tracking-[0.2em] text-gray-500 uppercase">
-          ABOUT SWIFT AGENTS
-        </span>
-      </div>
-
-      {/* Scroll indicator */}
-      <div
-        ref={scrollIndicatorRef}
-        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2"
-      >
-        <div className="flex h-10 w-6 items-start justify-center rounded-full border-2 border-gray-400 pt-2">
-          <div className="h-2 w-1 rounded-full bg-gray-400" />
         </div>
       </div>
     </section>

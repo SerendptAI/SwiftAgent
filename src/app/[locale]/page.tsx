@@ -5,6 +5,7 @@ import { FeaturesSection } from "@/components/landing/features-section";
 import { FooterSection } from "@/components/landing/footer-section";
 import { HeroSection } from "@/components/landing/hero-section";
 import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provider";
+import { TalkSection } from "@/components/landing/talk-section";
 
 export default function HomePage() {
   return (
@@ -12,6 +13,7 @@ export default function HomePage() {
       <main>
         <HeroSection />
         <AboutSection />
+        <TalkSection />
         <FeaturesSection />
         <FooterSection />
       </main>
