@@ -1,21 +1,13 @@
 "use client";
 
-import {
-  ArrowDownRight,
-  ArrowUpRight,
-  FileText,
-  Globe,
-  Info,
-  MessageSquare,
-  Phone,
-  Users,
-} from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Info } from "lucide-react";
 
+import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
 interface StatCardProps {
   title: string;
-  icon: React.ElementType;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   value: string | number;
   trend?: {
     value: number;
@@ -52,7 +44,7 @@ function StatCard({
       <div>
         <div className="mb-6 flex items-start justify-between">
           <div className="flex items-center gap-2">
-            <Icon className={cn("h-5 w-5", iconColor || "text-gray-500")} />
+            <Icon className={cn("h-7 w-7", iconColor || "text-gray-500")} />
             <span className={cn("font-bold", iconColor || "text-gray-900")}>
               {title}
             </span>
@@ -106,51 +98,9 @@ function StatCard({
         </div>
       </div>
 
-      <div>
-        {trend && (
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-900">
-              Last 7 days
-            </span>
-
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1 font-bold text-green-500">
-                <ArrowUpRight className="h-4 w-4" />
-                <span>1</span>
-              </div>
-              <div className="flex items-center gap-1 font-bold text-red-500">
-                <ArrowDownRight className="h-4 w-4" />
-                <span>1</span>
-              </div>
-            </div>
-
-            {/* Percentage floating? In design it's near the sparkline. Let's position it absolutely or flex it. */}
-            <div className="absolute top-1/2 right-6 -translate-y-1/2">
-              {!action && (
-                <div className="flex flex-col items-end">
-                  {showTrendLine && (
-                    <span className="text-sm font-bold text-[#F25430]">
-                      {trend.value.toFixed(1)}%
-                    </span>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Re-implementing the trend layout to match the specific cards more loosely but robustly */}
-        {trend && (
-          <div className="mt-4 flex items-end justify-between">
-            {/* Re-structuring based on "Visitors" card image */}
-          </div>
-        )}
-      </div>
-
-      {/* Correct layout for Visitors/Calls (Data cards) */}
-      {!action && (
+      {/* Last 7 days trend footer - only for non-action cards with trends */}
+      {trend && !action && (
         <div className="flex items-end justify-between">
-          {/* Left side: "Last 7 days" and arrows */}
           <div className="flex items-center gap-4 text-sm font-medium">
             <span className="text-gray-900">Last 7 days</span>
             <div className="flex items-center gap-2">
@@ -163,7 +113,6 @@ function StatCard({
             </div>
           </div>
 
-          {/* Right side: Trend % (floating up?) or just static here? Design shows 0.0% near the sparkline in the middle right */}
           <div className="-mt-8 flex flex-col items-end">
             <svg
               width="24"
@@ -202,8 +151,8 @@ export function StatsCards() {
     <>
       {/* Visitors */}
       <StatCard
-        title="Visitors"
-        icon={Users}
+        title="VISITORS"
+        icon={Icons.visitors}
         value="100"
         trend={{ value: 0.0, isUp: false }}
         iconColor="text-[#F25430]"
@@ -211,8 +160,8 @@ export function StatsCards() {
 
       {/* Chats */}
       <StatCard
-        title="Chats"
-        icon={MessageSquare}
+        title="CHATS"
+        icon={Icons.chats}
         value="100"
         pending={true}
         action={{ label: "Respond", onClick: () => {} }}
@@ -221,8 +170,8 @@ export function StatsCards() {
 
       {/* Calls */}
       <StatCard
-        title="Calls"
-        icon={Phone}
+        title="CALLS"
+        icon={Icons.calls}
         value="100"
         trend={{ value: 0.0, isUp: false }}
         iconColor="text-[#F2B035]"
@@ -230,8 +179,8 @@ export function StatsCards() {
 
       {/* Documents */}
       <StatCard
-        title="Documents"
-        icon={FileText}
+        title="DOCUMENTS"
+        icon={Icons.documents}
         value="3"
         trend={{ value: 0.0, isUp: true }}
         iconColor="text-[#7F9FFF]"
@@ -239,8 +188,8 @@ export function StatsCards() {
 
       {/* Scrapes */}
       <StatCard
-        title="Scrapes"
-        icon={Globe}
+        title="SCRAPES"
+        icon={Icons.scrapes}
         value="100"
         trend={{ value: 0.0, isUp: false }}
         iconColor="text-[#F25430]"
