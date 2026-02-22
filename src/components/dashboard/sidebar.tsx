@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  DashboardSquare01Icon,
-  InboxCheckIcon,
-  InboxDownloadIcon,
-  Invoice01Icon,
-  Settings01Icon,
-  Ticket02Icon,
-} from "hugeicons-react";
+import { Invoice01Icon, Settings01Icon, Ticket02Icon } from "hugeicons-react";
 import { Inbox } from "lucide-react";
 import Image from "next/image";
 
@@ -23,11 +16,11 @@ export function Sidebar() {
     },
 
     {
-      href: "/dashboard/identity",
+      href: "/dashboard/ticketing",
       icon: (props: { className?: string }) => (
         <HugeiconsIcon icon={Ticket02Icon} {...props} />
       ),
-      label: "Company Identity",
+      label: "Ticketing",
     },
     {
       href: "/dashboard/knowledge",

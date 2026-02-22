@@ -1,6 +1,5 @@
 "use client";
-
-import { ArrowDownRight, ArrowUpRight, Info } from "lucide-react";
+import { ArrowDown, ArrowUp, Info, TrendingDown } from "lucide-react";
 
 import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
@@ -21,6 +20,7 @@ interface StatCardProps {
   className?: string;
   iconColor?: string;
   showTrendLine?: boolean;
+  hideTrendIndicator?: boolean;
 }
 
 function StatCard({
@@ -33,11 +33,12 @@ function StatCard({
   className,
   iconColor,
   showTrendLine,
+  hideTrendIndicator,
 }: StatCardProps) {
   return (
     <div
       className={cn(
-        "flex flex-col justify-between rounded-3xl bg-white p-6 shadow-sm",
+        "flex min-h-[220px] flex-col justify-between rounded-3xl bg-white p-6 shadow-sm",
         className,
       )}
     >
@@ -45,7 +46,7 @@ function StatCard({
         <div className="mb-6 flex items-start justify-between">
           <div className="flex items-center gap-2">
             <Icon className={cn("h-7 w-7", iconColor || "text-gray-500")} />
-            <span className={cn("font-bold", iconColor || "text-gray-900")}>
+            <span className={cn("font-normal", iconColor || "text-gray-900")}>
               {title}
             </span>
           </div>
@@ -54,12 +55,12 @@ function StatCard({
           </button>
         </div>
 
-        <div className="mb-2">
+        <div className="my-8">
           {!action && (
             <p className="mb-1 text-sm font-medium text-gray-400">Today</p>
           )}
 
-          <div className="flex items-end gap-3">
+          <div className="flex items-end justify-between gap-3">
             <span className="text-5xl font-bold tracking-tight text-gray-900">
               {value}
             </span>
@@ -69,29 +70,12 @@ function StatCard({
               </span>
             )}
 
-            {showTrendLine && (
-              <div className="mb-2">
-                <svg
-                  width="40"
-                  height="20"
-                  viewBox="0 0 40 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M1 1L10 10L20 5L30 15L39 5"
-                    stroke="#F25430"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-            )}
-
-            {trend && !showTrendLine && (
-              <div className="mb-2 flex flex-col items-end">
-                {/* Trend percentage next to value if no sparkle? No, design shows it typically to the right or below */}
+            {trend && !showTrendLine && !hideTrendIndicator && (
+              <div className="mb-2 flex flex-col items-center justify-center">
+                <TrendingDown className="text-[#F25430]" />
+                <span className="font-semi-bold text-lg text-[#F25430]">
+                  0.0%
+                </span>
               </div>
             )}
           </div>
@@ -101,35 +85,16 @@ function StatCard({
       {/* Last 7 days trend footer - only for non-action cards with trends */}
       {trend && !action && (
         <div className="flex items-end justify-between">
-          <div className="flex items-center gap-4 text-sm font-medium">
+          <div className="flex w-full items-center justify-between gap-4 text-sm font-medium">
             <span className="text-gray-900">Last 7 days</span>
             <div className="flex items-center gap-2">
-              <span className="flex items-center font-bold text-[#008751]">
-                <ArrowUpRight className="h-3 w-3" /> 1
+              <span className="flex items-center text-[#008751]">
+                <ArrowUp className="h-4 w-4" /> 1
               </span>
-              <span className="flex items-center font-bold text-[#F25430]">
-                <ArrowDownRight className="h-3 w-3" /> 1
+              <span className="flex items-center text-[#F25430]">
+                <ArrowDown className="h-4 w-4" /> 1
               </span>
             </div>
-          </div>
-
-          <div className="-mt-8 flex flex-col items-end">
-            <svg
-              width="24"
-              height="16"
-              viewBox="0 0 24 16"
-              fill="none"
-              className="mb-1"
-            >
-              <path
-                d="M2 2L8 10L14 4L22 12"
-                stroke="#F25430"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <span className="text-sm font-bold text-[#F25430]">0.0%</span>
           </div>
         </div>
       )}
@@ -137,7 +102,7 @@ function StatCard({
       {action && (
         <button
           onClick={action.onClick}
-          className="mt-2 w-full rounded-xl bg-[#F25430] py-4 text-base font-bold text-white shadow-[-4px_4px_0px_0px_#000000] transition-transform hover:bg-[#d94526] active:translate-y-1 active:shadow-none"
+          className="mt-2 w-full rounded-xl bg-[#6433CC] py-4 text-base font-bold text-white shadow-[-4px_4px_0px_0px_#000000] transition-transform hover:bg-[#d94526] active:translate-y-1 active:shadow-none"
         >
           {action.label}
         </button>
@@ -183,6 +148,7 @@ export function StatsCards() {
         icon={Icons.documents}
         value="3"
         trend={{ value: 0.0, isUp: true }}
+        hideTrendIndicator
         iconColor="text-[#7F9FFF]"
       />
 

@@ -1,4 +1,4 @@
-import { CompanyToolbar } from "@/components/dashboard/overview/company-toolbar";
+import { CompanyToolbar } from "@/components/dashboard/company-toolbar";
 import { ResourcesCard } from "@/components/dashboard/overview/resources-card";
 import { StatsCards } from "@/components/dashboard/overview/stats-cards";
 import { VisitorsList } from "@/components/dashboard/overview/visitors-list";
