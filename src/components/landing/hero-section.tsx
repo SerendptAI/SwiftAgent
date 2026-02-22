@@ -129,7 +129,7 @@ export function HeroSection() {
       {/* Navigation */}
       <nav
         ref={navRef}
-        className="relative z-10 flex items-center justify-between px-8 py-6 md:px-12 lg:px-16"
+        className="fixed top-0 right-0 left-0 z-50 flex items-center justify-between px-8 py-6 md:px-12 lg:px-16"
       >
         <Link href="/" className="flex items-center gap-2">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-900">
@@ -215,33 +215,51 @@ export function HeroSection() {
         {/* Checkerboard Pattern */}
         <div
           ref={checkerRef}
-          className="absolute top-0 right-0 hidden h-full w-2/5 md:block lg:w-[45%]"
+          className="absolute top-0 right-0 hidden w-1/2 md:block"
         >
-          <div className="grid h-full w-full grid-cols-3 grid-rows-6">
+          <div className="grid w-full grid-cols-5">
             {/* Row 1 */}
-            <div className="checker-block bg-white" />
-            <div className="checker-block bg-[#E8442A]" />
-            <div className="checker-block bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-white" />
+            <div className="checker-block aspect-square bg-white" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
             {/* Row 2 */}
-            <div className="checker-block bg-[#E8442A]" />
-            <div className="checker-block bg-[#E8442A]" />
-            <div className="checker-block bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
             {/* Row 3 */}
-            <div className="checker-block bg-white" />
-            <div className="checker-block bg-[#E8442A]" />
-            <div className="checker-block bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-white" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
             {/* Row 4 */}
-            <div className="checker-block bg-[#E8442A]" />
-            <div className="checker-block bg-white" />
-            <div className="checker-block bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-white" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
             {/* Row 5 */}
-            <div className="checker-block bg-white" />
-            <div className="checker-block bg-[#E8442A]" />
-            <div className="checker-block bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-white" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
             {/* Row 6 */}
-            <div className="checker-block bg-[#E8442A]" />
-            <div className="checker-block bg-white" />
-            <div className="checker-block bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-white" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            {/* Row 7 */}
+            <div className="checker-block aspect-square bg-white" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
+            <div className="checker-block aspect-square bg-[#E8442A]" />
           </div>
         </div>
       </div>
