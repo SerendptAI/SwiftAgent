@@ -11,6 +11,13 @@ gsap.registerPlugin(ScrollTrigger);
 // 0 = Transparent, 1 = White
 const BOTTOM_GRID = [0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1];
 
+const LEFT_GRID = [
+  // Row 1 mirrored
+  1, 0, 0, 1, 1, 0, 0, 0,
+  // Row 2 mirrored
+  1, 1, 0, 1, 1, 1, 1, 1,
+];
+
 const COLOR_MAP = {
   0: "bg-transparent",
   1: "bg-white",
@@ -138,14 +145,14 @@ export function TalkSection() {
       <div className="absolute top-0 right-[35%] z-0 h-[70%] w-px border-l border-dashed border-white/20" />
 
       {/* Main Content Area */}
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-8 lg:flex-row lg:items-center lg:justify-between lg:px-16">
+      <div className="align-start relative z-10 mx-auto mt-30 flex min-h-screen flex-col justify-start lg:flex-row lg:items-start lg:justify-between">
         {/* Left Text Content */}
-        <div ref={textRef} className="w-full pt-32 pb-16 lg:w-1/2 lg:py-0">
+        <div ref={textRef} className="w-full p-10 pt-32 pb-16 lg:w-1/2 lg:py-0">
           <div className="mb-12 font-mono text-sm tracking-[0.2em] text-white/70 uppercase">
             THEY DON&apos;T SAY MORE THAN THEY SHOULD
           </div>
 
-          <h2 className="mb-8 text-5xl leading-[1.1] font-black tracking-tight uppercase sm:text-6xl md:text-7xl lg:text-[80px]">
+          <h2 className="mb-8 text-5xl leading-[1.5] font-black tracking-tight uppercase sm:text-6xl md:text-7xl lg:text-[80px]">
             TALK TO OUR <br />
             AGENT
           </h2>
@@ -159,7 +166,7 @@ export function TalkSection() {
         {/* Right Interactive Area */}
         <div className="relative z-20 flex w-full flex-col items-center justify-center pb-32 lg:w-[45%] lg:pb-0">
           {/* Phone Image Container */}
-          <div ref={imageRef} className="relative mb-10 w-full max-w-[500px]">
+          <div ref={imageRef} className="relative mb-10 w-full">
             <Image
               src="/images/phone_side.svg"
               alt="Talk to our agent interface"
@@ -192,14 +199,25 @@ export function TalkSection() {
       </div>
 
       {/* Bottom Grid Blocks */}
-      <div className="absolute right-0 bottom-0 left-0 z-10 flex w-full justify-end">
-        <div
-          ref={gridRef}
-          className="grid w-1/2 grid-cols-8 grid-rows-2 md:w-1/2 lg:w-2/5"
-        >
+      <div
+        ref={gridRef}
+        className="absolute right-0 bottom-0 left-0 z-10 flex w-full justify-between"
+      >
+        {/* Left Grid */}
+        <div className="grid w-1/2 grid-cols-8 grid-rows-2 md:w-1/2 lg:w-2/5">
+          {LEFT_GRID.map((type, i) => (
+            <div
+              key={`left-${i}`}
+              className={`bottom-block aspect-square w-full ${COLOR_MAP[type as keyof typeof COLOR_MAP]}`}
+            />
+          ))}
+        </div>
+
+        {/* Right Grid */}
+        <div className="grid w-1/2 grid-cols-8 grid-rows-2 md:w-1/2 lg:w-2/5">
           {BOTTOM_GRID.map((type, i) => (
             <div
-              key={i}
+              key={`right-${i}`}
               className={`bottom-block aspect-square w-full ${COLOR_MAP[type as keyof typeof COLOR_MAP]}`}
             />
           ))}
