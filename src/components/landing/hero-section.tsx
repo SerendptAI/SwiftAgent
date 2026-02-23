@@ -2,12 +2,12 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
+import { NavigationMenu } from "./navigation-menu";
 gsap.registerPlugin(ScrollTrigger);
-
-// --- Constants (hoisted outside component to avoid re-creation) ---
 
 const HEADLINE_WORDS = [
   "CUSTOMER",
@@ -19,7 +19,6 @@ const HEADLINE_WORDS = [
 ];
 const WIDE_SPACING_WORDS = new Set(["FOR", "YOUR", "SERVICE"]);
 
-// 0 = white, 1 = accent — 7 rows × 5 cols
 const CHECKER_GRID = [
   0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0,
   0, 1, 1, 1, 0, 0, 1, 1, 1,
@@ -30,6 +29,7 @@ const CHECKER_BG = ["bg-white", "bg-[#E8442A]"] as const;
 // --- Component ---
 
 export function HeroSection() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
@@ -132,30 +132,32 @@ export function HeroSection() {
       {/* Navigation */}
       <nav
         ref={navRef}
-        className="fixed top-0 right-0 left-0 z-50 flex items-center justify-between px-8 py-6 md:px-12 lg:px-16"
+        className="fixed top-0 right-0 left-0 z-50 mx-auto flex max-w-7xl items-center justify-between px-8 py-6 md:px-12 lg:px-16"
       >
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-900">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="white"
-              strokeWidth="2"
-            >
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-            </svg>
+          <div className="flex h-16 w-16 items-center justify-center bg-black transition-none">
+            <div className="relative h-8 w-8">
+              <Image
+                src="/images/mask.svg"
+                alt="Loading..."
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
           </div>
         </Link>
 
         <div className="flex items-center gap-6">
-          <button className="text-xs font-bold tracking-[0.2em] text-gray-900 uppercase transition-colors hover:text-[#E8442A]">
+          <button
+            onClick={() => setIsMenuOpen(true)}
+            className="text-xs font-bold tracking-[0.2em] text-gray-900 uppercase transition-colors hover:text-[#E8442A]"
+          >
             OPEN MENU
           </button>
           <Link
             href="/en/login"
-            className="rounded-full border-2 border-gray-900 px-6 py-2 text-xs font-bold tracking-[0.15em] text-gray-900 uppercase transition-all hover:bg-gray-900 hover:text-white"
+            className="rounded-lg border border-gray-900 bg-white px-12 py-4 text-xs font-bold tracking-[0.15em] text-gray-900 uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-900 hover:text-white"
           >
             LOGIN/SIGN UP
           </Link>
@@ -228,6 +230,10 @@ export function HeroSection() {
           </div>
         </div>
       </div>
+      <NavigationMenu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+      />
     </section>
   );
 }

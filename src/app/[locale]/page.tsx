@@ -1,6 +1,7 @@
 "use client";
 
 import { AboutSection } from "@/components/landing/about-section";
+import { ContactSection } from "@/components/landing/contact-section";
 import { FeaturesSection } from "@/components/landing/features-section";
 import { FooterSection } from "@/components/landing/footer-section";
 import { HeroSection } from "@/components/landing/hero-section";
@@ -17,7 +18,8 @@ export default function HomePage() {
         <TalkSection />
         {/* <FeaturesSection /> */}
         <PricingSection />
-        <FooterSection />
+        <ContactSection />
+        {/* <FooterSection /> */}
       </main>
     </SmoothScrollProvider>
   );
