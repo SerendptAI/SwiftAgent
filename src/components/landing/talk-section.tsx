@@ -137,6 +137,7 @@ export function TalkSection() {
 
   return (
     <section
+      id="talk"
       ref={sectionRef}
       className="relative min-h-screen overflow-hidden bg-[#5B39C6] text-white"
     >

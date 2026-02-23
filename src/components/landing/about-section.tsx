@@ -171,6 +171,7 @@ export function AboutSection() {
 
   return (
     <section
+      id="how-it-works"
       ref={sectionRef}
       className="relative min-h-screen overflow-hidden bg-[#E8442A] text-white"
     >
