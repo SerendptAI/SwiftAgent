@@ -157,7 +157,7 @@ export function HeroSection() {
           </button>
           <Link
             href="/en/login"
-            className="rounded-lg border border-gray-900 bg-white px-12 py-4 text-xs font-bold tracking-[0.15em] text-gray-900 uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-900 hover:text-white"
+            className="hidden rounded-lg border border-gray-900 bg-white px-12 py-4 text-xs font-bold tracking-[0.15em] text-gray-900 uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-900 hover:text-white md:inline-flex"
           >
             LOGIN/SIGN UP
           </Link>
@@ -166,10 +166,10 @@ export function HeroSection() {
 
       {/* Hero Content */}
       <div className="relative z-10 flex min-h-screen items-center">
-        <div className="w-full px-8 pt-20 md:w-3/5 md:px-12 lg:px-16">
+        <div className="relative z-20 w-full px-8 pt-20 md:w-3/5 md:px-12 lg:px-16">
           <h1
             ref={headlineRef}
-            className="font-instrument relative z-20 mb-8 text-4xl leading-[1.4] font-black tracking-tight text-gray-900 uppercase md:text-6xl lg:text-6xl xl:text-6xl"
+            className="font-instrument relative z-20 mb-6 text-3xl leading-[1.2] font-black tracking-tight text-gray-900 uppercase md:mb-8 md:text-6xl md:leading-[1.4]"
             style={{
               perspective: "1000px",
               transform: "scaleY(1.2)",
@@ -198,10 +198,13 @@ export function HeroSection() {
             satisfaction.
           </p>
 
-          <div ref={ctaRef} className="flex flex-wrap gap-4">
+          <div
+            ref={ctaRef}
+            className="flex flex-col items-start gap-4 sm:flex-row"
+          >
             <Link
               href="/en/login"
-              className="group relative overflow-hidden rounded-lg border border-gray-900 px-8 py-3.5 text-xs font-bold tracking-[0.15em] text-gray-900 uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:text-white"
+              className="group relative overflow-hidden rounded-lg border border-gray-900 bg-white px-8 py-3.5 text-xs font-bold tracking-[0.15em] text-gray-900 uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:text-white"
             >
               <span className="absolute inset-0 -translate-x-full bg-gray-900 transition-transform duration-300 group-hover:translate-x-0" />
               <span className="relative">GET STARTED</span>
@@ -215,18 +218,28 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* Checkerboard Pattern — generated from data */}
+        {/* Background Patterns */}
         <div
           ref={checkerRef}
-          className="absolute top-0 right-0 hidden w-1/2 md:block"
+          className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
         >
-          <div className="grid w-full grid-cols-5">
-            {CHECKER_GRID.map((color, i) => (
-              <div
-                key={i}
-                className={`checker-block aspect-square ${CHECKER_BG[color]}`}
-              />
-            ))}
+          {/* Desktop Pattern */}
+          <div className="absolute top-0 right-0 hidden w-1/2 md:block">
+            <div className="grid w-full grid-cols-5">
+              {CHECKER_GRID.map((color, i) => (
+                <div
+                  key={i}
+                  className={`checker-block aspect-square ${CHECKER_BG[color]}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Mobile Pattern */}
+          <div className="absolute inset-0 block md:hidden">
+            <div className="checker-block absolute top-0 right-0 h-[26vh] w-[55%] bg-[#E8442A]" />
+            <div className="checker-block absolute top-[42%] right-0 h-[16vh] w-[25%] bg-[#E8442A]" />
+            <div className="checker-block absolute right-0 bottom-0 h-[25vh] w-[30%] bg-[#E8442A]" />
           </div>
         </div>
       </div>

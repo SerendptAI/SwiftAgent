@@ -25,6 +25,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const linksRef = useRef<HTMLDivElement>(null);
   const checkerRef = useRef<HTMLDivElement>(null);
+  const mobilePatternRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (
@@ -70,6 +71,21 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
           ease: "back.out(1.5)",
         },
       );
+
+      if (mobilePatternRef.current) {
+        gsap.fromTo(
+          mobilePatternRef.current.children,
+          { scale: 0, opacity: 0 },
+          {
+            scale: 1,
+            opacity: 1,
+            duration: 0.6,
+            stagger: { each: 0.1, from: "random" },
+            delay: 0.5,
+            ease: "back.out(1.5)",
+          },
+        );
+      }
     } else {
       gsap.to(containerRef.current, {
         x: "100%",
@@ -111,10 +127,11 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
       >
         {/* Left Content */}
         <div className="relative z-10 flex w-full flex-1 flex-col px-12 pt-12 md:w-3/5 md:px-24 md:pt-24 xl:px-32">
-          <div className="mb-16 flex w-full items-center justify-end md:hidden lg:mb-32">
+          {/* Mobile Close Button Container - Positioned to align with right block */}
+          <div className="absolute top-12 right-6 z-20 flex items-center md:hidden">
             <button
               onClick={onClose}
-              className="font-mono text-xs font-bold tracking-[0.2em] text-gray-900 uppercase transition-colors hover:text-[#E8442A]"
+              className="font-mono text-[10px] font-bold tracking-[0.2em] text-gray-900 uppercase transition-colors hover:text-[#E8442A]"
             >
               CLOSE MENU
             </button>
@@ -122,14 +139,14 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
 
           <div
             ref={linksRef}
-            className="mt-12 flex flex-col gap-10 md:mt-24 md:gap-14"
+            className="mt-32 flex flex-col gap-10 md:mt-24 md:gap-14"
           >
             {MENU_LINKS.map((link, i) => (
               <Link
                 key={i}
                 href={link.href}
                 onClick={onClose}
-                className="font-instrument w-max origin-left text-4xl font-black tracking-tighter text-gray-900 uppercase transition-colors hover:text-[#E8442A] sm:text-5xl md:text-6xl lg:text-7xl"
+                className="font-instrument relative z-20 w-max origin-left text-2xl font-black tracking-tighter text-gray-900 uppercase transition-colors hover:text-[#E8442A] sm:text-3xl md:text-6xl lg:text-7xl"
               >
                 {link.label}
               </Link>
@@ -159,6 +176,17 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
               />
             ))}
           </div>
+        </div>
+
+        {/* Mobile Background Pattern Overlay */}
+        <div
+          ref={mobilePatternRef}
+          className="pointer-events-none absolute inset-0 z-0 block overflow-hidden md:hidden"
+        >
+          <div className="absolute top-10 right-0 h-[15vh] w-[15%] bg-[#E8442A]" />
+          <div className="absolute top-[38%] right-0 h-[17vh] w-[20%] bg-[#E8442A]" />
+          <div className="absolute top-[55%] left-1/2 h-[17vh] w-[30%] bg-[#E8442A]" />
+          <div className="absolute right-0 bottom-10 h-[17vh] w-[20%] bg-[#E8442A]" />
         </div>
       </div>
     </div>
