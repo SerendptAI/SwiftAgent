@@ -152,7 +152,6 @@ export function AboutSection() {
               width={600}
               height={500}
               className="relative z-20 h-auto w-full object-cover max-md:absolute max-md:left-[-10%]"
-              priority
             />
           </div>
         </div>

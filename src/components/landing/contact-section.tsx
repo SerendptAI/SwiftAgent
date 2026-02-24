@@ -11,12 +11,12 @@ export function ContactSection() {
     >
       <div className="mx-auto max-w-[1400px]">
         {/* Top Text Area */}
-        <div className="mb-20 flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div className="flex flex-col justify-between gap-8 md:mb-20 md:flex-row md:items-end">
           <div className="space-y-6">
-            <span className="inline-block pb-8 font-mono text-[11px] font-semibold tracking-widest text-[#D3E1FF] uppercase">
+            <span className="inline-block font-mono text-[11px] font-semibold tracking-widest text-[#D3E1FF] uppercase md:pb-8">
               WANT TO REACH US?
             </span>
-            <h2 className="text-6xl leading-none font-black tracking-tighter text-white md:text-[8rem]">
+            <h2 className="text-4xl leading-none font-black tracking-tighter text-white md:text-6xl md:text-[8rem]">
               CONTACT US
             </h2>
           </div>
@@ -36,18 +36,13 @@ export function ContactSection() {
           </div>
         </div>
 
-        {/* Image Grid Area */}
-        <div
-          className="relative mx-auto mt-12 w-full lg:w-[90%]"
-          style={{ aspectRatio: "21/9" }}
-        >
-          {/* Main Image Container */}
-          <div className="relative ml-8 h-full w-full overflow-hidden border-12 border-[#0A0D14] bg-black object-cover">
+        <div className="relative mx-auto mt-12 h-[350px] w-full md:h-[450px] lg:h-[550px] lg:w-[90%]">
+          <div className="relative ml-8 h-full w-full overflow-hidden border-[#0A0D14] bg-black object-cover">
             <Image
               src="/images/contact_img.svg"
               alt="Street view"
               fill
-              className="object-cover object-center opacity-90 mix-blend-lighten grayscale"
+              className="bg-[#7CA2FE] object-cover object-center"
             />
 
             {/* Bottom Links Overlaid on Image */}
@@ -72,17 +67,6 @@ export function ContactSection() {
                 ©COPYRIGHT @SWIFTAGENTS.ORG
               </span>
             </div>
-          </div>
-
-          {/* Decorative Square Grid Elements - Left Side */}
-          <div className="absolute top-0 left-0 z-20 -mt-16 -ml-8 flex flex-col">
-            <div className="h-24 w-24 bg-[#0A0D14]" />
-            <div className="h-24 w-24 border-r-12 border-b-12 border-[#0A0D14] bg-[#7CA2FE]" />
-            <div className="h-24 w-24 border-r-12 border-[#0A0D14] bg-transparent" />
-          </div>
-
-          <div className="absolute top-24 left-32 z-20 -ml-8 flex flex-col">
-            <div className="h-16 w-16 border-r-12 border-[#0A0D14] bg-transparent" />
           </div>
         </div>
       </div>
