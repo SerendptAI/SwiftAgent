@@ -132,7 +132,13 @@ export function TalkSection() {
       }
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      if (imageRef.current) {
+        gsap.killTweensOf(imageRef.current);
+      }
+      ScrollTrigger.getAll().forEach((t) => t.kill());
+      ctx.revert();
+    };
   }, []);
 
   return (
@@ -141,24 +147,23 @@ export function TalkSection() {
       ref={sectionRef}
       className="relative min-h-screen overflow-hidden bg-[#5B39C6] text-white"
     >
-      {/* Background Dashed Lines */}
-      <div className="absolute top-[35%] left-0 z-0 h-px w-full border-t border-dashed border-white/20" />
-      <div className="absolute top-0 right-[35%] z-0 h-[70%] w-px border-l border-dashed border-white/20" />
-
       {/* Main Content Area */}
-      <div className="align-start relative z-10 mx-auto mt-30 flex min-h-screen flex-col justify-start lg:flex-row lg:items-start lg:justify-between">
+      <div className="align-start relative z-10 mx-auto flex min-h-screen flex-col justify-start md:mt-30 lg:flex-row lg:items-start lg:justify-between">
         {/* Left Text Content */}
-        <div ref={textRef} className="w-full p-10 pt-32 pb-16 lg:w-1/2 lg:py-0">
+        <div
+          ref={textRef}
+          className="w-full p-5 pb-16 md:p-10 md:pt-32 lg:w-1/2 lg:py-0"
+        >
           <div className="mb-12 font-mono text-sm tracking-[0.2em] text-white/70 uppercase">
             THEY DON&apos;T SAY MORE THAN THEY SHOULD
           </div>
 
-          <h2 className="mb-8 text-5xl leading-[1.5] font-black tracking-tight uppercase sm:text-6xl md:text-7xl lg:text-[80px]">
+          <h2 className="text-3xl leading-[1.5] font-black tracking-tight uppercase sm:text-6xl md:mb-8 md:text-5xl md:text-7xl lg:text-[80px]">
             TALK TO OUR <br />
             AGENT
           </h2>
 
-          <p className="text-2xl leading-[1.5] font-medium text-[#F4B23E]">
+          <p className="leading-[1.5] font-medium text-[#F4B23E] md:text-2xl">
             All conversations are handled with <br />
             only what has been uploaded by you
           </p>
@@ -167,13 +172,16 @@ export function TalkSection() {
         {/* Right Interactive Area */}
         <div className="relative z-20 flex w-full flex-col items-center justify-center pb-32 lg:w-[45%] lg:pb-0">
           {/* Phone Image Container */}
-          <div ref={imageRef} className="relative mb-10 w-full">
+          <div
+            ref={imageRef}
+            className="relative mb-10 w-full max-md:h-[300px]"
+          >
             <Image
               src="/images/phone_side.svg"
               alt="Talk to our agent interface"
               width={542}
               height={364}
-              className="h-auto w-full object-contain"
+              className="absolute right-[-20%] h-auto w-full object-contain"
               priority
             />
           </div>
@@ -181,7 +189,7 @@ export function TalkSection() {
           {/* Action Buttons */}
           <div
             ref={buttonsRef}
-            className="flex w-full max-w-[400px] flex-col items-center space-y-4 pr-10"
+            className="flex w-full max-w-[400px] flex-col items-center gap-5 px-5 lg:px-0 lg:pr-10"
           >
             {/* Download App Button */}
             <button className="flex w-full items-center justify-center space-x-3 rounded-xl border-2 border-black bg-white px-6 py-4 text-sm font-bold tracking-widest text-black uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-transform hover:translate-y-1 hover:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)]">
@@ -189,7 +197,7 @@ export function TalkSection() {
               <span>DOWNLOAD THE APP</span>
             </button>
 
-            <span className="text-xs font-bold text-white/70">OR</span>
+            <div className="text-xs font-bold text-white/70">OR</div>
 
             {/* Web Button */}
             <button className="flex w-full items-center justify-center rounded-xl border-2 border-black bg-[#F4B23E] px-6 py-4 text-sm font-bold tracking-widest text-white uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-transform hover:translate-y-1 hover:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)]">
@@ -202,7 +210,7 @@ export function TalkSection() {
       {/* Bottom Grid Blocks */}
       <div
         ref={gridRef}
-        className="absolute right-0 bottom-0 left-0 z-10 flex w-full justify-between"
+        className="absolute right-0 bottom-0 left-0 z-10 hidden w-full justify-between md:flex"
       >
         {/* Left Grid */}
         <div className="grid w-1/2 grid-cols-8 grid-rows-2 md:w-1/2 lg:w-2/5">

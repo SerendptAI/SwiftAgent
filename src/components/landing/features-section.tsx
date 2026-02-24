@@ -102,7 +102,14 @@ export function FeaturesSection() {
       }
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      if (cardsRef.current) {
+        const glows = cardsRef.current.querySelectorAll(".card-glow");
+        gsap.killTweensOf(glows);
+      }
+      ScrollTrigger.getAll().forEach((t) => t.kill());
+      ctx.revert();
+    };
   }, []);
 
   return (

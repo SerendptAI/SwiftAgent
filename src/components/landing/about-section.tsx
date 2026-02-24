@@ -11,9 +11,9 @@ gsap.registerPlugin(ScrollTrigger);
 const BOTTOM_GRID = [0, 0, 0, 1, 1, 0, 0, 1, 1, 2, 1, 1, 1, 2, 1, 2];
 
 const COLOR_MAP = {
-  0: "bg-transparent",
-  1: "bg-[#5B39C6]",
-  2: "bg-[#E8442A]",
+  0: "md:bg-transparent",
+  1: "md:bg-[#5B39C6]",
+  2: "md:bg-[#E8442A]",
 } as const;
 
 export function AboutSection() {
@@ -23,6 +23,8 @@ export function AboutSection() {
   const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const imgElement = imageRef.current;
+
     const ctx = gsap.context(() => {
       // Text reveal - Snappier "arcade" typing feel
       if (textRef.current) {
@@ -59,78 +61,6 @@ export function AboutSection() {
           rotation: 0,
           ease: "bounce.out", // Heavy bounce
           duration: 1.5,
-          onComplete: () => {
-            // "Gamey" Glitch effect randomizer (Pixelated, squash, jump)
-            const triggerGlitch = () => {
-              if (!imageRef.current) return;
-
-              // Random timing between 1 to 4 seconds for more frequent activity
-              const nextGlitchIn = (Math.random() * 3 + 1) * 1000;
-
-              setTimeout(() => {
-                if (!imageRef.current) return;
-
-                const tl = gsap.timeline();
-                // Blocky arcade/gamey glitch
-                tl.set(imageRef.current, { clearProps: "all" })
-                  // Frame 1: RGB shift & horizontal jump
-                  .to(imageRef.current, {
-                    x: 15,
-                    y: -5,
-                    scaleX: 1.1,
-                    filter:
-                      "drop-shadow(-10px 0 0 #0ff) drop-shadow(10px 0 0 #f00) contrast(200%)",
-                    duration: 0.05,
-                    ease: "steps(1)", // Stepped ease to make it choppy/pixelated
-                  })
-                  // Frame 2: Vertical squash (TV sync loss) & extreme jump
-                  .to(imageRef.current, {
-                    x: -20,
-                    y: 10,
-                    scaleY: 0.6,
-                    scaleX: 1.2,
-                    skewX: 20,
-                    filter:
-                      "drop-shadow(15px 5px 0 #0ff) drop-shadow(-15px -5px 0 #f00) brightness(1.5)",
-                    duration: 0.05,
-                    ease: "steps(1)",
-                  })
-                  // Frame 3: Extreme color shift
-                  .to(imageRef.current, {
-                    x: 10,
-                    y: -10,
-                    scaleY: 1.1,
-                    scaleX: 0.9,
-                    skewX: -10,
-                    filter:
-                      "drop-shadow(-5px -5px 0 #0ff) drop-shadow(5px 5px 0 #f00) invert(0.8)",
-                    duration: 0.05,
-                    ease: "steps(1)",
-                  })
-                  // Frame 4: Micro-stutter
-                  .to(imageRef.current, {
-                    x: -5,
-                    y: 5,
-                    scale: 1,
-                    skewX: 0,
-                    filter:
-                      "drop-shadow(2px 0 0 #0ff) drop-shadow(-2px 0 0 #f00)",
-                    opacity: 0.5,
-                    duration: 0.03,
-                    ease: "steps(1)",
-                  })
-                  // Reset perfectly
-                  .set(imageRef.current, {
-                    clearProps: "all",
-                  });
-
-                // Call recursively
-                triggerGlitch();
-              }, nextGlitchIn);
-            };
-
-            triggerGlitch();
-          },
         },
       );
 
@@ -166,7 +96,13 @@ export function AboutSection() {
       }
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      if (imgElement) {
+        gsap.killTweensOf(imgElement);
+      }
+      ScrollTrigger.getAll().forEach((t) => t.kill());
+      ctx.revert();
+    };
   }, []);
 
   return (
@@ -185,13 +121,13 @@ export function AboutSection() {
         {/* Left Content */}
         <div
           ref={textRef}
-          className="w-full px-8 pt-32 pb-16 lg:w-[45%] lg:px-16 lg:pt-0"
+          className="w-full px-8 pt-16 pb-0 lg:w-[45%] lg:px-16 lg:pt-0 lg:pb-16"
         >
-          <div className="mb-14 text-xs font-bold tracking-[0.2em] text-gray-900 uppercase">
+          <div className="font-instrument mb-8 text-xs font-bold tracking-[0.2em] text-gray-900 uppercase lg:mb-14">
             ABOUT SWIFT AGENTS
           </div>
 
-          <p className="mb-6 text-2xl leading-[1.6] font-medium tracking-wide text-white">
+          <p className="mb-2 text-lg leading-[1.6] font-medium tracking-wide text-white lg:mb-6 lg:text-2xl">
             When a transaction encounters an issue, users often find themselves
             without answers or accountability. Currently, there is a lack of
             clarity in these situations. Swift agents are dedicated to
@@ -199,7 +135,7 @@ export function AboutSection() {
             responses to their on-chain concerns.
           </p>
 
-          <div className="text-xs font-bold tracking-[0.2em] text-gray-900 uppercase">
+          <div className="hidden text-xs font-bold tracking-[0.2em] text-gray-900 uppercase lg:block">
             INTRODUCTION
           </div>
         </div>
@@ -207,15 +143,15 @@ export function AboutSection() {
         {/* Right Image */}
         <div
           ref={imageRef}
-          className="relative z-20 flex w-full justify-center px-8 pb-32 lg:w-[55%] lg:pr-16 lg:pb-0 lg:pl-0"
+          className="relative z-20 flex w-full justify-center px-0 pt-0 pb-0 lg:z-20 lg:w-[55%] lg:px-8 lg:pr-16 lg:pb-32 lg:pl-0"
         >
-          <div className="relative w-full max-w-[600px]">
+          <div className="relative z-20 -mb-48 -ml-[5%] w-[110%] lg:mb-0 lg:ml-0 lg:w-full lg:max-w-[600px]">
             <Image
               src="/images/about_section_img.svg"
               alt="About Swift Agents - Transactions"
               width={600}
               height={500}
-              className="h-auto w-full object-cover"
+              className="relative z-20 h-auto w-full object-cover max-md:absolute max-md:left-[-10%]"
               priority
             />
           </div>
@@ -223,7 +159,7 @@ export function AboutSection() {
       </div>
 
       {/* Bottom Blocks */}
-      <div className="absolute right-0 bottom-0 left-0 z-10 h-48 md:h-48">
+      <div className="absolute right-0 bottom-0 left-0 z-0 h-48 md:h-48">
         <div
           ref={gridRef}
           className="grid h-full w-full grid-cols-8 grid-rows-2"
@@ -231,7 +167,7 @@ export function AboutSection() {
           {BOTTOM_GRID.map((type, i) => (
             <div
               key={i}
-              className={`bottom-block h-full w-full ${COLOR_MAP[type as keyof typeof COLOR_MAP]}`}
+              className={`bottom-block h-full w-full bg-[#5B39C6] ${COLOR_MAP[type as keyof typeof COLOR_MAP]}`}
             />
           ))}
         </div>

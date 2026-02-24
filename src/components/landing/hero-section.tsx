@@ -121,7 +121,11 @@ export function HeroSection() {
       });
     }, sectionRef);
 
-    return () => ctx.revert();
+    const indicator = scrollIndicatorRef.current;
+    return () => {
+      if (indicator) gsap.killTweensOf(indicator);
+      ctx.revert();
+    };
   }, []);
 
   return (

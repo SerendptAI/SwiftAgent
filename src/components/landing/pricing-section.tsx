@@ -173,7 +173,10 @@ export function PricingSection() {
       }
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      ScrollTrigger.getAll().forEach((t) => t.kill());
+      ctx.revert();
+    };
   }, []);
 
   return (

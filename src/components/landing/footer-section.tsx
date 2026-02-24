@@ -59,7 +59,10 @@ export function FooterSection() {
       }
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      ScrollTrigger.getAll().forEach((t) => t.kill());
+      ctx.revert();
+    };
   }, []);
 
   return (
