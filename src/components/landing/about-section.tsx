@@ -111,23 +111,20 @@ export function AboutSection() {
       ref={sectionRef}
       className="relative min-h-screen overflow-hidden bg-[#F25430] text-white"
     >
-      {/* Decorative Dashed Lines */}
-      {/* Horizontal Line */}
-      <div className="absolute top-[46%] left-0 z-0 h-px w-full border-t border-dashed border-blue-400/60 mix-blend-overlay" />
-      {/* Vertical Line */}
-      <div className="absolute top-0 right-[26%] z-0 h-[60%] w-px border-l border-dashed border-blue-400/60 mix-blend-overlay md:h-[70%]" />
+      {/* Distinct Top Title */}
+      <div className="absolute top-12 left-8 z-20 md:top-24 lg:top-24 lg:left-16">
+        <div className="font-dm-mono text-sm font-bold tracking-[0.15em] text-gray-900 uppercase">
+          ABOUT SWIFT AGENTS
+        </div>
+      </div>
 
-      <div className="relative z-10 flex min-h-screen flex-col lg:flex-row lg:items-center">
+      <div className="relative z-10 flex min-h-screen flex-col justify-center pt-32 lg:flex-row lg:items-center lg:pt-0">
         {/* Left Content */}
         <div
           ref={textRef}
-          className="w-full px-8 pt-16 pb-0 lg:w-[45%] lg:px-16 lg:pt-0 lg:pb-16"
+          className="w-full px-8 pb-12 lg:w-[55%] lg:px-16 lg:pb-16"
         >
-          <div className="font-instrument mb-8 text-xs font-bold tracking-[0.2em] text-gray-900 uppercase lg:mb-14">
-            ABOUT SWIFT AGENTS
-          </div>
-
-          <p className="mb-2 text-lg leading-[1.6] font-medium tracking-wide text-white lg:mb-6 lg:text-2xl">
+          <p className="font-stolzl mb-12 text-2xl leading-[1.4] font-light text-white sm:text-3xl md:text-[32px] md:leading-[1.4]">
             When a transaction encounters an issue, users often find themselves
             without answers or accountability. Currently, there is a lack of
             clarity in these situations. Swift agents are dedicated to
@@ -135,7 +132,7 @@ export function AboutSection() {
             responses to their on-chain concerns.
           </p>
 
-          <div className="hidden text-xs font-bold tracking-[0.2em] text-gray-900 uppercase lg:block">
+          <div className="font-dm-mono text-sm font-bold tracking-[0.15em] text-gray-900 uppercase">
             INTRODUCTION
           </div>
         </div>
@@ -143,9 +140,9 @@ export function AboutSection() {
         {/* Right Image */}
         <div
           ref={imageRef}
-          className="relative z-20 flex w-full justify-center px-0 pt-0 pb-0 lg:z-20 lg:w-[55%] lg:px-8 lg:pr-16 lg:pb-32 lg:pl-0"
+          className="relative z-20 flex w-full justify-center px-0 pb-12 lg:z-20 lg:w-[45%] lg:px-8 lg:pr-16 lg:pb-32 lg:pl-0"
         >
-          <div className="relative z-20 -mb-48 -ml-[5%] w-[110%] lg:mb-0 lg:ml-0 lg:w-full lg:max-w-[600px]">
+          <div className="relative z-20 -ml-[5%] w-[110%] lg:ml-0 lg:w-full lg:max-w-[600px]">
             <Image
               src="/images/about_section_img.svg"
               alt="About Swift Agents - Transactions"
