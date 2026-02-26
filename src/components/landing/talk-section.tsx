@@ -2,9 +2,10 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Monitor } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
+
+import { Icons } from "../icons";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -165,7 +166,7 @@ export function TalkSection() {
             AGENT
           </h2>
 
-          <p className="leading-[1.5] font-medium text-[#F4B23E] md:text-2xl">
+          <p className="font-stolzl leading-[1.5] font-medium text-[#F4B23E] md:text-2xl">
             All conversations are handled with <br />
             only what has been uploaded by you
           </p>
@@ -189,19 +190,21 @@ export function TalkSection() {
 
           {/* Action Buttons */}
           <div
-            ref={buttonsRef}
+            // ref={buttonsRef}
             className="flex w-full max-w-[400px] flex-col items-center gap-5 px-5 lg:px-0 lg:pr-10"
           >
             {/* Download App Button */}
-            <button className="flex w-full items-center justify-center space-x-3 rounded-xl border-2 border-black bg-white px-6 py-4 text-sm font-bold tracking-widest text-black uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-transform hover:translate-y-1 hover:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)]">
-              <Monitor className="h-5 w-5" />
-              <span>DOWNLOAD THE APP</span>
+            <button className="font-dm-mono flex w-full cursor-pointer items-center justify-center gap-8 space-x-3 rounded-xl border-2 border-black bg-white px-6 py-4 text-sm font-bold tracking-widest text-black uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-transform hover:translate-y-1 hover:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)]">
+              <Icons.downloadapp />
+              DOWNLOAD THE APP
             </button>
 
-            <div className="py-2 text-xs font-bold text-white/70">OR</div>
+            <div className="font-dm-mono py-2 text-lg font-[400] tracking-[13%] text-white/70">
+              OR
+            </div>
 
             {/* Web Button */}
-            <button className="flex w-full items-center justify-center rounded-xl border-2 border-black bg-[#F4B23E] px-6 py-4 text-sm font-bold tracking-widest text-white uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-transform hover:translate-y-1 hover:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)]">
+            <button className="font-dm-mono flex w-full cursor-pointer items-center justify-center rounded-xl border-2 border-black bg-[#F4B23E] px-6 py-4 text-sm font-bold tracking-widest text-white uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-transform hover:translate-y-1 hover:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)]">
               CONTINUE ON THE WEB
             </button>
           </div>

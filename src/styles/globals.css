@@ -1,6 +1,16 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@font-face {
+  font-family: "Stolzl";
+  src:
+    url("/fonts/2ff21bf1b4f84e7f1bfb42bf72b1b47d.woff2") format("woff2"),
+    url("/fonts/2ff21bf1b4f84e7f1bfb42bf72b1b47d.woff") format("woff");
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -40,6 +50,8 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --font-instrument: var(--font-instrument), "system-ui", "arial";
+  --font-dm-mono: var(--font-dm-mono), "system-ui", "arial";
+  --font-stolzl: "Stolzl", "system-ui", "arial";
 }
 
 :root {
@@ -122,7 +134,7 @@
 }
 
 @utility container {
-  @apply mx-auto max-w-screen-xl p-5;
+  @apply mx-auto max-w-7xl p-5;
 }
 
 /* Lenis smooth scroll */

@@ -2,6 +2,7 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -26,26 +27,13 @@ const plans = [
       "STANDARD SHARED COMPUTE\nTIER",
     ],
     headerVisual: (
-      <svg
-        viewBox="0 0 100 60"
+      <Image
+        src="/images/pricing/icon1.svg"
+        alt="Yellow Pill Plan"
+        width={398}
+        height={201}
         className="block h-auto w-full"
-        style={{ backgroundColor: "#F3B03D" }}
-      >
-        {/* Pixel Art Cutouts (White) representing the shapes in the screenshot */}
-        <rect x="20" y="20" width="10" height="10" fill="white" />
-        <rect x="30" y="20" width="10" height="10" fill="white" />
-        <rect x="40" y="20" width="10" height="10" fill="white" />
-        <rect x="30" y="10" width="10" height="10" fill="white" />
-        <rect x="30" y="30" width="10" height="10" fill="white" />
-
-        <rect x="55" y="20" width="10" height="10" fill="white" />
-        <rect x="65" y="20" width="10" height="10" fill="white" />
-        <rect x="75" y="20" width="10" height="10" fill="white" />
-        <rect x="65" y="10" width="10" height="10" fill="white" />
-
-        {/* Edge pixels */}
-        <rect x="0" y="50" width="5" height="10" fill="white" />
-      </svg>
+      />
     ),
   },
   {
@@ -67,28 +55,13 @@ const plans = [
       "EMAIL SUPPORT",
     ],
     headerVisual: (
-      <svg
-        viewBox="0 0 100 60"
+      <Image
+        src="/images/pricing/icon2.svg"
+        alt="Purple Pill Plan"
+        width={398}
+        height={201}
         className="block h-auto w-full"
-        style={{ backgroundColor: "#6433CC" }}
-      >
-        <rect x="25" y="20" width="10" height="10" fill="white" />
-        <rect x="35" y="20" width="10" height="10" fill="white" />
-        <rect x="35" y="10" width="10" height="10" fill="white" />
-        <rect x="45" y="20" width="10" height="10" fill="white" />
-        <rect x="45" y="30" width="10" height="10" fill="white" />
-
-        <rect x="60" y="20" width="10" height="10" fill="white" />
-        <rect x="70" y="20" width="10" height="10" fill="white" />
-        <rect x="70" y="10" width="10" height="10" fill="white" />
-        <rect x="80" y="20" width="10" height="10" fill="white" />
-        <rect x="70" y="30" width="10" height="10" fill="white" />
-
-        {/* Edge pixels */}
-        <rect x="0" y="50" width="8" height="10" fill="white" />
-        <rect x="90" y="0" width="10" height="10" fill="white" />
-        <rect x="90" y="10" width="10" height="10" fill="white" />
-      </svg>
+      />
     ),
   },
   {
@@ -113,23 +86,13 @@ const plans = [
       "PRIORITY SUPPORT",
     ],
     headerVisual: (
-      <svg
-        viewBox="0 0 100 60"
+      <Image
+        src="/images/pricing/icon3.svg"
+        alt="Orange Pill Plan"
+        width={398}
+        height={201}
         className="block h-auto w-full"
-        style={{ backgroundColor: "#E8442A" }}
-      >
-        <rect x="30" y="20" width="15" height="15" fill="white" />
-        <rect x="20" y="35" width="15" height="15" fill="white" />
-
-        <rect x="60" y="10" width="15" height="15" fill="white" />
-        <rect x="75" y="25" width="15" height="15" fill="white" />
-
-        <rect x="60" y="40" width="15" height="15" fill="white" />
-
-        {/* Edge pixels */}
-        <rect x="80" y="0" width="20" height="10" fill="white" />
-        <rect x="90" y="40" width="10" height="20" fill="white" />
-      </svg>
+      />
     ),
   },
 ];

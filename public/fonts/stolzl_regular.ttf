@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Page Not Found (404) | MaisFontes</title>
+    <meta name="robots" content="noindex,nofollow"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Oops! Page not found (Error 404) on MaisFontes. It seems this link is lost, but don't worry. Use our search to find the perfect font or explore our categories.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root{--primary-gradient:linear-gradient(135deg,#667eea 0%,#764ba2 100%);--luxury-purple:#6c5ce7;--luxury-dark:#2d3436;--luxury-light:#636e72;--bg-luxury:#f8f9ff;--card-luxury:rgba(255,255,255,0.7);--shadow-luxury:0 25px 50px -12px rgba(0,0,0,0.15)}
+        @keyframes luxuryFloat{0%,100%{transform:translateY(0)}33%{transform:translateY(-10px) rotate(1deg)}66%{transform:translateY(-5px) rotate(-1deg)}}
+        @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+        @keyframes slideInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+        *{box-sizing:border-box}body,html{margin:0;padding:0;font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background-color:var(--bg-luxury);background-image:radial-gradient(circle at 15% 85%,rgba(120,119,198,.2) 0%,transparent 40%),radial-gradient(circle at 85% 25%,rgba(255,177,153,.2) 0%,transparent 40%);min-height:100vh;display:flex;align-items:center;justify-content:center;overflow-x:hidden}
+        .luxury-container{max-width:900px;margin:20px;padding:0;width:100%;animation:slideInUp .8s ease-out}
+        .luxury-card{background:var(--card-luxury);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);border-radius:32px;box-shadow:var(--shadow-luxury);border:1px solid rgba(255,255,255,0.3);padding:clamp(20px,5vw,50px);text-align:center;position:relative}
+        .error-icon{width:90px;height:90px;margin:0 auto 25px;background:var(--primary-gradient);border-radius:50%;display:flex;align-items:center;justify-content:center;animation:luxuryFloat 6s ease-in-out infinite;box-shadow:0 20px 40px rgba(102,126,234,.3);position:relative}
+        .error-icon::after{content:'';position:absolute;width:110px;height:110px;border:2px solid rgba(102,126,234,.2);border-radius:50%;animation:pulse 2s infinite ease-in-out}
+        .error-icon svg{width:48px;height:48px;color:#fff}
+        .luxury-title{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3rem);font-weight:700;background:var(--primary-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:0 0 15px;line-height:1.2}
+        .luxury-subtitle{font-size:clamp(1rem,2.5vw,1.1rem);color:var(--luxury-light);margin-bottom:35px;line-height:1.6;font-weight:400}
+        .luxury-subtitle code{background:rgba(108,92,231,.1);color:var(--luxury-purple);padding:3px 8px;border-radius:6px;font-weight:600}
+        .search-wrapper{position:relative;max-width:500px;margin:0 auto}
+        .search-input{width:100%;padding:20px 70px 20px 25px;font-size:16px;font-weight:500;border:2px solid var(--border-color);border-radius:16px;background:#fff;outline:none;transition:all .3s cubic-bezier(.4,0,.2,1);box-shadow:0 4px 15px rgba(0,0,0,.05);font-size:1.7rem;font-weight:500;color:#2d3436;}
+        .search-input:focus{border-color:var(--luxury-purple);box-shadow:0 0 0 4px rgba(108,92,231,.15),0 10px 25px rgba(0,0,0,.1);background-color:#fffde4;}
+        .search-btn{position:absolute;right:7px;top:7px;bottom:7px;background:var(--primary-gradient);border:none;border-radius:12px;padding:0 20px;cursor:pointer;transition:all .3s ease;box-shadow:0 5px 15px rgba(102,126,234,.3)}
+        .search-btn:hover{transform:scale(1.05);box-shadow:0 8px 25px rgba(102,126,234,.4)}
+        .search-btn svg{width:22px;height:22px;color:#fff}
+        .suggestions-title{font-size:16px;font-weight:600;color:var(--luxury-dark);margin:40px 0 20px}
+        .suggestion-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:15px;margin-bottom:40px}
+        .suggestion-btn{display:flex;align-items:center;gap:10px;padding:12px 15px;background-color:#fff;border:1px solid var(--border-color);border-radius:12px;text-decoration:none;color:var(--luxury-dark);font-size:14px;font-weight:600;transition:all .2s ease}
+        .suggestion-btn:hover{transform:translateY(-4px);border-color:var(--luxury-purple);box-shadow:0 8px 20px rgba(0,0,0,.08);color:var(--luxury-purple);font-size:1.2rem;}
+        .suggestion-btn svg{color:var(--primary-color);transition:color .2s ease;flex-shrink:0}
+        .suggestion-btn:hover svg{color:var(--luxury-purple)}
+        .home-link{display:inline-block;padding:14px 28px;background-color:transparent;border:2px solid var(--border-color);font-size:15px;color:var(--luxury-light);text-decoration:none;font-weight:600;border-radius:50px;transition:all 0.3s ease;}
+        .home-link:hover{background:var(--primary-gradient);color:#fff;transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,0.1);text-decoration:none;font-size:1.2rem;}
+        /* sponsored spaces */
+        .ad-wrapper-container{position:relative;border:1px solid #e0e0e0;padding:10px;border-radius:8px;margin-top:20px}
+        .sponsored-label{position:absolute;top:-10px;left:20px;background-color:#ffffff;padding:0 8px;color:#aaa;font-size:0.8rem;font-weight:500;letter-spacing:0.5px;}
+        .ad-content-box{min-height:50px;}
+.content-menu{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,4vw,1.8rem);font-weight:700;text-align:left;margin-bottom:25px;padding-left:10px!important;border-left:4px solid;border-image:var(--primary-gradient) 1;color:var(--luxury-dark)}.row{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(15px,4vw,20px)}.col-4{background:#fff;border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,.05);transition:transform .3s cubic-bezier(.4,0,.2,1),box-shadow .3s cubic-bezier(.4,0,.2,1);text-decoration:none;overflow:hidden}.col-4:hover{transform:translateY(-10px) scale(1.03);box-shadow:0 20px 40px rgba(108,92,231,.2)}.col-4>a{text-decoration:none;color:inherit;display:block}.img-fluid,.responsive{width:100%;height:auto;display:block;border-radius:20px 20px 0 0;transition:transform .4s cubic-bezier(.25,.46,.45,.94)}.col-4:hover .img-fluid{transform:scale(1.1)}.line-break{font-family:'Inter',sans-serif;font-weight:600;color:var(--luxury-dark);font-size:14px;line-height:1.4;padding:15px;display:block;transition:color .3s ease}.col-4:hover .line-break{color:var(--luxury-purple)}.text-right{text-align:right}.text-black{color:#000}.text-cover{display:inline-block;font-weight:600;color:var(--luxury-light);text-decoration:none;position:relative;padding:5px;transition:color .3s ease}.text-cover::after{content:'';position:absolute;width:100%;height:2px;bottom:0;left:0;background:var(--primary-gradient);transform:scaleX(0);transform-origin:bottom right;transition:transform .3s ease-out}.text-cover:hover{color:var(--luxury-dark)}.text-cover:hover::after{transform:scaleX(1);transform-origin:bottom left}.w-100{width:100%}.p-10{padding:10px}.p-t-10{padding-top:10px}.p-r-10{padding-right:10px}.text-center{text-align:center}@media (min-width:768px){.row{grid-template-columns:repeat(3,1fr);max-width:calc(3 * 250px + 2 * clamp(15px, 4vw, 20px));margin-left:auto;margin-right:auto;}.line-break{font-size:15px}}
+
+    </style>
+</head>
+<body>
+    <div class="luxury-container">
+        <div class="luxury-card">
+            <div class="error-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+            </div>
+            <h1 class="luxury-title">Page Lost in the Artistic Multiverse</h1>
+            <p class="luxury-subtitle">
+                We couldn't find the page <code>stolzl_regular.ttf</code>. <strong>It might have been abducted or never existed.</strong>            </p>
+
+            <form action="https://www.maisfontes.com/" method="get">
+                <div class="search-wrapper">
+                    <input type="text" name="fnome" class="search-input" value="stolzl_regular.ttf" placeholder="Search for your ideal font..." required autofocus>
+                    <button type="submit" class="search-btn" title="Search" aria-label="Search">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+            
+            <p class="suggestions-title">Meanwhile, explore our most popular destinations:</p>
+            <div class="suggestion-grid">
+                <a href="https://www.maisfontes.com/google-fonts" class="suggestion-btn" title="Google Fonts" aria-label="Google Fonts">
+                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/><path d="M12 22a10 10 0 000-20v20z"/><path d="M22 12A10 10 0 0012 2v10z"/></svg>
+                    <span>Google Fonts</span>
+                </a>
+                <a href="https://www.maisfontes.com/font-family" class="suggestion-btn" title="Font Family" aria-label="Font Family">
+                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/><path d="M12 22a10 10 0 000-20v20z"/><path d="M22 12A10 10 0 0012 2v10z"/></svg>
+                    <span>Font Family</span>
+                </a>
+                <a href="https://www.maisfontes.com/categories" class="suggestion-btn" title="Categories" aria-label="Categories">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                    <span>Categories</span>
+                </a>
+                <a href="https://www.maisfontes.com/daily-selection" class="suggestion-btn" title="Today's Pick" aria-label="Today's Pick">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <span>Today's Pick</span>
+                </a>
+
+                <a href="https://www.maisfontes.com/top-downloads" class="suggestion-btn" title="Top Downloads" aria-label="Top Downloads">
+                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Top Downloads</span>
+                </a>
+            </div>
+            <a href="https://www.maisfontes.com" class="home-link" title="Or go back to the main page" aria-label="Back to Home">Or go back to the main page</a>
+
+            <div class="wrap" section="ads-end">
+                <div class="col-10 p-t-10 ad-wrapper-container">
+                    <div class="w-100 p-10">&nbsp;</div><div class="w-100 p-10"><div class="w-100 content-menu p-10">See too...</div><div class="row"><div class="col-4 p-10 text-center" style="overflow:hidden;"><a href="https://en.maisfontes.com/font-family/tessa-ssk-font-download" alt="Tessa SSK Font Family: Free Download"><img src="https://cda.maisfontes.com/ipage/tessa-ssk-en-thumbx250.webp?v=1" alt="Tessa SSK Font Family: Free Download" width="250" height="250" class="img-fluid"></a><a href="https://en.maisfontes.com/font-family/tessa-ssk-font-download" alt="Tessa SSK Font Family: Free Download"><small class="line-break">Tessa SSK Font Family: Free Download</small></a></div><div class="col-4 p-10 text-center" style="overflow:hidden;"><a href="https://en.maisfontes.com/font-family/israquella-font-download" alt="Israquella Font Family: Free Download"><img src="https://cda.maisfontes.com/ipage/israquella-en-thumbx250.webp?v=1" alt="Israquella Font Family: Free Download" width="250" height="250" class="img-fluid"></a><a href="https://en.maisfontes.com/font-family/israquella-font-download" alt="Israquella Font Family: Free Download"><small class="line-break">Israquella Font Family: Free Download</small></a></div><div class="col-4 p-10 text-center" style="overflow:hidden;"><a href="https://en.maisfontes.com/font-family/24-boughs-font-download" alt="24 Boughs Font Family: Free Download"><img src="https://cda.maisfontes.com/ipage/24-boughs-en-thumbx250.webp?v=1" alt="24 Boughs Font Family: Free Download" width="250" height="250" class="img-fluid"></a><a href="https://en.maisfontes.com/font-family/24-boughs-font-download" alt="24 Boughs Font Family: Free Download"><small class="line-break">24 Boughs Font Family: Free Download</small></a></div></div><div class="w-100 text-right"><a href="https://en.maisfontes.com/font-family" alt="Show more" class="p-r-10"><span class="text-black text-cover">(show more)</span></a></div></div>                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
