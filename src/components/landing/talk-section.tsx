@@ -9,19 +9,26 @@ import { Icons } from "../icons";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// 0 = Transparent, 1 = White
-const BOTTOM_GRID = [0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1];
-
-const LEFT_GRID = [
-  // Row 1 mirrored
-  1, 0, 0, 1, 1, 0, 0, 0,
-  // Row 2 mirrored
-  1, 1, 0, 1, 1, 1, 1, 1,
+const BOTTOM_GRID = [
+  // Row 1
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  // Row 2
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  // Row 3
+  0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 5,
+  // Row 4
+  0, 2, 2, 0, 2, 3, 1, 3, 0, 0, 2, 4,
 ];
 
 const COLOR_MAP = {
   0: "bg-transparent",
   1: "bg-white",
+  2: "bg-[linear-gradient(to_top,white_50%,transparent_50%)]", // Bottom half white
+  3: "bg-[linear-gradient(to_bottom,white_50%,transparent_50%)]", // Top half white
+  4: "bg-[linear-gradient(to_right,white_50%,transparent_50%)]", // Left half white
+  5: "bg-[linear-gradient(to_left,white_50%,transparent_50%)]", // Right half white
+  6: "bg-[linear-gradient(to_bottom_right,transparent_50%,white_50%)]", // Bottom-Right diagonal white
+  7: "bg-[linear-gradient(to_bottom_right,white_50%,transparent_50%)]", // Top-Left diagonal white
 } as const;
 
 export function TalkSection() {
@@ -214,23 +221,12 @@ export function TalkSection() {
       {/* Bottom Grid Blocks */}
       <div
         ref={gridRef}
-        className="absolute right-0 bottom-0 left-0 z-10 hidden w-full justify-between md:flex"
+        className="absolute right-0 bottom-0 left-0 z-10 hidden w-full justify-between md:block"
       >
-        {/* Left Grid */}
-        <div className="grid w-1/2 grid-cols-8 grid-rows-2 md:w-1/2 lg:w-2/5">
-          {LEFT_GRID.map((type, i) => (
-            <div
-              key={`left-${i}`}
-              className={`bottom-block aspect-square w-full ${COLOR_MAP[type as keyof typeof COLOR_MAP]}`}
-            />
-          ))}
-        </div>
-
-        {/* Right Grid */}
-        <div className="grid w-1/2 grid-cols-8 grid-rows-2 md:w-1/2 lg:w-2/5">
+        <div className="grid w-full grid-cols-12">
           {BOTTOM_GRID.map((type, i) => (
             <div
-              key={`right-${i}`}
+              key={i}
               className={`bottom-block aspect-square w-full ${COLOR_MAP[type as keyof typeof COLOR_MAP]}`}
             />
           ))}
