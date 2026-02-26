@@ -88,10 +88,10 @@ export function HeroSection() {
         gsap.from(checkerRef.current.querySelectorAll(".checker-block"), {
           scale: 0,
           opacity: 0,
-          stagger: { each: 0.1, from: "random" },
-          duration: 0.8,
+          stagger: { each: 0.05, from: "random" }, // Sped up stagger
+          duration: 0.4, // Sped up duration
           ease: "back.out(1.7)",
-          delay: 0.6,
+          delay: 0.4, // Small tweak to delay
           clearProps: "all",
         });
       }
@@ -208,7 +208,7 @@ export function HeroSection() {
 
           <p
             ref={subtitleRef}
-            className="mb-10 max-w-sm text-lg leading-relaxed text-gray-600 md:text-base"
+            className="my-12 max-w-md text-xl leading-relaxed text-gray-600"
           >
             Imagine a world where AI handles inquiries, providing instant
             support. They resolve issues, answer questions, and learn to enhance
@@ -217,20 +217,38 @@ export function HeroSection() {
 
           <div
             ref={ctaRef}
-            className="flex flex-col items-start gap-4 sm:flex-row"
+            className="flex flex-col items-start gap-10 sm:flex-row"
           >
             <Link
               href="/en/login"
-              className="group relative overflow-hidden rounded-lg border border-gray-900 bg-white px-8 py-3.5 text-xs font-bold tracking-[0.15em] text-gray-900 uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:text-white"
+              className="group relative overflow-hidden rounded-lg border border-gray-900 bg-white px-10 py-3.5 text-lg font-bold tracking-[0.15em] text-gray-900 uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:text-white"
             >
               <span className="absolute inset-0 -translate-x-full bg-gray-900 transition-transform duration-300 group-hover:translate-x-0" />
-              <span className="relative">GET STARTED</span>
+              <span
+                className="font-dm-mono relative"
+                style={{
+                  perspective: "1000px",
+                  transform: "scaleY(1.2)",
+                  transformOrigin: "top",
+                }}
+              >
+                GET STARTED
+              </span>
             </Link>
             <Link
               href="#how-it-works"
-              className="group relative overflow-hidden rounded-lg bg-[#F25430] px-8 py-3.5 text-xs font-bold tracking-[0.15em] text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-[#d13a22]"
+              className="group relative overflow-hidden rounded-lg bg-[#F25430] px-10 py-3.5 text-lg font-bold tracking-[0.15em] text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-[#d13a22]"
             >
-              <span className="relative">HOW IT WORKS?</span>
+              <span
+                className="font-dm-mono relative"
+                style={{
+                  perspective: "1000px",
+                  transform: "scaleY(1.2)",
+                  transformOrigin: "top",
+                }}
+              >
+                HOW IT WORKS?
+              </span>
             </Link>
           </div>
         </div>
