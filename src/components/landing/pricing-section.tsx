@@ -155,7 +155,7 @@ export function PricingSection() {
           <span className="mb-8 inline-block font-mono text-sm tracking-widest text-gray-500 uppercase">
             BILLING
           </span>
-          <h2 className="text-3xl font-normal text-gray-900 md:text-4xl lg:text-4xl">
+          <h2 className="font-stolzl text-3xl font-normal text-gray-900 md:text-4xl lg:text-4xl">
             We have three plans for Swift Agents
           </h2>
         </div>
@@ -173,13 +173,13 @@ export function PricingSection() {
               {/* Card Body */}
               <div className="flex flex-1 flex-col px-6 py-6 pb-12 font-mono">
                 <h3
-                  className={`mb-3 text-[13px] leading-none tracking-widest uppercase ${plan.textColor}`}
+                  className={`font-dm-mono mb-3 text-[13px] leading-none tracking-widest uppercase ${plan.textColor}`}
                 >
                   {plan.name}
                 </h3>
 
                 <div className="mb-6 flex flex-wrap items-baseline gap-2">
-                  <span className="text-[13px] leading-none font-medium text-gray-900">
+                  <span className="font-dm-mono text-[13px] leading-none font-medium text-gray-900">
                     {plan.price} {plan.billing}
                   </span>
                 </div>
@@ -188,7 +188,7 @@ export function PricingSection() {
                   {plan.description}
                 </p>
 
-                <ul className="mt-4 space-y-3">
+                <ul className="font-dm-mono mt-4 space-y-3">
                   {plan.features.map((feature, idx) => (
                     <li
                       key={idx}

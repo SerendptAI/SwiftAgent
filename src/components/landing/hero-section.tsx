@@ -208,7 +208,7 @@ export function HeroSection() {
 
           <p
             ref={subtitleRef}
-            className="my-12 max-w-md text-xl leading-relaxed text-gray-600"
+            className="font-stolzl my-12 max-w-md text-lg leading-relaxed text-gray-600"
           >
             Imagine a world where AI handles inquiries, providing instant
             support. They resolve issues, answer questions, and learn to enhance

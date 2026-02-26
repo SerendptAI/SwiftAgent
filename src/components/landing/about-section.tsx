@@ -10,11 +10,13 @@ gsap.registerPlugin(ScrollTrigger);
 // 0 = Transparent, 1 = Purple (#5B39C6), 2 = Orange (#F25430)
 const BOTTOM_GRID = [
   // Row 1
-  0, 0, 0, 0, 0, 0, 0, 1,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   // Row 2
-  0, 0, 0, 1, 1, 0, 1, 1,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
   // Row 3
-  1, 1, 0, 1, 0, 1, 1, 0,
+  0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1,
+  // Row 4
+  1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0,
 ];
 
 const COLOR_MAP = {
@@ -163,7 +165,7 @@ export function AboutSection() {
 
       {/* Bottom Blocks */}
       <div className="absolute right-0 bottom-0 left-0 z-0">
-        <div ref={gridRef} className="grid w-full grid-cols-8">
+        <div ref={gridRef} className="grid w-full grid-cols-12">
           {BOTTOM_GRID.map((type, i) => (
             <div
               key={i}
