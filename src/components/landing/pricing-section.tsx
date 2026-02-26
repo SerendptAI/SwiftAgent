@@ -70,8 +70,8 @@ const plans = [
     billing: "PER AGENT /\nMONTH",
     description:
       "BUILT FOR HIGH-VOLUME,\nCOMPLIANCE-HEAVY, OR\nMULTI-REGION COMPANIES.",
-    color: "#E8442A",
-    textColor: "text-[#E8442A]",
+    color: "#F25430",
+    textColor: "text-[#F25430]",
     features: [
       "ADVANCED DOCUMENT\nINGESTION AND PRIORITY\nWEIGHTING",
       "REAL-TIME VOICE WITH\nHIGHER PERFORMANCE TIER",

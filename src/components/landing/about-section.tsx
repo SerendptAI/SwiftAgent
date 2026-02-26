@@ -7,13 +7,13 @@ import { useEffect, useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// 0 = Transparent, 1 = Purple (#5B39C6), 2 = Orange (#E8442A)
+// 0 = Transparent, 1 = Purple (#5B39C6), 2 = Orange (#F25430)
 const BOTTOM_GRID = [0, 0, 0, 1, 1, 0, 0, 1, 1, 2, 1, 1, 1, 2, 1, 2];
 
 const COLOR_MAP = {
   0: "md:bg-transparent",
   1: "md:bg-[#5B39C6]",
-  2: "md:bg-[#E8442A]",
+  2: "md:bg-[#F25430]",
 } as const;
 
 export function AboutSection() {
@@ -109,7 +109,7 @@ export function AboutSection() {
     <section
       id="how-it-works"
       ref={sectionRef}
-      className="relative min-h-screen overflow-hidden bg-[#E8442A] text-white"
+      className="relative min-h-screen overflow-hidden bg-[#F25430] text-white"
     >
       {/* Decorative Dashed Lines */}
       {/* Horizontal Line */}

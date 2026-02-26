@@ -68,7 +68,7 @@ export function FooterSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden bg-[#E8442A] px-8 py-24 text-white md:px-12 lg:px-16"
+      className="relative overflow-hidden bg-[#F25430] px-8 py-24 text-white md:px-12 lg:px-16"
     >
       <div ref={contentRef}>
         {/* CTA */}

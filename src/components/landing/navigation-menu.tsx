@@ -131,7 +131,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
           <div className="absolute top-12 right-6 z-20 flex items-center md:hidden">
             <button
               onClick={onClose}
-              className="font-mono text-[10px] font-bold tracking-[0.2em] text-gray-900 uppercase transition-colors hover:text-[#E8442A]"
+              className="font-mono text-[10px] font-bold tracking-[0.2em] text-gray-900 uppercase transition-colors hover:text-[#F25430]"
             >
               CLOSE MENU
             </button>
@@ -146,7 +146,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                 key={i}
                 href={link.href}
                 onClick={onClose}
-                className="font-instrument relative z-20 w-max origin-left text-2xl font-black tracking-tighter text-gray-900 uppercase transition-colors hover:text-[#E8442A] sm:text-3xl md:text-6xl lg:text-7xl"
+                className="font-instrument relative z-20 w-max origin-left text-2xl font-black tracking-tighter text-gray-900 uppercase transition-colors hover:text-[#F25430] sm:text-3xl md:text-6xl lg:text-7xl"
               >
                 {link.label}
               </Link>
@@ -159,7 +159,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
           <div className="absolute top-12 left-12 z-20 md:top-24">
             <button
               onClick={onClose}
-              className="font-mono text-xs font-bold tracking-[0.2em] text-gray-900 uppercase transition-colors hover:text-[#E8442A]"
+              className="font-mono text-xs font-bold tracking-[0.2em] text-gray-900 uppercase transition-colors hover:text-[#F25430]"
             >
               CLOSE MENU
             </button>
@@ -172,7 +172,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
             {CHECKER_GRID.map((isOrange, i) => (
               <div
                 key={i}
-                className={`checker-block h-full w-full ${isOrange ? "bg-[#E8442A]" : "bg-transparent"}`}
+                className={`checker-block h-full w-full ${isOrange ? "bg-[#F25430]" : "bg-transparent"}`}
               />
             ))}
           </div>
@@ -183,10 +183,10 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
           ref={mobilePatternRef}
           className="pointer-events-none absolute inset-0 z-0 block overflow-hidden md:hidden"
         >
-          <div className="absolute top-10 right-0 h-[15vh] w-[15%] bg-[#E8442A]" />
-          <div className="absolute top-[38%] right-0 h-[17vh] w-[20%] bg-[#E8442A]" />
-          <div className="absolute top-[55%] left-1/2 h-[17vh] w-[30%] bg-[#E8442A]" />
-          <div className="absolute right-0 bottom-10 h-[17vh] w-[20%] bg-[#E8442A]" />
+          <div className="absolute top-10 right-0 h-[15vh] w-[15%] bg-[#F25430]" />
+          <div className="absolute top-[38%] right-0 h-[17vh] w-[20%] bg-[#F25430]" />
+          <div className="absolute top-[55%] left-1/2 h-[17vh] w-[30%] bg-[#F25430]" />
+          <div className="absolute right-0 bottom-10 h-[17vh] w-[20%] bg-[#F25430]" />
         </div>
       </div>
     </div>

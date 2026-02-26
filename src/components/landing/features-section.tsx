@@ -13,7 +13,7 @@ const features = [
     title: "AI-Powered Agents",
     description:
       "Intelligent agents that learn from every interaction, continuously improving response quality and accuracy.",
-    color: "#E8442A",
+    color: "#F25430",
   },
   {
     icon: Zap,
@@ -120,19 +120,19 @@ export function FeaturesSection() {
     >
       {/* Background decoration */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-[#E8442A]/5" />
+        <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-[#F25430]/5" />
         <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-[#6433CC]/5" />
       </div>
 
       {/* Title */}
       <div ref={titleRef} className="relative mb-20 text-center">
-        <span className="mb-4 inline-block text-xs font-bold tracking-[0.3em] text-[#E8442A] uppercase">
+        <span className="mb-4 inline-block text-xs font-bold tracking-[0.3em] text-[#F25430] uppercase">
           How It Works
         </span>
         <h2 className="text-4xl font-black tracking-tight text-gray-900 uppercase md:text-6xl">
           BUILT FOR THE
           <br />
-          <span className="text-[#E8442A]">FUTURE</span>
+          <span className="text-[#F25430]">FUTURE</span>
         </h2>
       </div>
 
