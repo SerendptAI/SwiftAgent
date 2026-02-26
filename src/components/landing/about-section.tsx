@@ -8,7 +8,14 @@ import { useEffect, useRef } from "react";
 gsap.registerPlugin(ScrollTrigger);
 
 // 0 = Transparent, 1 = Purple (#5B39C6), 2 = Orange (#F25430)
-const BOTTOM_GRID = [0, 0, 0, 1, 1, 0, 0, 1, 1, 2, 1, 1, 1, 2, 1, 2];
+const BOTTOM_GRID = [
+  // Row 1
+  0, 0, 0, 0, 0, 0, 0, 1,
+  // Row 2
+  0, 0, 0, 1, 1, 0, 1, 1,
+  // Row 3
+  1, 1, 0, 1, 0, 1, 1, 0,
+];
 
 const COLOR_MAP = {
   0: "md:bg-transparent",
@@ -155,15 +162,12 @@ export function AboutSection() {
       </div>
 
       {/* Bottom Blocks */}
-      <div className="absolute right-0 bottom-0 left-0 z-0 h-48 md:h-48">
-        <div
-          ref={gridRef}
-          className="grid h-full w-full grid-cols-8 grid-rows-2"
-        >
+      <div className="absolute right-0 bottom-0 left-0 z-0">
+        <div ref={gridRef} className="grid w-full grid-cols-8">
           {BOTTOM_GRID.map((type, i) => (
             <div
               key={i}
-              className={`bottom-block h-full w-full bg-[#5B39C6] ${COLOR_MAP[type as keyof typeof COLOR_MAP]}`}
+              className={`bottom-block aspect-square w-full bg-[#5B39C6] ${COLOR_MAP[type as keyof typeof COLOR_MAP]}`}
             />
           ))}
         </div>
