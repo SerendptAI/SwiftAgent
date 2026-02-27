@@ -136,15 +136,14 @@ export function HeroSection() {
       {/* Navigation */}
       <nav
         ref={navRef}
-        className="fixed top-10 right-0 left-0 z-50 mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-stretch border border-x border-black bg-white p-4"
-        style={{ height: "80px" }}
+        className="fixed top-10 right-0 left-0 z-50 mx-auto grid h-[68px] max-w-7xl grid-cols-[auto_1fr_auto] items-center border border-x border-black bg-white px-4 md:h-[80px] md:px-8"
       >
         {/* Logo Container */}
         <Link
           href="/"
-          className="flex h-full items-center justify-center pl-5 transition-none"
+          className="flex h-full items-center justify-center transition-none"
         >
-          <div className="flex h-[52px] w-[52px] items-center justify-center bg-black">
+          <div className="flex h-12 w-12 items-center justify-center bg-black md:h-[52px] md:w-[52px]">
             <div className="relative h-7 w-7">
               <Image
                 src="/images/mask.svg"
@@ -161,14 +160,14 @@ export function HeroSection() {
         <div className="h-full w-full" />
 
         {/* Right Section */}
-        <div className="flex h-full items-center justify-end gap-6 px-6 md:px-8">
+        <div className="flex h-full items-center justify-end gap-6">
           <button
             onClick={() => setIsMenuOpen(true)}
-            className="font-dm-mono flex cursor-pointer items-center gap-3 text-xs font-bold tracking-[0.2em] text-gray-900 uppercase transition-opacity hover:opacity-70"
+            className="font-dm-mono flex cursor-pointer items-center gap-3 text-xs font-[400] tracking-[0.2em] text-gray-900 uppercase transition-opacity hover:opacity-70"
           >
-            <div className="flex flex-col gap-[4px]">
-              <div className="h-px w-[20px] bg-black" />
-              <div className="h-px w-[20px] bg-black" />
+            <div className="flex flex-col gap-[6px]">
+              <div className="h-px w-[24px] bg-black" />
+              <div className="h-px w-[24px] bg-black" />
             </div>
             OPEN MENU
           </button>
