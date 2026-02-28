@@ -184,7 +184,7 @@ export function PricingSection() {
                   </span>
                 </div>
 
-                <p className="mb-8 text-[11px] leading-[1.6] whitespace-pre-line text-gray-500 uppercase">
+                <p className="text-[11px] leading-[1.6] whitespace-pre-line text-gray-500 uppercase">
                   {plan.description}
                 </p>
 

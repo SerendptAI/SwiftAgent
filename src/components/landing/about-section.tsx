@@ -7,23 +7,7 @@ import { useEffect, useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// 0 = Transparent, 1 = Purple (#5B39C6), 2 = Orange (#F25430)
-const BOTTOM_GRID = [
-  // Row 1
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  // Row 2
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-  // Row 3
-  0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1,
-  // Row 4
-  1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0,
-];
-
-const COLOR_MAP = {
-  0: "md:bg-transparent",
-  1: "md:bg-[#5B39C6]",
-  2: "md:bg-[#F25430]",
-} as const;
+// Colors mapped in previous iterations not needed, using svgs now
 
 export function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -115,63 +99,66 @@ export function AboutSection() {
   }, []);
 
   return (
-    <section
-      id="how-it-works"
-      ref={sectionRef}
-      className="relative min-h-screen overflow-hidden bg-[#F25430] text-white"
-    >
-      {/* Distinct Top Title */}
-      <div className="absolute top-12 left-8 z-20 md:top-24 lg:top-24 lg:left-16">
-        <div className="font-dm-mono text-sm font-bold tracking-[0.15em] text-gray-900 uppercase">
-          ABOUT SWIFT AGENTS
-        </div>
-      </div>
+    <section ref={sectionRef} className="min-h-screen bg-[#F25430]">
+      <div
+        id="how-it-works"
+        className="relative mx-auto min-h-screen max-w-[1512px] overflow-hidden text-white"
+      >
+        {/* Distinct Top Title */}
 
-      <div className="relative z-10 flex min-h-screen flex-col justify-center pt-32 lg:flex-row lg:items-center lg:pt-0">
-        {/* Left Content */}
-        <div
-          ref={textRef}
-          className="w-full px-8 pb-12 lg:w-[55%] lg:px-16 lg:pb-16"
-        >
-          <p className="font-stolzl mb-12 text-2xl leading-[1.4] font-light text-white sm:text-3xl md:text-[32px] md:leading-[1.4]">
-            When a transaction encounters an issue, users often find themselves
-            without answers or accountability. Currently, there is a lack of
-            clarity in these situations. Swift agents are dedicated to
-            addressing any failed transactions, providing users with real-time
-            responses to their on-chain concerns.
-          </p>
+        <div className="relative z-10 flex min-h-screen flex-col items-center justify-between pt-32 lg:flex-row lg:items-center lg:pt-0">
+          <div
+            ref={textRef}
+            className="w-full px-8 pb-12 lg:w-[45%] lg:px-16 lg:pb-16"
+          >
+            <div className="font-dm-mono mb-8 text-sm font-bold tracking-[0.15em] text-gray-900 uppercase">
+              ABOUT SWIFT AGENTS
+            </div>
+            <p className="font-stolzl mb-12 text-lg leading-[1.6] font-light text-white sm:text-xl md:text-xl lg:text-xl xl:text-xl">
+              When a transaction encounters an issue, users often find
+              themselves without answers or accountability. Currently, there is
+              a lack of clarity in these situations. Swift agents are dedicated
+              to addressing any failed transactions, providing users with
+              real-time responses to their on-chain concerns.
+            </p>
 
-          <div className="font-dm-mono text-sm font-bold tracking-[0.15em] text-gray-900 uppercase">
-            INTRODUCTION
+            <div className="font-dm-mono text-sm font-bold tracking-[0.15em] text-gray-900 uppercase">
+              INTRODUCTION
+            </div>
+          </div>
+
+          {/* Right Image */}
+          <div
+            ref={imageRef}
+            className="relative z-20 flex w-full justify-center px-0 pb-12 lg:z-20 lg:w-[45%] lg:px-8 lg:pr-16 lg:pb-32 lg:pl-0"
+          >
+            <div className="relative z-20 -ml-[5%] w-[110%] lg:ml-0 lg:w-full lg:max-w-[540px]">
+              <Image
+                src="/images/about_section_img.svg"
+                alt="About Swift Agents - Transactions"
+                width={600}
+                height={500}
+                className="relative z-20 h-auto w-full object-cover max-md:absolute max-md:left-[-10%]"
+              />
+            </div>
           </div>
         </div>
-
-        {/* Right Image */}
-        <div
-          ref={imageRef}
-          className="relative z-20 flex w-full justify-center px-0 pb-12 lg:z-20 lg:w-[45%] lg:px-8 lg:pr-16 lg:pb-32 lg:pl-0"
-        >
-          <div className="relative z-20 -ml-[5%] w-[110%] lg:ml-0 lg:w-full lg:max-w-[600px]">
-            <Image
-              src="/images/about_section_img.svg"
-              alt="About Swift Agents - Transactions"
-              width={600}
-              height={500}
-              className="relative z-20 h-auto w-full object-cover max-md:absolute max-md:left-[-10%]"
-            />
+        {/* Bottom Blocks */}
+        <div className="pointer-events-none absolute -right-16 -bottom-16 left-0 z-0 md:-bottom-32 lg:-bottom-48">
+          <div
+            ref={gridRef}
+            className="flex w-full justify-end overflow-hidden pt-20"
+          >
+            <div className="bottom-block w-full max-w-[1512px]">
+              <Image
+                src="/images/decorative.svg"
+                alt="Decorative Background"
+                width={1512}
+                height={600}
+                className="h-auto w-full object-contain object-bottom"
+              />
+            </div>
           </div>
-        </div>
-      </div>
-
-      {/* Bottom Blocks */}
-      <div className="absolute right-0 bottom-0 left-0 z-0">
-        <div ref={gridRef} className="grid w-full grid-cols-12">
-          {BOTTOM_GRID.map((type, i) => (
-            <div
-              key={i}
-              className={`bottom-block aspect-square w-full bg-[#5B39C6] ${COLOR_MAP[type as keyof typeof COLOR_MAP]}`}
-            />
-          ))}
         </div>
       </div>
     </section>
