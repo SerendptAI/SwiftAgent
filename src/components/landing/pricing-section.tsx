@@ -2,19 +2,20 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Image from "next/image";
 import { useEffect, useRef } from "react";
+
+import { type Plan, PlanCard } from "@/components/pricing/plan-card";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const plans = [
+const plans: Plan[] = [
   {
     name: "YELLOW PILL",
     price: "$99",
     billing: "PER AGENT / MONTH",
     description: "BUILT FOR SMALL BUSINESSES\nWITH LOW SUPPORT VOLUME.",
-    color: "#F3B03D",
     textColor: "text-[#F3B03D]",
+    image: "/images/pricing/icon1.svg",
     features: [
       "1 DEPLOYED AI AGENT",
       "DOCUMENT UPLOAD (UP TO\n10 DOCUMENTS)",
@@ -26,15 +27,6 @@ const plans = [
       "UP TO 800 VOICE MINUTES\nPER MONTH",
       "STANDARD SHARED COMPUTE\nTIER",
     ],
-    headerVisual: (
-      <Image
-        src="/images/pricing/icon1.svg"
-        alt="Yellow Pill Plan"
-        width={398}
-        height={201}
-        className="block h-auto w-full"
-      />
-    ),
   },
   {
     name: "PURPLE PILL",
@@ -42,8 +34,8 @@ const plans = [
     billing: "PER AGENT / MONTH",
     description:
       "BUILT FOR STARTUPS AND\nGROWING COMPANIES\nDEPLOYING AI FOR SUPPORT\nOR OPERATIONS.",
-    color: "#6433CC",
     textColor: "text-[#6433CC]",
+    image: "/images/pricing/icon2.svg",
     features: [
       "REAL-TIME VOICE SUPPORT",
       "1 LANGUAGE",
@@ -54,15 +46,6 @@ const plans = [
       "1 SUPPORTED BLOCKCHAIN\nNETWORK (IF CRYPTO)",
       "EMAIL SUPPORT",
     ],
-    headerVisual: (
-      <Image
-        src="/images/pricing/icon2.svg"
-        alt="Purple Pill Plan"
-        width={398}
-        height={201}
-        className="block h-auto w-full"
-      />
-    ),
   },
   {
     name: "ORANGE PILL",
@@ -70,8 +53,8 @@ const plans = [
     billing: "PER AGENT /\nMONTH",
     description:
       "BUILT FOR HIGH-VOLUME,\nCOMPLIANCE-HEAVY, OR\nMULTI-REGION COMPANIES.",
-    color: "#F25430",
     textColor: "text-[#F25430]",
+    image: "/images/pricing/icon3.svg",
     features: [
       "ADVANCED DOCUMENT\nINGESTION AND PRIORITY\nWEIGHTING",
       "REAL-TIME VOICE WITH\nHIGHER PERFORMANCE TIER",
@@ -85,15 +68,6 @@ const plans = [
       "CUSTOM ESCALATION\nWORKFLOWS",
       "PRIORITY SUPPORT",
     ],
-    headerVisual: (
-      <Image
-        src="/images/pricing/icon3.svg"
-        alt="Orange Pill Plan"
-        width={398}
-        height={201}
-        className="block h-auto w-full"
-      />
-    ),
   },
 ];
 
@@ -148,7 +122,6 @@ export function PricingSection() {
       className="relative overflow-hidden bg-white px-8 py-10 md:px-12 md:py-24 lg:px-16"
       id="pricing"
     >
-      {/* Container */}
       <div className="mx-auto max-w-6xl">
         {/* Title */}
         <div ref={titleRef} className="mb-12">
@@ -162,47 +135,12 @@ export function PricingSection() {
 
         {/* Pricing Cards */}
         <div ref={cardsRef} className="grid items-start gap-6 md:grid-cols-3">
-          {plans.map((plan, i) => (
-            <div
-              key={i}
-              className="pricing-card flex h-full flex-col border border-gray-200 bg-white"
-            >
-              {/* Header Visual */}
-              <div className="w-full">{plan.headerVisual}</div>
-
-              {/* Card Body */}
-              <div className="flex flex-1 flex-col px-6 py-6 pb-12 font-mono">
-                <h3
-                  className={`font-dm-mono mb-3 text-[13px] leading-none tracking-widest uppercase ${plan.textColor}`}
-                >
-                  {plan.name}
-                </h3>
-
-                <div className="mb-6 flex flex-wrap items-baseline gap-2">
-                  <span className="font-dm-mono text-[13px] leading-none font-medium text-gray-900">
-                    {plan.price} {plan.billing}
-                  </span>
-                </div>
-
-                <p className="text-[11px] leading-[1.6] whitespace-pre-line text-gray-500 uppercase">
-                  {plan.description}
-                </p>
-
-                <ul className="font-dm-mono mt-4 space-y-3">
-                  {plan.features.map((feature, idx) => (
-                    <li
-                      key={idx}
-                      className="flex items-start text-[11px] leading-[1.6] text-gray-800 uppercase"
-                    >
-                      <span className="mr-2 inline-block pt-[2px] text-[10px]">
-                        •
-                      </span>
-                      <span className="whitespace-pre-line">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+          {plans.map((plan) => (
+            <PlanCard
+              key={plan.name}
+              plan={plan}
+              className="pricing-card h-full"
+            />
           ))}
         </div>
       </div>

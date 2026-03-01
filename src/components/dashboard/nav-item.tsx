@@ -8,10 +8,20 @@ import { cn } from "@/lib/utils";
 interface NavItemProps {
   href: string;
   icon: React.ElementType;
+  activeIcon?: React.ElementType;
   label: string;
+  activeColor?: string;
+  iconClassName?: string;
 }
 
-export function NavItem({ href, icon, label }: NavItemProps) {
+export function NavItem({
+  href,
+  icon,
+  activeIcon,
+  label,
+  activeColor,
+  iconClassName = "h-7 w-7",
+}: NavItemProps) {
   const pathname = usePathname();
   const isActive = pathname === href;
 
@@ -19,14 +29,32 @@ export function NavItem({ href, icon, label }: NavItemProps) {
     <Link
       href={href}
       className={cn(
-        "hover:bg-muted flex h-12 w-12 items-center justify-center rounded-2xl transition-colors",
-        isActive
-          ? "bg-muted text-primary"
-          : "text-muted-foreground hover:text-primary",
+        "relative flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-200",
+        isActive ? "" : "text-muted-foreground hover:bg-muted",
       )}
+      style={
+        isActive && activeColor
+          ? {
+              backgroundColor: `${activeColor}`,
+              boxShadow: `0 0 0 1.5px ${activeColor}40`,
+              color: "white",
+            }
+          : undefined
+      }
       title={label}
     >
-      {createElement(icon, { className: "h-8 w-8" })}
+      {isActive && activeColor && (
+        <span
+          className="absolute top-1/2 left-0 h-6 w-[3px] -translate-y-1/2 rounded-r-full"
+          style={{ backgroundColor: activeColor }}
+        />
+      )}
+      {createElement(isActive && activeIcon ? activeIcon : icon, {
+        className: iconClassName,
+        style: {
+          color: isActive && activeColor && !activeIcon ? "white" : undefined,
+        },
+      })}
       <span className="sr-only">{label}</span>
     </Link>
   );

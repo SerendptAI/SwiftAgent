@@ -1,7 +1,7 @@
 "use client";
 
 import { Invoice01Icon, Settings01Icon, Ticket02Icon } from "hugeicons-react";
-import { Inbox } from "lucide-react";
+import { CreditCard, Inbox } from "lucide-react";
 import Image from "next/image";
 
 import { NavItem } from "@/components/dashboard/nav-item";
@@ -14,7 +14,6 @@ export function Sidebar() {
       icon: (props: { className?: string }) => <Inbox {...props} />,
       label: "Dashboard",
     },
-
     {
       href: "/dashboard/ticketing",
       icon: (props: { className?: string }) => (
@@ -23,12 +22,13 @@ export function Sidebar() {
       label: "Ticketing",
     },
     {
-      href: "/dashboard/knowledge",
+      href: "/dashboard/billing",
       icon: (props: { className?: string }) => (
         <HugeiconsIcon icon={Invoice01Icon} {...props} />
       ),
       label: "Knowledge Sources",
     },
+
     {
       href: "/dashboard/settings",
       icon: (props: { className?: string }) => (
