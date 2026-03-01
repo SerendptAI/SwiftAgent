@@ -1,11 +1,19 @@
+"use client";
+
 import { useTranslations } from "next-intl";
 
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { useGoogleLogin } from "@/hooks/use-auth";
 
 export default function LoginPage() {
   const t = useTranslations("login");
+  const googleLogin = useGoogleLogin();
+
+  const handleGoogleLogin = () => {
+    googleLogin.mutate("/en/dashboard");
+  };
 
   return (
     <div className="font-dm-mono container flex h-screen w-screen flex-col items-center justify-center">
@@ -25,13 +33,16 @@ export default function LoginPage() {
             <Button
               variant="outline"
               className="text-muted-foreground h-12 w-full justify-start px-8 font-normal shadow-[-3px_3px_0px_0px_#000000]"
+              onClick={handleGoogleLogin}
+              disabled={googleLogin.isPending}
             >
               <Icons.google className="mr-3 h-5 w-5" />
-              {t("googleLogin")}
+              {googleLogin.isPending ? "Redirecting..." : t("googleLogin")}
             </Button>
             <Button
               variant="outline"
               className="text-muted-foreground h-12 w-full justify-start px-8 font-normal shadow-[-3px_3px_0px_0px_#000000]"
+              disabled={googleLogin.isPending}
             >
               <Icons.serendpt className="mr-3 h-5 w-5" />
               {t("serendptLogin")}
