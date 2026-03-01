@@ -7,7 +7,7 @@ interface StepIndicatorProps {
 
 export function StepIndicator({ currentStep, steps }: StepIndicatorProps) {
   return (
-    <div className="mb-8 overflow-x-auto">
+    <div className="font-dm-mono mb-8 overflow-x-auto">
       <div className="flex border-b border-gray-100">
         {steps.map((step, index) => {
           const isActive = index === currentStep;

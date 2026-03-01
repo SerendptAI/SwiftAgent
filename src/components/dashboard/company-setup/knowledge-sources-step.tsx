@@ -130,7 +130,7 @@ function UploadSection({ color, label }: UploadSectionProps) {
   return (
     <div
       className={cn(
-        "flex items-center justify-between rounded-lg px-8 py-2 text-white shadow-[-6px_6px_0px_0px_#000000] transition-transform hover:scale-[1.01]",
+        "font-dm-mono flex items-center justify-between rounded-lg px-8 py-2 text-white shadow-[-6px_6px_0px_0px_#000000] transition-transform hover:scale-[1.01]",
         color,
       )}
     >

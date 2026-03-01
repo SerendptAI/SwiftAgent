@@ -133,7 +133,7 @@ export function ChatView({ ticketId }: ChatViewProps) {
             />
           </svg>
         </div>
-        <span className="text-sm font-bold text-gray-900">
+        <span className="font-dm-mono text-sm font-bold text-gray-900">
           {selectedTicket?.visitorId || "Unknown Visitor"}
         </span>
       </div>

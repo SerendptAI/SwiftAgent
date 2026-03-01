@@ -8,16 +8,16 @@ export default function LoginPage() {
   const t = useTranslations("login");
 
   return (
-    <div className="container flex h-screen w-screen flex-col items-center justify-center">
+    <div className="font-dm-mono container flex h-screen w-screen flex-col items-center justify-center">
       <div className="mx-auto flex w-full flex-col justify-center gap-6 space-y-10 sm:w-[400px]">
         <img src="/images/logo.svg" alt="Logo" />
 
         <Card className="border-0 shadow-none">
           <CardHeader className="space-y-1 text-left">
-            <h3 className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+            <h3 className="text-muted-foreground font-stolzl text-xs font-medium tracking-wider uppercase">
               {t("welcomeBack")}
             </h3>
-            <h2 className="text-xl font-semibold tracking-tight">
+            <h2 className="font-stolzl text-xl font-semibold tracking-tight">
               {t("logInToYourAccount")}
             </h2>
           </CardHeader>

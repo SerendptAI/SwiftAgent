@@ -50,7 +50,7 @@ export default function IntegrationsPage() {
                 key={tab}
                 onClick={() => setActiveTab(index)}
                 className={cn(
-                  "relative shrink-0 cursor-pointer px-6 py-4 text-[10px] font-medium tracking-wider uppercase transition-colors",
+                  "font-dm-mono relative shrink-0 cursor-pointer px-6 py-4 text-[10px] font-medium tracking-wider uppercase transition-colors",
                   isActive
                     ? "font-bold text-gray-900"
                     : "text-gray-400 hover:text-gray-600",

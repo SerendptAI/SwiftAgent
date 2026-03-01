@@ -155,15 +155,15 @@ export function TicketList({
             {/* Ticket Info */}
             <div className="min-w-0 flex-1">
               <div className="flex items-center justify-between">
-                <span className="truncate text-sm font-bold text-gray-900">
+                <span className="font-dm-mono truncate text-sm font-bold text-gray-900">
                   {ticket.visitorId}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="truncate text-xs text-gray-400">
+                <span className="font-stolzl truncate text-xs text-gray-400">
                   {ticket.preview}
                 </span>
-                <span className="shrink-0 text-xs text-gray-400">
+                <span className="font-stolzl shrink-0 text-xs text-gray-400">
                   {ticket.time}
                 </span>
               </div>

@@ -214,7 +214,7 @@ export function CompanyInfoStep({
         </div>
       )}
 
-      <div className="grid gap-x-8 gap-y-4 md:grid-cols-2">
+      <div className="font-stolzl grid gap-x-8 gap-y-4 md:grid-cols-2">
         <div className="col-span-1">
           <FormLabel htmlFor="companyName">Company Name</FormLabel>
           <FormInput id="companyName" placeholder="Company Legal Name" />
