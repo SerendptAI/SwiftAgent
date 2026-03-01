@@ -131,8 +131,23 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
           <div className="absolute top-12 right-6 z-20 flex items-center md:hidden">
             <button
               onClick={onClose}
-              className="font-mono text-[10px] font-bold tracking-[0.2em] text-gray-900 uppercase transition-colors hover:text-[#F25430]"
+              className="flex items-center gap-2 font-mono text-[10px] font-bold tracking-[0.2em] text-gray-900 uppercase transition-colors hover:text-[#F25430]"
             >
+              {/* close menu icon */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="h-6 w-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
               CLOSE MENU
             </button>
           </div>

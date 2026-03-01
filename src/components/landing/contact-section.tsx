@@ -6,12 +6,12 @@ import Link from "next/link";
 export function ContactSection() {
   return (
     <section
-      className="relative w-full bg-[#7CA2FE] p-8 md:p-12 lg:p-20"
+      className="relative w-full bg-[#7CA2FE] md:p-12 lg:p-20"
       id="contact"
     >
       <div className="mx-auto max-w-[1400px]">
         {/* Top Text Area */}
-        <div className="flex flex-col justify-between gap-8 md:mb-20 md:flex-row md:items-end">
+        <div className="flex flex-col justify-between gap-8 max-md:p-8 md:mb-20 md:flex-row md:items-end">
           <div className="space-y-6">
             <span className="inline-block font-mono text-xl font-semibold tracking-widest text-[#D3E1FF] uppercase md:pb-8">
               WANT TO REACH US?
@@ -22,7 +22,7 @@ export function ContactSection() {
           </div>
 
           <div className="max-w-md pb-4">
-            <p className="text-xl leading-relaxed font-medium text-[#2C3E5D]">
+            <p className="font-instrument text-xl leading-relaxed font-medium text-[#2C3E5D]">
               For partnership or business inquiries, contact
               <br />
               Thelma at{" "}
@@ -35,17 +35,17 @@ export function ContactSection() {
             </p>
           </div>
         </div>
-
-        <div className="relative mx-auto mt-12 h-[350px] w-full md:h-[450px] lg:h-[550px]">
+        <div className="relative mx-auto w-full max-md:h-[600px] max-md:pl-8 md:p-[2rem]">
           <Image
             src="/images/contact_img.svg"
             alt="Street view"
-            fill
-            className="h-full w-full bg-[#7CA2FE] object-contain object-center"
+            width={500}
+            height={500}
+            className="h-full w-full bg-[#7CA2FE] object-left max-md:absolute max-md:h-4/5 max-md:object-cover"
           />
 
           {/* Bottom Links Overlaid on Image */}
-          <div className="absolute bottom-16 left-12 z-20 flex flex-col gap-6">
+          <div className="absolute bottom-16 left-12 z-20 flex flex-col gap-6 max-md:bottom-40">
             <Link
               href="/"
               className="font-mono text-sm font-semibold tracking-widest text-white uppercase transition-colors hover:text-gray-300"

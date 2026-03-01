@@ -169,6 +169,10 @@
   body {
     @apply bg-background text-foreground;
   }
+  .font-instrument {
+    font-variation-settings: "wdth" 100;
+    font-optical-sizing: auto;
+  }
 }
 
 @utility container {
@@ -195,4 +199,10 @@ html.lenis body {
 
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
+}
+html,
+body {
+  overflow-x: hidden;
+  position: relative;
+  width: 100%;
 }

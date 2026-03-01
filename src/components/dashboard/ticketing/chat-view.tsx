@@ -1,8 +1,9 @@
-"use client";
+import { useEffect, useRef, useState } from "react";
 
-import { RefreshCw } from "lucide-react";
-
+import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
+
+import { TICKETS } from "./ticket-list";
 
 interface Message {
   id: string;
@@ -11,41 +12,105 @@ interface Message {
   time?: string;
 }
 
-const MESSAGES: Message[] = [
-  {
-    id: "1",
-    type: "agent",
-    content: "Hey there! 👋 How can I help you?",
-    time: "Wed 8:21 AM",
-  },
-  {
-    id: "2",
-    type: "user",
-    content: "I'd like to schedule a gym appointment",
-  },
-  {
-    id: "3",
-    type: "agent",
-    content:
-      "Great, can we get your email so we email the options available to you?",
-  },
-  {
-    id: "4",
-    type: "user",
-    content: "dab@serendptai.com",
-  },
-  {
-    id: "5",
-    type: "agent",
-    content: "We'll email you the options available to...",
-  },
-];
+const INITIAL_MESSAGES: Record<string, Message[]> = {
+  "1": [
+    {
+      id: "1",
+      type: "agent",
+      content: "Hey there! 👋 How can I help you?",
+      time: "Wed 8:21 AM",
+    },
+    {
+      id: "2",
+      type: "user",
+      content: "I'd like to schedule a gym appointment",
+    },
+    {
+      id: "3",
+      type: "agent",
+      content:
+        "Great, can we get your email so we email the options available to you?",
+    },
+    {
+      id: "4",
+      type: "user",
+      content: "dab@serendptai.com",
+    },
+    {
+      id: "5",
+      type: "agent",
+      content: "We'll email you the options available to...",
+    },
+  ],
+  "2": [
+    {
+      id: "1",
+      type: "agent",
+      content: "Hello! Looking for something specific?",
+      time: "Wed 4:11 PM",
+    },
+  ],
+  "3": [
+    {
+      id: "1",
+      type: "agent",
+      content: "Hi there, how can I assist you today?",
+      time: "Wed 4:10 PM",
+    },
+  ],
+};
 
 interface ChatViewProps {
   ticketId: string;
 }
 
-export function ChatView({ ticketId: _ticketId }: ChatViewProps) {
+export function ChatView({ ticketId }: ChatViewProps) {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputValue, setInputValue] = useState("");
+  const [isSending, setIsSending] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const selectedTicket = TICKETS.find((t) => t.id === ticketId);
+
+  useEffect(() => {
+    // Load initial messages for the selected ticket
+    setMessages(INITIAL_MESSAGES[ticketId] || []);
+  }, [ticketId]);
+
+  useEffect(() => {
+    // Scroll to bottom on new messages
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const handleSend = () => {
+    if (!inputValue.trim() || isSending) return;
+
+    setIsSending(true);
+    // Simulate network delay
+    setTimeout(() => {
+      const newMessage: Message = {
+        id: Date.now().toString(),
+        type: "agent",
+        content: inputValue,
+        time: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      };
+
+      setMessages((prev) => [...prev, newMessage]);
+      setInputValue("");
+      setIsSending(false);
+    }, 1000);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
   return (
     <div className="flex h-full flex-col rounded-3xl bg-white shadow-sm">
       {/* Chat Header */}
@@ -68,17 +133,20 @@ export function ChatView({ ticketId: _ticketId }: ChatViewProps) {
             />
           </svg>
         </div>
-        <span className="text-sm font-bold text-gray-900">V1GSHST-TAR6282</span>
+        <span className="text-sm font-bold text-gray-900">
+          {selectedTicket?.visitorId || "Unknown Visitor"}
+        </span>
       </div>
 
       {/* Messages Area */}
       <div className="flex-1 space-y-4 overflow-y-auto px-6 py-4">
-        {/* Timestamp Divider */}
-        <div className="flex items-center justify-center">
-          <span className="text-xs text-gray-400">Wed 8:21 AM</span>
-        </div>
+        {messages.length > 0 && messages[0].time && (
+          <div className="flex items-center justify-center">
+            <span className="text-xs text-gray-400">{messages[0].time}</span>
+          </div>
+        )}
 
-        {MESSAGES.map((message) => (
+        {messages.map((message) => (
           <div
             key={message.id}
             className={cn(
@@ -98,40 +166,54 @@ export function ChatView({ ticketId: _ticketId }: ChatViewProps) {
             </div>
           </div>
         ))}
+        <div ref={messagesEndRef} />
       </div>
 
       {/* Chat Input Area */}
-      <div className="border-t border-gray-100 px-4 py-3">
-        <div className="flex items-center gap-2">
-          <div className="flex flex-1 items-center gap-2 rounded-full bg-gray-100 px-4 py-2.5">
-            <span className="shrink-0 text-sm text-gray-500">
+      <div className="border-t border-gray-100 px-6 py-5">
+        <div className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-white p-2 shadow-sm">
+          <div className="flex flex-1 items-center gap-2 px-2">
+            <span className="shrink-0 text-sm font-medium text-gray-900">
               Send gym appointment option to
             </span>
-            <span className="rounded-full bg-[#2196F3] px-3 py-1 text-xs font-semibold text-white">
-              dab@serendptai.com
+            <span className="rounded-lg bg-[#F0F7FF] px-3 py-1.5 text-sm font-medium text-[#006BE5]">
+              {selectedTicket?.visitorId === "V1GSHST-TAR6282"
+                ? "dab@serendptai.com"
+                : "visitor@example.com"}
             </span>
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Type your message..."
+              className="ml-2 flex-1 text-sm outline-none placeholder:text-gray-400"
+            />
           </div>
-        </div>
 
-        <div className="mt-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            {/* Action chip - appointment found */}
-            <div className="flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-2 text-xs font-medium text-red-500">
-              <div className="h-2 w-2 rounded-full bg-red-500" />
+            {/* Status Indicator */}
+            <div className="flex items-center gap-2 rounded-lg bg-[#F5F5F5] px-3 py-1.5 text-sm font-medium text-gray-500">
+              <div className="relative flex h-5 w-5 items-center justify-center">
+                <div className="absolute h-full w-full rounded-full border-2 border-[#F25430]" />
+                <div className="absolute h-full w-full rounded-full border-2 border-transparent border-t-white" />
+              </div>
               Gym appointment details found
             </div>
-          </div>
 
-          <div className="flex items-center gap-2">
-            {/* Unread count badge */}
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F25430] text-xs font-bold text-white">
-              6
-            </div>
-
-            {/* Send button */}
-            <button className="flex items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200">
-              <RefreshCw className="h-4 w-4" />
-              Send
+            {/* Send Button */}
+            <button
+              onClick={handleSend}
+              disabled={isSending}
+              className={cn(
+                "flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold text-white transition-all active:scale-95",
+                isSending
+                  ? "bg-[#006BE5]/70"
+                  : "bg-[#006BE5] hover:bg-[#005bb8]",
+              )}
+            >
+              <Icons.sendIcon className="h-4 w-4" />
+              {isSending ? "Sending..." : "Send"}
             </button>
           </div>
         </div>

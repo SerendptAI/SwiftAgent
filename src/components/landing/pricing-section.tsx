@@ -145,7 +145,7 @@ export function PricingSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden bg-white px-8 py-24 md:px-12 lg:px-16"
+      className="relative overflow-hidden bg-white px-8 py-10 md:px-12 md:py-24 lg:px-16"
       id="pricing"
     >
       {/* Container */}

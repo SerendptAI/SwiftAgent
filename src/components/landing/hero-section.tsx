@@ -17,7 +17,6 @@ const HEADLINE_WORDS = [
   "WEB3",
   "WEBSITE",
 ];
-const WIDE_SPACING_WORDS = new Set(["FOR", "YOUR", "SERVICE"]);
 
 // --- Component ---
 
@@ -117,40 +116,38 @@ export function HeroSection() {
       {/* Navigation */}
       <nav
         ref={navRef}
-        className="fixed top-5 right-0 left-0 z-50 mx-auto grid h-[60px] w-[90%] grid-cols-[auto_1fr_auto] items-center border border-x border-black bg-white px-4 md:h-[80px] md:px-8"
+        className="fixed top-4 right-0 left-0 z-50 mx-auto flex h-[70px] w-[92%] items-center justify-between border border-black bg-white px-4 md:top-5 md:grid md:h-[80px] md:w-[90%] md:grid-cols-[auto_1fr_auto] md:px-8"
       >
         {/* Logo Container */}
         <Link
           href="/"
-          className="flex h-full items-center justify-center transition-none"
+          className="flex h-12 w-12 items-center justify-center bg-black md:h-[52px] md:w-[52px]"
         >
-          <div className="flex h-12 w-12 items-center justify-center bg-black md:h-[52px] md:w-[52px]">
-            <div className="relative h-7 w-7">
-              <Image
-                src="/images/mask.svg"
-                alt="Loading..."
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
+          <div className="relative h-7 w-7">
+            <Image
+              src="/images/mask.svg"
+              alt="Logo"
+              fill
+              className="object-contain"
+              priority
+            />
           </div>
         </Link>
 
-        {/* Middle Empty Section */}
-        <div className="h-full w-full" />
+        {/* Middle Empty Section (Hidden on mobile) */}
+        <div className="hidden h-full w-full md:block" />
 
         {/* Right Section */}
         <div className="flex h-full items-center justify-end gap-6">
           <button
             onClick={() => setIsMenuOpen(true)}
-            className="font-dm-mono flex cursor-pointer items-center gap-3 text-xs font-[400] tracking-[0.2em] text-gray-900 uppercase transition-opacity hover:opacity-70"
+            className="font-dm-mono flex cursor-pointer items-center gap-3 text-xs font-bold tracking-[0.2em] text-gray-900 uppercase transition-opacity hover:opacity-70"
           >
-            <div className="flex flex-col gap-[6px]">
-              <div className="h-px w-[24px] bg-black" />
-              <div className="h-px w-[24px] bg-black" />
+            <div className="flex flex-col gap-[5px]">
+              <div className="h-[2px] w-[22px] bg-black" />
+              <div className="h-[2px] w-[22px] bg-black" />
             </div>
-            OPEN MENU
+            <span className="md:inline">OPEN MENU</span>
           </button>
           <Link
             href="/en/login"
@@ -164,32 +161,29 @@ export function HeroSection() {
       {/* Hero Content */}
       <div className="relative z-10 flex h-screen w-full flex-col items-center md:flex-row">
         {/* Left Side: Content */}
-        <div className="relative z-20 flex w-full flex-col justify-center px-8 pt-20 md:w-[60%] md:px-12 md:pt-0 lg:w-[55%] lg:px-16">
-          <h1
-            ref={headlineRef}
-            className="font-instrument relative z-20 mb-6 text-3xl leading-[1.2] font-black tracking-tight text-gray-900 uppercase md:mb-2 md:text-4xl md:leading-[1.4] lg:text-3xl xl:text-4xl"
-            style={{
-              perspective: "1000px",
-              transform: "scaleY(1.2)",
-              transformOrigin: "top",
-            }}
-          >
-            {HEADLINE_WORDS.map((word, i) => (
-              <span
-                key={i}
-                className="hero-word inline-block"
-                style={{
-                  marginRight: WIDE_SPACING_WORDS.has(word) ? "0.4em" : "0.2em",
-                }}
-              >
-                {word}
-              </span>
-            ))}
-          </h1>
+        <div className="relative z-20 flex w-full flex-col justify-center px-8 max-md:m-auto md:w-[60%] md:px-12 md:pt-0 md:pt-20 lg:w-[55%] lg:px-16">
+          <div className="relative w-full">
+            <h1
+              ref={headlineRef}
+              className="font-stolzl relative z-20 mb-6 text-[2rem] leading-[1.6] font-bold text-gray-900 uppercase md:mb-2 md:text-4xl md:leading-[1.4] md:tracking-tight lg:text-3xl xl:text-4xl"
+              style={{
+                perspective: "1000px",
+                transform: "scaleY(1.4)",
+                transformOrigin: "top",
+              }}
+            >
+              {HEADLINE_WORDS.map((word, i) => (
+                <span key={i} className="hero-word mr-[0.2em] inline-block">
+                  {word}
+                </span>
+              ))}
+            </h1>
+            {/* Orange block for mobile */}
+          </div>
 
           <p
             ref={subtitleRef}
-            className="font-stolzl text-md my-12 max-w-md leading-relaxed text-gray-600"
+            className="font-stolzl text-md my-12 max-w-md leading-relaxed text-gray-600 max-md:mb-6"
           >
             Imagine a world where AI handles inquiries, providing instant
             support. They resolve issues, answer questions, and learn to enhance
@@ -198,43 +192,40 @@ export function HeroSection() {
 
           <div
             ref={ctaRef}
-            className="flex flex-col items-start gap-10 sm:flex-row"
+            className="flex w-4/5 flex-col items-start gap-10 sm:flex-row"
           >
             <Link
               href="/en/login"
-              className="group text-md relative overflow-hidden rounded-lg border border-gray-900 bg-white px-6 py-2 font-bold tracking-[0.15em] text-gray-900 uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:text-white"
+              className="group relative w-full overflow-hidden rounded-xl border-2 border-gray-900 bg-white px-8 py-3 text-sm font-bold tracking-[0.15em] text-gray-900 uppercase shadow-[4px_4px_0px_0px_#000000] transition-all hover:translate-y-1 hover:bg-gray-50 hover:shadow-none max-md:w-[90%] sm:w-auto"
             >
-              <span className="absolute inset-0 -translate-x-full bg-gray-900 transition-transform duration-300 group-hover:translate-x-0" />
-              <span
-                className="font-dm-mono relative"
-                style={{
-                  perspective: "1000px",
-                  transform: "scaleY(1.2)",
-                  transformOrigin: "top",
-                }}
-              >
+              <span className="font-dm-mono m relative flex w-full justify-center whitespace-nowrap">
                 GET STARTED
               </span>
             </Link>
             <Link
               href="#how-it-works"
-              className="group text-md relative overflow-hidden rounded-lg bg-[#F25430] px-6 py-2 font-bold tracking-[0.15em] text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-[#d13a22]"
+              className="group relative w-full overflow-hidden rounded-xl border-2 border-black bg-[#F25430] px-8 py-3 text-sm font-bold tracking-[0.15em] text-white uppercase shadow-[4px_4px_0px_0px_#000000] transition-all hover:translate-y-1 hover:shadow-none max-md:w-[90%] sm:w-auto"
             >
-              <span
-                className="font-dm-mono relative"
-                style={{
-                  perspective: "1000px",
-                  transform: "scaleY(1.2)",
-                  transformOrigin: "top",
-                }}
-              >
+              <span className="font-dm-mono relative flex w-full justify-center whitespace-nowrap">
                 HOW IT WORKS?
               </span>
             </Link>
           </div>
         </div>
 
-        {/* Right Side: Background & Agent */}
+        {/* Orange background block for bottom right mobile */}
+        <div className="absolute top-[20%] right-[-10%] z-10 h-32 w-26 bg-[#F25430] md:hidden" />
+        <div className="absolute right-0 bottom-0 z-0 h-[25vh] w-26 bg-[#F25430] md:hidden" />
+        <div className="absolute right-0 -bottom-50 z-10 h-4/5 w-full md:hidden">
+          <Image
+            src="/images/agents.svg"
+            alt="Agents"
+            fill
+            className="object-contain object-bottom-right"
+            priority
+          />
+        </div>
+        {/* Right Side: Background & Agent (Desktop) */}
         <div className="absolute top-0 right-0 bottom-0 z-0 hidden h-full w-full md:block md:w-[55%]">
           {/* Background Patterns */}
           <div

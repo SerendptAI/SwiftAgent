@@ -198,7 +198,7 @@ export function TalkSection() {
           {/* Action Buttons */}
           <div
             // ref={buttonsRef}
-            className="mb-[15rem] flex w-full max-w-[400px] flex-col items-center gap-5 px-5 lg:px-0 lg:pr-10"
+            className="flex w-full max-w-[400px] flex-col items-center gap-5 px-5 md:mb-[15rem] lg:px-0 lg:pr-10"
           >
             {/* Download App Button */}
             <button className="font-dm-mono flex w-full cursor-pointer items-center justify-center gap-8 space-x-3 rounded-xl border-2 border-black bg-white px-6 py-4 text-sm font-bold tracking-widest text-black uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-transform hover:translate-y-1 hover:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)]">

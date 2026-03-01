@@ -4,14 +4,14 @@ import { useState } from "react";
 
 import { cn } from "@/lib/utils";
 
-interface Ticket {
+export interface Ticket {
   id: string;
   visitorId: string;
   preview: string;
   time: string;
 }
 
-const TICKETS: Ticket[] = [
+export const TICKETS: Ticket[] = [
   {
     id: "1",
     visitorId: "V1GSHST-TAR6282",

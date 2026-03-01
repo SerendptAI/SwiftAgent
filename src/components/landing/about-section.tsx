@@ -138,18 +138,18 @@ export function AboutSection() {
                 alt="About Swift Agents - Transactions"
                 width={600}
                 height={500}
-                className="relative z-20 h-auto w-full object-cover max-md:absolute max-md:left-[-10%]"
+                className="relative z-20 h-auto w-full object-cover max-md:left-[-10%]"
               />
             </div>
           </div>
         </div>
         {/* Bottom Blocks */}
-        <div className="pointer-events-none absolute -right-16 -bottom-16 left-0 z-0 md:-bottom-32 lg:-bottom-48">
+        <div className="pointer-events-none absolute -right-16 bottom-0 left-0 z-0 md:-bottom-32 lg:-bottom-48">
           <div
             ref={gridRef}
             className="flex w-full justify-end overflow-hidden pt-20"
           >
-            <div className="bottom-block w-full max-w-[1512px]">
+            <div className="bottom-block w-full max-w-[1512px] max-md:bg-[#6433CC]">
               <Image
                 src="/images/decorative.svg"
                 alt="Decorative Background"
