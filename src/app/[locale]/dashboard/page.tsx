@@ -6,7 +6,7 @@ import { WidgetCard } from "@/components/dashboard/overview/widget-card";
 
 export default function DashboardPage() {
   return (
-    <div className="h-full w-full p-6">
+    <div className="h-full w-full">
       <div className="flex flex-col gap-6 lg:flex-row">
         {/* Left Column - Stats Grid */}
         <div className="flex-1">
