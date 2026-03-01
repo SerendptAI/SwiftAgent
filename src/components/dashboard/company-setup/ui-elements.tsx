@@ -87,7 +87,7 @@ export const NextButton = ({
   return (
     <button
       className={cn(
-        "w-full cursor-pointer rounded-xl bg-[#6433CC] py-4 text-center font-semibold text-white shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-purple-700",
+        "w-full cursor-pointer rounded-xl bg-[#6433CC] py-2 text-center font-semibold text-white shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-purple-700",
         className,
       )}
       {...props}

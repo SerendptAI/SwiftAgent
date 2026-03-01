@@ -5,9 +5,13 @@ import { NextButton } from "./ui-elements";
 
 interface AnswerBoundariesStepProps {
   onNext?: () => void;
+  footerAction?: React.ReactNode;
 }
 
-export function AnswerBoundariesStep({ onNext }: AnswerBoundariesStepProps) {
+export function AnswerBoundariesStep({
+  onNext,
+  footerAction,
+}: AnswerBoundariesStepProps) {
   // Initial state mimicking the design
   const [ignoredTopics, setIgnoredTopics] = useState<string[]>([
     "FAQ",
@@ -111,7 +115,7 @@ export function AnswerBoundariesStep({ onNext }: AnswerBoundariesStepProps) {
       </div>
 
       <div className="mt-12">
-        <NextButton onClick={onNext} />
+        {footerAction ?? <NextButton onClick={onNext} />}
       </div>
     </div>
   );

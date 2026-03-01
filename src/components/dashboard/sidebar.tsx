@@ -54,7 +54,7 @@ export function Sidebar() {
         </div>
       </div>
       <div className="flex-1 overflow-auto py-12">
-        <nav className="flex flex-col items-center gap-8 px-2">
+        <nav className="flex flex-col items-center gap-4 px-2">
           {navItems.map((item) => (
             <NavItem key={item.href} {...item} />
           ))}

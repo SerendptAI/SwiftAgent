@@ -7,9 +7,13 @@ import { NextButton } from "./ui-elements";
 
 interface KnowledgeSourcesStepProps {
   onNext?: () => void;
+  footerAction?: React.ReactNode;
 }
 
-export function KnowledgeSourcesStep({ onNext }: KnowledgeSourcesStepProps) {
+export function KnowledgeSourcesStep({
+  onNext,
+  footerAction,
+}: KnowledgeSourcesStepProps) {
   const [companyType, setCompanyType] = useState<"saas" | "crypto">("saas");
 
   return (
@@ -93,24 +97,25 @@ export function KnowledgeSourcesStep({ onNext }: KnowledgeSourcesStepProps) {
       </div>
 
       <div className="mt-12">
-        {companyType === "saas" ? (
-          <NextButton onClick={onNext} />
-        ) : (
-          <div className="flex items-center gap-4">
-            <button
-              onClick={onNext}
-              className="w-full cursor-pointer rounded-xl bg-[#8DA4FF] py-4 text-center font-semibold text-white shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-blue-400"
-            >
-              Next
-            </button>
-            <button
-              onClick={onNext}
-              className="flex h-[56px] w-[80px] cursor-pointer items-center justify-center rounded-xl bg-[#D6E4FF] shadow-[-6px_6px_0px_0px_#00000033] transition-colors hover:bg-blue-200"
-            >
-              <div className="h-0 w-0 border-t-8 border-b-8 border-l-12 border-t-transparent border-b-transparent border-l-white" />
-            </button>
-          </div>
-        )}
+        {footerAction ??
+          (companyType === "saas" ? (
+            <NextButton onClick={onNext} />
+          ) : (
+            <div className="flex items-center gap-4">
+              <button
+                onClick={onNext}
+                className="w-full cursor-pointer rounded-xl bg-[#8DA4FF] py-4 text-center font-semibold text-white shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-blue-400"
+              >
+                Next
+              </button>
+              <button
+                onClick={onNext}
+                className="flex h-[56px] w-[80px] cursor-pointer items-center justify-center rounded-xl bg-[#D6E4FF] shadow-[-6px_6px_0px_0px_#00000033] transition-colors hover:bg-blue-200"
+              >
+                <div className="h-0 w-0 border-t-8 border-b-8 border-l-12 border-t-transparent border-b-transparent border-l-white" />
+              </button>
+            </div>
+          ))}
       </div>
     </div>
   );

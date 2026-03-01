@@ -2,9 +2,13 @@ import { FormLabel, FormSelect, FormTextarea, NextButton } from "./ui-elements";
 
 interface CompanyIdentityStepProps {
   onNext?: () => void;
+  footerAction?: React.ReactNode;
 }
 
-export function CompanyIdentityStep({ onNext }: CompanyIdentityStepProps) {
+export function CompanyIdentityStep({
+  onNext,
+  footerAction,
+}: CompanyIdentityStepProps) {
   return (
     <div className="w-full max-w-4xl pb-4">
       <div className="flex flex-col gap-8">
@@ -70,7 +74,7 @@ export function CompanyIdentityStep({ onNext }: CompanyIdentityStepProps) {
             </div>
 
             <div className="mt-8">
-              <NextButton onClick={onNext} />
+              {footerAction ?? <NextButton onClick={onNext} />}
             </div>
           </div>
         </div>

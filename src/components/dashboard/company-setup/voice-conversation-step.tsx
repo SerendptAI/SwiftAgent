@@ -7,9 +7,13 @@ import { NextButton } from "./ui-elements";
 
 interface VoiceConversationStepProps {
   onNext?: () => void;
+  footerAction?: React.ReactNode;
 }
 
-export function VoiceConversationStep({ onNext }: VoiceConversationStepProps) {
+export function VoiceConversationStep({
+  onNext,
+  footerAction,
+}: VoiceConversationStepProps) {
   const [selectedVoice, setSelectedVoice] = useState<
     "professional" | "friendly" | "concise"
   >("professional");
@@ -56,9 +60,11 @@ export function VoiceConversationStep({ onNext }: VoiceConversationStepProps) {
       </div>
 
       <div className="mt-12 flex justify-center">
-        <NextButton className="max-w-2xl px-12" onClick={onNext}>
-          Finish
-        </NextButton>
+        {footerAction ?? (
+          <NextButton className="max-w-2xl px-12" onClick={onNext}>
+            Finish
+          </NextButton>
+        )}
       </div>
     </div>
   );

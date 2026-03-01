@@ -29,7 +29,7 @@ export function NavItem({
     <Link
       href={href}
       className={cn(
-        "relative flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-200",
+        "bg-muted relative flex h-16 w-16 items-center justify-center rounded-2xl transition-all duration-200",
         isActive ? "" : "text-muted-foreground hover:bg-muted",
       )}
       style={
