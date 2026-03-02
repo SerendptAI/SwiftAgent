@@ -1,63 +1,78 @@
-import { API_BASE_URL } from "@/lib/api-client";
+import {
+  API_BASE_URL,
+  apiClient,
+  clearAuthTokens,
+  setAuthTokens,
+} from "@/lib/api-client";
 
-export async function loginWithGoogle(redirectUrl?: string): Promise<void> {
-  const params = new URLSearchParams();
-  if (redirectUrl) {
-    // Ensure the redirect URL is absolute (e.g. http://localhost:3000/en/dashboard)
-    const absoluteRedirectUrl = redirectUrl.startsWith("/")
-      ? `${window.location.origin}${redirectUrl}`
-      : redirectUrl;
-    params.set("redirect_url", absoluteRedirectUrl);
-  }
+// ── Types ──────────────────────────────────────────────────────────────────────
 
-  const url = `${API_BASE_URL}/api/v1/auth/login${params.toString() ? `?${params}` : ""}`;
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  picture?: string;
+  company_id?: string;
+  onboarding_completed?: boolean;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+// ── Google Login ───────────────────────────────────────────────────────────────
+
+export function loginWithGoogle(locale: string = "en"): Promise<void> {
+  const redirectUrl = `${window.location.origin}/${locale}/auth/callback`;
+
+  const params = new URLSearchParams({ redirect_url: redirectUrl });
+  const url = `${API_BASE_URL}/api/v1/auth/login?${params}`;
 
   window.location.href = url;
 
-  // Return a promise that never resolves to keep the mutation in a pending state
-  // while the browser navigates to the redirect URL.
+  // Never resolves — keeps the mutation pending while the browser navigates
   return new Promise(() => {});
 }
 
-export function setAuthTokens(accessToken: string, refreshToken: string) {
-  if (typeof window !== "undefined") {
-    localStorage.setItem("access_token", accessToken);
-    localStorage.setItem("refresh_token", refreshToken);
-  }
+// ── User API ───────────────────────────────────────────────────────────────────
+
+export async function getCurrentUser(): Promise<User> {
+  const { data } = await apiClient.get<User>("/api/v1/auth/me");
+  return data;
 }
 
-export function getAccessToken() {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem("access_token");
-  }
-  return null;
+// ── Token Refresh ──────────────────────────────────────────────────────────────
+
+interface TokenResponse {
+  access_token: string;
+  refresh_token?: string;
+  token_type: string;
 }
 
-export function clearAuthTokens() {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-  }
-}
-
-export async function getCurrentUser() {
-  const token = getAccessToken();
-  if (!token) {
-    throw new Error("No access token found");
-  }
-
-  const res = await fetch(`${API_BASE_URL}/api/v1/auth/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+export async function refreshAccessToken(
+  refreshToken: string,
+): Promise<TokenResponse> {
+  const { data } = await apiClient.post<TokenResponse>("/api/v1/auth/refresh", {
+    refresh_token: refreshToken,
   });
+  return data;
+}
 
-  if (!res.ok) {
-    if (res.status === 401 || res.status === 403) {
-      clearAuthTokens();
-    }
-    throw new Error("Failed to fetch user details");
+// ── Logout ─────────────────────────────────────────────────────────────────────
+
+export function logout(locale: string = "en") {
+  clearAuthTokens();
+  window.location.href = `/${locale}/login`;
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────────
+
+export function processAuthCallback(searchParams: URLSearchParams): boolean {
+  const accessToken = searchParams.get("access_token");
+  const refreshToken = searchParams.get("refresh_token");
+
+  if (accessToken && refreshToken) {
+    setAuthTokens(accessToken, refreshToken);
+    return true;
   }
-
-  return res.json();
+  return false;
 }

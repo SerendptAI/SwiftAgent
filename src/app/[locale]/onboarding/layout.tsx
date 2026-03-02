@@ -1,4 +1,4 @@
-import { AuthCheck } from "@/components/auth-check";
+import { AuthGuard } from "@/components/auth-check";
 import { Header } from "@/components/dashboard/header";
 import { Phone } from "@/components/dashboard/phone";
 import { Sidebar } from "@/components/dashboard/sidebar";
@@ -9,7 +9,7 @@ export default function OnboardingLayout({
   children: React.ReactNode;
 }) {
   return (
-    <AuthCheck>
+    <AuthGuard>
       <div className="grid h-screen w-full overflow-hidden bg-[#F6F6F6] md:grid-cols-[105px_1fr]">
         <Sidebar />
         <div className="flex h-full flex-col">
@@ -26,6 +26,6 @@ export default function OnboardingLayout({
           </main>
         </div>
       </div>
-    </AuthCheck>
+    </AuthGuard>
   );
 }

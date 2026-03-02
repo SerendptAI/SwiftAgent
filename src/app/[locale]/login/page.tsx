@@ -12,7 +12,7 @@ export default function LoginPage() {
   const googleLogin = useGoogleLogin();
 
   const handleGoogleLogin = () => {
-    googleLogin.mutate("/en/dashboard");
+    googleLogin.mutate("en");
   };
 
   return (
