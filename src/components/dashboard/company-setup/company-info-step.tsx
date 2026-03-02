@@ -1,11 +1,27 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, ChevronDown, Loader2, Pencil } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { useCreateCompany, useUploadLogo } from "@/hooks/use-company";
+import { useCompanyMutations } from "@/hooks/use-company";
 import { cn } from "@/lib/utils";
 
 import { FormInput, FormLabel, FormSelect, NextButton } from "./ui-elements";
+
+const companyInfoSchema = z.object({
+  name: z.string().min(1, "Company Name is required"),
+  website: z.string().optional(),
+  industry: z.string().optional(),
+  company_size: z.string().optional(),
+  country: z.string().optional(),
+  timezone: z.string().optional(),
+  contact_email: z.string().email("Invalid email").min(1, "Email is required"),
+  phone_number: z.string().optional(),
+});
+
+type CompanyInfoValues = z.infer<typeof companyInfoSchema>;
 
 interface Company {
   id: string;
@@ -32,19 +48,26 @@ export function CompanyInfoStep({
   footerAction,
   hideLogoUpload,
 }: CompanyInfoStepProps) {
-  const { mutateAsync: createCompany, isPending: isCreating } =
-    useCreateCompany();
-  const { mutateAsync: uploadLogo, isPending: isUploading } = useUploadLogo();
+  const { createCompany, uploadLogo } = useCompanyMutations();
+  const isCreating = createCompany.isPending;
+  const isUploading = uploadLogo.isPending;
 
-  const [formData, setFormData] = useState({
-    name: "",
-    website: "",
-    industry: "",
-    company_size: "",
-    country: "",
-    timezone: "",
-    contact_email: "",
-    phone_number: "",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CompanyInfoValues>({
+    resolver: zodResolver(companyInfoSchema),
+    defaultValues: {
+      name: "",
+      website: "",
+      industry: "",
+      company_size: "",
+      country: "",
+      timezone: "",
+      contact_email: "",
+      phone_number: "",
+    },
   });
   const [logoFile, setLogoFile] = useState<File | null>(null);
 
@@ -54,25 +77,16 @@ export function CompanyInfoStep({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSubmit = async () => {
+  const onSubmit = async (data: CompanyInfoValues) => {
     try {
-      if (!formData.name || !formData.contact_email) {
-        alert("Please fill in required fields (Name, Email)");
-        return;
-      }
-
-      const company = await createCompany({
-        ...formData,
+      const company = await createCompany.mutateAsync({
+        ...data,
       });
 
       setCompanyId?.(company.id);
 
       if (logoFile) {
-        await uploadLogo({ companyId: company.id, file: logoFile });
+        await uploadLogo.mutateAsync({ companyId: company.id, file: logoFile });
       }
 
       onNext?.();
@@ -268,9 +282,12 @@ export function CompanyInfoStep({
           <FormInput
             id="companyName"
             placeholder="Company Legal Name"
-            value={formData.name}
-            onChange={(e) => handleInputChange("name", e.target.value)}
+            {...register("name")}
+            className={errors.name ? "ring-2 ring-red-500" : ""}
           />
+          {errors.name && (
+            <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>
+          )}
         </div>
 
         <div className="col-span-1">
@@ -278,18 +295,13 @@ export function CompanyInfoStep({
           <FormInput
             id="website"
             placeholder="https://site.com"
-            value={formData.website}
-            onChange={(e) => handleInputChange("website", e.target.value)}
+            {...register("website")}
           />
         </div>
 
         <div className="col-span-1">
           <FormLabel htmlFor="industry">Industry</FormLabel>
-          <FormSelect
-            id="industry"
-            value={formData.industry}
-            onChange={(e) => handleInputChange("industry", e.target.value)}
-          >
+          <FormSelect id="industry" {...register("industry")}>
             <option value="" disabled>
               Select an industry
             </option>
@@ -302,11 +314,7 @@ export function CompanyInfoStep({
 
         <div className="col-span-1">
           <FormLabel htmlFor="size">Company Size</FormLabel>
-          <FormSelect
-            id="size"
-            value={formData.company_size}
-            onChange={(e) => handleInputChange("company_size", e.target.value)}
-          >
+          <FormSelect id="size" {...register("company_size")}>
             <option value="" disabled>
               Select a company size
             </option>
@@ -319,11 +327,7 @@ export function CompanyInfoStep({
 
         <div className="col-span-1">
           <FormLabel htmlFor="country">Country of Operation</FormLabel>
-          <FormSelect
-            id="country"
-            value={formData.country}
-            onChange={(e) => handleInputChange("country", e.target.value)}
-          >
+          <FormSelect id="country" {...register("country")}>
             <option value="" disabled>
               Select Country
             </option>
@@ -336,11 +340,7 @@ export function CompanyInfoStep({
 
         <div className="col-span-1">
           <FormLabel htmlFor="timezone">Timezone</FormLabel>
-          <FormSelect
-            id="timezone"
-            value={formData.timezone}
-            onChange={(e) => handleInputChange("timezone", e.target.value)}
-          >
+          <FormSelect id="timezone" {...register("timezone")}>
             <option value="" disabled>
               Select Timezone
             </option>
@@ -357,9 +357,14 @@ export function CompanyInfoStep({
             id="email"
             type="email"
             placeholder="Botonte@yahoo.com"
-            value={formData.contact_email}
-            onChange={(e) => handleInputChange("contact_email", e.target.value)}
+            {...register("contact_email")}
+            className={errors.contact_email ? "ring-2 ring-red-500" : ""}
           />
+          {errors.contact_email && (
+            <p className="mt-1 text-xs text-red-500">
+              {errors.contact_email.message}
+            </p>
+          )}
         </div>
 
         <div className="col-span-1">
@@ -368,8 +373,7 @@ export function CompanyInfoStep({
             id="phone"
             type="tel"
             placeholder="+2349057004914"
-            value={formData.phone_number}
-            onChange={(e) => handleInputChange("phone_number", e.target.value)}
+            {...register("phone_number")}
           />
         </div>
       </div>
@@ -377,7 +381,7 @@ export function CompanyInfoStep({
       <div className="mt-6">
         {footerAction ?? (
           <NextButton
-            onClick={handleSubmit}
+            onClick={handleSubmit(onSubmit)}
             disabled={isCreating || isUploading}
           >
             {isCreating || isUploading ? (

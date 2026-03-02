@@ -1,9 +1,18 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus, X } from "lucide-react";
-import { useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { useUpdateBoundaries } from "@/hooks/use-company";
+import { useCompanyMutations } from "@/hooks/use-company";
 
 import { NextButton } from "./ui-elements";
+
+const answerBoundariesSchema = z.object({
+  ignoredTopics: z.array(z.string()),
+  availableTopics: z.array(z.string()),
+});
+
+type AnswerBoundariesValues = z.infer<typeof answerBoundariesSchema>;
 
 interface AnswerBoundariesStepProps {
   companyId?: string | null;
@@ -16,60 +25,79 @@ export function AnswerBoundariesStep({
   onNext,
   footerAction,
 }: AnswerBoundariesStepProps) {
-  // Initial state mimicking the design
-  const [ignoredTopics, setIgnoredTopics] = useState<string[]>([
-    "FAQ",
-    "MANUALS",
-    "POLICIES",
-    "SOPS",
-    "INFO",
-    "INFO",
-    "INFO",
-    "INFO",
-    "INFO",
-    "INFO",
-    "INFO",
-    "INFO",
-    "INFO",
-    "INFO",
-    "INFO",
-  ]);
+  const { updateCompany } = useCompanyMutations();
+  const isPending = updateCompany.isPending;
 
-  const [availableTopics, setAvailableTopics] = useState<string[]>([
-    "INFO",
-    "INFO",
-    "INFO",
-    "INFO",
-    "INFO",
-  ]);
+  const { control, handleSubmit, watch } = useForm<AnswerBoundariesValues>({
+    resolver: zodResolver(answerBoundariesSchema),
+    defaultValues: {
+      ignoredTopics: [
+        "FAQ",
+        "MANUALS",
+        "POLICIES",
+        "SOPS",
+        "INFO",
+        "INFO",
+        "INFO",
+        "INFO",
+        "INFO",
+        "INFO",
+        "INFO",
+        "INFO",
+        "INFO",
+        "INFO",
+        "INFO",
+      ],
+      availableTopics: ["INFO", "INFO", "INFO", "INFO", "INFO"],
+    },
+  });
 
-  // Handling removal by index to correctly handle duplicate names if any (screenshot shows many "INFO"s)
+  const {
+    fields: ignoredFields,
+    remove: removeIgnoredTopic,
+    append: appendIgnored,
+  } = useFieldArray({
+    control,
+    name: "ignoredTopics" as never, // cast due to zod typing constraints with simple string arrays
+  });
+
+  const {
+    fields: availableFields,
+    remove: removeAvailableTopic,
+    append: appendAvailable,
+  } = useFieldArray({
+    control,
+    name: "availableTopics" as never,
+  });
+
+  const ignoredTopics = watch("ignoredTopics");
+  const availableTopics = watch("availableTopics");
+
   const removeIgnored = (index: number) => {
     const topic = ignoredTopics[index];
-    setIgnoredTopics((prev) => prev.filter((_, i) => i !== index));
-    setAvailableTopics((prev) => [...prev, topic]);
+    removeIgnoredTopic(index);
+    appendAvailable(topic as never);
   };
 
   const addIgnored = (index: number) => {
     const topic = availableTopics[index];
-    setAvailableTopics((prev) => prev.filter((_, i) => i !== index));
-    setIgnoredTopics((prev) => [...prev, topic]);
+    removeAvailableTopic(index);
+    appendIgnored(topic as never);
   };
 
-  const { mutateAsync: updateBoundaries, isPending } = useUpdateBoundaries();
-
-  const handleSubmit = async () => {
+  const onSubmit = async (data: AnswerBoundariesValues) => {
     try {
       if (!companyId) {
         alert("Missing company data. Please go back.");
         return;
       }
 
-      await updateBoundaries({
+      await updateCompany.mutateAsync({
         companyId,
+        section: "boundaries",
         payload: {
-          enabled_sources: availableTopics,
-          custom_info: ignoredTopics,
+          enabled_sources: data.availableTopics,
+          custom_info: data.ignoredTopics,
         },
       });
 
@@ -91,16 +119,16 @@ export function AnswerBoundariesStep({
       </p>
 
       <div className="mb-12 flex flex-wrap justify-center gap-4 rounded-3xl bg-gray-100 p-8 shadow-inner">
-        {ignoredTopics.map((topic, index) => (
+        {ignoredFields.map((field, index) => (
           <button
-            key={`ignored-${index}`}
+            key={field.id}
             onClick={() => removeIgnored(index)}
             className="group flex items-center gap-3 rounded-xl bg-white px-3 py-3 text-sm font-bold text-gray-900 uppercase shadow-[-4px_4px_0px_0px_#000000] transition-all hover:translate-y-[2px] hover:shadow-[-2px_2px_0px_0px_#000000]"
           >
             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#FF5F3D] text-white">
               <X className="h-3 w-3" />
             </span>
-            {topic}
+            {ignoredTopics[index]}
           </button>
         ))}
       </div>
@@ -114,23 +142,23 @@ export function AnswerBoundariesStep({
       </p>
 
       <div className="flex flex-wrap justify-center gap-4 rounded-3xl bg-gray-100 p-8 shadow-inner">
-        {availableTopics.map((topic, index) => (
+        {availableFields.map((field, index) => (
           <button
-            key={`available-${index}`}
+            key={field.id}
             onClick={() => addIgnored(index)}
             className="group flex items-center gap-3 rounded-xl bg-white px-3 py-3 text-sm font-bold text-gray-900 uppercase shadow-[-4px_4px_0px_0px_#000000] transition-all hover:translate-y-[2px] hover:shadow-[-2px_2px_0px_0px_#000000]"
           >
             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-200 text-black">
               <Plus className="h-3 w-3" />
             </span>
-            {topic}
+            {availableTopics[index]}
           </button>
         ))}
       </div>
 
       <div className="mt-12">
         {footerAction ?? (
-          <NextButton onClick={handleSubmit} disabled={isPending}>
+          <NextButton onClick={handleSubmit(onSubmit)} disabled={isPending}>
             {isPending ? (
               <span className="flex items-center justify-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin" />

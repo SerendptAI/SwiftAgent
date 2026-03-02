@@ -1,11 +1,19 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { useUpdateVoice } from "@/hooks/use-company";
+import { useCompanyMutations } from "@/hooks/use-company";
 import { cn } from "@/lib/utils";
 
 import { NextButton } from "./ui-elements";
+
+const voiceConversationSchema = z.object({
+  voiceStyle: z.enum(["professional", "friendly", "concise"]),
+});
+
+type VoiceConversationValues = z.infer<typeof voiceConversationSchema>;
 
 interface VoiceConversationStepProps {
   companyId?: string | null;
@@ -18,23 +26,30 @@ export function VoiceConversationStep({
   onNext,
   footerAction,
 }: VoiceConversationStepProps) {
-  const [selectedVoice, setSelectedVoice] = useState<
-    "professional" | "friendly" | "concise"
-  >("professional");
+  const { updateCompany } = useCompanyMutations();
+  const isPending = updateCompany.isPending;
 
-  const { mutateAsync: updateVoice, isPending } = useUpdateVoice();
+  const { watch, setValue, handleSubmit } = useForm<VoiceConversationValues>({
+    resolver: zodResolver(voiceConversationSchema),
+    defaultValues: {
+      voiceStyle: "professional",
+    },
+  });
 
-  const handleSubmit = async () => {
+  const selectedVoice = watch("voiceStyle");
+
+  const onSubmit = async (data: VoiceConversationValues) => {
     try {
       if (!companyId) {
         alert("Missing company data. Please go back.");
         return;
       }
 
-      await updateVoice({
+      await updateCompany.mutateAsync({
         companyId,
+        section: "voice",
         payload: {
-          voice_style: selectedVoice,
+          voice_style: data.voiceStyle,
         },
       });
 
@@ -60,7 +75,7 @@ export function VoiceConversationStep({
           sampleText="Your request has been processed successfully."
           subText="I can connect you to support for further help."
           selected={selectedVoice === "professional"}
-          onSelect={setSelectedVoice}
+          onSelect={(val) => setValue("voiceStyle", val)}
         />
 
         {/* Friendly */}
@@ -71,7 +86,7 @@ export function VoiceConversationStep({
           sampleText="Got it, I can help with that."
           subText="Let's check what's happening."
           selected={selectedVoice === "friendly"}
-          onSelect={setSelectedVoice}
+          onSelect={(val) => setValue("voiceStyle", val)}
         />
 
         {/* Concise */}
@@ -82,7 +97,7 @@ export function VoiceConversationStep({
           sampleText="Payment failed. Card declined."
           subText="Transaction confirmed."
           selected={selectedVoice === "concise"}
-          onSelect={setSelectedVoice}
+          onSelect={(val) => setValue("voiceStyle", val)}
         />
       </div>
 
@@ -90,7 +105,7 @@ export function VoiceConversationStep({
         {footerAction ?? (
           <NextButton
             className="max-w-2xl px-12"
-            onClick={handleSubmit}
+            onClick={handleSubmit(onSubmit)}
             disabled={isPending}
           >
             {isPending ? (

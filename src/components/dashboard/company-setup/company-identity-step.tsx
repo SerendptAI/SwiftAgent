@@ -1,9 +1,20 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { useUpdateIdentity } from "@/hooks/use-company";
+import { useCompanyMutations } from "@/hooks/use-company";
 
 import { FormLabel, FormSelect, FormTextarea, NextButton } from "./ui-elements";
+
+const companyIdentitySchema = z.object({
+  description: z.string().optional(),
+  customer_value: z.string().optional(),
+  brand_tone: z.string().optional(),
+  primary_language: z.string().optional(),
+});
+
+type CompanyIdentityValues = z.infer<typeof companyIdentitySchema>;
 
 interface CompanyIdentityStepProps {
   companyId?: string | null;
@@ -16,29 +27,30 @@ export function CompanyIdentityStep({
   onNext,
   footerAction,
 }: CompanyIdentityStepProps) {
-  const { mutateAsync: updateIdentity, isPending } = useUpdateIdentity();
+  const { updateCompany } = useCompanyMutations();
+  const isPending = updateCompany.isPending;
 
-  const [formData, setFormData] = useState({
-    description: "",
-    customer_value: "",
-    brand_tone: "",
-    primary_language: "en",
+  const { register, handleSubmit } = useForm<CompanyIdentityValues>({
+    resolver: zodResolver(companyIdentitySchema),
+    defaultValues: {
+      description: "",
+      customer_value: "",
+      brand_tone: "",
+      primary_language: "en",
+    },
   });
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSubmit = async () => {
+  const onSubmit = async (data: CompanyIdentityValues) => {
     try {
       if (!companyId) {
         alert("Missing company data. Please go back.");
         return;
       }
 
-      await updateIdentity({
+      await updateCompany.mutateAsync({
         companyId,
-        payload: formData,
+        section: "identity",
+        payload: data,
       });
 
       onNext?.();
@@ -65,10 +77,7 @@ export function CompanyIdentityStep({
                   id="companyDescription"
                   className="min-h-[200px]"
                   placeholder="We empower businesses with cutting-edge AI solutions, driving efficiency and growth through intelligent automation."
-                  value={formData.description}
-                  onChange={(e) =>
-                    handleInputChange("description", e.target.value)
-                  }
+                  {...register("description")}
                 />
               </div>
 
@@ -81,10 +90,7 @@ export function CompanyIdentityStep({
                   id="customerValue"
                   className="min-h-[200px]"
                   placeholder="Main problem you solve for customers"
-                  value={formData.customer_value}
-                  onChange={(e) =>
-                    handleInputChange("customer_value", e.target.value)
-                  }
+                  {...register("customer_value")}
                 />
               </div>
             </div>
@@ -92,13 +98,7 @@ export function CompanyIdentityStep({
             <div className="grid gap-6 md:grid-cols-2">
               <div className="col-span-1">
                 <FormLabel htmlFor="brandTone">Brand tone</FormLabel>
-                <FormSelect
-                  id="brandTone"
-                  value={formData.brand_tone}
-                  onChange={(e) =>
-                    handleInputChange("brand_tone", e.target.value)
-                  }
-                >
+                <FormSelect id="brandTone" {...register("brand_tone")}>
                   <option value="" disabled>
                     Select a tone
                   </option>
@@ -115,10 +115,7 @@ export function CompanyIdentityStep({
                 </FormLabel>
                 <FormSelect
                   id="primaryLanguage"
-                  value={formData.primary_language}
-                  onChange={(e) =>
-                    handleInputChange("primary_language", e.target.value)
-                  }
+                  {...register("primary_language")}
                 >
                   <option value="" disabled>
                     Select Language
@@ -133,7 +130,10 @@ export function CompanyIdentityStep({
 
             <div className="mt-8">
               {footerAction ?? (
-                <NextButton onClick={handleSubmit} disabled={isPending}>
+                <NextButton
+                  onClick={handleSubmit(onSubmit)}
+                  disabled={isPending}
+                >
                   {isPending ? (
                     <span className="flex items-center justify-center gap-2">
                       <Loader2 className="h-4 w-4 animate-spin" />

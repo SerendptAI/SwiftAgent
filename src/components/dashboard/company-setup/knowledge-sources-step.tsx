@@ -1,11 +1,19 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 import { Icons } from "@/components/icons";
-import { useUpdateCompanyType } from "@/hooks/use-company";
+import { useCompanyMutations } from "@/hooks/use-company";
 import { cn } from "@/lib/utils";
 
 import { NextButton } from "./ui-elements";
+
+const knowledgeSourcesSchema = z.object({
+  companyType: z.enum(["saas", "crypto"]),
+});
+
+type KnowledgeSourcesValues = z.infer<typeof knowledgeSourcesSchema>;
 
 interface KnowledgeSourcesStepProps {
   companyId?: string | null;
@@ -18,20 +26,30 @@ export function KnowledgeSourcesStep({
   onNext,
   footerAction,
 }: KnowledgeSourcesStepProps) {
-  const [companyType, setCompanyType] = useState<"saas" | "crypto">("saas");
-  const { mutateAsync: updateType, isPending } = useUpdateCompanyType();
+  const { updateCompany } = useCompanyMutations();
+  const isPending = updateCompany.isPending;
 
-  const handleSubmit = async () => {
+  const { watch, setValue, handleSubmit } = useForm<KnowledgeSourcesValues>({
+    resolver: zodResolver(knowledgeSourcesSchema),
+    defaultValues: {
+      companyType: "saas",
+    },
+  });
+
+  const companyType = watch("companyType");
+
+  const onSubmit = async (data: KnowledgeSourcesValues) => {
     try {
       if (!companyId) {
         alert("Missing company data. Please go back.");
         return;
       }
 
-      await updateType({
+      await updateCompany.mutateAsync({
         companyId,
+        section: "type",
         payload: {
-          company_type: companyType === "saas" ? "saas_finance" : "crypto",
+          company_type: data.companyType === "saas" ? "saas_finance" : "crypto",
         },
       });
 
@@ -48,7 +66,7 @@ export function KnowledgeSourcesStep({
       <div className="mb-12 flex justify-center">
         <div className="relative flex items-center gap-8 rounded-2xl bg-gray-100 p-4 shadow-sm">
           <button
-            onClick={() => setCompanyType("saas")}
+            onClick={() => setValue("companyType", "saas")}
             className={cn(
               "relative z-10 flex h-10 items-center gap-2 rounded-xl px-2 text-sm font-bold uppercase transition-all duration-300",
               companyType === "saas"
@@ -60,7 +78,7 @@ export function KnowledgeSourcesStep({
             Saas/Finance
           </button>
           <button
-            onClick={() => setCompanyType("crypto")}
+            onClick={() => setValue("companyType", "crypto")}
             className={cn(
               "relative z-10 flex h-10 items-center gap-2 rounded-xl px-2 text-sm font-bold uppercase transition-all duration-300",
               companyType === "crypto"
@@ -125,7 +143,7 @@ export function KnowledgeSourcesStep({
       <div className="mt-12">
         {footerAction ??
           (companyType === "saas" ? (
-            <NextButton onClick={handleSubmit} disabled={isPending}>
+            <NextButton onClick={handleSubmit(onSubmit)} disabled={isPending}>
               {isPending ? (
                 <span className="flex items-center justify-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -138,7 +156,7 @@ export function KnowledgeSourcesStep({
           ) : (
             <div className="flex items-center gap-4">
               <button
-                onClick={handleSubmit}
+                onClick={handleSubmit(onSubmit)}
                 disabled={isPending}
                 className="w-full cursor-pointer rounded-xl bg-[#8DA4FF] py-4 text-center font-semibold text-white shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-blue-400 disabled:opacity-50"
               >
