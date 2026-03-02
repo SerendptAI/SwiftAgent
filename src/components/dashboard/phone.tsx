@@ -2,7 +2,12 @@
 
 import { Mic, MoreHorizontal, PhoneOff, Volume2 } from "lucide-react";
 
+import { useOnboardingStore } from "@/store/onboarding-store";
+
 export function Phone() {
+  const { typedCompanyName } = useOnboardingStore();
+  const displayName = typedCompanyName || "Unknown Company";
+
   return (
     <div className="relative mx-auto h-[90%] w-[360px] overflow-hidden rounded-[40px] border-8 border-gray-900 bg-white shadow-xl">
       {/* Main Content */}
@@ -14,8 +19,8 @@ export function Phone() {
         </div>
 
         <div className="mb-12 space-y-1 text-center">
-          <h3 className="text-lg font-semibold text-gray-900">
-            Unknown Company
+          <h3 className="text-lg font-semibold text-gray-900 transition-all duration-300">
+            {displayName}
           </h3>
           <p className="text-sm text-gray-400">Calling...</p>
         </div>

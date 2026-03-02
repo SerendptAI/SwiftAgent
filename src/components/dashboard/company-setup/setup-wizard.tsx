@@ -1,6 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import { useCompanyQuery } from "@/hooks/use-company";
+import { useOnboardingStore } from "@/store/onboarding-store";
 
 import { AnswerBoundariesStep } from "./answer-boundaries-step";
 import { CompanyIdentityStep } from "./company-identity-step";
@@ -22,7 +25,16 @@ import { CompletionStep } from "./completion-step";
 
 export function SetupWizard() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [companyId, setCompanyId] = useState<string | null>(null);
+  const { companyId, setCompanyId, setTypedCompanyName } = useOnboardingStore();
+
+  const { data: companyData } = useCompanyQuery(companyId);
+
+  // Sync the fetched company name back to the typed state if they revisit the page
+  useEffect(() => {
+    if (companyData?.name) {
+      setTypedCompanyName(companyData.name);
+    }
+  }, [companyData?.name, setTypedCompanyName]);
 
   const handleNext = () => {
     if (currentStep < STEPS.length) {

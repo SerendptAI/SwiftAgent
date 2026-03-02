@@ -7,6 +7,7 @@ import { z } from "zod";
 
 import { useCompanyMutations } from "@/hooks/use-company";
 import { cn } from "@/lib/utils";
+import { useOnboardingStore } from "@/store/onboarding-store";
 
 import { FormInput, FormLabel, FormSelect, NextButton } from "./ui-elements";
 
@@ -49,12 +50,16 @@ export function CompanyInfoStep({
   hideLogoUpload,
 }: CompanyInfoStepProps) {
   const { createCompany, uploadLogo } = useCompanyMutations();
+  const setTypedCompanyName = useOnboardingStore(
+    (state) => state.setTypedCompanyName,
+  );
   const isCreating = createCompany.isPending;
   const isUploading = uploadLogo.isPending;
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<CompanyInfoValues>({
     resolver: zodResolver(companyInfoSchema),
@@ -69,9 +74,17 @@ export function CompanyInfoStep({
       phone_number: "",
     },
   });
-  const [logoFile, setLogoFile] = useState<File | null>(null);
 
+  const typedName = watch("name");
+
+  // Sync the typed name to the global Zustand store in real-time
+  useEffect(() => {
+    setTypedCompanyName(typedName || "");
+  }, [typedName, setTypedCompanyName]);
+
+  const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+
   const [selectedCompany, setSelectedCompany] = useState<Company>(COMPANIES[1]); // Default to I-FITNESS
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);

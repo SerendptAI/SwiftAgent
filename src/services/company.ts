@@ -37,6 +37,13 @@ export const companyApi = {
     return data;
   },
 
+  get: async (companyId: string): Promise<Company> => {
+    const { data } = await apiClient.get<Company>(
+      `/api/v1/companies/${companyId}`,
+    );
+    return data;
+  },
+
   update: async (
     companyId: string,
     section: CompanyUpdateSection,

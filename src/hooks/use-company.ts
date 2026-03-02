@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import type { CompanyUpdateSection } from "@/services/company";
 import { companyApi } from "@/services/company";
@@ -24,4 +24,15 @@ export function useCompanyMutations() {
   });
 
   return { createCompany, updateCompany, uploadLogo };
+}
+
+export function useCompanyQuery(companyId: string | null | undefined) {
+  return useQuery({
+    queryKey: ["company", companyId],
+    queryFn: () => {
+      if (!companyId) throw new Error("No company ID provided");
+      return companyApi.get(companyId);
+    },
+    enabled: !!companyId,
+  });
 }
