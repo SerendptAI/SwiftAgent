@@ -1,17 +1,17 @@
 "use client";
 
 import { Invoice01Icon, Settings01Icon, Ticket02Icon } from "hugeicons-react";
-import { CreditCard, Inbox } from "lucide-react";
 import Image from "next/image";
 
 import { NavItem } from "@/components/dashboard/nav-item";
+import { Icons } from "@/components/icons";
 import { HugeiconsIcon } from "@/components/ui/hugeicons-icon";
 
 export function Sidebar() {
   const navItems = [
     {
       href: "/dashboard",
-      icon: (props: { className?: string }) => <Inbox {...props} />,
+      icon: (props: { className?: string }) => <Icons.Document {...props} />,
       label: "Dashboard",
     },
     {

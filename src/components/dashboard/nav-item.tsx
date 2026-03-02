@@ -33,12 +33,16 @@ export function NavItem({
         isActive ? "" : "text-muted-foreground hover:bg-muted",
       )}
       style={
-        isActive && activeColor
-          ? {
-              backgroundColor: `${activeColor}`,
-              boxShadow: `0 0 0 1.5px ${activeColor}40`,
-              color: "white",
-            }
+        isActive
+          ? activeColor
+            ? {
+                backgroundColor: `${activeColor}`,
+                boxShadow: `0 0 0 1.5px ${activeColor}40`,
+                color: "white",
+              }
+            : {
+                backgroundColor: "#EDEDED",
+              }
           : undefined
       }
       title={label}

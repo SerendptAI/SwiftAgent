@@ -11,7 +11,7 @@ export function ProgressBar({
   label,
 }: ProgressBarProps & { label?: string }) {
   return (
-    <div className="mb-6 flex items-center space-x-4">
+    <div className="font-dm-mono mb-6 flex items-center space-x-4">
       <div className="h-4 w-full max-w-[90px] rounded-full bg-gray-100">
         <div
           className={cn(

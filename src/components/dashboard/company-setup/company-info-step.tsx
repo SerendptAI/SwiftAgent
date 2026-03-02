@@ -1,7 +1,8 @@
-import { Check, ChevronDown, Pencil } from "lucide-react";
+import { Check, ChevronDown, Loader2, Pencil } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
+import { useCreateCompany, useUploadLogo } from "@/hooks/use-company";
 import { cn } from "@/lib/utils";
 
 import { FormInput, FormLabel, FormSelect, NextButton } from "./ui-elements";
@@ -20,20 +21,66 @@ const COMPANIES: Company[] = [
 
 interface CompanyInfoStepProps {
   onNext?: () => void;
+  setCompanyId?: (id: string) => void;
   footerAction?: React.ReactNode;
   hideLogoUpload?: boolean;
 }
 
 export function CompanyInfoStep({
   onNext,
+  setCompanyId,
   footerAction,
   hideLogoUpload,
 }: CompanyInfoStepProps) {
+  const { mutateAsync: createCompany, isPending: isCreating } =
+    useCreateCompany();
+  const { mutateAsync: uploadLogo, isPending: isUploading } = useUploadLogo();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    website: "",
+    industry: "",
+    company_size: "",
+    country: "",
+    timezone: "",
+    contact_email: "",
+    phone_number: "",
+  });
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [selectedCompany, setSelectedCompany] = useState<Company>(COMPANIES[1]); // Default to I-FITNESS
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      if (!formData.name || !formData.contact_email) {
+        alert("Please fill in required fields (Name, Email)");
+        return;
+      }
+
+      const company = await createCompany({
+        ...formData,
+      });
+
+      setCompanyId?.(company.id);
+
+      if (logoFile) {
+        await uploadLogo({ companyId: company.id, file: logoFile });
+      }
+
+      onNext?.();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to create company");
+    }
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -52,6 +99,7 @@ export function CompanyInfoStep({
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setLogoFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setLogoPreview(reader.result as string);
@@ -201,13 +249,13 @@ export function CompanyInfoStep({
                 <Pencil className="h-4 w-4 text-gray-900" />
               </button>
             </div>
-            <div className="flex flex-col justify-center pt-8">
+            <div className="font-dm-mono flex flex-col justify-center pt-8">
               <FormLabel>COMPANY LOGO</FormLabel>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="flex cursor-pointer items-center gap-2 rounded-lg bg-[#6433CC] px-6 py-2.5 text-sm font-medium text-white shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-purple-700"
+                className="flex cursor-pointer items-center gap-2 rounded-lg bg-[#6433CC] px-6 py-2.5 text-sm font-medium text-white font-stretch-50% shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-purple-700"
               >
-                Upload
+                UPLOAD
               </button>
             </div>
           </div>
@@ -217,17 +265,31 @@ export function CompanyInfoStep({
       <div className="font-stolzl grid gap-x-8 gap-y-4 md:grid-cols-2">
         <div className="col-span-1">
           <FormLabel htmlFor="companyName">Company Name</FormLabel>
-          <FormInput id="companyName" placeholder="Company Legal Name" />
+          <FormInput
+            id="companyName"
+            placeholder="Company Legal Name"
+            value={formData.name}
+            onChange={(e) => handleInputChange("name", e.target.value)}
+          />
         </div>
 
         <div className="col-span-1">
           <FormLabel htmlFor="website">Company Website</FormLabel>
-          <FormInput id="website" placeholder="https://site.com" />
+          <FormInput
+            id="website"
+            placeholder="https://site.com"
+            value={formData.website}
+            onChange={(e) => handleInputChange("website", e.target.value)}
+          />
         </div>
 
         <div className="col-span-1">
           <FormLabel htmlFor="industry">Industry</FormLabel>
-          <FormSelect id="industry" defaultValue="">
+          <FormSelect
+            id="industry"
+            value={formData.industry}
+            onChange={(e) => handleInputChange("industry", e.target.value)}
+          >
             <option value="" disabled>
               Select an industry
             </option>
@@ -240,7 +302,11 @@ export function CompanyInfoStep({
 
         <div className="col-span-1">
           <FormLabel htmlFor="size">Company Size</FormLabel>
-          <FormSelect id="size" defaultValue="">
+          <FormSelect
+            id="size"
+            value={formData.company_size}
+            onChange={(e) => handleInputChange("company_size", e.target.value)}
+          >
             <option value="" disabled>
               Select a company size
             </option>
@@ -253,7 +319,11 @@ export function CompanyInfoStep({
 
         <div className="col-span-1">
           <FormLabel htmlFor="country">Country of Operation</FormLabel>
-          <FormSelect id="country" defaultValue="">
+          <FormSelect
+            id="country"
+            value={formData.country}
+            onChange={(e) => handleInputChange("country", e.target.value)}
+          >
             <option value="" disabled>
               Select Country
             </option>
@@ -266,7 +336,11 @@ export function CompanyInfoStep({
 
         <div className="col-span-1">
           <FormLabel htmlFor="timezone">Timezone</FormLabel>
-          <FormSelect id="timezone" defaultValue="">
+          <FormSelect
+            id="timezone"
+            value={formData.timezone}
+            onChange={(e) => handleInputChange("timezone", e.target.value)}
+          >
             <option value="" disabled>
               Select Timezone
             </option>
@@ -279,17 +353,43 @@ export function CompanyInfoStep({
 
         <div className="col-span-1">
           <FormLabel htmlFor="email">Primary Contact Email</FormLabel>
-          <FormInput id="email" type="email" placeholder="Botonte@yahoo.com" />
+          <FormInput
+            id="email"
+            type="email"
+            placeholder="Botonte@yahoo.com"
+            value={formData.contact_email}
+            onChange={(e) => handleInputChange("contact_email", e.target.value)}
+          />
         </div>
 
         <div className="col-span-1">
           <FormLabel htmlFor="phone">Primary phone number</FormLabel>
-          <FormInput id="phone" type="tel" placeholder="+2349057004914" />
+          <FormInput
+            id="phone"
+            type="tel"
+            placeholder="+2349057004914"
+            value={formData.phone_number}
+            onChange={(e) => handleInputChange("phone_number", e.target.value)}
+          />
         </div>
       </div>
 
       <div className="mt-6">
-        {footerAction ?? <NextButton onClick={onNext} />}
+        {footerAction ?? (
+          <NextButton
+            onClick={handleSubmit}
+            disabled={isCreating || isUploading}
+          >
+            {isCreating || isUploading ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Saving...
+              </span>
+            ) : (
+              "Next"
+            )}
+          </NextButton>
+        )}
       </div>
     </div>
   );

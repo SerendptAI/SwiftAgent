@@ -1,22 +1,49 @@
+import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 
+import { useUpdateVoice } from "@/hooks/use-company";
 import { cn } from "@/lib/utils";
 
 import { NextButton } from "./ui-elements";
 
 interface VoiceConversationStepProps {
+  companyId?: string | null;
   onNext?: () => void;
   footerAction?: React.ReactNode;
 }
 
 export function VoiceConversationStep({
+  companyId,
   onNext,
   footerAction,
 }: VoiceConversationStepProps) {
   const [selectedVoice, setSelectedVoice] = useState<
     "professional" | "friendly" | "concise"
   >("professional");
+
+  const { mutateAsync: updateVoice, isPending } = useUpdateVoice();
+
+  const handleSubmit = async () => {
+    try {
+      if (!companyId) {
+        alert("Missing company data. Please go back.");
+        return;
+      }
+
+      await updateVoice({
+        companyId,
+        payload: {
+          voice_style: selectedVoice,
+        },
+      });
+
+      onNext?.();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to update voice style");
+    }
+  };
 
   return (
     <div className="mx-auto w-full max-w-4xl pb-4 text-center">
@@ -61,8 +88,19 @@ export function VoiceConversationStep({
 
       <div className="mt-12 flex justify-center">
         {footerAction ?? (
-          <NextButton className="max-w-2xl px-12" onClick={onNext}>
-            Finish
+          <NextButton
+            className="max-w-2xl px-12"
+            onClick={handleSubmit}
+            disabled={isPending}
+          >
+            {isPending ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Saving...
+              </span>
+            ) : (
+              "Finish"
+            )}
           </NextButton>
         )}
       </div>

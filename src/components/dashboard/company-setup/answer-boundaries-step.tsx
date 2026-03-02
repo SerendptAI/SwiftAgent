@@ -1,14 +1,18 @@
-import { Plus, X } from "lucide-react";
+import { Loader2, Plus, X } from "lucide-react";
 import { useState } from "react";
+
+import { useUpdateBoundaries } from "@/hooks/use-company";
 
 import { NextButton } from "./ui-elements";
 
 interface AnswerBoundariesStepProps {
+  companyId?: string | null;
   onNext?: () => void;
   footerAction?: React.ReactNode;
 }
 
 export function AnswerBoundariesStep({
+  companyId,
   onNext,
   footerAction,
 }: AnswerBoundariesStepProps) {
@@ -39,20 +43,6 @@ export function AnswerBoundariesStep({
     "INFO",
   ]);
 
-  const toggleTopic = (topic: string, isIgnored: boolean) => {
-    if (isIgnored) {
-      setIgnoredTopics((prev) =>
-        prev.filter((t, i) => i !== prev.indexOf(topic)),
-      ); // Remove distinct one if duplicates exist, or by index? Using index is safer for duplicates
-      setAvailableTopics((prev) => [...prev, topic]);
-    } else {
-      setAvailableTopics((prev) =>
-        prev.filter((t, i) => i !== prev.indexOf(topic)),
-      );
-      setIgnoredTopics((prev) => [...prev, topic]);
-    }
-  };
-
   // Handling removal by index to correctly handle duplicate names if any (screenshot shows many "INFO"s)
   const removeIgnored = (index: number) => {
     const topic = ignoredTopics[index];
@@ -64,6 +54,30 @@ export function AnswerBoundariesStep({
     const topic = availableTopics[index];
     setAvailableTopics((prev) => prev.filter((_, i) => i !== index));
     setIgnoredTopics((prev) => [...prev, topic]);
+  };
+
+  const { mutateAsync: updateBoundaries, isPending } = useUpdateBoundaries();
+
+  const handleSubmit = async () => {
+    try {
+      if (!companyId) {
+        alert("Missing company data. Please go back.");
+        return;
+      }
+
+      await updateBoundaries({
+        companyId,
+        payload: {
+          enabled_sources: availableTopics,
+          custom_info: ignoredTopics,
+        },
+      });
+
+      onNext?.();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to update boundaries");
+    }
   };
 
   return (
@@ -115,7 +129,18 @@ export function AnswerBoundariesStep({
       </div>
 
       <div className="mt-12">
-        {footerAction ?? <NextButton onClick={onNext} />}
+        {footerAction ?? (
+          <NextButton onClick={handleSubmit} disabled={isPending}>
+            {isPending ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Saving...
+              </span>
+            ) : (
+              "Next"
+            )}
+          </NextButton>
+        )}
       </div>
     </div>
   );

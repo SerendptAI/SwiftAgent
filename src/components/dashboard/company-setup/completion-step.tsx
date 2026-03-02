@@ -5,7 +5,7 @@ import { NextButton } from "./ui-elements";
 
 export function CompletionStep() {
   return (
-    <div className="flex h-4/5 w-full flex-col items-center justify-center text-center">
+    <div className="flex h-4/5 w-full flex-col items-center justify-center p-8 text-center">
       <div className="mb-8">
         <Image
           src="/images/complete.svg"

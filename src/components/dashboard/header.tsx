@@ -6,10 +6,10 @@ export function Header() {
   return (
     <header className="flex h-20 items-center justify-between gap-4 px-6 lg:h-[90px]">
       <div className="mt-6 flex w-[60%] items-center gap-6">
-        <div className="relative w-full">
+        <div className="font-dm-mono relative w-full">
           <input
             type="search"
-            placeholder="Search your dashboard"
+            placeholder="SEARCH YOUR DASHBOARD"
             className="focus:ring-primary/20 h-14 w-full rounded-full bg-[#EDEDED] px-4 pr-10 text-lg outline-none focus:ring-2"
           />
           {/* the search icon should be in the center vertically */}
@@ -17,7 +17,7 @@ export function Header() {
         </div>
         <div className="hover:bg-muted/80 flex h-14 items-center gap-2 rounded-full bg-[#EDEDED] px-1 py-1">
           <HelpCircle className="mr-2 h-12 w-12 rounded-full bg-white p-2" />
-          <span className="pr-2 text-lg font-medium whitespace-nowrap">
+          <span className="font-stolzl pr-2 text-lg font-medium whitespace-nowrap">
             How to use?
           </span>
         </div>

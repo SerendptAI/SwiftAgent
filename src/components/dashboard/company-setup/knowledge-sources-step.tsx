@@ -1,20 +1,46 @@
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
 import { Icons } from "@/components/icons";
+import { useUpdateCompanyType } from "@/hooks/use-company";
 import { cn } from "@/lib/utils";
 
 import { NextButton } from "./ui-elements";
 
 interface KnowledgeSourcesStepProps {
+  companyId?: string | null;
   onNext?: () => void;
   footerAction?: React.ReactNode;
 }
 
 export function KnowledgeSourcesStep({
+  companyId,
   onNext,
   footerAction,
 }: KnowledgeSourcesStepProps) {
   const [companyType, setCompanyType] = useState<"saas" | "crypto">("saas");
+  const { mutateAsync: updateType, isPending } = useUpdateCompanyType();
+
+  const handleSubmit = async () => {
+    try {
+      if (!companyId) {
+        alert("Missing company data. Please go back.");
+        return;
+      }
+
+      await updateType({
+        companyId,
+        payload: {
+          company_type: companyType === "saas" ? "saas_finance" : "crypto",
+        },
+      });
+
+      onNext?.();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to update company type");
+    }
+  };
 
   return (
     <div className="mx-auto w-full max-w-4xl pb-4">
@@ -99,14 +125,24 @@ export function KnowledgeSourcesStep({
       <div className="mt-12">
         {footerAction ??
           (companyType === "saas" ? (
-            <NextButton onClick={onNext} />
+            <NextButton onClick={handleSubmit} disabled={isPending}>
+              {isPending ? (
+                <span className="flex items-center justify-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Saving...
+                </span>
+              ) : (
+                "Next"
+              )}
+            </NextButton>
           ) : (
             <div className="flex items-center gap-4">
               <button
-                onClick={onNext}
-                className="w-full cursor-pointer rounded-xl bg-[#8DA4FF] py-4 text-center font-semibold text-white shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-blue-400"
+                onClick={handleSubmit}
+                disabled={isPending}
+                className="w-full cursor-pointer rounded-xl bg-[#8DA4FF] py-4 text-center font-semibold text-white shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-blue-400 disabled:opacity-50"
               >
-                Next
+                {isPending ? "Saving..." : "Next"}
               </button>
               <button
                 onClick={onNext}
