@@ -11,13 +11,19 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { data: user, isLoading, isError } = useCurrentUser();
 
-  useEffect(() => {
-    if (isLoading) return;
+  // Compute redirect target synchronously during render
+  const redirectTo = (() => {
+    if (isLoading) return null;
+    if (isError || !user) return "/en/login";
+    if (!user.onboarding_completed && pathname.includes("/dashboard"))
+      return "/en/onboarding";
+    return null;
+  })();
 
-    if (isError || !user) {
-      router.replace("/en/login");
-    }
-  }, [user, isLoading, isError, pathname, router]);
+  // Only side-effect: perform the navigation
+  useEffect(() => {
+    if (redirectTo) router.replace(redirectTo);
+  }, [redirectTo, router]);
 
   if (isLoading) {
     return (
@@ -27,9 +33,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (isError || !user) {
-    return null;
-  }
+  // Block rendering while redirecting
+  if (redirectTo) return null;
 
   return <>{children}</>;
 }
