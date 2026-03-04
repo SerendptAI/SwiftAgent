@@ -1,7 +1,8 @@
 "use client";
-import { ArrowDown, ArrowUp, Info, TrendingDown } from "lucide-react";
+import { ArrowDown, ArrowUp, Info, TrendingDown, TrendingUp } from "lucide-react";
 
 import { Icons } from "@/components/icons";
+import { useDashboardStats } from "@/hooks/use-dashboard";
 import { cn } from "@/lib/utils";
 
 interface StatCardProps {
@@ -10,7 +11,8 @@ interface StatCardProps {
   value: string | number;
   trend?: {
     value: number;
-    isUp: boolean;
+    last7DaysUp: number;
+    last7DaysDown: number;
   };
   pending?: boolean;
   action?: {
@@ -21,6 +23,7 @@ interface StatCardProps {
   iconColor?: string;
   showTrendLine?: boolean;
   hideTrendIndicator?: boolean;
+  isLoading?: boolean;
 }
 
 function StatCard({
@@ -34,7 +37,11 @@ function StatCard({
   iconColor,
   showTrendLine,
   hideTrendIndicator,
+  isLoading,
 }: StatCardProps) {
+  const percentChange = trend?.value || 0;
+  const isUp = percentChange >= 0;
+
   return (
     <div
       className={cn(
@@ -62,7 +69,7 @@ function StatCard({
 
           <div className="flex items-end justify-between gap-3">
             <span className="text-5xl font-bold tracking-tight text-gray-900">
-              {value}
+              {isLoading ? "-" : value}
             </span>
             {pending && (
               <span className="mb-2 text-lg font-medium text-gray-400">
@@ -70,11 +77,20 @@ function StatCard({
               </span>
             )}
 
-            {trend && !showTrendLine && !hideTrendIndicator && (
+            {trend && !showTrendLine && !hideTrendIndicator && !isLoading && (
               <div className="mb-2 flex flex-col items-center justify-center">
-                <TrendingDown className="text-[#F25430]" />
-                <span className="font-semi-bold text-lg text-[#F25430]">
-                  0.0%
+                {isUp ? (
+                  <TrendingUp className="text-[#008751]" />
+                ) : (
+                  <TrendingDown className="text-[#F25430]" />
+                )}
+                <span
+                  className={cn(
+                    "font-semi-bold text-lg",
+                    isUp ? "text-[#008751]" : "text-[#F25430]",
+                  )}
+                >
+                  {Math.abs(percentChange).toFixed(1)}%
                 </span>
               </div>
             )}
@@ -83,16 +99,16 @@ function StatCard({
       </div>
 
       {/* Last 7 days trend footer - only for non-action cards with trends */}
-      {trend && !action && (
+      {trend && !action && !isLoading && (
         <div className="flex items-end justify-between">
           <div className="flex w-full items-center justify-between gap-4 text-sm font-medium">
             <span className="text-gray-900">Last 7 days</span>
             <div className="flex items-center gap-2">
               <span className="flex items-center text-[#008751]">
-                <ArrowUp className="h-4 w-4" /> 1
+                <ArrowUp className="h-4 w-4" /> {trend.last7DaysUp}
               </span>
               <span className="flex items-center text-[#F25430]">
-                <ArrowDown className="h-4 w-4" /> 1
+                <ArrowDown className="h-4 w-4" /> {trend.last7DaysDown}
               </span>
             </div>
           </div>
@@ -102,7 +118,8 @@ function StatCard({
       {action && (
         <button
           onClick={action.onClick}
-          className="mt-2 w-full rounded-xl bg-[#6433CC] py-4 text-base font-bold text-white shadow-[-4px_4px_0px_0px_#000000] transition-transform hover:bg-[#d94526] active:translate-y-1 active:shadow-none"
+          disabled={isLoading}
+          className="mt-2 w-full rounded-xl bg-[#6433CC] py-4 text-base font-bold text-white shadow-[-4px_4px_0px_0px_#000000] transition-transform hover:bg-[#d94526] active:translate-y-1 active:shadow-none disabled:opacity-50"
         >
           {action.label}
         </button>
@@ -112,53 +129,71 @@ function StatCard({
 }
 
 export function StatsCards() {
+  const { data: stats, isLoading } = useDashboardStats();
+
   return (
     <>
-      {/* Visitors */}
       <StatCard
         title="VISITORS"
         icon={Icons.visitors}
-        value="100"
-        trend={{ value: 0.0, isUp: false }}
+        value={stats?.visitors.today || 0}
+        trend={{
+          value: stats?.visitors.percent_change || 0,
+          last7DaysUp: stats?.visitors.last_7_days_up || 0,
+          last7DaysDown: stats?.visitors.last_7_days_down || 0,
+        }}
         iconColor="text-[#F25430]"
+        isLoading={isLoading}
       />
 
-      {/* Chats */}
       <StatCard
         title="CHATS"
         icon={Icons.chats}
-        value="100"
+        value={stats?.chats.answered || 0}
         pending={true}
-        action={{ label: "Respond", onClick: () => {} }}
+        action={{ label: "Respond", onClick: () => { } }}
         iconColor="text-[#6433CC]"
+        isLoading={isLoading}
       />
 
-      {/* Calls */}
       <StatCard
         title="CALLS"
         icon={Icons.calls}
-        value="100"
-        trend={{ value: 0.0, isUp: false }}
+        value={stats?.calls.today || 0}
+        trend={{
+          value: stats?.calls.percent_change || 0,
+          last7DaysUp: stats?.calls.last_7_days_up || 0,
+          last7DaysDown: stats?.calls.last_7_days_down || 0,
+        }}
         iconColor="text-[#F2B035]"
+        isLoading={isLoading}
       />
 
-      {/* Documents */}
       <StatCard
         title="DOCUMENTS"
         icon={Icons.documents}
-        value="3"
-        trend={{ value: 0.0, isUp: true }}
+        value={stats?.documents.today || 0}
+        trend={{
+          value: stats?.documents.percent_change || 0,
+          last7DaysUp: stats?.documents.last_7_days_up || 0,
+          last7DaysDown: stats?.documents.last_7_days_down || 0,
+        }}
         hideTrendIndicator
         iconColor="text-[#7F9FFF]"
+        isLoading={isLoading}
       />
 
-      {/* Scrapes */}
       <StatCard
         title="SCRAPES"
         icon={Icons.scrapes}
-        value="100"
-        trend={{ value: 0.0, isUp: false }}
+        value={stats?.scrapes.today || 0}
+        trend={{
+          value: stats?.scrapes.percent_change || 0,
+          last7DaysUp: stats?.scrapes.last_7_days_up || 0,
+          last7DaysDown: stats?.scrapes.last_7_days_down || 0,
+        }}
         iconColor="text-[#F25430]"
+        isLoading={isLoading}
       />
     </>
   );

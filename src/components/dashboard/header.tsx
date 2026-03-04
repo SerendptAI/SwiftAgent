@@ -13,9 +13,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useCurrentUser, useLogout } from "@/hooks/use-auth";
 
 import { Icons } from "../icons";
-import { useCurrentUser, useLogout } from "@/hooks/use-auth";
 
 export function Header() {
   const { data: user } = useCurrentUser();

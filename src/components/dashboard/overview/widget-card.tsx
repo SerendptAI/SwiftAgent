@@ -3,13 +3,19 @@
 import { ChevronDown, Copy } from "lucide-react";
 import { useState } from "react";
 
+import { Loader } from "@/components/loader";
+import { useDashboardWidget } from "@/hooks/use-dashboard";
+
 export function WidgetCard() {
   const [isOpen, setIsOpen] = useState(true);
+  const { data: widgetData, isLoading } = useDashboardWidget();
 
-  const codeSnippet = `<script src="https://swiftagents.org/chat-widget.js"></script> <div id="chat-widget"></div> <style>#chat-widget { position: fixed; bottom: 20px; right: 20px; width: 300px; height: 400px; border: 1px solid #ccc; background-color: #fff; z-index: 1000; }</style>`;
+  const codeSnippet = widgetData?.embed_code || "";
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(codeSnippet);
+    if (codeSnippet) {
+      navigator.clipboard.writeText(codeSnippet);
+    }
   };
 
   return (
@@ -32,24 +38,27 @@ export function WidgetCard() {
             </div>
 
             <div className="rounded-md border border-gray-100 bg-white px-5 pt-16 pb-5 shadow-sm">
-              <p className="font-stolzl text-[15px] leading-relaxed text-gray-500">
-                &lt;script
-                src=&quot;https://swiftagents.org/chat-widget.js&quot;&gt;&lt;/script&gt;
-                &lt;div id=&quot;chat-widget&quot;&gt;&lt;/div&gt;
-                &lt;style&gt;#chat-widget &#123; position: fixed; bottom: 20px;
-                right: 20px; width: 300px; height: 400px; border: 1px solid
-                #ccc; background-color: #fff; z-index: 1000;
-                &#125;&lt;/style&gt;
-              </p>
+              {isLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader />
+                </div>
+              ) : (
+                <>
+                  <p className="font-stolzl text-[15px] leading-relaxed text-gray-500 break-all">
+                    {codeSnippet ? codeSnippet : "No widget code found."}
+                  </p>
 
-              {/* Copy button */}
-              <button
-                onClick={handleCopy}
-                className="mt-6 flex w-full items-center justify-center gap-2.5 rounded-xl bg-[#006BE5] py-4 text-base font-bold text-white shadow-[-4px_4px_0px_0px_#000000] transition-all hover:bg-[#1E88E5] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-2px_2px_0px_0px_#000000]"
-              >
-                <Copy className="h-5 w-5" />
-                Copy
-              </button>
+                  {/* Copy button */}
+                  <button
+                    onClick={handleCopy}
+                    disabled={!codeSnippet}
+                    className="mt-6 flex w-full items-center justify-center gap-2.5 rounded-xl bg-[#006BE5] py-4 text-base font-bold text-white shadow-[-4px_4px_0px_0px_#000000] transition-all hover:bg-[#1E88E5] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-2px_2px_0px_0px_#000000] disabled:opacity-50"
+                  >
+                    <Copy className="h-5 w-5" />
+                    Copy
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
