@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { Loader } from "@/components/loader";
 import { useCurrentUser } from "@/hooks/use-auth";
@@ -10,6 +10,11 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const { data: user, isLoading, isError } = useCurrentUser();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Compute redirect target synchronously during render
   const redirectTo = (() => {
@@ -22,10 +27,10 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
   // Only side-effect: perform the navigation
   useEffect(() => {
-    if (redirectTo) router.replace(redirectTo);
-  }, [redirectTo, router]);
+    if (isMounted && redirectTo) router.replace(redirectTo);
+  }, [redirectTo, router, isMounted]);
 
-  if (isLoading) {
+  if (!isMounted || isLoading) {
     return (
       <div className="flex h-screen w-screen items-center justify-center">
         <Loader />

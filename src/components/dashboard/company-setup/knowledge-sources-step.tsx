@@ -204,6 +204,7 @@ function UploadSection({
 }: UploadSectionProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
   const { mutateAsync: uploadKnowledge, isPending } = useUploadKnowledge();
 
   const handleUploadClick = () => {
@@ -221,13 +222,11 @@ function UploadSection({
     try {
       await uploadKnowledge({ companyId, category, file });
       setIsSuccess(true);
+      setUploadedFileName(file.name);
       // Reset input to allow selecting the same file again if needed
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
-
-      // Reset success state after 3 seconds
-      setTimeout(() => setIsSuccess(false), 3000);
     } catch (error) {
       console.error(error);
       alert(`Failed to upload ${file.name}`);
@@ -245,7 +244,14 @@ function UploadSection({
         <div className="flex h-8 w-8">
           <Icons.companyupload className="h-8 w-8" />
         </div>
-        <span className="text-lg font-medium">{label}</span>
+        <div className="flex flex-col">
+          <span className="text-lg font-medium">{label}</span>
+          {uploadedFileName && (
+            <span className="text-sm text-white/80 max-w-[200px] truncate">
+              {uploadedFileName}
+            </span>
+          )}
+        </div>
       </div>
       <button
         onClick={handleUploadClick}
