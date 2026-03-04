@@ -1,81 +1,55 @@
+import { format } from "date-fns";
 import { useEffect, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
+import { Loader } from "@/components/loader";
+import { useConversation } from "@/hooks/use-conversations";
 import { cn } from "@/lib/utils";
 
-import { TICKETS } from "./ticket-list";
-
-interface Message {
+interface LocalMessage {
   id: string;
   type: "agent" | "user" | "system";
   content: string;
   time?: string;
 }
 
-const INITIAL_MESSAGES: Record<string, Message[]> = {
-  "1": [
-    {
-      id: "1",
-      type: "agent",
-      content: "Hey there! 👋 How can I help you?",
-      time: "Wed 8:21 AM",
-    },
-    {
-      id: "2",
-      type: "user",
-      content: "I'd like to schedule a gym appointment",
-    },
-    {
-      id: "3",
-      type: "agent",
-      content:
-        "Great, can we get your email so we email the options available to you?",
-    },
-    {
-      id: "4",
-      type: "user",
-      content: "dab@serendptai.com",
-    },
-    {
-      id: "5",
-      type: "agent",
-      content: "We'll email you the options available to...",
-    },
-  ],
-  "2": [
-    {
-      id: "1",
-      type: "agent",
-      content: "Hello! Looking for something specific?",
-      time: "Wed 4:11 PM",
-    },
-  ],
-  "3": [
-    {
-      id: "1",
-      type: "agent",
-      content: "Hi there, how can I assist you today?",
-      time: "Wed 4:10 PM",
-    },
-  ],
-};
-
 interface ChatViewProps {
   ticketId: string;
 }
 
 export function ChatView({ ticketId }: ChatViewProps) {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const { data: conversation, isLoading } = useConversation(ticketId);
+
+  const [messages, setMessages] = useState<LocalMessage[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const selectedTicket = TICKETS.find((t) => t.id === ticketId);
-
+  // Sync API messages to local state so we can append UI optimistic messages
   useEffect(() => {
-    // Load initial messages for the selected ticket
-    setMessages(INITIAL_MESSAGES[ticketId] || []);
-  }, [ticketId]);
+    if (conversation?.messages) {
+      const formattedMessages: LocalMessage[] = conversation.messages.map((msg, i) => {
+        let displayTime = "";
+        try {
+          if (msg.timestamp) {
+            displayTime = format(new Date(msg.timestamp), "EEE h:mm a");
+          }
+        } catch {
+          // ignore parsing error
+        }
+
+        return {
+          id: `${conversation.id}-${i}`,
+          type: (msg.role as "agent" | "user" | "system") || "user",
+          content: msg.content,
+          time: displayTime,
+        };
+      });
+      setMessages(formattedMessages);
+    } else {
+      setMessages([]);
+    }
+  }, [conversation]);
 
   useEffect(() => {
     // Scroll to bottom on new messages
@@ -86,16 +60,13 @@ export function ChatView({ ticketId }: ChatViewProps) {
     if (!inputValue.trim() || isSending) return;
 
     setIsSending(true);
-    // Simulate network delay
+    // Simulate network delay for replying since we only have a create endpoint
     setTimeout(() => {
-      const newMessage: Message = {
+      const newMessage: LocalMessage = {
         id: Date.now().toString(),
         type: "agent",
         content: inputValue,
-        time: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
+        time: format(new Date(), "h:mm a"),
       };
 
       setMessages((prev) => [...prev, newMessage]);
@@ -110,6 +81,22 @@ export function ChatView({ ticketId }: ChatViewProps) {
       handleSend();
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full flex-col items-center justify-center rounded-3xl bg-white shadow-sm">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (!conversation && !isLoading) {
+    return (
+      <div className="flex h-full flex-col items-center justify-center rounded-3xl bg-white shadow-sm text-gray-500">
+        Select a conversation to view messages.
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full flex-col rounded-3xl bg-white shadow-sm">
@@ -134,7 +121,7 @@ export function ChatView({ ticketId }: ChatViewProps) {
           </svg>
         </div>
         <span className="font-dm-mono text-sm font-bold text-gray-900">
-          {selectedTicket?.visitorId || "Unknown Visitor"}
+          {conversation?.user_id || "Unknown Visitor"}
         </span>
       </div>
 
@@ -177,9 +164,7 @@ export function ChatView({ ticketId }: ChatViewProps) {
               Send gym appointment option to
             </span>
             <span className="rounded-lg bg-[#F0F7FF] px-3 py-1.5 text-sm font-medium text-[#006BE5]">
-              {selectedTicket?.visitorId === "V1GSHST-TAR6282"
-                ? "dab@serendptai.com"
-                : "visitor@example.com"}
+              {conversation?.user_id || "visitor@example.com"}
             </span>
             <input
               type="text"
@@ -192,22 +177,13 @@ export function ChatView({ ticketId }: ChatViewProps) {
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Status Indicator */}
-            <div className="flex items-center gap-2 rounded-lg bg-[#F5F5F5] px-3 py-1.5 text-sm font-medium text-gray-500">
-              <div className="relative flex h-5 w-5 items-center justify-center">
-                <div className="absolute h-full w-full rounded-full border-2 border-[#F25430]" />
-                <div className="absolute h-full w-full rounded-full border-2 border-transparent border-t-white" />
-              </div>
-              Gym appointment details found
-            </div>
-
             {/* Send Button */}
             <button
               onClick={handleSend}
-              disabled={isSending}
+              disabled={isSending || !conversation}
               className={cn(
                 "flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold text-white transition-all active:scale-95",
-                isSending
+                isSending || !conversation
                   ? "bg-[#006BE5]/70"
                   : "bg-[#006BE5] hover:bg-[#005bb8]",
               )}
