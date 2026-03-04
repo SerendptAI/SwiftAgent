@@ -1,4 +1,6 @@
-import { apiClient } from "@/lib/api-client";
+import axios from "axios";
+
+import { getAccessToken } from "@/lib/api-client";
 
 export interface KnowledgeDocument {
   id: string;
@@ -20,12 +22,14 @@ export const knowledgeApi = {
     formData.append("category", category);
     formData.append("file", file);
 
-    const { data } = await apiClient.post<KnowledgeDocument>(
-      "/api/v1/knowledge/upload",
+    const token = getAccessToken();
+
+    const { data } = await axios.post<KnowledgeDocument>(
+      "/api/knowledge/upload",
       formData,
       {
         headers: {
-          "Content-Type": "multipart/form-data",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       },
     );
