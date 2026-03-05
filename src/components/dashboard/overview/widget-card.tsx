@@ -5,10 +5,15 @@ import { useState } from "react";
 
 import { Loader } from "@/components/loader";
 import { useDashboardWidget } from "@/hooks/use-dashboard";
+import { DashboardWidget } from "@/services/dashboard";
 
-export function WidgetCard() {
+export function WidgetCard({
+  initialData,
+}: {
+  initialData?: DashboardWidget | null;
+}) {
   const [isOpen, setIsOpen] = useState(true);
-  const { data: widgetData, isLoading } = useDashboardWidget();
+  const { data: widgetData, isLoading } = useDashboardWidget(initialData);
 
   const codeSnippet = widgetData?.embed_code || "";
 
@@ -44,7 +49,7 @@ export function WidgetCard() {
                 </div>
               ) : (
                 <>
-                  <p className="font-stolzl text-[15px] leading-relaxed text-gray-500 break-all">
+                  <p className="font-stolzl text-[15px] leading-relaxed break-all text-gray-500">
                     {codeSnippet ? codeSnippet : "No widget code found."}
                   </p>
 

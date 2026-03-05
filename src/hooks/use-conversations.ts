@@ -4,11 +4,13 @@ import {
   conversationsApi,
   CreateConversationPayload,
 } from "@/services/conversations";
+import { Conversation } from "@/services/conversations";
 
-export function useConversations() {
+export function useConversations(initialData?: Conversation[]) {
   return useQuery({
     queryKey: ["conversations"],
     queryFn: conversationsApi.list,
+    initialData: initialData,
   });
 }
 

@@ -2,6 +2,7 @@
 
 import { Loader } from "@/components/loader";
 import { useDashboardVisitors } from "@/hooks/use-dashboard";
+import { DashboardVisitor } from "@/services/dashboard";
 
 function formatDuration(seconds: number): string {
   if (!seconds) return "00:00";
@@ -16,7 +17,7 @@ function formatDate(isoString: string): string {
   return date.toLocaleDateString("en-US", {
     month: "numeric",
     day: "numeric",
-    year: "numeric"
+    year: "numeric",
   });
 }
 
@@ -34,14 +35,18 @@ function CountryFlag({ code }: { code: string }) {
 
   // Generic fallback flag
   return (
-    <div className="flex h-5 w-7 shrink-0 items-center justify-center rounded-sm bg-gray-100 shadow-sm text-[10px] font-bold uppercase text-gray-500">
+    <div className="flex h-5 w-7 shrink-0 items-center justify-center rounded-sm bg-gray-100 text-[10px] font-bold text-gray-500 uppercase shadow-sm">
       {code}
     </div>
   );
 }
 
-export function VisitorsList() {
-  const { data: visitors, isLoading } = useDashboardVisitors();
+export function VisitorsList({
+  initialData,
+}: {
+  initialData?: DashboardVisitor[];
+}) {
+  const { data: visitors, isLoading } = useDashboardVisitors(20, initialData);
 
   return (
     <div className="rounded-3xl bg-white p-6 shadow-sm">

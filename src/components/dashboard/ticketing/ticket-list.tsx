@@ -6,18 +6,21 @@ import { useState } from "react";
 import { Loader } from "@/components/loader";
 import { useConversations } from "@/hooks/use-conversations";
 import { cn } from "@/lib/utils";
+import { Conversation } from "@/services/conversations";
 
 interface TicketListProps {
   selectedTicketId: string;
   onSelectTicket: (id: string) => void;
+  initialData?: Conversation[];
 }
 
 export function TicketList({
   selectedTicketId,
   onSelectTicket,
+  initialData,
 }: TicketListProps) {
   const [activeTab, setActiveTab] = useState<"pending" | "resolved">("pending");
-  const { data: conversations, isLoading } = useConversations();
+  const { data: conversations, isLoading } = useConversations(initialData);
 
   return (
     <div className="flex h-full flex-col">
@@ -112,14 +115,19 @@ export function TicketList({
                 ? ticket.messages[ticket.messages.length - 1]
                 : null;
 
-            const preview = lastMessage ? lastMessage.content : "No messages yet";
+            const preview = lastMessage
+              ? lastMessage.content
+              : "No messages yet";
 
             // Try to extract a timestamp from the last message or fallback to updated_at
             const timeString = lastMessage?.timestamp || ticket.updated_at;
             let displayTime = "";
             if (timeString) {
               try {
-                displayTime = format(new Date(timeString), "h:mma").toLowerCase();
+                displayTime = format(
+                  new Date(timeString),
+                  "h:mma",
+                ).toLowerCase();
               } catch {
                 displayTime = "";
               }

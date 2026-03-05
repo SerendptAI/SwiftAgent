@@ -1,9 +1,16 @@
 "use client";
-import { ArrowDown, ArrowUp, Info, TrendingDown, TrendingUp } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  Info,
+  TrendingDown,
+  TrendingUp,
+} from "lucide-react";
 
 import { Icons } from "@/components/icons";
 import { useDashboardStats } from "@/hooks/use-dashboard";
 import { cn } from "@/lib/utils";
+import { DashboardStats } from "@/services/dashboard";
 
 interface StatCardProps {
   title: string;
@@ -128,8 +135,12 @@ function StatCard({
   );
 }
 
-export function StatsCards() {
-  const { data: stats, isLoading } = useDashboardStats();
+export function StatsCards({
+  initialData,
+}: {
+  initialData?: DashboardStats | null;
+}) {
+  const { data: stats, isLoading } = useDashboardStats(initialData);
 
   return (
     <>
@@ -151,7 +162,7 @@ export function StatsCards() {
         icon={Icons.chats}
         value={stats?.chats.answered || 0}
         pending={true}
-        action={{ label: "Respond", onClick: () => { } }}
+        action={{ label: "Respond", onClick: () => {} }}
         iconColor="text-[#6433CC]"
         isLoading={isLoading}
       />
