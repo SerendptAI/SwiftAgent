@@ -8,7 +8,7 @@ import {
   PhoneOff,
   Volume2,
 } from "lucide-react";
-import { use, useCallback, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useMemo, useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { useVoiceChat } from "@/hooks/use-voice-chat";
@@ -21,8 +21,18 @@ export default function WidgetPage({
   params: Promise<{ companyId: string }>;
 }) {
   const unwrappedParams = use(params);
-  const companyId = unwrappedParams.companyId;
+  const companyId = useMemo(
+    () => unwrappedParams.companyId,
+    [unwrappedParams.companyId],
+  );
+
+  console.count("WidgetPage Render Count");
   console.log("WidgetPage rendering for companyId:", companyId);
+
+  useEffect(() => {
+    console.log("WidgetPage MOUNTED");
+    return () => console.log("WidgetPage UNMOUNTED");
+  }, []);
 
   const [elapsedTime, setElapsedTime] = useState(0);
   const [statusText, setStatusText] = useState("Initializing...");
@@ -84,27 +94,30 @@ export default function WidgetPage({
   useEffect(() => {
     if (!window.parent) return;
 
-    if (callStatus === "ongoing") {
-      window.parent.postMessage(
-        {
-          type: "SWIFT_AGENT_WIDGET_RESIZE",
-          width: "100vw",
-          height: "100vh",
-          pointerEvents: "auto",
-        },
-        "*",
-      );
-    } else {
-      window.parent.postMessage(
-        {
-          type: "SWIFT_AGENT_WIDGET_RESIZE",
-          width: "100vw",
-          height: "72px",
-          pointerEvents: "auto", // Ensure the button is clickable
-        },
-        "*",
-      );
-    }
+    console.log("Checking resize necessity for status:", callStatus);
+    /* Temporarily disabled to debug render loop
+        if (callStatus === "ongoing") {
+          window.parent.postMessage(
+            {
+              type: "SWIFT_AGENT_WIDGET_RESIZE",
+              width: "100vw",
+              height: "100vh",
+              pointerEvents: "auto",
+            },
+            "*",
+          );
+        } else {
+          window.parent.postMessage(
+            {
+              type: "SWIFT_AGENT_WIDGET_RESIZE",
+              width: "100vw",
+              height: "72px",
+              pointerEvents: "auto", // Ensure the button is clickable
+            },
+            "*",
+          );
+        }
+        */
   }, [callStatus]);
 
   return (

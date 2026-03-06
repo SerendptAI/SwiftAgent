@@ -20,6 +20,11 @@ export function useVoiceChat({
   const [isActive, setIsActive] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
 
+  useEffect(() => {
+    console.log("useVoiceChat hook MOUNTED");
+    return () => console.log("useVoiceChat hook UNMOUNTED");
+  }, []);
+
   const socketRef = useRef<WebSocket | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -89,14 +94,29 @@ export function useVoiceChat({
 
       // Using the endpoint provided by the user
       // Forced wss:// because the external API requires it regardless of local protocol
-      const wsUrl = `wss://api.swiftagents.org/api/v1/voice/${companyId}/call`;
-      console.log("Connecting to WebSocket:", wsUrl);
-      const socket = new WebSocket(wsUrl);
+      const wssUrl = `wss://api.swiftagents.org/api/v1/voice/${companyId}/call`;
+      const wsUrl = `ws://api.swiftagents.org/api/v1/voice/${companyId}/call`;
+
+      console.log("Attempting WebSocket connection (preferring WSS)...");
+
+      let socket: WebSocket;
+      try {
+        console.log("Connecting to WSS:", wssUrl);
+        socket = new WebSocket(wssUrl);
+      } catch (e) {
+        console.warn(
+          "WSS Constructor failed instantly, falling back to WS:",
+          e,
+        );
+        socket = new WebSocket(wsUrl);
+      }
+
       socketRef.current = socket;
 
       console.log(
-        "WebSocket instance created, current state:",
+        "WebSocket instance created, state:",
         socket.readyState,
+        "(0=CONNECTING, 1=OPEN, 2=CLOSING, 3=CLOSED)",
       );
 
       socket.onopen = () => {
