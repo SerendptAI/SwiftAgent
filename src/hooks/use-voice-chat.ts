@@ -85,10 +85,9 @@ export function useVoiceChat({
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       setIsActive(true);
 
-      // Initialize WebSocket
-      const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
       // Using the endpoint provided by the user
-      const wsUrl = `${protocol}//api.swiftagents.org/api/v1/voice/${companyId}/call`;
+      // Forced wss:// because the external API requires it regardless of local protocol
+      const wsUrl = `wss://api.swiftagents.org/api/v1/voice/${companyId}/call`;
       const socket = new WebSocket(wsUrl);
       socketRef.current = socket;
 
