@@ -86,10 +86,9 @@ export function useVoiceChat({
       setIsActive(true);
 
       // Initialize WebSocket
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
       // Using the endpoint provided by the user
-      const wsUrl = `ws://api.swiftagents.org/api/v1/voice/${companyId}/call`;
+      const wsUrl = `${protocol}//api.swiftagents.org/api/v1/voice/${companyId}/call`;
       const socket = new WebSocket(wsUrl);
       socketRef.current = socket;
 
