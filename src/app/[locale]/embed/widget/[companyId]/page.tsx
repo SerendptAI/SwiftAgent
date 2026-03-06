@@ -8,7 +8,7 @@ import {
   PhoneOff,
   Volume2,
 } from "lucide-react";
-import { use, useCallback, useEffect, useMemo, useState } from "react";
+import { use, useCallback, useEffect, useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { useVoiceChat } from "@/hooks/use-voice-chat";
