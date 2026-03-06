@@ -1,0 +1,79 @@
+(function () {
+    // Prevent multiple injections if the script is accidentally loaded twice or live-reloaded
+    if (window.__SWIFT_AGENT_WIDGET_LOADED__) return;
+    window.__SWIFT_AGENT_WIDGET_LOADED__ = true;
+
+    // 1. Find the script tag that loaded this script to extract the company ID
+    const scripts = document.getElementsByTagName('script');
+    let currentScript = null;
+    let companyId = null;
+
+    for (let i = 0; i < scripts.length; i++) {
+        if (scripts[i].src && scripts[i].src.includes('widget.js')) {
+            currentScript = scripts[i];
+            companyId = currentScript.getAttribute('data-company-id');
+            break;
+        }
+    }
+
+    if (!companyId) {
+        console.error('Swift Agent Widget: Missing data-company-id attribute on the script tag.');
+        return;
+    }
+
+    // 2. Determine the base URL for the iframe
+    // In a real production environment, this would point to your deployed frontend domain
+    // (e.g., 'https://app.swiftagents.org')
+    // We use localhost for local testing.
+    let baseUrl = 'http://localhost:3000'; // Hardcoded for local Next.js testing
+
+
+    // 3. Create the iframe element
+    const iframe = document.createElement('iframe');
+
+    // Set the source to the special Next.js embed route
+    // Assuming default locale 'en' for now, can be made dynamic later
+    iframe.src = `${baseUrl}/en/embed/widget/${companyId}`;
+
+    // 4. Style the iframe to bridge the gap and stay out of the way
+    // These styles ensure it sits politely in the bottom right corner
+    // and has a transparent background to blend with the host site.
+    iframe.style.position = 'fixed';
+    iframe.style.bottom = '0';
+    iframe.style.right = '0';
+    iframe.style.border = 'none';
+    iframe.style.zIndex = '2147483647'; // Maximum possible z-index
+    iframe.style.background = 'transparent';
+    iframe.style.display = 'block';
+    // Allow microphone access for WebRTC
+    iframe.setAttribute('allow', 'microphone');
+
+    // Start with a small size (just the button) or full size if you want the banner
+    // We will make it large enough to fit the banner initially.
+    // We can add message passing later to dynamically resize it based on state (banner vs module)
+    iframe.style.width = '100vw';
+    iframe.style.height = '72px'; // Height of the banner + border + shadow padding
+    // Keep pointer events auto so the user can click the button. 
+    // Because it only takes up 72px at the bottom, it won't block the rest of the site.
+    iframe.style.pointerEvents = 'auto';
+
+    // 5. Append to the document body
+    document.body.appendChild(iframe);
+
+    // 6. Set up message listener to handle resizing from the iframe
+    window.addEventListener('message', function (event) {
+        if (event.origin !== baseUrl) return;
+
+        try {
+            if (event.data && event.data.type === 'SWIFT_AGENT_WIDGET_RESIZE') {
+                const { width, height, pointerEvents } = event.data;
+                if (width) iframe.style.width = width;
+                if (height) iframe.style.height = height;
+                if (pointerEvents) iframe.style.pointerEvents = pointerEvents;
+            }
+        } catch (e) {
+            // Ignore parsing errors
+        }
+    });
+
+})();
