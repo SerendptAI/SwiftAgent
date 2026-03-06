@@ -7,7 +7,6 @@ import {
   DashboardVisitor,
   DashboardWidget,
 } from "@/services/dashboard";
-import { DashboardStats } from "@/services/dashboard";
 
 export function useDashboardStats(initialData?: DashboardStats | null) {
   const { data: user } = useCurrentUser();
