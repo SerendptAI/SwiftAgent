@@ -36,10 +36,10 @@
     iframe.src = `${baseUrl}/en/embed/widget/${companyId}`;
 
     // 4. Style the iframe to bridge the gap and stay out of the way
-    // These styles ensure it sits politely in the bottom right corner
+    // These styles ensure it sits politely in the top right corner
     // and has a transparent background to blend with the host site.
     iframe.style.position = 'fixed';
-    iframe.style.bottom = '0';
+    iframe.style.top = '0';
     iframe.style.right = '0';
     iframe.style.border = 'none';
     iframe.style.zIndex = '2147483647'; // Maximum possible z-index
@@ -57,10 +57,15 @@
     // Because it only takes up 72px at the bottom, it won't block the rest of the site.
     iframe.style.pointerEvents = 'auto';
 
-    // 5. Append to the document body
+    // 5. "Body Push" logic to prevent overlapping host headers
+    // We add a margin to the body and a smooth transition.
+    document.body.style.transition = 'margin-top 0.3s ease-in-out';
+    document.body.style.marginTop = '72px';
+
+    // 6. Append to the document body
     document.body.appendChild(iframe);
 
-    // 6. Set up message listener to handle resizing from the iframe
+    // 7. Set up message listener to handle resizing from the iframe
     window.addEventListener('message', function (event) {
         if (event.origin !== baseUrl) return;
 
@@ -70,8 +75,16 @@
                 if (width) iframe.style.width = width;
                 if (height) iframe.style.height = height;
                 if (pointerEvents) iframe.style.pointerEvents = pointerEvents;
+
+                // If height is 100vh (fullscreen call), we might want to remove the push 
+                // to avoid double scrollbars or weird spacing in modal mode.
+                if (height === '100vh') {
+                    document.body.style.marginTop = '0px';
+                } else if (height === '72px') {
+                    document.body.style.marginTop = '72px';
+                }
             }
-        } catch (e) {
+        } catch {
             // Ignore parsing errors
         }
     });
