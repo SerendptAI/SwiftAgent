@@ -21,19 +21,14 @@ export default function WidgetPage({
   params: Promise<{ companyId: string }>;
 }) {
   const unwrappedParams = use(params);
-  const companyId = useMemo(
-    () => unwrappedParams.companyId,
-    [unwrappedParams.companyId],
-  );
+  const companyId = unwrappedParams.companyId;
 
-  console.count("WidgetPage Render Count");
   console.log("WidgetPage rendering for companyId:", companyId);
 
-  useEffect(() => {
-    console.log("WidgetPage MOUNTED");
-    return () => console.log("WidgetPage UNMOUNTED");
-  }, []);
+  return <WidgetContent companyId={companyId} />;
+}
 
+function WidgetContent({ companyId }: { companyId: string }) {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [statusText, setStatusText] = useState("Initializing...");
   const [transcript, setTranscript] = useState("");
@@ -55,10 +50,10 @@ export default function WidgetPage({
     onError: handleError,
   });
 
-  // Use isActive from the hook to drive callStatus
   const callStatus = isActive ? "ongoing" : "idle";
 
-  // Example timer for the "ongoing" state
+  console.count("WidgetContent Render Count");
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (callStatus === "ongoing") {
@@ -81,51 +76,35 @@ export default function WidgetPage({
     return `${m}:${s}`;
   };
 
-  const handleStartCall = () => {
-    console.log("handleStartCall click triggered");
-    start();
-  };
-
-  const handleEndCall = () => {
-    stop();
-  };
-
-  // Handle iframe resizing safely as a side effect
+  // Resize logic inside the component that knows about isActive
   useEffect(() => {
     if (!window.parent) return;
 
-    console.log("Checking resize necessity for status:", callStatus);
-    /* Temporarily disabled to debug render loop
-        if (callStatus === "ongoing") {
-          window.parent.postMessage(
-            {
-              type: "SWIFT_AGENT_WIDGET_RESIZE",
-              width: "100vw",
-              height: "100vh",
-              pointerEvents: "auto",
-            },
-            "*",
-          );
-        } else {
-          window.parent.postMessage(
-            {
-              type: "SWIFT_AGENT_WIDGET_RESIZE",
-              width: "100vw",
-              height: "72px",
-              pointerEvents: "auto", // Ensure the button is clickable
-            },
-            "*",
-          );
-        }
-        */
-  }, [callStatus]);
+    if (isActive) {
+      window.parent.postMessage(
+        {
+          type: "SWIFT_AGENT_WIDGET_RESIZE",
+          width: "100vw",
+          height: "100vh",
+          pointerEvents: "auto",
+        },
+        "*",
+      );
+    } else {
+      window.parent.postMessage(
+        {
+          type: "SWIFT_AGENT_WIDGET_RESIZE",
+          width: "100vw",
+          height: "72px",
+          pointerEvents: "auto",
+        },
+        "*",
+      );
+    }
+  }, [isActive]);
 
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-start font-sans">
-      {/* 
-        This div wraps the interactive parts. pointer-events-auto makes it clickable
-        even if the iframe's background lets clicks pass through. 
-      */}
       <div className="pointer-events-auto w-full">
         {/* --- THE BANNER STRIP (Moved to top) --- */}
         <div className="relative flex w-full flex-row items-center justify-between bg-[#F2B035] px-4 py-3 shadow-md sm:px-6">
@@ -135,9 +114,9 @@ export default function WidgetPage({
           </div>
 
           <button
-            onClick={callStatus === "idle" ? handleStartCall : undefined}
+            onClick={callStatus === "idle" ? start : undefined}
             className={cn(
-              "flex shrink-0 items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 shadow-[-6px_6px_0px_0px_#000000] transition-all hover:-translate-y-0.5 hover:shadow-md sm:px-6",
+              "flex shrink-0 items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 shadow-[-6px_6px_0_0_#000000] transition-all hover:-translate-y-0.5 hover:shadow-md sm:px-6",
               callStatus === "ongoing"
                 ? "cursor-default border-transparent"
                 : "cursor-pointer",
@@ -153,7 +132,6 @@ export default function WidgetPage({
             ) : (
               <>
                 <div className="flex items-center gap-2">
-                  {/* Tiny pulsing indicator */}
                   <span className="relative flex h-2 w-2">
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
                     <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
@@ -175,14 +153,12 @@ export default function WidgetPage({
         {callStatus === "ongoing" && (
           <div className="absolute top-[80px] left-1/2 w-[95%] max-w-[1200px] -translate-x-1/2 overflow-hidden rounded-4xl bg-white shadow-2xl transition-all duration-300">
             <div className="relative flex h-[600px] flex-col items-center justify-center p-8 text-center">
-              {/* Top status indicator in modal */}
               <div className="absolute top-6 flex items-center gap-2">
                 <span className="text-sm font-semibold text-gray-400 capitalize">
                   {statusText}...
                 </span>
               </div>
 
-              {/* Transcript Display */}
               <div className="absolute top-20 w-full px-12">
                 <div className="mx-auto max-w-lg space-y-4">
                   {transcript && (
@@ -198,20 +174,13 @@ export default function WidgetPage({
                 </div>
               </div>
 
-              {/* Central Glowing Orb (Placeholder for AI Avatar) */}
-              <div className="mt-12 flex h-48 w-48 animate-pulse items-center justify-center rounded-full bg-linear-to-br from-orange-300 via-rose-300 to-blue-300 shadow-[0_0_60px_-15px_rgba(0,0,0,0.3)]">
-                {/* Visualizer bars or avatar would go here */}
-              </div>
+              <div className="mt-12 flex h-48 w-48 animate-pulse items-center justify-center rounded-full bg-linear-to-br from-orange-300 via-rose-300 to-blue-300 shadow-[0_0_60px_-15px_rgba(0,0,0,0.3)]"></div>
 
-              {/* Bottom Controls */}
               <div className="absolute bottom-10 flex w-full items-center justify-center gap-6">
                 <button className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200">
                   <MoreHorizontal className="h-6 w-6" />
                 </button>
-                <button
-                  onClick={() => {}} // TODO: Implement deafen logic if needed
-                  className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200"
-                >
+                <button className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200">
                   <Volume2 className="h-6 w-6" />
                 </button>
                 <button
@@ -230,9 +199,8 @@ export default function WidgetPage({
                   )}
                 </button>
 
-                {/* End Call Button */}
                 <button
-                  onClick={handleEndCall}
+                  onClick={stop}
                   className="flex h-14 w-14 items-center justify-center rounded-full bg-[#f25430] text-white shadow-lg transition hover:scale-105 hover:bg-red-600 hover:shadow-xl"
                 >
                   <PhoneOff className="h-6 w-6" />

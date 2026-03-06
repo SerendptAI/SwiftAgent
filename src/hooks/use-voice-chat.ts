@@ -19,11 +19,7 @@ export function useVoiceChat({
 }: VoiceChatOptions) {
   const [isActive, setIsActive] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-
-  useEffect(() => {
-    console.log("useVoiceChat hook MOUNTED");
-    return () => console.log("useVoiceChat hook UNMOUNTED");
-  }, []);
+  const [stream, setStream] = useState<MediaStream | null>(null);
 
   const socketRef = useRef<WebSocket | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -36,7 +32,9 @@ export function useVoiceChat({
       socketRef.current = null;
     }
     if (mediaRecorderRef.current) {
-      mediaRecorderRef.current.stop();
+      if (mediaRecorderRef.current.state !== "inactive") {
+        mediaRecorderRef.current.stop();
+      }
       mediaRecorderRef.current.stream
         .getTracks()
         .forEach((track) => track.stop());
@@ -47,6 +45,7 @@ export function useVoiceChat({
       audioContextRef.current = null;
     }
     setIsActive(false);
+    setStream(null);
   }, []);
 
   const playAudioChunk = async (base64Data: string) => {
@@ -73,7 +72,6 @@ export function useVoiceChat({
       source.buffer = audioBuffer;
       source.connect(audioContextRef.current.destination);
 
-      // Schedule playback
       const startTime = Math.max(
         nextStartTimeRef.current,
         audioContextRef.current.currentTime,
@@ -88,122 +86,106 @@ export function useVoiceChat({
   const start = useCallback(async () => {
     try {
       console.log("Requesting microphone access...");
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      console.log("Microphone access granted, stream obtained");
+      const s = await navigator.mediaDevices.getUserMedia({ audio: true });
+      console.log("Microphone access granted");
+      setStream(s);
       setIsActive(true);
-
-      // Using the endpoint provided by the user
-      // Forced wss:// because the external API requires it regardless of local protocol
-      const wssUrl = `wss://api.swiftagents.org/api/v1/voice/${companyId}/call`;
-      const wsUrl = `ws://api.swiftagents.org/api/v1/voice/${companyId}/call`;
-
-      console.log("Attempting WebSocket connection (preferring WSS)...");
-
-      let socket: WebSocket;
-      try {
-        console.log("Connecting to WSS:", wssUrl);
-        socket = new WebSocket(wssUrl);
-      } catch (e) {
-        console.warn(
-          "WSS Constructor failed instantly, falling back to WS:",
-          e,
-        );
-        socket = new WebSocket(wsUrl);
-      }
-
-      socketRef.current = socket;
-
-      console.log(
-        "WebSocket instance created, state:",
-        socket.readyState,
-        "(0=CONNECTING, 1=OPEN, 2=CLOSING, 3=CLOSED)",
-      );
-
-      socket.onopen = () => {
-        console.log("WebSocket Connection Opened");
-        const sessionId = crypto.randomUUID();
-        console.log("Sending start message with session_id:", sessionId);
-        socket.send(JSON.stringify({ type: "start", session_id: sessionId }));
-
-        // Start recording once socket is open
-        console.log("Starting MediaRecorder...");
-        const mediaRecorder = new MediaRecorder(stream);
-        mediaRecorderRef.current = mediaRecorder;
-
-        mediaRecorder.ondataavailable = async (event) => {
-          if (
-            event.data.size > 0 &&
-            socket.readyState === WebSocket.OPEN &&
-            !isMuted
-          ) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-              const base64data = (reader.result as string).split(",")[1];
-              // console.log("Sending audio chunk to server...");
-              socket.send(JSON.stringify({ type: "audio", data: base64data }));
-            };
-            reader.readAsDataURL(event.data);
-          }
-        };
-
-        mediaRecorder.start(250); // Send 250ms chunks
-      };
-
-      socket.onmessage = (event) => {
-        const message = JSON.parse(event.data);
-        console.log("WebSocket Message Received:", message.type);
-        switch (message.type) {
-          case "status":
-            onStatusChange?.(message.status);
-            break;
-          case "transcript":
-            onTranscript?.(message.text);
-            break;
-          case "reply_text":
-            onReply?.(message.text);
-            break;
-          case "audio":
-            playAudioChunk(message.data);
-            break;
-          case "error":
-            onError?.(message.message);
-            break;
-        }
-      };
-
-      socket.onerror = (err) => {
-        console.error("WebSocket Error:", err);
-        onError?.("WebSocket connection failed");
-        cleanup();
-      };
-
-      socket.onclose = () => {
-        console.log("WebSocket Closed");
-        cleanup();
-      };
     } catch (err) {
       console.error("Failed to start voice chat:", err);
       onError?.("Microphone access denied or failed to initialize");
-      setIsActive(false);
     }
+  }, [onError]);
+
+  const stop = useCallback(() => {
+    console.log("Stopping voice chat...");
+    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+      socketRef.current.send(JSON.stringify({ type: "end" }));
+    }
+    cleanup();
+  }, [cleanup]);
+
+  useEffect(() => {
+    if (!isActive || !stream) return;
+
+    const wssUrl = `wss://api.swiftagents.org/api/v1/voice/${companyId}/call`;
+    console.log("Connecting to WebSocket:", wssUrl);
+
+    const socket = new WebSocket(wssUrl);
+    socketRef.current = socket;
+
+    socket.onopen = () => {
+      console.log("WebSocket Opened successfully");
+      socket.send(
+        JSON.stringify({ type: "start", session_id: crypto.randomUUID() }),
+      );
+
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (
+          event.data.size > 0 &&
+          socket.readyState === WebSocket.OPEN &&
+          !isMuted
+        ) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const base64data = (reader.result as string).split(",")[1];
+            socket.send(JSON.stringify({ type: "audio", data: base64data }));
+          };
+          reader.readAsDataURL(event.data);
+        }
+      };
+      mediaRecorder.start(250);
+    };
+
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      switch (message.type) {
+        case "status":
+          onStatusChange?.(message.status);
+          break;
+        case "transcript":
+          onTranscript?.(message.text);
+          break;
+        case "reply_text":
+          onReply?.(message.text);
+          break;
+        case "audio":
+          playAudioChunk(message.data);
+          break;
+        case "error":
+          onError?.(message.message);
+          break;
+      }
+    };
+
+    socket.onerror = (err) => {
+      console.error("WebSocket Error:", err);
+      onError?.("Connection failed");
+    };
+
+    socket.onclose = () => {
+      console.log("WebSocket Closed");
+      setIsActive(false);
+      cleanup();
+    };
+
+    return () => {
+      console.log("Cleaning up WebSocket effect");
+      socket.close();
+    };
   }, [
+    isActive,
+    stream,
     companyId,
-    cleanup,
     isMuted,
     onStatusChange,
     onTranscript,
     onReply,
     onError,
+    cleanup,
   ]);
-
-  const stop = useCallback(() => {
-    console.log("Stopping voice chat...");
-    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-      console.log("Sending end message to server");
-      socketRef.current.send(JSON.stringify({ type: "end" }));
-    }
-    cleanup();
-  }, [cleanup]);
 
   const toggleMute = useCallback(() => {
     setIsMuted((prev) => !prev);
