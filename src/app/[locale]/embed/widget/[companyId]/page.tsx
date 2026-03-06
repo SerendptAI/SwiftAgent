@@ -8,7 +8,7 @@ import {
   PhoneOff,
   Volume2,
 } from "lucide-react";
-import { use, useCallback, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { useVoiceChat } from "@/hooks/use-voice-chat";
@@ -30,29 +30,37 @@ export default function WidgetPage({
 
 function WidgetContent({ companyId }: { companyId: string }) {
   const [elapsedTime, setElapsedTime] = useState(0);
-  const [statusText, setStatusText] = useState("Initializing...");
+  const [statusText, setStatusText] = useState("Idle");
   const [transcript, setTranscript] = useState("");
   const [agentReply, setAgentReply] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const visualizerRef = useRef<HTMLDivElement>(null);
 
   const handleStatusChange = useCallback((s: string) => setStatusText(s), []);
   const handleTranscript = useCallback((t: string) => setTranscript(t), []);
+  const handleSpeechStart = useCallback(() => {
+    setTranscript("");
+    setAgentReply("");
+    setErrorMessage(null);
+  }, []);
   const handleReply = useCallback((r: string) => setAgentReply(r), []);
-  const handleError = useCallback(
-    (err: Error | string) => console.error("Voice Chat Error:", err),
-    [],
-  );
+  const handleError = useCallback((err: Error | string) => {
+    const msg = typeof err === "string" ? err : (err?.message ?? String(err));
+    console.error("Voice Chat Error:", msg);
+    setErrorMessage(msg);
+  }, []);
 
   const { isActive, isMuted, start, stop, toggleMute } = useVoiceChat({
     companyId,
     onStatusChange: handleStatusChange,
     onTranscript: handleTranscript,
+    onSpeechStart: handleSpeechStart,
     onReply: handleReply,
     onError: handleError,
+    visualizerRef,
   });
 
   const callStatus = isActive ? "ongoing" : "idle";
-
-  console.count("WidgetContent Render Count");
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -64,6 +72,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
       setElapsedTime(0);
       setTranscript("");
       setAgentReply("");
+      setErrorMessage(null);
     }
     return () => clearInterval(interval);
   }, [callStatus]);
@@ -102,6 +111,26 @@ function WidgetContent({ companyId }: { companyId: string }) {
       );
     }
   }, [isActive]);
+
+  const getFriendlyStatus = (status: string) => {
+    const s = status.toLowerCase();
+    switch (s) {
+      case "connecting":
+        return "Connecting...";
+      case "ready":
+        return "Listening";
+      case "thinking":
+        return "Thinking...";
+      case "speaking":
+        return "Speaking";
+      case "error":
+        return "Error";
+      case "idle":
+        return "Ended";
+      default:
+        return status;
+    }
+  };
 
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-start font-sans">
@@ -154,13 +183,18 @@ function WidgetContent({ companyId }: { companyId: string }) {
           <div className="absolute top-[80px] left-1/2 w-[95%] max-w-[1200px] -translate-x-1/2 overflow-hidden rounded-4xl bg-white shadow-2xl transition-all duration-300">
             <div className="relative flex h-[600px] flex-col items-center justify-center p-8 text-center">
               <div className="absolute top-6 flex items-center gap-2">
-                <span className="text-sm font-semibold text-gray-400 capitalize">
-                  {statusText}...
+                <span className="text-sm font-semibold text-gray-400 uppercase">
+                  {getFriendlyStatus(statusText)}
                 </span>
               </div>
 
               <div className="absolute top-20 w-full px-12">
                 <div className="mx-auto max-w-lg space-y-4">
+                  {errorMessage && (
+                    <p className="rounded-lg bg-red-50 px-3 py-2 font-mono text-sm text-red-700">
+                      {errorMessage}
+                    </p>
+                  )}
                   {transcript && (
                     <p className="font-dm-mono text-sm leading-relaxed text-gray-500 italic">
                       &quot;{transcript}&quot;
@@ -174,7 +208,10 @@ function WidgetContent({ companyId }: { companyId: string }) {
                 </div>
               </div>
 
-              <div className="mt-12 flex h-48 w-48 animate-pulse items-center justify-center rounded-full bg-linear-to-br from-orange-300 via-rose-300 to-blue-300 shadow-[0_0_60px_-15px_rgba(0,0,0,0.3)]"></div>
+              <div
+                ref={visualizerRef}
+                className="mt-12 flex h-48 w-48 items-center justify-center rounded-full bg-linear-to-br from-orange-300 via-rose-300 to-blue-300 shadow-[0_0_60px_-15px_rgba(0,0,0,0.3)] transition-transform duration-75"
+              ></div>
 
               <div className="absolute bottom-10 flex w-full items-center justify-center gap-6">
                 <button className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200">

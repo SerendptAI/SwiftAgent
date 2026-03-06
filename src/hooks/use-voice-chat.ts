@@ -6,16 +6,20 @@ export interface VoiceChatOptions {
   companyId: string;
   onStatusChange?: (status: string) => void;
   onTranscript?: (text: string) => void;
+  onSpeechStart?: () => void;
   onReply?: (text: string) => void;
   onError?: (message: string) => void;
+  visualizerRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 export function useVoiceChat({
   companyId,
   onStatusChange,
   onTranscript,
+  onSpeechStart,
   onReply,
   onError,
+  visualizerRef,
 }: VoiceChatOptions) {
   const [isActive, setIsActive] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -25,8 +29,47 @@ export function useVoiceChat({
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const nextStartTimeRef = useRef<number>(0);
+  const statusRef = useRef<string>("Idle");
+  const rafIdRef = useRef<number | null>(null);
+  const restartMediaRecorderRef = useRef<(() => void) | null>(null);
+
+  // Refs for callbacks and state to avoid useEffect dependency churn
+  const onStatusChangeRef = useRef(onStatusChange);
+  const onTranscriptRef = useRef(onTranscript);
+  const onSpeechStartRef = useRef(onSpeechStart);
+  const onReplyRef = useRef(onReply);
+  const onErrorRef = useRef(onError);
+  const isMutedRef = useRef(isMuted);
+
+  useEffect(() => {
+    onStatusChangeRef.current = onStatusChange;
+  }, [onStatusChange]);
+  useEffect(() => {
+    onTranscriptRef.current = onTranscript;
+  }, [onTranscript]);
+  useEffect(() => {
+    onSpeechStartRef.current = onSpeechStart;
+  }, [onSpeechStart]);
+  useEffect(() => {
+    onReplyRef.current = onReply;
+  }, [onReply]);
+  useEffect(() => {
+    onErrorRef.current = onError;
+  }, [onError]);
+  useEffect(() => {
+    isMutedRef.current = isMuted;
+  }, [isMuted]);
+
+  const handleStatusChange = useCallback((status: string) => {
+    statusRef.current = status;
+    onStatusChangeRef.current?.(status);
+  }, []);
 
   const cleanup = useCallback(() => {
+    if (rafIdRef.current !== null) {
+      cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = null;
+    }
     if (socketRef.current) {
       socketRef.current.close();
       socketRef.current = null;
@@ -44,6 +87,7 @@ export function useVoiceChat({
       audioContextRef.current.close();
       audioContextRef.current = null;
     }
+    restartMediaRecorderRef.current = null;
     setIsActive(false);
     setStream(null);
   }, []);
@@ -85,6 +129,7 @@ export function useVoiceChat({
 
   const start = useCallback(async () => {
     try {
+      handleStatusChange("Connecting");
       console.log("Requesting microphone access...");
       const s = await navigator.mediaDevices.getUserMedia({ audio: true });
       console.log("Microphone access granted");
@@ -92,9 +137,10 @@ export function useVoiceChat({
       setIsActive(true);
     } catch (err) {
       console.error("Failed to start voice chat:", err);
-      onError?.("Microphone access denied or failed to initialize");
+      onErrorRef.current?.("Microphone access denied or failed to initialize");
+      handleStatusChange("Error");
     }
-  }, [onError]);
+  }, [handleStatusChange]);
 
   const stop = useCallback(() => {
     console.log("Stopping voice chat...");
@@ -102,7 +148,8 @@ export function useVoiceChat({
       socketRef.current.send(JSON.stringify({ type: "end" }));
     }
     cleanup();
-  }, [cleanup]);
+    handleStatusChange("Idle");
+  }, [cleanup, handleStatusChange]);
 
   useEffect(() => {
     if (!isActive || !stream) return;
@@ -115,54 +162,231 @@ export function useVoiceChat({
 
     socket.onopen = () => {
       console.log("WebSocket Opened successfully");
+      handleStatusChange("Ready");
       socket.send(
         JSON.stringify({ type: "start", session_id: crypto.randomUUID() }),
       );
 
-      const mediaRecorder = new MediaRecorder(stream);
+      // Use explicit mimeType so initial and restarted recorders use same codec (server may reject differing formats)
+      const recorderOptions = (() => {
+        if (typeof MediaRecorder === "undefined") return {};
+        const prefer = [
+          "audio/webm;codecs=opus",
+          "audio/webm",
+          "audio/ogg;codecs=opus",
+        ];
+        for (const m of prefer) {
+          if (MediaRecorder.isTypeSupported(m)) return { mimeType: m };
+        }
+        return {};
+      })();
+
+      let chunksSentThisUtterance = 0;
+      const mediaRecorder = new MediaRecorder(stream, recorderOptions);
       mediaRecorderRef.current = mediaRecorder;
 
-      mediaRecorder.ondataavailable = (event) => {
-        if (
-          event.data.size > 0 &&
-          socket.readyState === WebSocket.OPEN &&
-          !isMuted
-        ) {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            const base64data = (reader.result as string).split(",")[1];
-            socket.send(JSON.stringify({ type: "audio", data: base64data }));
-          };
-          reader.readAsDataURL(event.data);
+      // Audio analysis for volume meter
+      const audioContext = new (
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext })
+          .webkitAudioContext
+      )();
+      const source = audioContext.createMediaStreamSource(stream);
+      const analyser = audioContext.createAnalyser();
+      analyser.fftSize = 256;
+      source.connect(analyser);
+
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+
+      let silenceStartTime: number | null = null;
+      let hasSpoken = false;
+
+      const updateVolume = () => {
+        if (!isActive) return;
+        analyser.getByteFrequencyData(dataArray);
+        let sum = 0;
+        for (let i = 0; i < bufferLength; i++) {
+          sum += dataArray[i];
         }
+        const average = sum / bufferLength;
+
+        // Direct DOM update for high-performance animation (60fps)
+        if (visualizerRef?.current) {
+          const scale = 1 + average / 50;
+          visualizerRef.current.style.transform = `scale(${scale})`;
+        }
+
+        // Silence detection (VAD)
+        const SILENCE_THRESHOLD = 12; // Increased from 8 to ignore quiet noise
+        const SILENCE_DURATION = 1500;
+        const currentStatus = statusRef.current.toLowerCase();
+
+        // ONLY detect silence if the AI is listening (Ready)
+        if (currentStatus === "ready") {
+          if (average > SILENCE_THRESHOLD) {
+            if (!hasSpoken) {
+              console.log(
+                "VAD: Speech started (vol:",
+                Math.round(average),
+                ")",
+              );
+              onSpeechStart?.();
+            }
+            hasSpoken = true;
+            silenceStartTime = null;
+          } else if (hasSpoken) {
+            if (silenceStartTime === null) {
+              silenceStartTime = Date.now();
+            } else if (Date.now() - silenceStartTime > SILENCE_DURATION) {
+              console.log(
+                "VAD: Silence detected (1.5s), triggering stop_audio",
+              );
+              if (
+                socketRef.current &&
+                socketRef.current.readyState === WebSocket.OPEN
+              ) {
+                socketRef.current.send(JSON.stringify({ type: "stop_audio" }));
+                handleStatusChange("Thinking");
+              }
+              hasSpoken = false;
+              silenceStartTime = null;
+            }
+          }
+        } else {
+          // If we are not in "ready" state, reset VAD state to be ready for next turn
+          if (hasSpoken) {
+            console.log(
+              "VAD: Resetting hasSpoken because status is",
+              currentStatus,
+            );
+            hasSpoken = false;
+            silenceStartTime = null;
+          }
+        }
+
+        rafIdRef.current = requestAnimationFrame(updateVolume);
       };
+      updateVolume();
+
+      const setupMediaRecorder = (recorder: MediaRecorder) => {
+        recorder.ondataavailable = (event) => {
+          const currentStatus = statusRef.current.toLowerCase();
+          if (
+            event.data.size > 0 &&
+            socket.readyState === WebSocket.OPEN &&
+            !isMutedRef.current &&
+            currentStatus === "ready" // Gating: Only send audio if AI is ready/listening
+          ) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              const base64data = (reader.result as string).split(",")[1];
+              socket.send(JSON.stringify({ type: "audio", data: base64data }));
+              chunksSentThisUtterance++;
+              if (chunksSentThisUtterance % 10 === 1) {
+                console.log(
+                  "VAD: Sent audio chunk",
+                  chunksSentThisUtterance,
+                  "this utterance",
+                );
+              }
+            };
+            reader.readAsDataURL(event.data);
+          } else if (event.data.size > 0 && currentStatus !== "ready") {
+            // Log dropped chunks occasionally to avoid spam but confirm behavior
+            if (Math.random() < 0.1) {
+              console.log(
+                "VAD: Dropping audio chunk while status is",
+                currentStatus,
+              );
+            }
+          }
+        };
+      };
+
+      setupMediaRecorder(mediaRecorder);
       mediaRecorder.start(250);
+
+      // Restart MediaRecorder for each new utterance so the server gets a clean segment (fixes 2nd+ transcription)
+      restartMediaRecorderRef.current = () => {
+        const mr = mediaRecorderRef.current;
+        if (mr && mr.state !== "inactive") {
+          mr.stop();
+        }
+        chunksSentThisUtterance = 0;
+        const newMr = new MediaRecorder(stream, recorderOptions);
+        mediaRecorderRef.current = newMr;
+        setupMediaRecorder(newMr);
+        newMr.start(250);
+        console.log("VAD: MediaRecorder restarted for new utterance");
+      };
+
+      return () => {
+        cleanup();
+      };
     };
 
     socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
+      console.log("WS Received:", message.type, message);
       switch (message.type) {
-        case "status":
-          onStatusChange?.(message.status);
+        case "status": {
+          const prevStatus = statusRef.current.toLowerCase();
+          const newStatus = message.status as string;
+          const newStatusLower = newStatus.toLowerCase();
+
+          // When leaving "ready" (thinking/transcribing/speaking), stop recording so we don't capture background or AI TTS
+          if (newStatusLower !== "ready" && prevStatus === "ready") {
+            const mr = mediaRecorderRef.current;
+            if (mr && mr.state !== "inactive") {
+              mr.stop();
+            }
+          }
+
+          // When server is ready for a new utterance after replying, signal new segment and restart recorder (fixes 2nd+ transcription)
+          if (
+            newStatusLower === "ready" &&
+            prevStatus !== "ready" &&
+            prevStatus !== "connecting" &&
+            prevStatus !== "idle"
+          ) {
+            if (socketRef.current?.readyState === WebSocket.OPEN) {
+              socketRef.current.send(JSON.stringify({ type: "start_audio" }));
+            }
+            restartMediaRecorderRef.current?.();
+          }
+          handleStatusChange(newStatus);
           break;
+        }
         case "transcript":
-          onTranscript?.(message.text);
+          onTranscriptRef.current?.(message.text);
           break;
         case "reply_text":
-          onReply?.(message.text);
+          onReplyRef.current?.(message.text);
           break;
         case "audio":
           playAudioChunk(message.data);
           break;
-        case "error":
-          onError?.(message.message);
+        case "error": {
+          // Log full payload so we can see the actual reason from the server
+          console.error("Voice chat error (full payload):", message);
+          const parts = [
+            message.message,
+            message.detail,
+            message.reason,
+            message.code != null ? `code: ${message.code}` : "",
+          ].filter(Boolean);
+          const fullMessage =
+            parts.length > 0 ? parts.join(" — ") : JSON.stringify(message);
+          onErrorRef.current?.(fullMessage);
           break;
+        }
       }
     };
 
     socket.onerror = (err) => {
       console.error("WebSocket Error:", err);
-      onError?.("Connection failed");
+      onErrorRef.current?.("Connection failed");
     };
 
     socket.onclose = () => {
@@ -179,12 +403,10 @@ export function useVoiceChat({
     isActive,
     stream,
     companyId,
-    isMuted,
-    onStatusChange,
-    onTranscript,
-    onReply,
-    onError,
+    handleStatusChange,
     cleanup,
+    visualizerRef,
+    onSpeechStart,
   ]);
 
   const toggleMute = useCallback(() => {
