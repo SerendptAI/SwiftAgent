@@ -8,7 +8,7 @@ import {
   PhoneOff,
   Volume2,
 } from "lucide-react";
-import { use, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { useVoiceChat } from "@/hooks/use-voice-chat";
@@ -22,18 +22,27 @@ export default function WidgetPage({
 }) {
   const unwrappedParams = use(params);
   const companyId = unwrappedParams.companyId;
+  console.log("WidgetPage rendering for companyId:", companyId);
 
   const [elapsedTime, setElapsedTime] = useState(0);
   const [statusText, setStatusText] = useState("Initializing...");
   const [transcript, setTranscript] = useState("");
   const [agentReply, setAgentReply] = useState("");
 
+  const handleStatusChange = useCallback((s: string) => setStatusText(s), []);
+  const handleTranscript = useCallback((t: string) => setTranscript(t), []);
+  const handleReply = useCallback((r: string) => setAgentReply(r), []);
+  const handleError = useCallback(
+    (err: Error | string) => console.error("Voice Chat Error:", err),
+    [],
+  );
+
   const { isActive, isMuted, start, stop, toggleMute } = useVoiceChat({
     companyId,
-    onStatusChange: (s) => setStatusText(s),
-    onTranscript: (t) => setTranscript(t),
-    onReply: (r) => setAgentReply(r),
-    onError: (err) => console.error("Voice Chat Error:", err),
+    onStatusChange: handleStatusChange,
+    onTranscript: handleTranscript,
+    onReply: handleReply,
+    onError: handleError,
   });
 
   // Use isActive from the hook to drive callStatus
@@ -63,6 +72,7 @@ export default function WidgetPage({
   };
 
   const handleStartCall = () => {
+    console.log("handleStartCall click triggered");
     start();
   };
 

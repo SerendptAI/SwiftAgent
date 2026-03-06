@@ -82,21 +82,31 @@ export function useVoiceChat({
 
   const start = useCallback(async () => {
     try {
+      console.log("Requesting microphone access...");
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      console.log("Microphone access granted, stream obtained");
       setIsActive(true);
 
       // Using the endpoint provided by the user
       // Forced wss:// because the external API requires it regardless of local protocol
       const wsUrl = `wss://api.swiftagents.org/api/v1/voice/${companyId}/call`;
+      console.log("Connecting to WebSocket:", wsUrl);
       const socket = new WebSocket(wsUrl);
       socketRef.current = socket;
 
+      console.log(
+        "WebSocket instance created, current state:",
+        socket.readyState,
+      );
+
       socket.onopen = () => {
-        socket.send(
-          JSON.stringify({ type: "start", session_id: crypto.randomUUID() }),
-        );
+        console.log("WebSocket Connection Opened");
+        const sessionId = crypto.randomUUID();
+        console.log("Sending start message with session_id:", sessionId);
+        socket.send(JSON.stringify({ type: "start", session_id: sessionId }));
 
         // Start recording once socket is open
+        console.log("Starting MediaRecorder...");
         const mediaRecorder = new MediaRecorder(stream);
         mediaRecorderRef.current = mediaRecorder;
 
@@ -109,6 +119,7 @@ export function useVoiceChat({
             const reader = new FileReader();
             reader.onloadend = () => {
               const base64data = (reader.result as string).split(",")[1];
+              // console.log("Sending audio chunk to server...");
               socket.send(JSON.stringify({ type: "audio", data: base64data }));
             };
             reader.readAsDataURL(event.data);
@@ -120,6 +131,7 @@ export function useVoiceChat({
 
       socket.onmessage = (event) => {
         const message = JSON.parse(event.data);
+        console.log("WebSocket Message Received:", message.type);
         switch (message.type) {
           case "status":
             onStatusChange?.(message.status);
@@ -165,7 +177,9 @@ export function useVoiceChat({
   ]);
 
   const stop = useCallback(() => {
+    console.log("Stopping voice chat...");
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+      console.log("Sending end message to server");
       socketRef.current.send(JSON.stringify({ type: "end" }));
     }
     cleanup();
