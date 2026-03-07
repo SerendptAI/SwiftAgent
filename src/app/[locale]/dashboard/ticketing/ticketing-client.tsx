@@ -6,10 +6,14 @@ import { CompanyToolbar } from "@/components/dashboard/company-toolbar";
 import { ChatView } from "@/components/dashboard/ticketing/chat-view";
 import { TicketList } from "@/components/dashboard/ticketing/ticket-list";
 import { Icons } from "@/components/icons";
+import { useChats } from "@/hooks/use-conversations";
 
 export function TicketingClient() {
   const [selectedTicketId, setSelectedTicketId] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const { data: chats } = useChats();
+  const chatCount = chats?.length ?? 0;
 
   const handleSelectTicket = (id: string, index: number) => {
     setSelectedTicketId(id);
@@ -26,9 +30,11 @@ export function TicketingClient() {
           <div className="flex items-center gap-4">
             <button className="relative flex cursor-pointer items-center justify-center rounded-3xl bg-white p-2 text-gray-600 shadow-sm transition-colors hover:bg-gray-200">
               <Icons.inbox className="h-12 w-12" />
-              <span className="absolute top-1.5 right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
-                1
-              </span>
+              {chatCount > 0 && (
+                <span className="absolute top-1.5 right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                  {chatCount}
+                </span>
+              )}
             </button>
 
             {/* Search button */}
