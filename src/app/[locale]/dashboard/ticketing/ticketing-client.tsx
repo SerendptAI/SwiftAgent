@@ -1,21 +1,14 @@
 "use client";
 
-import { MessageSquare, Search } from "lucide-react";
 import { useState } from "react";
 
 import { CompanyToolbar } from "@/components/dashboard/company-toolbar";
 import { ChatView } from "@/components/dashboard/ticketing/chat-view";
 import { TicketList } from "@/components/dashboard/ticketing/ticket-list";
-import { Conversation } from "@/services/conversations";
+import { Icons } from "@/components/icons";
 
-interface TicketingClientProps {
-  initialTickets: Conversation[];
-}
-
-export function TicketingClient({ initialTickets }: TicketingClientProps) {
-  const [selectedTicketId, setSelectedTicketId] = useState(
-    initialTickets[0]?.id || "1",
-  );
+export function TicketingClient() {
+  const [selectedTicketId, setSelectedTicketId] = useState("");
 
   return (
     <div className="flex h-full w-full flex-col">
@@ -25,34 +18,39 @@ export function TicketingClient({ initialTickets }: TicketingClientProps) {
         </div>
         <div className="mb-4 flex w-[350px] items-center">
           <div className="flex items-center gap-4">
-            <button className="relative flex cursor-pointer items-center justify-center rounded-3xl bg-white p-4 text-gray-600 shadow-sm transition-colors hover:bg-gray-200">
-              <MessageSquare className="h-12 w-12" />
-              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+            <button className="relative flex cursor-pointer items-center justify-center rounded-3xl bg-white p-2 text-gray-600 shadow-sm transition-colors hover:bg-gray-200">
+              <Icons.inbox className="h-12 w-12" />
+              <span className="absolute top-1.5 right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
                 1
               </span>
             </button>
 
             {/* Search button */}
-            <button className="flex cursor-pointer items-center justify-center rounded-3xl bg-[#2196F3] p-4 text-white transition-colors hover:bg-[#1E88E5]">
-              <Search className="h-12 w-12" />
+            <button className="flex cursor-pointer items-center justify-center rounded-3xl bg-[#2196F3] p-2 text-white transition-colors hover:bg-[#1E88E5]">
+              <Icons.SearchWhite className="h-12 w-12" />
             </button>
           </div>
         </div>
       </div>
 
       <div className="flex min-h-0 flex-1 gap-4">
-        {/* Left Panel - Ticket List */}
+        {/* Left Panel - Chat List */}
         <div className="w-[320px] shrink-0">
           <TicketList
             selectedTicketId={selectedTicketId}
             onSelectTicket={setSelectedTicketId}
-            initialData={initialTickets}
           />
         </div>
 
         {/* Right Panel - Chat View */}
         <div className="min-w-0 flex-1">
-          <ChatView ticketId={selectedTicketId} />
+          {selectedTicketId ? (
+            <ChatView ticketId={selectedTicketId} />
+          ) : (
+            <div className="flex h-full items-center justify-center rounded-3xl bg-white text-gray-400 shadow-sm">
+              Select a conversation to view
+            </div>
+          )}
         </div>
       </div>
     </div>

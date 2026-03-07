@@ -40,7 +40,7 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
   }, []);
 
   return (
-    <div className="mb-4 flex items-center justify-between rounded-3xl bg-white p-4 shadow-sm">
+    <div className="mb-4 flex items-center justify-between rounded-3xl bg-white p-2 shadow-sm">
       {/* Company Selector Dropdown */}
       <div ref={dropdownRef} className="relative">
         <button

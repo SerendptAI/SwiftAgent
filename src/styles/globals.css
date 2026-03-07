@@ -179,6 +179,10 @@
   @apply mx-auto max-w-7xl p-5;
 }
 
+@utility font-condensed {
+  font-stretch: condensed;
+}
+
 /* Lenis smooth scroll */
 html.lenis,
 html.lenis body {

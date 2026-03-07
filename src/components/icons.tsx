@@ -707,6 +707,55 @@ export const Icons = {
       </g>
     </svg>
   ),
+
+  inbox: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      {...props}
+      width="45"
+      height="45"
+      viewBox="0 0 45 45"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M3.75 11.25L16.7119 18.5943C21.4905 21.3019 23.5095 21.3019 28.2881 18.5943L41.25 11.25"
+        stroke="black"
+        stroke-width="1.5"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M3.77957 25.2668C3.90214 31.0148 3.96343 33.8886 6.0843 36.0176C8.20515 38.1465 11.1569 38.2206 17.0603 38.3689C20.6987 38.4604 24.3013 38.4604 27.9398 38.3689C33.8432 38.2206 36.7948 38.1465 38.9158 36.0176C41.0366 33.8886 41.0979 31.0148 41.2204 25.2668C41.2599 23.4186 41.2599 21.5814 41.2204 19.7333C41.0979 13.9854 41.0366 11.1114 38.9158 8.98249C36.7948 6.85356 33.8432 6.7794 27.9398 6.63107C24.3013 6.53965 20.6987 6.53965 17.0603 6.63105C11.1569 6.77936 8.20515 6.85352 6.08428 8.98247C3.96341 11.1114 3.90214 13.9853 3.77955 19.7333C3.74014 21.5814 3.74016 23.4186 3.77957 25.2668Z"
+        stroke="black"
+        stroke-width="1.5"
+        stroke-linejoin="round"
+      />
+    </svg>
+  ),
+  SearchWhite: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      {...props}
+      width="45"
+      height="45"
+      viewBox="0 0 45 45"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M31.875 31.875L39.375 39.375"
+        stroke="white"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M35.625 20.625C35.625 12.3407 28.9093 5.625 20.625 5.625C12.3407 5.625 5.625 12.3407 5.625 20.625C5.625 28.9093 12.3407 35.625 20.625 35.625C28.9093 35.625 35.625 28.9093 35.625 20.625Z"
+        stroke="white"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  ),
   phoneIncoming: (props: React.SVGProps<SVGSVGElement>) => (
     <svg
       {...props}

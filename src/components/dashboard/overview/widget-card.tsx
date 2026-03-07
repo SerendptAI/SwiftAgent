@@ -4,6 +4,7 @@ import { ChevronDown, Copy } from "lucide-react";
 import { useState } from "react";
 
 import { Loader } from "@/components/loader";
+import { useCurrentUser } from "@/hooks/use-auth";
 import { useDashboardWidget } from "@/hooks/use-dashboard";
 import { DashboardWidget } from "@/services/dashboard";
 
@@ -13,9 +14,14 @@ export function WidgetCard({
   initialData?: DashboardWidget | null;
 }) {
   const [isOpen, setIsOpen] = useState(true);
+  const { data: user } = useCurrentUser();
   const { data: widgetData, isLoading } = useDashboardWidget(initialData);
 
-  const codeSnippet = widgetData?.embed_code || "";
+  const companyId = widgetData?.company_id || user?.company_id || "";
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const codeSnippet = companyId
+    ? `<script src="${origin}/widget.js" data-company-id="${companyId}" defer></script>`
+    : "";
 
   const handleCopy = () => {
     if (codeSnippet) {
@@ -32,7 +38,7 @@ export function WidgetCard({
           {/* Code snippet with rounded notch in top-left */}
           <div className="relative">
             {/* White cutout that creates the notch — curves via rounded-br */}
-            <div className="bg-muted absolute top-0 left-0 z-[1] h-[48px] w-[35%] rounded-br-md">
+            <div className="bg-muted absolute top-0 left-0 z-1 h-[48px] w-[35%] rounded-br-md">
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="font-dm-mono relative z-10 mb-[-20px] flex items-center gap-2 rounded-md bg-[#006BE5] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1E88E5]"
@@ -49,15 +55,15 @@ export function WidgetCard({
                 </div>
               ) : (
                 <>
-                  <p className="font-stolzl text-[15px] leading-relaxed break-all text-gray-500">
+                  <pre className="font-dm-mono rounded-lg p-4 text-[13px] leading-relaxed break-all whitespace-pre-wrap text-gray-700">
                     {codeSnippet ? codeSnippet : "No widget code found."}
-                  </p>
+                  </pre>
 
                   {/* Copy button */}
                   <button
                     onClick={handleCopy}
                     disabled={!codeSnippet}
-                    className="mt-6 flex w-full items-center justify-center gap-2.5 rounded-xl bg-[#006BE5] py-4 text-base font-bold text-white shadow-[-4px_4px_0px_0px_#000000] transition-all hover:bg-[#1E88E5] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-2px_2px_0px_0px_#000000] disabled:opacity-50"
+                    className="font-dm-mono mt-6 flex w-full items-center justify-center gap-2.5 rounded-md bg-[#006BE5] py-2 text-base font-normal text-white shadow-[-4px_4px_0px_0px_#000000] transition-all hover:bg-[#1E88E5] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-2px_2px_0px_0px_#000000] disabled:opacity-50"
                   >
                     <Copy className="h-5 w-5" />
                     Copy

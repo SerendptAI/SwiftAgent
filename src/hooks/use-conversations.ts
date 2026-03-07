@@ -1,35 +1,29 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
-import {
-  conversationsApi,
-  CreateConversationPayload,
-} from "@/services/conversations";
-import { Conversation } from "@/services/conversations";
+import { useCurrentUser } from "@/hooks/use-auth";
+import { chatsApi } from "@/services/conversations";
 
-export function useConversations(initialData?: Conversation[]) {
+/** Fetch the list of chat sessions for the current company. */
+export function useChats() {
+  const { data: user } = useCurrentUser();
+  const companyId = user?.company_id;
+
   return useQuery({
-    queryKey: ["conversations"],
-    queryFn: conversationsApi.list,
-    initialData: initialData,
+    queryKey: ["chats", companyId],
+    queryFn: () => chatsApi.list(companyId!),
+    enabled: !!companyId,
   });
 }
 
-export function useConversation(conversationId: string | null) {
+/** Fetch the full detail (with messages) for a single chat session. */
+export function useChat(chatId: string | null) {
+  const { data: user } = useCurrentUser();
+  const companyId = user?.company_id;
+
   return useQuery({
-    queryKey: ["conversations", conversationId],
-    queryFn: () => conversationsApi.get(conversationId!),
-    enabled: !!conversationId,
-  });
-}
-
-export function useCreateConversation() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (payload: CreateConversationPayload) =>
-      conversationsApi.create(payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["conversations"] });
-    },
+    queryKey: ["chats", companyId, chatId],
+    queryFn: () => chatsApi.getById(companyId!, chatId!),
+    enabled: !!companyId && !!chatId,
+    placeholderData: keepPreviousData,
   });
 }

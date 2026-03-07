@@ -52,15 +52,20 @@ function StatCard({
   return (
     <div
       className={cn(
-        "flex min-h-[220px] flex-col justify-between rounded-3xl bg-white p-6 shadow-sm",
+        "flex min-h-[250px] flex-col justify-between rounded-3xl bg-white p-6",
         className,
       )}
     >
-      <div>
+      <div className="flex h-3/4 flex-col justify-between">
         <div className="mb-6 flex items-start justify-between">
           <div className="flex items-center gap-2">
             <Icon className={cn("h-7 w-7", iconColor || "text-gray-500")} />
-            <span className={cn("font-normal", iconColor || "text-gray-900")}>
+            <span
+              className={cn(
+                "font-dm-mono font-normal",
+                iconColor || "text-gray-900",
+              )}
+            >
               {title}
             </span>
           </div>
@@ -69,17 +74,19 @@ function StatCard({
           </button>
         </div>
 
-        <div className="my-8">
+        <div>
           {!action && (
-            <p className="mb-1 text-sm font-medium text-gray-400">Today</p>
+            <p className="font-dm-mono mb-1 text-sm font-medium text-gray-400">
+              Today
+            </p>
           )}
 
           <div className="flex items-end justify-between gap-3">
-            <span className="text-5xl font-bold tracking-tight text-gray-900">
+            <span className="font-instrument font-condensed text-5xl font-semibold tracking-tight text-gray-900">
               {isLoading ? "-" : value}
             </span>
             {pending && (
-              <span className="mb-2 text-lg font-medium text-gray-400">
+              <span className="font-stolzl mb-2 text-lg font-medium text-gray-400">
                 pending
               </span>
             )}
@@ -93,7 +100,7 @@ function StatCard({
                 )}
                 <span
                   className={cn(
-                    "font-semi-bold text-lg",
+                    "font-instrument font-semi-bold text-lg",
                     isUp ? "text-[#008751]" : "text-[#F25430]",
                   )}
                 >
@@ -107,7 +114,7 @@ function StatCard({
 
       {/* Last 7 days trend footer - only for non-action cards with trends */}
       {trend && !action && !isLoading && (
-        <div className="flex items-end justify-between">
+        <div className="font-stolzl flex items-end justify-between">
           <div className="flex w-full items-center justify-between gap-4 text-sm font-medium">
             <span className="text-gray-900">Last 7 days</span>
             <div className="flex items-center gap-2">
@@ -126,7 +133,7 @@ function StatCard({
         <button
           onClick={action.onClick}
           disabled={isLoading}
-          className="mt-2 w-full rounded-xl bg-[#6433CC] py-4 text-base font-bold text-white shadow-[-4px_4px_0px_0px_#000000] transition-transform hover:bg-[#d94526] active:translate-y-1 active:shadow-none disabled:opacity-50"
+          className="font-dm-mono w-full rounded-md bg-[#6433CC] py-1 text-base font-bold text-white shadow-[-4px_4px_0px_0px_#000000] transition-transform hover:bg-[#d94526] active:translate-y-1 active:shadow-none disabled:opacity-50"
         >
           {action.label}
         </button>

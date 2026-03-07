@@ -2,45 +2,50 @@ import { apiClient } from "@/lib/api-client";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
-export interface ConversationMessage {
+export interface ChatMessage {
   role: "system" | "user" | "agent" | string;
   content: string;
-  timestamp: string;
+  timestamp?: string;
 }
 
-export interface Conversation {
+/** Returned by the list endpoint (no messages). */
+export interface ChatSession {
   id: string;
-  user_id: string;
-  messages: ConversationMessage[];
+  company_id: string;
+  session_id: string;
   created_at: string;
   updated_at: string;
+  message_count: number;
 }
 
-export interface CreateConversationPayload {
-  messages: Omit<ConversationMessage, "timestamp">[];
+/** Returned by the detail endpoint (includes messages). */
+export interface ChatSessionDetail extends ChatSession {
+  messages: ChatMessage[];
 }
 
 // ── API Service ────────────────────────────────────────────────────────────────
 
-export const conversationsApi = {
-  list: async (): Promise<Conversation[]> => {
-    const { data } = await apiClient.get<Conversation[]>(
-      "/api/v1/conversations/",
+export const chatsApi = {
+  /** Get a list of chat sessions (without messages) for a company. */
+  list: async (
+    companyId: string,
+    limit: number = 50,
+    skip: number = 0,
+  ): Promise<ChatSession[]> => {
+    const { data } = await apiClient.get<ChatSession[]>(
+      `/api/v1/dashboard/${companyId}/chats`,
+      { params: { limit, skip } },
     );
     return data;
   },
 
-  get: async (conversationId: string): Promise<Conversation> => {
-    const { data } = await apiClient.get<Conversation>(
-      `/api/v1/conversations/${conversationId}`,
-    );
-    return data;
-  },
-
-  create: async (payload: CreateConversationPayload): Promise<Conversation> => {
-    const { data } = await apiClient.post<Conversation>(
-      `/api/v1/conversations/`,
-      payload,
+  /** Get the full history of a specific chat session. */
+  getById: async (
+    companyId: string,
+    chatId: string,
+  ): Promise<ChatSessionDetail> => {
+    const { data } = await apiClient.get<ChatSessionDetail>(
+      `/api/v1/dashboard/${companyId}/chats/${chatId}`,
     );
     return data;
   },

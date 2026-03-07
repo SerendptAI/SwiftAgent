@@ -14,10 +14,6 @@ export default async function DashboardPage() {
   // 1. Get server-side API client
   const api = await getServerApiClient();
 
-  // 2. Fetch initial data (we'll need a way to get companyId - for now assuming it's available or we fetch 'me')
-  // For demonstration, let's try to fetch stats if possible.
-  // Note: In a real app, you'd get the companyId from the session/token.
-
   let initialStats: DashboardStats | null = null;
   let initialVisitors: DashboardVisitor[] = [];
   let initialWidget: DashboardWidget | null = null;

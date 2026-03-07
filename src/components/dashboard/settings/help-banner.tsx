@@ -24,7 +24,7 @@ export function HelpBanner({
         className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-100"
       />
       <h2
-        className={`font-stolzl font-instrument-sans relative z-10 text-4xl leading-[95%] font-bold tracking-[-2%] ${textColor}`}
+        className={`font-instrument font-condensed relative z-10 text-4xl leading-[95%] font-[650] tracking-[-2%] ${textColor}`}
       >
         Need help?
       </h2>
