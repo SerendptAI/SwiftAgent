@@ -1,6 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
+import Image from "next/image";
 import { useState } from "react";
 
 import { Loader } from "@/components/loader";
@@ -9,7 +10,7 @@ import { cn } from "@/lib/utils";
 
 interface TicketListProps {
   selectedTicketId: string;
-  onSelectTicket: (id: string) => void;
+  onSelectTicket: (id: string, index: number) => void;
 }
 
 export function TicketList({
@@ -113,7 +114,7 @@ export function TicketList({
             No conversations found.
           </div>
         ) : (
-          chats.map((chat) => {
+          chats.map((chat, index) => {
             let displayTime = "";
             if (chat.updated_at) {
               try {
@@ -131,10 +132,17 @@ export function TicketList({
               ? chat.session_id.slice(0, 13).toUpperCase()
               : "UNKNOWN";
 
+            const avatarImages = [
+              "/images/chats/img1.svg",
+              "/images/chats/img2.svg",
+              "/images/chats/img3.svg",
+            ];
+            const avatarSrc = avatarImages[index % avatarImages.length];
+
             return (
               <button
                 key={chat.id}
-                onClick={() => onSelectTicket(chat.id)}
+                onClick={() => onSelectTicket(chat.id, index)}
                 className={cn(
                   "flex w-full items-center gap-3 rounded-2xl p-3 text-left transition-colors",
                   selectedTicketId === chat.id
@@ -142,44 +150,14 @@ export function TicketList({
                     : "hover:bg-gray-50",
                 )}
               >
-                {/* Castle Avatar */}
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#6433CC] to-[#F25430]">
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    className="text-white"
-                  >
-                    <path
-                      d="M4 20V10L6 8V4H8V6H10V4H14V6H16V4H18V8L20 10V20H4Z"
-                      fill="currentColor"
-                    />
-                    <rect
-                      x="8"
-                      y="12"
-                      width="3"
-                      height="4"
-                      rx="0.5"
-                      fill="#6433CC"
-                    />
-                    <rect
-                      x="13"
-                      y="12"
-                      width="3"
-                      height="4"
-                      rx="0.5"
-                      fill="#6433CC"
-                    />
-                    <rect
-                      x="10"
-                      y="16"
-                      width="4"
-                      height="4"
-                      rx="0.5"
-                      fill="#6433CC"
-                    />
-                  </svg>
+                {/* Chat Avatar */}
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-50">
+                  <Image
+                    src={avatarSrc}
+                    alt="Chat avatar"
+                    width={36}
+                    height={31}
+                  />
                 </div>
 
                 {/* Chat Info */}

@@ -9,6 +9,12 @@ import { Icons } from "@/components/icons";
 
 export function TicketingClient() {
   const [selectedTicketId, setSelectedTicketId] = useState("");
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const handleSelectTicket = (id: string, index: number) => {
+    setSelectedTicketId(id);
+    setSelectedIndex(index);
+  };
 
   return (
     <div className="flex h-full w-full flex-col">
@@ -38,14 +44,14 @@ export function TicketingClient() {
         <div className="w-[320px] shrink-0">
           <TicketList
             selectedTicketId={selectedTicketId}
-            onSelectTicket={setSelectedTicketId}
+            onSelectTicket={handleSelectTicket}
           />
         </div>
 
         {/* Right Panel - Chat View */}
         <div className="min-w-0 flex-1">
           {selectedTicketId ? (
-            <ChatView ticketId={selectedTicketId} />
+            <ChatView ticketId={selectedTicketId} avatarIndex={selectedIndex} />
           ) : (
             <div className="flex h-full items-center justify-center rounded-3xl bg-white text-gray-400 shadow-sm">
               Select a conversation to view

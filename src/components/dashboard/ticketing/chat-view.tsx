@@ -1,14 +1,22 @@
 import { format } from "date-fns";
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 import { useChat } from "@/hooks/use-conversations";
 import { cn } from "@/lib/utils";
 
+const AVATAR_IMAGES = [
+  "/images/chats/img1.svg",
+  "/images/chats/img2.svg",
+  "/images/chats/img3.svg",
+];
+
 interface ChatViewProps {
   ticketId: string;
+  avatarIndex?: number;
 }
 
-export function ChatView({ ticketId }: ChatViewProps) {
+export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
   const { data: chat, isFetching } = useChat(ticketId);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -50,23 +58,13 @@ export function ChatView({ ticketId }: ChatViewProps) {
 
       {/* Chat Header */}
       <div className="flex items-center gap-3 border-b border-gray-100 px-6 py-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F25430]/10">
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            className="text-[#F25430]"
-          >
-            <path
-              d="M10 10C12.2091 10 14 8.20914 14 6C14 3.79086 12.2091 2 10 2C7.79086 2 6 3.79086 6 6C6 8.20914 7.79086 10 10 10Z"
-              fill="currentColor"
-            />
-            <path
-              d="M10 12C6.13401 12 3 14.2386 3 17C3 17.5523 3.44772 18 4 18H16C16.5523 18 17 17.5523 17 17C17 14.2386 13.866 12 10 12Z"
-              fill="currentColor"
-            />
-          </svg>
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-50">
+          <Image
+            src={AVATAR_IMAGES[avatarIndex % AVATAR_IMAGES.length]}
+            alt="Chat avatar"
+            width={36}
+            height={31}
+          />
         </div>
         <div className="flex flex-col">
           <span className="font-dm-mono text-sm font-bold text-gray-900">
