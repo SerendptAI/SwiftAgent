@@ -12,7 +12,9 @@ export default function SettingsLayout({
       <SettingsNav />
 
       {/* Main Content */}
-      <div className="min-w-0 flex-1 overflow-y-auto">{children}</div>
+      <div className="scrollbar-none min-w-0 flex-1 overflow-y-auto">
+        {children}
+      </div>
 
       {/* Profile Card */}
       <ProfileCard />
