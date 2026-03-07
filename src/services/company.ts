@@ -26,7 +26,12 @@ export interface Company {
   updated_at: string;
 }
 
-export type CompanyUpdateSection = "identity" | "type" | "boundaries" | "voice";
+export type CompanyUpdateSection =
+  | "info"
+  | "identity"
+  | "type"
+  | "boundaries"
+  | "voice";
 
 export const companyApi = {
   create: async (payload: Record<string, unknown>): Promise<Company> => {

@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { useCompanyMutations } from "@/hooks/use-company";
+import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
 import { cn } from "@/lib/utils";
 import { useOnboardingStore } from "@/store/onboarding-store";
 
@@ -37,6 +37,8 @@ const COMPANIES: Company[] = [
 ];
 
 interface CompanyInfoStepProps {
+  companyId?: string | null;
+  isUpdateMode?: boolean;
   onNext?: () => void;
   setCompanyId?: (id: string) => void;
   footerAction?: React.ReactNode;
@@ -44,36 +46,60 @@ interface CompanyInfoStepProps {
 }
 
 export function CompanyInfoStep({
+  companyId,
+  isUpdateMode,
   onNext,
   setCompanyId,
   footerAction,
   hideLogoUpload,
 }: CompanyInfoStepProps) {
-  const { createCompany, uploadLogo } = useCompanyMutations();
+  const { createCompany, updateCompany, uploadLogo } = useCompanyMutations();
   const setTypedCompanyName = useOnboardingStore(
     (state) => state.setTypedCompanyName,
   );
+
+  const { data: companyData } = useCompanyQuery(
+    isUpdateMode ? companyId : null,
+  );
+
   const isCreating = createCompany.isPending;
+  const isUpdating = updateCompany.isPending;
   const isUploading = uploadLogo.isPending;
 
   const {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm<CompanyInfoValues>({
     resolver: zodResolver(companyInfoSchema),
     defaultValues: {
-      name: "",
-      website: "",
-      industry: "",
-      company_size: "",
-      country: "",
-      timezone: "",
-      contact_email: "",
-      phone_number: "",
+      name: companyData?.name || "",
+      website: companyData?.website || "",
+      industry: companyData?.industry || "",
+      company_size: companyData?.company_size || "",
+      country: companyData?.country || "",
+      timezone: companyData?.timezone || "",
+      contact_email: companyData?.contact_email || "",
+      phone_number: companyData?.phone_number || "",
     },
   });
+
+  useEffect(() => {
+    if (isUpdateMode && companyData) {
+      reset({
+        name: companyData.name || "",
+        website: companyData.website || "",
+        industry: companyData.industry || "",
+        company_size: companyData.company_size || "",
+        country: companyData.country || "",
+        timezone: companyData.timezone || "",
+        contact_email: companyData.contact_email || "",
+        phone_number: companyData.phone_number || "",
+      });
+    }
+  }, [isUpdateMode, companyData, reset]);
 
   const typedName = watch("name");
 
@@ -92,20 +118,35 @@ export function CompanyInfoStep({
 
   const onSubmit = async (data: CompanyInfoValues) => {
     try {
-      const company = await createCompany.mutateAsync({
-        ...data,
-      });
+      let resolvedCompanyId = companyId;
 
-      setCompanyId?.(company.id);
+      if (isUpdateMode && companyId) {
+        await updateCompany.mutateAsync({
+          companyId,
+          section: "info",
+          payload: data,
+        });
+      } else {
+        const company = await createCompany.mutateAsync({
+          ...data,
+        });
+        resolvedCompanyId = company.id;
+        setCompanyId?.(company.id);
+      }
 
-      if (logoFile) {
-        await uploadLogo.mutateAsync({ companyId: company.id, file: logoFile });
+      if (logoFile && resolvedCompanyId) {
+        await uploadLogo.mutateAsync({
+          companyId: resolvedCompanyId,
+          file: logoFile,
+        });
       }
 
       onNext?.();
     } catch (error) {
       console.error(error);
-      alert("Failed to create company");
+      alert(
+        isUpdateMode ? "Failed to update company" : "Failed to create company",
+      );
     }
   };
 
@@ -395,13 +436,15 @@ export function CompanyInfoStep({
         {footerAction ?? (
           <NextButton
             onClick={handleSubmit(onSubmit)}
-            disabled={isCreating || isUploading}
+            disabled={isCreating || isUpdating || isUploading}
           >
-            {isCreating || isUploading ? (
+            {isCreating || isUpdating || isUploading ? (
               <span className="flex items-center justify-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 Saving...
               </span>
+            ) : isUpdateMode ? (
+              "UPDATE"
             ) : (
               "Next"
             )}

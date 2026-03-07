@@ -56,7 +56,7 @@ export function PlanCard({
           {plan.features.map((feature, i) => (
             <li
               key={i}
-              className="flex items-start text-[11px] leading-[1.6] text-gray-800 uppercase"
+              className="mb-0 flex items-start text-[11px] leading-[1.6] text-gray-800 uppercase"
             >
               <span className="mr-2 inline-block pt-[2px] text-[10px]">•</span>
               <span className="whitespace-pre-line">{feature}</span>

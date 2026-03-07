@@ -48,7 +48,7 @@ export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
     <div className="relative flex h-full flex-col rounded-3xl bg-white shadow-sm">
       {/* Subtle loading bar */}
       {isFetching && (
-        <div className="absolute top-0 right-0 left-0 z-10 h-0.5 overflow-hidden rounded-t-3xl">
+        <div className="absolute top-0 right-0 left-0 z-10 ml-4 h-0.5 overflow-hidden rounded-t-3xl">
           <div
             className="h-full w-1/3 animate-pulse rounded-full bg-[#2196F3]"
             style={{ animation: "loading 1s ease-in-out infinite" }}
@@ -86,26 +86,26 @@ export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
           </div>
         )}
 
-        {messages.map((message, i) => (
-          <div
-            key={`${chat?.id}-${i}`}
-            className={cn(
-              "flex",
-              message.role === "agent" ? "justify-end" : "justify-start",
-            )}
-          >
+        {messages.map((message, i) => {
+          const isUser = message.role === "user";
+          return (
             <div
-              className={cn(
-                "max-w-[75%] rounded-2xl px-4 py-3 text-sm",
-                message.role === "agent"
-                  ? "bg-[#2196F3] text-white"
-                  : "bg-gray-100 text-gray-900",
-              )}
+              key={`${chat?.id}-${i}`}
+              className={cn("flex", isUser ? "justify-end" : "justify-start")}
             >
-              {message.content}
+              <div
+                className={cn(
+                  "max-w-[75%] rounded-2xl px-4 py-3 text-sm",
+                  isUser
+                    ? "bg-[#F2F8FF] text-[#006BE5]"
+                    : "bg-[#F2F8FF] text-gray-900",
+                )}
+              >
+                {message.content}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
         <div ref={messagesEndRef} />
       </div>
 

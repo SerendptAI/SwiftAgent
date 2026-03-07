@@ -1,9 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus, X } from "lucide-react";
+import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { useCompanyMutations } from "@/hooks/use-company";
+import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
 
 import { NextButton } from "./ui-elements";
 
@@ -16,41 +17,63 @@ type AnswerBoundariesValues = z.infer<typeof answerBoundariesSchema>;
 
 interface AnswerBoundariesStepProps {
   companyId?: string | null;
+  isUpdateMode?: boolean;
   onNext?: () => void;
   footerAction?: React.ReactNode;
 }
 
 export function AnswerBoundariesStep({
   companyId,
+  isUpdateMode,
   onNext,
   footerAction,
 }: AnswerBoundariesStepProps) {
   const { updateCompany } = useCompanyMutations();
   const isPending = updateCompany.isPending;
 
-  const { control, handleSubmit, watch } = useForm<AnswerBoundariesValues>({
-    resolver: zodResolver(answerBoundariesSchema),
-    defaultValues: {
-      ignoredTopics: [
-        "FAQ",
-        "MANUALS",
-        "POLICIES",
-        "SOPS",
-        "INFO",
-        "INFO",
-        "INFO",
-        "INFO",
-        "INFO",
-        "INFO",
-        "INFO",
-        "INFO",
-        "INFO",
-        "INFO",
-        "INFO",
-      ],
-      availableTopics: ["INFO", "INFO", "INFO", "INFO", "INFO"],
-    },
-  });
+  const { data: companyData } = useCompanyQuery(
+    isUpdateMode ? companyId : null,
+  );
+
+  const { control, handleSubmit, watch, reset } =
+    useForm<AnswerBoundariesValues>({
+      resolver: zodResolver(answerBoundariesSchema),
+      defaultValues: {
+        ignoredTopics: companyData?.custom_info || [
+          "FAQ",
+          "MANUALS",
+          "POLICIES",
+          "SOPS",
+          "INFO",
+          "INFO",
+          "INFO",
+          "INFO",
+          "INFO",
+          "INFO",
+          "INFO",
+          "INFO",
+          "INFO",
+          "INFO",
+          "INFO",
+        ],
+        availableTopics: companyData?.enabled_sources || [
+          "INFO",
+          "INFO",
+          "INFO",
+          "INFO",
+          "INFO",
+        ],
+      },
+    });
+
+  useEffect(() => {
+    if (isUpdateMode && companyData) {
+      reset({
+        ignoredTopics: companyData.custom_info || [],
+        availableTopics: companyData.enabled_sources || [],
+      });
+    }
+  }, [isUpdateMode, companyData, reset]);
 
   const {
     fields: ignoredFields,
@@ -164,6 +187,8 @@ export function AnswerBoundariesStep({
                 <Loader2 className="h-4 w-4 animate-spin" />
                 Saving...
               </span>
+            ) : isUpdateMode ? (
+              "UPDATE"
             ) : (
               "Next"
             )}

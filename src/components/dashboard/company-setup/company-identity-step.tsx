@@ -1,9 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { useCompanyMutations } from "@/hooks/use-company";
+import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
 
 import { FormLabel, FormSelect, FormTextarea, NextButton } from "./ui-elements";
 
@@ -18,27 +19,43 @@ type CompanyIdentityValues = z.infer<typeof companyIdentitySchema>;
 
 interface CompanyIdentityStepProps {
   companyId?: string | null;
+  isUpdateMode?: boolean;
   onNext?: () => void;
   footerAction?: React.ReactNode;
 }
 
 export function CompanyIdentityStep({
   companyId,
+  isUpdateMode,
   onNext,
   footerAction,
 }: CompanyIdentityStepProps) {
   const { updateCompany } = useCompanyMutations();
   const isPending = updateCompany.isPending;
 
-  const { register, handleSubmit } = useForm<CompanyIdentityValues>({
+  const { data: companyData } = useCompanyQuery(
+    isUpdateMode ? companyId : null,
+  );
+
+  const { register, handleSubmit, reset } = useForm<CompanyIdentityValues>({
     resolver: zodResolver(companyIdentitySchema),
     defaultValues: {
-      description: "",
-      customer_value: "",
-      brand_tone: "",
-      primary_language: "en",
+      description: companyData?.description || "",
+      customer_value: companyData?.customer_value || "",
+      brand_tone: companyData?.brand_tone || "",
+      primary_language: companyData?.primary_language || "en",
     },
   });
+  useEffect(() => {
+    if (isUpdateMode && companyData) {
+      reset({
+        description: companyData.description || "",
+        customer_value: companyData.customer_value || "",
+        brand_tone: companyData.brand_tone || "",
+        primary_language: companyData.primary_language || "en",
+      });
+    }
+  }, [isUpdateMode, companyData, reset]);
 
   const onSubmit = async (data: CompanyIdentityValues) => {
     try {
@@ -139,6 +156,8 @@ export function CompanyIdentityStep({
                       <Loader2 className="h-4 w-4 animate-spin" />
                       Saving...
                     </span>
+                  ) : isUpdateMode ? (
+                    "UPDATE"
                   ) : (
                     "Next"
                   )}

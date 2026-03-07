@@ -1,11 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, Loader2 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Icons } from "@/components/icons";
-import { useCompanyMutations } from "@/hooks/use-company";
+import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
 import { useUploadKnowledge } from "@/hooks/use-knowledge";
 import { cn } from "@/lib/utils";
 
@@ -19,24 +19,43 @@ type KnowledgeSourcesValues = z.infer<typeof knowledgeSourcesSchema>;
 
 interface KnowledgeSourcesStepProps {
   companyId?: string | null;
+  isUpdateMode?: boolean;
   onNext?: () => void;
   footerAction?: React.ReactNode;
 }
 
 export function KnowledgeSourcesStep({
   companyId,
+  isUpdateMode,
   onNext,
   footerAction,
 }: KnowledgeSourcesStepProps) {
   const { updateCompany } = useCompanyMutations();
   const isPending = updateCompany.isPending;
 
-  const { watch, setValue, handleSubmit } = useForm<KnowledgeSourcesValues>({
-    resolver: zodResolver(knowledgeSourcesSchema),
-    defaultValues: {
-      companyType: "saas",
-    },
-  });
+  const { data: companyData } = useCompanyQuery(
+    isUpdateMode ? companyId : null,
+  );
+
+  const { watch, setValue, handleSubmit, reset } =
+    useForm<KnowledgeSourcesValues>({
+      resolver: zodResolver(knowledgeSourcesSchema),
+      defaultValues: {
+        companyType: (companyData?.company_type === "crypto"
+          ? "crypto"
+          : "saas") as "saas" | "crypto",
+      },
+    });
+
+  useEffect(() => {
+    if (isUpdateMode && companyData) {
+      reset({
+        companyType: (companyData.company_type === "crypto"
+          ? "crypto"
+          : "saas") as "saas" | "crypto",
+      });
+    }
+  }, [isUpdateMode, companyData, reset]);
 
   const companyType = watch("companyType");
 
@@ -163,6 +182,8 @@ export function KnowledgeSourcesStep({
                   <Loader2 className="h-4 w-4 animate-spin" />
                   Saving...
                 </span>
+              ) : isUpdateMode ? (
+                "UPDATE"
               ) : (
                 "Next"
               )}
@@ -174,7 +195,7 @@ export function KnowledgeSourcesStep({
                 disabled={isPending}
                 className="w-full cursor-pointer rounded-xl bg-[#8DA4FF] py-4 text-center font-semibold text-white shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-blue-400 disabled:opacity-50"
               >
-                {isPending ? "Saving..." : "Next"}
+                {isPending ? "Saving..." : isUpdateMode ? "UPDATE" : "Next"}
               </button>
               <button
                 onClick={onNext}
@@ -247,7 +268,7 @@ function UploadSection({
         <div className="flex flex-col">
           <span className="text-lg font-medium">{label}</span>
           {uploadedFileName && (
-            <span className="text-sm text-white/80 max-w-[200px] truncate">
+            <span className="max-w-[200px] truncate text-sm text-white/80">
               {uploadedFileName}
             </span>
           )}

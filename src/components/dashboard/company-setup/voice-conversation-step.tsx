@@ -1,10 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { useCompanyMutations } from "@/hooks/use-company";
+import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
 import { cn } from "@/lib/utils";
 
 import { NextButton } from "./ui-elements";
@@ -17,24 +18,43 @@ type VoiceConversationValues = z.infer<typeof voiceConversationSchema>;
 
 interface VoiceConversationStepProps {
   companyId?: string | null;
+  isUpdateMode?: boolean;
   onNext?: () => void;
   footerAction?: React.ReactNode;
 }
 
 export function VoiceConversationStep({
   companyId,
+  isUpdateMode,
   onNext,
   footerAction,
 }: VoiceConversationStepProps) {
   const { updateCompany } = useCompanyMutations();
   const isPending = updateCompany.isPending;
 
-  const { watch, setValue, handleSubmit } = useForm<VoiceConversationValues>({
-    resolver: zodResolver(voiceConversationSchema),
-    defaultValues: {
-      voiceStyle: "professional",
-    },
-  });
+  const { data: companyData } = useCompanyQuery(
+    isUpdateMode ? companyId : null,
+  );
+
+  const { watch, setValue, handleSubmit, reset } =
+    useForm<VoiceConversationValues>({
+      resolver: zodResolver(voiceConversationSchema),
+      defaultValues: {
+        voiceStyle:
+          (companyData?.voice_style as VoiceConversationValues["voiceStyle"]) ||
+          "professional",
+      },
+    });
+
+  useEffect(() => {
+    if (isUpdateMode && companyData) {
+      reset({
+        voiceStyle:
+          (companyData.voice_style as VoiceConversationValues["voiceStyle"]) ||
+          "professional",
+      });
+    }
+  }, [isUpdateMode, companyData, reset]);
 
   const selectedVoice = watch("voiceStyle");
 
@@ -113,6 +133,8 @@ export function VoiceConversationStep({
                 <Loader2 className="h-4 w-4 animate-spin" />
                 Saving...
               </span>
+            ) : isUpdateMode ? (
+              "UPDATE"
             ) : (
               "Finish"
             )}
