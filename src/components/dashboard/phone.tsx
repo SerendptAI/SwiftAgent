@@ -4,6 +4,8 @@ import { Mic, MoreHorizontal, PhoneOff, Volume2 } from "lucide-react";
 
 import { useOnboardingStore } from "@/store/onboarding-store";
 
+import { Icons } from "../icons";
+
 export function Phone() {
   const { typedCompanyName } = useOnboardingStore();
   const displayName = typedCompanyName || "Unknown Company";
@@ -27,7 +29,12 @@ export function Phone() {
 
         {/* Gradient Circle */}
         <div className="relative flex w-full flex-1 items-center justify-center">
-          <div className="h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-orange-300 via-purple-300 to-blue-300 opacity-80 blur-sm"></div>
+          <img
+            src="/images/aiblock.svg"
+            className="h-48 w-48 animate-pulse"
+            alt="Phone"
+          />
+          {/* <div className="h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-orange-300 via-purple-300 to-blue-300 opacity-80 blur-sm"></div> */}
         </div>
 
         {/* Call Controls */}
@@ -43,7 +50,7 @@ export function Phone() {
               <Mic className="h-5 w-5" />
             </button>
             <button className="flex h-12 w-12 items-center justify-center rounded-full bg-red-500 text-white shadow-md hover:bg-red-600">
-              <PhoneOff className="h-6 w-6" />
+              <Icons.phonedown className="h-6 w-6" />
             </button>
           </div>
         </div>

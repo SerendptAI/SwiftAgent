@@ -204,68 +204,72 @@ function WidgetContent({ companyId }: { companyId: string }) {
 
         {/* --- FULL SCREEN CALL MODAL --- */}
         {callStatus === "ongoing" && (
-          <div className="absolute top-[80px] left-1/2 w-[95%] max-w-[1200px] -translate-x-1/2 overflow-hidden rounded-4xl bg-white shadow-2xl transition-all duration-300">
-            <div className="relative flex h-[600px] flex-col items-center justify-center p-8 text-center">
-              <div className="absolute top-6 flex items-center gap-2">
-                <span className="text-sm font-semibold text-gray-400 uppercase">
-                  {getFriendlyStatus(statusText)}
-                </span>
-              </div>
-
-              <div className="absolute top-20 w-full px-12">
-                <div className="mx-auto max-w-lg space-y-4">
-                  {errorMessage && (
-                    <p className="rounded-lg bg-red-50 px-3 py-2 font-mono text-sm text-red-700">
-                      {errorMessage}
-                    </p>
-                  )}
-                  {transcript && (
-                    <p className="font-dm-mono text-sm leading-relaxed text-gray-500 italic">
-                      &quot;{transcript}&quot;
-                    </p>
-                  )}
-                  {agentReply && (
-                    <p className="font-sans text-lg leading-tight font-medium text-black">
-                      {agentReply}
-                    </p>
-                  )}
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#000000A6] backdrop-blur-sm">
+            <div className="relative w-[95%] max-w-[1200px] overflow-hidden rounded-4xl bg-white shadow-2xl transition-all duration-300">
+              <div className="relative flex h-[600px] flex-col items-center justify-center p-8 text-center">
+                <div className="absolute top-6 flex items-center gap-2">
+                  <span className="text-sm font-semibold text-gray-400 uppercase">
+                    {getFriendlyStatus(statusText)}
+                  </span>
                 </div>
-              </div>
 
-              <div
-                ref={visualizerRef}
-                className="mt-12 flex h-48 w-48 items-center justify-center rounded-full bg-linear-to-br from-orange-300 via-rose-300 to-blue-300 shadow-[0_0_60px_-15px_rgba(0,0,0,0.3)] transition-transform duration-75"
-              ></div>
+                {/* <div className="absolute top-20 w-full px-12">
+                  <div className="mx-auto max-w-lg space-y-4">
+                    {errorMessage && (
+                      <p className="rounded-lg bg-red-50 px-3 py-2 font-mono text-sm text-red-700">
+                        {errorMessage}
+                      </p>
+                    )}
+                    {transcript && (
+                      <p className="font-dm-mono text-sm leading-relaxed text-gray-500 italic">
+                        &quot;{transcript}&quot;
+                      </p>
+                    )}
+                    {agentReply && (
+                      <p className="font-sans text-lg leading-tight font-medium text-black">
+                        {agentReply}
+                      </p>
+                    )}
+                  </div>
+                </div> */}
 
-              <div className="absolute bottom-10 flex w-full items-center justify-center gap-6">
-                <button className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200">
-                  <MoreHorizontal className="h-6 w-6" />
-                </button>
-                <button className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200">
-                  <Volume2 className="h-6 w-6" />
-                </button>
-                <button
-                  onClick={toggleMute}
-                  className={cn(
-                    "flex h-14 w-14 items-center justify-center rounded-full transition",
-                    isMuted
-                      ? "bg-red-100 text-red-600 hover:bg-red-200"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200",
-                  )}
+                <div
+                  ref={visualizerRef}
+                  className="flex h-48 w-48 items-center justify-center rounded-full transition-transform duration-75"
                 >
-                  {isMuted ? (
-                    <MicOff className="h-6 w-6" />
-                  ) : (
-                    <Mic className="h-6 w-6" />
-                  )}
-                </button>
+                  <img src="/images/aiblock.svg" alt="Phone" />
+                </div>
 
-                <button
-                  onClick={stop}
-                  className="flex h-14 w-14 items-center justify-center rounded-full bg-[#f25430] text-white shadow-lg transition hover:scale-105 hover:bg-red-600 hover:shadow-xl"
-                >
-                  <PhoneOff className="h-6 w-6" />
-                </button>
+                <div className="absolute bottom-10 flex w-full items-center justify-center gap-6">
+                  <button className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200">
+                    <MoreHorizontal className="h-6 w-6" />
+                  </button>
+                  <button className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200">
+                    <Volume2 className="h-6 w-6" />
+                  </button>
+                  <button
+                    onClick={toggleMute}
+                    className={cn(
+                      "flex h-14 w-14 items-center justify-center rounded-full transition",
+                      isMuted
+                        ? "bg-red-100 text-red-600 hover:bg-red-200"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200",
+                    )}
+                  >
+                    {isMuted ? (
+                      <MicOff className="h-6 w-6" />
+                    ) : (
+                      <Mic className="h-6 w-6" />
+                    )}
+                  </button>
+
+                  <button
+                    onClick={stop}
+                    className="flex h-14 w-14 items-center justify-center rounded-full bg-[#f25430] text-white shadow-lg transition hover:scale-105 hover:bg-red-600 hover:shadow-xl"
+                  >
+                    <Icons.phonedown className="h-6 w-6" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
