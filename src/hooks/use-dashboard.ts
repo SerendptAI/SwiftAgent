@@ -32,6 +32,7 @@ export function useDashboardVisitors(
     queryFn: () => dashboardApi.getVisitors(companyId!, limit),
     enabled: !!companyId,
     initialData: initialData ?? undefined,
+    refetchInterval: 3000,
   });
 }
 
