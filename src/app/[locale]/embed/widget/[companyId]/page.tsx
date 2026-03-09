@@ -160,7 +160,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
     <div className="fixed inset-0 flex flex-col items-center justify-start font-sans">
       <div className="pointer-events-auto w-full">
         {/* --- THE BANNER STRIP (Moved to top) --- */}
-        <div className="relative flex w-full flex-row items-center justify-between bg-[#F2B035] px-4 py-3 shadow-md sm:px-6">
+        <div className="relative z-60 flex w-full flex-row items-center justify-between bg-[#F2B035] px-4 py-3 shadow-md sm:px-6">
           <div className="font-dm-mono truncate pr-4 text-[10px] font-bold tracking-tight text-black uppercase sm:text-xs sm:tracking-wider md:text-sm">
             If you have any questions or inquiries, please feel free to get on a
             call with our Swift Agent.
@@ -204,7 +204,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
 
         {/* --- FULL SCREEN CALL MODAL --- */}
         {callStatus === "ongoing" && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#000000A6] backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-start justify-center bg-[#000000A6] pt-[76px] backdrop-blur-sm sm:pt-[80px]">
             <div className="relative w-[95%] max-w-[1200px] overflow-hidden rounded-4xl bg-white shadow-2xl transition-all duration-300">
               <div className="relative flex h-[600px] flex-col items-center justify-center p-8 text-center">
                 <div className="absolute top-6 flex items-center gap-2">
