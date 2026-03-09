@@ -165,10 +165,10 @@ export function HeroSection() {
           <div className="relative w-full">
             <h1
               ref={headlineRef}
-              className="font-stolzl relative z-20 mb-6 text-[2rem] leading-[1.6] font-bold text-gray-900 uppercase md:mb-2 md:text-4xl md:leading-[1.4] md:tracking-tight lg:text-3xl xl:text-4xl"
+              className="font-instrument font-condensed relative z-20 mb-6 text-[2rem] leading-[1.6] font-bold text-gray-900 uppercase md:mb-2 md:text-5xl md:leading-[1.4] md:tracking-tight lg:text-4xl xl:text-4xl"
               style={{
-                perspective: "1000px",
-                transform: "scaleY(1.4)",
+                perspective: "2000px",
+                transform: "scaleY(1.5)",
                 transformOrigin: "top",
               }}
             >
