@@ -13,7 +13,7 @@ export function TicketingClient() {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const { data: chats } = useChats();
-  const chatCount = chats?.length ?? 0;
+  const chatCount = chats?.filter((chat) => !chat.seen).length ?? 0;
 
   const handleSelectTicket = (id: string, index: number) => {
     setSelectedTicketId(id);

@@ -1,6 +1,11 @@
 "use client";
 
-import { format } from "date-fns";
+import {
+  differenceInCalendarDays,
+  format,
+  isToday,
+  isYesterday,
+} from "date-fns";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -116,10 +121,21 @@ export function TicketList({
             let displayTime = "";
             if (chat.updated_at) {
               try {
-                displayTime = format(
-                  new Date(chat.updated_at),
-                  "h:mma",
-                ).toLowerCase();
+                const date = new Date(chat.updated_at);
+                const timeStr = format(date, "h:mma").toLowerCase();
+
+                if (isToday(date)) {
+                  displayTime = timeStr;
+                } else if (isYesterday(date)) {
+                  displayTime = `Yesterday ${timeStr}`;
+                } else {
+                  const daysAgo = differenceInCalendarDays(new Date(), date);
+                  if (daysAgo < 7) {
+                    displayTime = `${daysAgo} days ago ${timeStr}`;
+                  } else {
+                    displayTime = `${format(date, "MMM d")} ${timeStr}`;
+                  }
+                }
               } catch {
                 displayTime = "";
               }
