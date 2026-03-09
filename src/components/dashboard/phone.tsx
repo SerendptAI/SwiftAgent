@@ -9,7 +9,7 @@ export function Phone() {
   const displayName = typedCompanyName || "Unknown Company";
 
   return (
-    <div className="relative mx-auto h-[90%] w-[360px] overflow-hidden rounded-[40px] border-8 border-gray-900 bg-white shadow-xl">
+    <div className="relative mx-auto h-[600px] w-[310px] overflow-hidden rounded-[40px] border-5 border-gray-900 bg-white shadow-xl">
       {/* Main Content */}
       <div className="flex h-full flex-col items-center pt-10">
         <div className="absolute mb-8 flex w-full items-start justify-between px-6">
@@ -31,8 +31,8 @@ export function Phone() {
         </div>
 
         {/* Call Controls */}
-        <div className="mb-12 w-full px-6">
-          <div className="flex items-center justify-between rounded-[30px] bg-gray-50 px-6 py-4 shadow-[-3px_3px_0px_0px_#000000]">
+        <div className="mb-6 w-full px-6">
+          <div className="flex items-center justify-between rounded-[20px] bg-gray-50 px-6 py-2 shadow-[-3px_3px_0px_0px_#000000]">
             <button className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300">
               <MoreHorizontal className="h-5 w-5" />
             </button>

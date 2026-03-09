@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { Icons } from "@/components/icons";
 import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
 import { cn } from "@/lib/utils";
 import { useOnboardingStore } from "@/store/onboarding-store";
@@ -203,7 +204,7 @@ export function CompanyInfoStep({
               onClick={() => fileInputRef.current?.click()}
               className="absolute right-1 bottom-1 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-white shadow-sm transition-colors hover:bg-gray-50"
             >
-              <Pencil className="h-3 w-3 text-gray-900" />
+              <Icons.pencil className="h-3 w-3 text-gray-900" />
             </button>
           </div>
 
@@ -279,14 +280,7 @@ export function CompanyInfoStep({
               ) : (
                 <div className="absolute inset-0 overflow-hidden bg-[#FF5722]">
                   <div className="absolute -top-4 -left-4 text-[#FF8A65]/50">
-                    <svg
-                      width="60"
-                      height="60"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                    >
-                      <rect x="2" y="2" width="20" height="20" rx="4" />
-                    </svg>
+                    <Icons.logoHolder width="60" height="60" />
                   </div>
                   <div className="absolute top-8 right-4 rotate-45 text-[#FFCCBC]/50">
                     <svg
@@ -300,12 +294,40 @@ export function CompanyInfoStep({
                   </div>
                   <div className="absolute bottom-2 left-8 -rotate-12 text-[#FFAB91]/50">
                     <svg
-                      width="50"
-                      height="50"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
+                      width="129"
+                      height="133"
+                      viewBox="0 0 129 133"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
-                      <rect x="2" y="2" width="20" height="20" rx="4" />
+                      <g clip-path="url(#clip0_891_201)">
+                        <rect width="129" height="133" fill="#F25430" />
+                        <path
+                          d="M10.4561 104.792H21.6318V93H38V109.104H26.8242V120.896H38V137H21.5439V125.208H10.3682V137H-6V120.896H5.17578V109.104H-6V93H10.4561V104.792Z"
+                          fill="#F2B035"
+                        />
+                        <path
+                          d="M59.4561 55.792H70.6318V44H87V60.1035H75.8242V71.8965H87V88H70.5439V76.208H59.3682V88H43V71.8965H54.1758V60.1035H43V44H59.4561V55.792Z"
+                          fill="#F2B035"
+                        />
+                        <path
+                          d="M1.45605 11.792H12.6318V0H29V16.1035H17.8242V27.8965H29V44H12.5439V32.208H1.36816V44H-15V27.8965H-3.82422V16.1035H-15V0H1.45605V11.792Z"
+                          fill="#F2B035"
+                        />
+                        <path
+                          d="M106.456 6.79199H117.632V-5H134V11.1035H122.824V22.8965H134V39H117.544V27.208H106.368V39H90V22.8965H101.176V11.1035H90V-5H106.456V6.79199Z"
+                          fill="#F2B035"
+                        />
+                        <path
+                          d="M114.456 110.792H125.632V99H142V115.104H130.824V126.896H142V143H125.544V131.208H114.368V143H98V126.896H109.176V115.104H98V99H114.456V110.792Z"
+                          fill="#F2B035"
+                        />
+                      </g>
+                      <defs>
+                        <clipPath id="clip0_891_201">
+                          <rect width="129" height="133" rx="10" fill="white" />
+                        </clipPath>
+                      </defs>
                     </svg>
                   </div>
                 </div>
@@ -314,7 +336,7 @@ export function CompanyInfoStep({
                 onClick={() => fileInputRef.current?.click()}
                 className="absolute right-2 bottom-2 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white shadow-md transition-colors hover:bg-gray-50"
               >
-                <Pencil className="h-4 w-4 text-gray-900" />
+                <Icons.pencil className="h-4 w-4 text-gray-900" />
               </button>
             </div>
             <div className="font-dm-mono flex flex-col justify-center pt-8">
