@@ -65,4 +65,10 @@ export const dashboardApi = {
     );
     return data;
   },
+
+  logVisitor: async (companyId: string, ipAddress: string): Promise<void> => {
+    await apiClient.post(`/api/v1/dashboard/${companyId}/visitors/log`, {
+      ip_address: ipAddress,
+    });
+  },
 };

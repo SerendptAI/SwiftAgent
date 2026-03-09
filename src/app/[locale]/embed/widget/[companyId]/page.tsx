@@ -13,6 +13,7 @@ import { use, useCallback, useEffect, useRef, useState } from "react";
 import { Icons } from "@/components/icons";
 import { useVoiceChat } from "@/hooks/use-voice-chat";
 import { cn } from "@/lib/utils";
+import { dashboardApi } from "@/services/dashboard";
 
 // This is the main widget application that runs inside the iframe
 export default function WidgetPage({
@@ -61,6 +62,29 @@ function WidgetContent({ companyId }: { companyId: string }) {
   });
 
   const callStatus = isActive ? "ongoing" : "idle";
+
+  // Log visitor when the widget is first loaded
+  useEffect(() => {
+    const logVisitorIfNew = async () => {
+      // Basic check to see if we already logged them in this session to prevent spamming
+      const sessionKey = `swift_agent_visited_${companyId}`;
+      if (sessionStorage.getItem(sessionKey)) return;
+
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const data = await res.json();
+        if (data.ip) {
+          await dashboardApi.logVisitor(companyId, data.ip);
+          sessionStorage.setItem(sessionKey, "true");
+          console.log("Visitor logged successfully.");
+        }
+      } catch (err) {
+        console.error("Failed to log visitor:", err);
+      }
+    };
+
+    logVisitorIfNew();
+  }, [companyId]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
