@@ -14,6 +14,8 @@ export interface User {
   picture?: string;
   company_id?: string;
   onboarding_completed?: boolean;
+  personal_email?: string;
+  personal_phone?: string;
   status?: string;
   created_at?: string;
   updated_at?: string;
@@ -37,6 +39,14 @@ export function loginWithGoogle(locale: string = "en"): Promise<void> {
 
 export async function getCurrentUser(): Promise<User> {
   const { data } = await apiClient.get<User>("/api/v1/auth/me");
+  return data;
+}
+
+export async function updateProfile(payload: {
+  personal_email?: string;
+  personal_phone?: string;
+}): Promise<User> {
+  const { data } = await apiClient.patch<User>("/api/v1/auth/me", payload);
   return data;
 }
 
