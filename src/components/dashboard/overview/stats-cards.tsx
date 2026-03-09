@@ -6,6 +6,7 @@ import {
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { Icons } from "@/components/icons";
 import { useDashboardStats } from "@/hooks/use-dashboard";
@@ -147,6 +148,7 @@ export function StatsCards({
 }: {
   initialData?: DashboardStats | null;
 }) {
+  const router = useRouter();
   const { data: stats, isLoading } = useDashboardStats(initialData);
 
   return (
@@ -167,9 +169,12 @@ export function StatsCards({
       <StatCard
         title="CHATS"
         icon={Icons.chats}
-        value={stats?.chats.answered || 0}
+        value={stats?.chats.pending || 0}
         pending={true}
-        action={{ label: "Respond", onClick: () => {} }}
+        action={{
+          label: "Respond",
+          onClick: () => router.push("/dashboard/ticketing"),
+        }}
         iconColor="text-[#6433CC]"
         isLoading={isLoading}
       />
