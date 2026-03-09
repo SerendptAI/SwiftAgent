@@ -1,9 +1,11 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import type { CompanyUpdateSection } from "@/services/company";
 import { companyApi } from "@/services/company";
 
 export function useCompanyMutations() {
+  const queryClient = useQueryClient();
+
   const createCompany = useMutation({ mutationFn: companyApi.create });
 
   const updateCompany = useMutation({
@@ -16,6 +18,10 @@ export function useCompanyMutations() {
       section: CompanyUpdateSection;
       payload: Record<string, unknown>;
     }) => companyApi.update(companyId, section, payload),
+    onSuccess: (_, { companyId }) => {
+      queryClient.invalidateQueries({ queryKey: ["company", companyId] });
+      queryClient.invalidateQueries({ queryKey: ["company"] });
+    },
   });
 
   const uploadLogo = useMutation({
