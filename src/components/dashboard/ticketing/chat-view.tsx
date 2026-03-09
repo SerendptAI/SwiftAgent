@@ -2,7 +2,8 @@ import { format } from "date-fns";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 
-import { useChat } from "@/hooks/use-conversations";
+import { useCurrentUser } from "@/hooks/use-auth";
+import { useChat, useMarkChatSeen } from "@/hooks/use-conversations";
 import { cn } from "@/lib/utils";
 
 const AVATAR_IMAGES = [
@@ -17,12 +18,22 @@ interface ChatViewProps {
 }
 
 export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
+  const { data: user } = useCurrentUser();
+  const companyId = user?.company_id;
   const { data: chat, isFetching } = useChat(ticketId);
+  const { mutate: markSeen } = useMarkChatSeen();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chat?.messages]);
+
+  // Mark chat as seen when opened
+  useEffect(() => {
+    if (chat && !chat.seen && companyId) {
+      markSeen({ companyId, chatId: chat.id });
+    }
+  }, [chat, companyId, markSeen]);
 
   if (!chat && !isFetching) {
     return (

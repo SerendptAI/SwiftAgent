@@ -16,6 +16,7 @@ export interface ChatSession {
   created_at: string;
   updated_at: string;
   message_count: number;
+  seen?: boolean;
 }
 
 /** Returned by the detail endpoint (includes messages). */
@@ -48,5 +49,12 @@ export const chatsApi = {
       `/api/v1/dashboard/${companyId}/chats/${chatId}`,
     );
     return data;
+  },
+
+  /** Mark a chat session as seen. */
+  markSeen: async (companyId: string, chatId: string): Promise<void> => {
+    await apiClient.patch(
+      `/api/v1/dashboard/${companyId}/chats/${chatId}/seen`,
+    );
   },
 };

@@ -20,7 +20,11 @@ export function TicketList({
   const [activeTab, setActiveTab] = useState<"pending" | "resolved">("pending");
   const { data: chats, isLoading } = useChats();
 
-  const chatCount = chats?.length ?? 0;
+  const pendingChats = chats?.filter((chat) => !chat.seen) ?? [];
+  const resolvedChats = chats?.filter((chat) => chat.seen) ?? [];
+
+  const displayedChats = activeTab === "pending" ? pendingChats : resolvedChats;
+  const pendingCount = pendingChats.length;
 
   return (
     <div className="flex h-full flex-col rounded-3xl bg-white p-4 shadow-sm">
@@ -54,9 +58,9 @@ export function TicketList({
             />
           </svg>
           Pending
-          {chatCount > 0 && (
+          {pendingCount > 0 && (
             <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
-              {chatCount}
+              {pendingCount}
             </span>
           )}
         </button>
@@ -103,12 +107,12 @@ export function TicketList({
           <div className="flex justify-center py-8">
             <Loader />
           </div>
-        ) : !chats || chats.length === 0 ? (
+        ) : displayedChats.length === 0 ? (
           <div className="p-4 text-center text-sm text-gray-500">
             No conversations found.
           </div>
         ) : (
-          chats.map((chat, index) => {
+          displayedChats.map((chat, index) => {
             let displayTime = "";
             if (chat.updated_at) {
               try {
@@ -157,12 +161,29 @@ export function TicketList({
                 {/* Chat Info */}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between">
-                    <span className="font-dm-mono truncate text-sm font-bold text-gray-900">
+                    <span
+                      className={cn(
+                        "font-dm-mono truncate text-sm",
+                        !chat.seen
+                          ? "font-black text-gray-900"
+                          : "font-semibold text-gray-600",
+                      )}
+                    >
                       {sessionLabel}
                     </span>
+                    {!chat.seen && (
+                      <span className="h-2 w-2 shrink-0 rounded-full bg-[#006BE5]"></span>
+                    )}
                   </div>
                   <div className="flex items-center justify-between gap-2">
-                    <span className="font-stolzl truncate text-xs text-gray-400">
+                    <span
+                      className={cn(
+                        "font-stolzl truncate text-xs",
+                        !chat.seen
+                          ? "font-bold text-gray-600"
+                          : "text-gray-400",
+                      )}
+                    >
                       {chat.message_count}{" "}
                       {chat.message_count === 1 ? "message" : "messages"}
                     </span>

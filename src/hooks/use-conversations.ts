@@ -1,4 +1,9 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import { useCurrentUser } from "@/hooks/use-auth";
 import { chatsApi } from "@/services/conversations";
@@ -25,5 +30,26 @@ export function useChat(chatId: string | null) {
     queryFn: () => chatsApi.getById(companyId!, chatId!),
     enabled: !!companyId && !!chatId,
     placeholderData: keepPreviousData,
+  });
+}
+
+/** Mark a chat as seen and invalidate caches. */
+export function useMarkChatSeen() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      companyId,
+      chatId,
+    }: {
+      companyId: string;
+      chatId: string;
+    }) => chatsApi.markSeen(companyId, chatId),
+    onSuccess: (_, { companyId, chatId }) => {
+      // Invalidate the main list so it moves from Pending -> Resolved
+      queryClient.invalidateQueries({ queryKey: ["chats", companyId] });
+      // Also invalidate the specific chat if it was open
+      queryClient.invalidateQueries({ queryKey: ["chats", companyId, chatId] });
+    },
   });
 }
