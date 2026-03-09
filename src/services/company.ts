@@ -22,6 +22,8 @@ export interface Company {
   enabled_sources: string[];
   custom_info: string[];
   voice_style: string;
+  backup_email?: string;
+  access_code?: string;
   created_at: string;
   updated_at: string;
 }
@@ -31,7 +33,8 @@ export type CompanyUpdateSection =
   | "identity"
   | "type"
   | "boundaries"
-  | "voice";
+  | "voice"
+  | "security";
 
 export const companyApi = {
   create: async (payload: Record<string, unknown>): Promise<Company> => {
