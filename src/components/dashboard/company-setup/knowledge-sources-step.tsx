@@ -9,6 +9,7 @@ import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
 import { useUploadKnowledge } from "@/hooks/use-knowledge";
 import { cn } from "@/lib/utils";
 
+import { OnboardingErrorToast } from "./onboarding-error-toast";
 import { NextButton } from "./ui-elements";
 
 const knowledgeSourcesSchema = z.object({
@@ -21,6 +22,7 @@ interface KnowledgeSourcesStepProps {
   companyId?: string | null;
   isUpdateMode?: boolean;
   onNext?: () => void;
+  onBack?: () => void;
   footerAction?: React.ReactNode;
 }
 
@@ -28,10 +30,13 @@ export function KnowledgeSourcesStep({
   companyId,
   isUpdateMode,
   onNext,
+  onBack,
   footerAction,
 }: KnowledgeSourcesStepProps) {
   const { updateCompany } = useCompanyMutations();
   const isPending = updateCompany.isPending;
+  const [error, setError] = useState<string | null>(null);
+  const [cryptoPage, setCryptoPage] = useState<1 | 2>(1);
 
   const { data: companyData } = useCompanyQuery(
     isUpdateMode ? companyId : null,
@@ -77,7 +82,7 @@ export function KnowledgeSourcesStep({
       onNext?.();
     } catch (error) {
       console.error(error);
-      alert("Failed to update company type");
+      setError("Failed to update company type. Please try again.");
     }
   };
 
@@ -143,37 +148,74 @@ export function KnowledgeSourcesStep({
               label="Upload internal SOPs"
             />
           </>
-        ) : (
+        ) : cryptoPage === 1 ? (
           <>
             <UploadSection
               companyId={companyId}
               category="faq"
-              color="bg-[#6433CC]" // Purple
+              color="bg-[#6433CC]"
               label="Upload FAQ documents"
             />
             <UploadSection
               companyId={companyId}
               category="whitepaper"
-              color="bg-[#FF7043]" // Orange
+              color="bg-[#FF7043]"
               label="Upload Whitepaper"
             />
             <UploadSection
               companyId={companyId}
               category="tokenomics"
-              color="bg-[#FFB74D]" // Yellow
+              color="bg-[#FFB74D]"
               label="Tokenomics Documentation"
             />
             <UploadSection
               companyId={companyId}
               category="links"
-              color="bg-[#6433CC]" // Purple
+              color="bg-[#6433CC]"
               label="Blockchain Explorer Links"
+            />
+          </>
+        ) : (
+          <>
+            <UploadSection
+              companyId={companyId}
+              category="audit_reports"
+              color="bg-[#6433CC]"
+              label="Audit Reports"
+            />
+            <UploadSection
+              companyId={companyId}
+              category="governance"
+              color="bg-[#FF7043]"
+              label="Governance Documentation"
+            />
+            <UploadSection
+              companyId={companyId}
+              category="roadmap"
+              color="bg-[#FFB74D]"
+              label="Roadmap and Updates"
+            />
+            <UploadSection
+              companyId={companyId}
+              category="risk_disclosures"
+              color="bg-[#64B5F6]"
+              label="Risk Disclosures"
+            />
+            <UploadSection
+              companyId={companyId}
+              category="community_support"
+              color="bg-[#6433CC]"
+              label="Community and Support Docs"
             />
           </>
         )}
       </div>
 
       <div className="mt-12">
+        <OnboardingErrorToast
+          message={error}
+          onDismiss={() => setError(null)}
+        />
         {footerAction ??
           (companyType === "saas" ? (
             <NextButton onClick={handleSubmit(onSubmit)} disabled={isPending}>
@@ -188,20 +230,44 @@ export function KnowledgeSourcesStep({
                 "Next"
               )}
             </NextButton>
+          ) : cryptoPage === 1 ? (
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setCryptoPage(2)}
+                className="w-full cursor-pointer rounded-xl bg-[#006BE5] py-4 text-center font-semibold text-white shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-[#0055B8]"
+              >
+                Next
+              </button>
+              <button
+                onClick={() => setCryptoPage(2)}
+                className="flex h-[38px] w-[80px] shrink-0 cursor-pointer items-center justify-center rounded-xl bg-[#D6E4FF] shadow-[-6px_6px_0px_0px_#00000033] transition-colors hover:bg-blue-200"
+              >
+                <div className="h-0 w-0 border-t-8 border-b-8 border-l-12 border-t-transparent border-b-transparent border-l-[#006BE5]" />
+              </button>
+            </div>
           ) : (
             <div className="flex items-center gap-4">
               <button
-                onClick={handleSubmit(onSubmit)}
-                disabled={isPending}
-                className="w-full cursor-pointer rounded-xl bg-[#8DA4FF] py-4 text-center font-semibold text-white shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-blue-400 disabled:opacity-50"
+                onClick={() => setCryptoPage(1)}
+                className="flex h-[38px] w-[80px] shrink-0 cursor-pointer items-center justify-center rounded-xl bg-[#D6E4FF] shadow-[-6px_6px_0px_0px_#00000033] transition-colors hover:bg-blue-200"
               >
-                {isPending ? "Saving..." : isUpdateMode ? "UPDATE" : "Next"}
+                <div className="h-0 w-0 border-t-8 border-r-12 border-b-8 border-t-transparent border-r-[#006BE5] border-b-transparent" />
               </button>
               <button
-                onClick={onNext}
-                className="flex h-[56px] w-[80px] cursor-pointer items-center justify-center rounded-xl bg-[#D6E4FF] shadow-[-6px_6px_0px_0px_#00000033] transition-colors hover:bg-blue-200"
+                onClick={handleSubmit(onSubmit)}
+                disabled={isPending}
+                className="w-full cursor-pointer rounded-xl bg-[#006BE5] py-2 text-center font-semibold text-white shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-[#0055B8] disabled:opacity-50"
               >
-                <div className="h-0 w-0 border-t-8 border-b-8 border-l-12 border-t-transparent border-b-transparent border-l-white" />
+                {isPending ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Saving...
+                  </span>
+                ) : isUpdateMode ? (
+                  "UPDATE"
+                ) : (
+                  "Next"
+                )}
               </button>
             </div>
           ))}
@@ -226,6 +292,7 @@ function UploadSection({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const { mutateAsync: uploadKnowledge, isPending } = useUploadKnowledge();
 
   const handleUploadClick = () => {
@@ -250,61 +317,67 @@ function UploadSection({
       }
     } catch (error) {
       console.error(error);
-      alert(`Failed to upload ${file.name}`);
+      setUploadError(`Failed to upload ${file.name}. Please try again.`);
     }
   };
 
   return (
-    <div
-      className={cn(
-        "font-dm-mono flex items-center justify-between rounded-lg px-8 py-2 text-white shadow-[-6px_6px_0px_0px_#000000] transition-transform hover:scale-[1.01]",
-        color,
-      )}
-    >
-      <div className="flex items-center gap-4">
-        <div className="flex h-8 w-8">
-          <Icons.companyupload className="h-8 w-8" />
-        </div>
-        <div className="flex flex-col">
-          <span className="text-lg font-medium">{label}</span>
-          {uploadedFileName && (
-            <span className="max-w-[200px] truncate text-sm text-white/80">
-              {uploadedFileName}
-            </span>
-          )}
-        </div>
-      </div>
-      <button
-        onClick={handleUploadClick}
-        disabled={isPending || isSuccess}
+    <>
+      <OnboardingErrorToast
+        message={uploadError}
+        onDismiss={() => setUploadError(null)}
+      />
+      <div
         className={cn(
-          "group flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/30 disabled:opacity-50",
-          isSuccess && "bg-green-500/20 text-white hover:bg-green-500/30",
+          "font-dm-mono flex items-center justify-between rounded-lg px-8 py-2 text-white shadow-[-6px_6px_0px_0px_#000000] transition-transform hover:scale-[1.01]",
+          color,
         )}
       >
-        {isPending ? (
-          <>
-            Uploading...
-            <Loader2 className="h-4 w-4 animate-spin" />
-          </>
-        ) : isSuccess ? (
-          <>
-            Uploaded
-            <Check className="h-5 w-5" />
-          </>
-        ) : (
-          <>
-            Upload
-            <Icons.upload className="h-8 w-8" />
-          </>
-        )}
-      </button>
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-        className="hidden"
-      />
-    </div>
+        <div className="flex items-center gap-4">
+          <div className="flex h-8 w-8">
+            <Icons.companyupload className="h-8 w-8" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-lg font-medium">{label}</span>
+            {uploadedFileName && (
+              <span className="max-w-[200px] truncate text-sm text-white/80">
+                {uploadedFileName}
+              </span>
+            )}
+          </div>
+        </div>
+        <button
+          onClick={handleUploadClick}
+          disabled={isPending || isSuccess}
+          className={cn(
+            "group flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/30 disabled:opacity-50",
+            isSuccess && "bg-green-500/20 text-white hover:bg-green-500/30",
+          )}
+        >
+          {isPending ? (
+            <>
+              Uploading...
+              <Loader2 className="h-4 w-4 animate-spin" />
+            </>
+          ) : isSuccess ? (
+            <>
+              Uploaded
+              <Check className="h-5 w-5" />
+            </>
+          ) : (
+            <>
+              Upload
+              <Icons.upload className="h-5 w-5" />
+            </>
+          )}
+        </button>
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          className="hidden"
+        />
+      </div>
+    </>
   );
 }

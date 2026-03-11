@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronDown, Loader2, Pencil } from "lucide-react";
+import { Check, ChevronDown, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -10,6 +10,7 @@ import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
 import { cn } from "@/lib/utils";
 import { useOnboardingStore } from "@/store/onboarding-store";
 
+import { OnboardingErrorToast } from "./onboarding-error-toast";
 import { FormInput, FormLabel, FormSelect, NextButton } from "./ui-elements";
 
 const companyInfoSchema = z.object({
@@ -66,6 +67,8 @@ export function CompanyInfoStep({
   const isCreating = createCompany.isPending;
   const isUpdating = updateCompany.isPending;
   const isUploading = uploadLogo.isPending;
+
+  const [error, setError] = useState<string | null>(null);
 
   const {
     register,
@@ -145,8 +148,10 @@ export function CompanyInfoStep({
       onNext?.();
     } catch (error) {
       console.error(error);
-      alert(
-        isUpdateMode ? "Failed to update company" : "Failed to create company",
+      setError(
+        isUpdateMode
+          ? "Failed to update company info. Please try again."
+          : "Failed to create company. Please try again.",
       );
     }
   };
@@ -455,6 +460,10 @@ export function CompanyInfoStep({
       </div>
 
       <div className="mt-6">
+        <OnboardingErrorToast
+          message={error}
+          onDismiss={() => setError(null)}
+        />
         {footerAction ?? (
           <NextButton
             onClick={handleSubmit(onSubmit)}

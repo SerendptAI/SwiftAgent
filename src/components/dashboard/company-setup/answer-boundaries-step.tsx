@@ -1,11 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus, X } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
 
+import { OnboardingErrorToast } from "./onboarding-error-toast";
 import { NextButton } from "./ui-elements";
 
 const answerBoundariesSchema = z.object({
@@ -30,6 +31,7 @@ export function AnswerBoundariesStep({
 }: AnswerBoundariesStepProps) {
   const { updateCompany } = useCompanyMutations();
   const isPending = updateCompany.isPending;
+  const [error, setError] = useState<string | null>(null);
 
   const { data: companyData } = useCompanyQuery(
     isUpdateMode ? companyId : null,
@@ -127,7 +129,7 @@ export function AnswerBoundariesStep({
       onNext?.();
     } catch (error) {
       console.error(error);
-      alert("Failed to update boundaries");
+      setError("Failed to update answer boundaries. Please try again.");
     }
   };
 
@@ -180,6 +182,10 @@ export function AnswerBoundariesStep({
       </div>
 
       <div className="mt-12">
+        <OnboardingErrorToast
+          message={error}
+          onDismiss={() => setError(null)}
+        />
         {footerAction ?? (
           <NextButton onClick={handleSubmit(onSubmit)} disabled={isPending}>
             {isPending ? (

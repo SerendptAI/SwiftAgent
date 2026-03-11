@@ -42,6 +42,12 @@ export function SetupWizard() {
     }
   };
 
+  const handleBack = () => {
+    if (currentStep > 0) {
+      setCurrentStep((prev) => prev - 1);
+    }
+  };
+
   const isComplete = currentStep === STEPS.length;
 
   return (
@@ -64,7 +70,11 @@ export function SetupWizard() {
           <CompanyIdentityStep companyId={companyId} onNext={handleNext} />
         )}
         {currentStep === 2 && (
-          <KnowledgeSourcesStep companyId={companyId} onNext={handleNext} />
+          <KnowledgeSourcesStep
+            companyId={companyId}
+            onNext={handleNext}
+            onBack={handleBack}
+          />
         )}
         {currentStep === 3 && (
           <AnswerBoundariesStep companyId={companyId} onNext={handleNext} />

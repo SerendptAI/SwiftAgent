@@ -1,13 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
 import { cn } from "@/lib/utils";
 
+import { OnboardingErrorToast } from "./onboarding-error-toast";
 import { NextButton } from "./ui-elements";
 
 const voiceConversationSchema = z.object({
@@ -31,6 +32,7 @@ export function VoiceConversationStep({
 }: VoiceConversationStepProps) {
   const { updateCompany } = useCompanyMutations();
   const isPending = updateCompany.isPending;
+  const [error, setError] = useState<string | null>(null);
 
   const { data: companyData } = useCompanyQuery(
     isUpdateMode ? companyId : null,
@@ -76,7 +78,7 @@ export function VoiceConversationStep({
       onNext?.();
     } catch (error) {
       console.error(error);
-      alert("Failed to update voice style");
+      setError("Failed to save voice style. Please try again.");
     }
   };
 
@@ -121,7 +123,11 @@ export function VoiceConversationStep({
         />
       </div>
 
-      <div className="mt-12 flex justify-center">
+      <div className="mt-12 flex flex-col items-center justify-center gap-2">
+        <OnboardingErrorToast
+          message={error}
+          onDismiss={() => setError(null)}
+        />
         {footerAction ?? (
           <NextButton
             className="max-w-2xl px-12"

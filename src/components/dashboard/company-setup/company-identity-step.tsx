@@ -1,11 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
 
+import { OnboardingErrorToast } from "./onboarding-error-toast";
 import { FormLabel, FormSelect, FormTextarea, NextButton } from "./ui-elements";
 
 const companyIdentitySchema = z.object({
@@ -32,6 +33,7 @@ export function CompanyIdentityStep({
 }: CompanyIdentityStepProps) {
   const { updateCompany } = useCompanyMutations();
   const isPending = updateCompany.isPending;
+  const [error, setError] = useState<string | null>(null);
 
   const { data: companyData } = useCompanyQuery(
     isUpdateMode ? companyId : null,
@@ -73,7 +75,7 @@ export function CompanyIdentityStep({
       onNext?.();
     } catch (error) {
       console.error(error);
-      alert("Failed to update identity");
+      setError("Failed to update company identity. Please try again.");
     }
   };
   return (
@@ -146,6 +148,10 @@ export function CompanyIdentityStep({
             </div>
 
             <div className="mt-8">
+              <OnboardingErrorToast
+                message={error}
+                onDismiss={() => setError(null)}
+              />
               {footerAction ?? (
                 <NextButton
                   onClick={handleSubmit(onSubmit)}

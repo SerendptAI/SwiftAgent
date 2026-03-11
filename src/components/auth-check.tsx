@@ -19,9 +19,18 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   // Compute redirect target synchronously during render
   const redirectTo = (() => {
     if (isLoading) return null;
+
+    // Not authenticated — send to login from any protected route
     if (isError || !user) return "/en/login";
+
+    // Onboarding incomplete — bounce out of dashboard
     if (!user.onboarding_completed && pathname.includes("/dashboard"))
       return "/en/onboarding";
+
+    // Onboarding complete — bounce out of onboarding (e.g. browser back button)
+    if (user.onboarding_completed && pathname.includes("/onboarding"))
+      return "/en/dashboard";
+
     return null;
   })();
 

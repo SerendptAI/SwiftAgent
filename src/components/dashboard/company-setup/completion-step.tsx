@@ -1,9 +1,25 @@
+"use client";
+
+import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 import { NextButton } from "./ui-elements";
 
 export function CompletionStep() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  // Invalidate the cached user so AuthGuard reads fresh onboarding_completed: true
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+  }, [queryClient]);
+
+  const handleContinue = () => {
+    router.push("/en/dashboard");
+  };
+
   return (
     <div className="flex h-4/5 w-full flex-col items-center justify-center p-8 text-center">
       <div className="mb-8">
@@ -21,9 +37,7 @@ export function CompletionStep() {
       </h2>
 
       <div className="mt-8 w-full max-w-2xl px-12">
-        <Link href="/dashboard" className="block w-full">
-          <NextButton>Continue to Dashboard</NextButton>
-        </Link>
+        <NextButton onClick={handleContinue}>Continue to Dashboard</NextButton>
       </div>
     </div>
   );
