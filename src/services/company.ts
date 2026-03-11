@@ -36,7 +36,21 @@ export type CompanyUpdateSection =
   | "voice"
   | "security";
 
+export type CompanyListItem = {
+  id: string;
+  name: string;
+  logo_url: string;
+  setup_complete: boolean;
+  onboarding_step: number;
+};
+
 export const companyApi = {
+  list: async (): Promise<CompanyListItem[]> => {
+    const { data } =
+      await apiClient.get<CompanyListItem[]>("/api/v1/companies/");
+    return data;
+  },
+
   create: async (payload: Record<string, unknown>): Promise<Company> => {
     const { data } = await apiClient.post<Company>(
       "/api/v1/companies/",

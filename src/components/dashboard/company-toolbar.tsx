@@ -3,17 +3,13 @@
 import { Building2, Check, ChevronDown, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { useCompaniesQuery } from "@/hooks/use-company";
+
 interface Company {
   id: string;
   name: string;
   initial?: string;
 }
-
-const COMPANIES: Company[] = [
-  { id: "1", name: "Serendpt AI", initial: "S" },
-  { id: "2", name: "I-FITNESS GYM", initial: "I" },
-  { id: "3", name: "TechVentures Inc", initial: "T" },
-];
 
 interface CompanyToolbarProps {
   /** Extra action buttons to render on the right side */
@@ -21,9 +17,24 @@ interface CompanyToolbarProps {
 }
 
 export function CompanyToolbar({ actions }: CompanyToolbarProps) {
-  const [selectedCompany, setSelectedCompany] = useState<Company>(COMPANIES[0]);
+  const { data: rawCompanies, isLoading } = useCompaniesQuery();
+
+  const companies: Company[] = (rawCompanies ?? []).map((c) => ({
+    id: c.id,
+    name: c.name,
+    initial: c.name.charAt(0).toUpperCase(),
+  }));
+
+  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Once companies load, default-select the first one
+  useEffect(() => {
+    if (companies.length > 0 && !selectedCompany) {
+      setSelectedCompany(companies[0]);
+    }
+  }, [companies, selectedCompany]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -45,12 +56,17 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
       <div ref={dropdownRef} className="relative">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-3 rounded-2xl bg-gray-50 px-4 py-3 text-sm font-bold text-gray-900 transition-colors hover:bg-gray-100"
+          disabled={isLoading || companies.length === 0}
+          className="flex items-center gap-3 rounded-2xl bg-gray-50 px-4 py-3 text-sm font-bold text-gray-900 transition-colors hover:bg-gray-100 disabled:opacity-60"
         >
           <ChevronDown
             className={`h-4 w-4 text-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
           />
-          {selectedCompany.name}
+          {isLoading ? (
+            <span className="h-4 w-28 animate-pulse rounded bg-gray-200" />
+          ) : (
+            (selectedCompany?.name ?? "No company")
+          )}
         </button>
 
         {/* Dropdown Menu */}
@@ -59,7 +75,7 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
             <div className="px-3 py-2 text-xs font-semibold tracking-wider text-gray-400 uppercase">
               Switch Company
             </div>
-            {COMPANIES.map((company) => (
+            {companies.map((company) => (
               <button
                 key={company.id}
                 onClick={() => {
@@ -74,7 +90,7 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
                 <span className="flex-1 text-left font-medium">
                   {company.name}
                 </span>
-                {selectedCompany.id === company.id && (
+                {selectedCompany?.id === company.id && (
                   <Check className="h-4 w-4 text-[#6433CC]" />
                 )}
               </button>

@@ -3,6 +3,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { CompanyUpdateSection } from "@/services/company";
 import { companyApi } from "@/services/company";
 
+export function useCompaniesQuery() {
+  return useQuery({
+    queryKey: ["companies"],
+    queryFn: () => companyApi.list(),
+  });
+}
+
 export function useCompanyMutations() {
   const queryClient = useQueryClient();
 
