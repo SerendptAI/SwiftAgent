@@ -74,6 +74,16 @@ export function logout(locale: string = "en") {
   window.location.href = `/${locale}/login`;
 }
 
+// ── Referral ───────────────────────────────────────────────────────────────────
+
+export async function verifyReferral(code: string): Promise<string> {
+  const { data } = await apiClient.post<string>(
+    "/api/v1/auth/verify-referral",
+    { code },
+  );
+  return data;
+}
+
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
 export function processAuthCallback(searchParams: URLSearchParams): boolean {

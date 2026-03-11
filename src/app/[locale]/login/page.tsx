@@ -1,15 +1,33 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useEffect } from "react";
 
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useGoogleLogin } from "@/hooks/use-auth";
 
+const REFERRAL_COOKIE = "referral_verified";
+
+function hasReferralCookie() {
+  return document.cookie
+    .split(";")
+    .some((c) => c.trim().startsWith(`${REFERRAL_COOKIE}=`));
+}
+
 export default function LoginPage() {
+  const router = useRouter();
   const t = useTranslations("login");
   const googleLogin = useGoogleLogin();
+
+  // Guard: must have passed the referral gate first
+  useEffect(() => {
+    if (!hasReferralCookie()) {
+      router.replace("/invite");
+    }
+  }, [router]);
 
   const handleGoogleLogin = () => {
     googleLogin.mutate("en");
