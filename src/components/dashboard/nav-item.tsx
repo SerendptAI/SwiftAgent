@@ -54,7 +54,7 @@ export function NavItem({
         />
       )}
       {createElement(isActive && activeIcon ? activeIcon : icon, {
-        className: iconClassName,
+        className: `${iconClassName} ${!isActive ? "opacity-50" : "opacity-100"} transition-opacity duration-200`,
         style: {
           color: isActive && activeColor && !activeIcon ? "white" : undefined,
         },
