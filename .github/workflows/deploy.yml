@@ -1,0 +1,15 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-landing:
+    name: Deploy Landing
+    runs-on: self-hosted
+    steps:
+      - name: Deploy
+        run: ./deploy.sh landing
+        working-directory: /home/ghrunner/swift-agents-prod
