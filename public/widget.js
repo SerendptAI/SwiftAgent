@@ -30,6 +30,12 @@
 
     // 3. Create the iframe element
     const iframe = document.createElement('iframe');
+    iframe.className = 'swift-agent-widget-iframe';
+
+    // Ensure iframe stays clickable even when host uses Lenis (e.g. .lenis.lenis-scrolling iframe { pointer-events: none })
+    const style = document.createElement('style');
+    style.textContent = 'iframe.swift-agent-widget-iframe { pointer-events: auto !important; }';
+    document.head.appendChild(style);
 
     // Set the source to the special Next.js embed route
     // Assuming default locale 'en' for now, can be made dynamic later

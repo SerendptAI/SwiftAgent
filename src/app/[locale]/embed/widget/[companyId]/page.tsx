@@ -156,20 +156,25 @@ function WidgetContent({ companyId }: { companyId: string }) {
     }
   };
 
+  const handleRequestCallClick = useCallback(() => {
+    if (callStatus === "idle") start();
+  }, [callStatus, start]);
+
   return (
-    <div className="fixed inset-0 flex flex-col items-center justify-start font-sans">
-      <div className="pointer-events-auto w-full">
+    <div className="pointer-events-none fixed inset-0 flex flex-col items-center justify-start font-sans">
+      <div className="pointer-events-auto z-[100] w-full">
         {/* --- THE BANNER STRIP (Moved to top) --- */}
-        <div className="relative z-60 flex w-full flex-row items-center justify-between bg-[#F2B035] px-4 py-3 shadow-md sm:px-6">
+        <div className="relative z-[100] flex w-full flex-row items-center justify-between bg-[#F2B035] px-4 py-3 shadow-md sm:px-6">
           <div className="font-dm-mono truncate pr-4 text-[10px] font-bold tracking-tight text-black uppercase sm:text-xs sm:tracking-wider md:text-sm">
             If you have any questions or inquiries, please feel free to get on a
             call with our Swift Agent.
           </div>
 
           <button
-            onClick={callStatus === "idle" ? start : undefined}
+            type="button"
+            onClick={handleRequestCallClick}
             className={cn(
-              "flex shrink-0 items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 shadow-[-6px_6px_0_0_#000000] transition-all hover:-translate-y-0.5 hover:shadow-md sm:px-6",
+              "relative z-[101] flex shrink-0 items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 shadow-[-6px_6px_0_0_#000000] transition-all hover:-translate-y-0.5 hover:shadow-md sm:px-6",
               callStatus === "ongoing"
                 ? "cursor-default border-transparent"
                 : "cursor-pointer",

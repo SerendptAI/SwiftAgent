@@ -8,6 +8,7 @@ import { MobileBlocker } from "@/components/mobile-blocker";
 // import { LangSwitcher } from "@/components/lang-switcher";
 import { QueryProvider } from "@/components/query-provider";
 import { ThemeProvider } from "@/components/theme-provider";
+import { WidgetScriptLoader } from "@/components/widget-script-loader";
 // import { ThemeSwitcher } from "@/components/theme-switcher";
 import { routing } from "@/i18n/routing";
 import { fonts } from "@/lib/fonts";
@@ -71,6 +72,7 @@ const RootLayout = async ({
             enableSystem={false}
           >
             <QueryProvider>{children}</QueryProvider>
+            <WidgetScriptLoader />
             {/* <LangSwitcher className="absolute right-5 bottom-16 z-10" />
             <ThemeSwitcher className="absolute right-5 bottom-5 z-10" /> */}
           </ThemeProvider>
