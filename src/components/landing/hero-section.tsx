@@ -251,7 +251,7 @@ export function HeroSection() {
         {/* Subtitle */}
         <p
           ref={subtitleRef}
-          className="mt-8 max-w-2xl text-sm leading-relaxed text-gray-700 max-md:hidden md:text-base"
+          className="font-stolzl mt-8 max-w-2xl text-sm leading-relaxed text-gray-700 max-md:hidden md:text-base"
         >
           Our AI agents handle inquiries seamlessly, offering instant support.
           They resolve issues, answer questions, and continuously learn to
@@ -260,7 +260,7 @@ export function HeroSection() {
 
         <p
           ref={subtitleRef}
-          className="mt-8 max-w-xl text-center text-sm leading-relaxed text-gray-700 md:hidden md:text-base"
+          className="font-stolzl mt-8 max-w-xl text-center text-sm leading-relaxed text-gray-700 md:hidden md:text-base"
         >
           Imagine a world where AI handles inquiries, providing instant support.
           They resolve issues, answer questions, and learn to enhance
@@ -286,8 +286,7 @@ export function HeroSection() {
       {/* Road / Intersection Image at Bottom */}
       <div
         ref={roadRef}
-        className="relative z-0 mt-16 w-full overflow-hidden"
-        style={{ height: "340px" }}
+        className="relative z-0 mt-8 h-[60vh] w-full overflow-hidden max-md:-mt-20 md:mt-16 md:h-[340px]"
       >
         <Image
           src="/spiral_landing.svg"
