@@ -4,6 +4,7 @@ import {
   Inter,
   JetBrains_Mono,
 } from "next/font/google";
+import localFont from "next/font/local";
 
 const fontSans = Inter({
   subsets: ["latin"],
@@ -30,9 +31,16 @@ const fontDmMono = DM_Mono({
   fallback: ["system-ui", "arial"],
 });
 
+const fontGreedNarrow = localFont({
+  src: "../../public/fonts/GreedNarrow-Medium.otf",
+  variable: "--font-greed-narrow",
+  fallback: ["system-ui", "arial"],
+});
+
 export const fonts = [
   fontSans.variable,
   fontMono.variable,
   fontInstrument.variable,
   fontDmMono.variable,
+  fontGreedNarrow.variable,
 ];

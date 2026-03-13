@@ -89,6 +89,7 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --font-instrument: var(--font-instrument), "system-ui", "arial";
   --font-dm-mono: var(--font-dm-mono), "system-ui", "arial";
+  --font-greed-narrow: var(--font-greed-narrow), "system-ui", "arial";
   --font-stolzl: "Stolzl", "system-ui", "arial";
 }
 

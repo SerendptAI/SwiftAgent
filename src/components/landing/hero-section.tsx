@@ -4,35 +4,61 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import Link from "next/link";
+import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 
 import { NavigationMenu } from "./navigation-menu";
 gsap.registerPlugin(ScrollTrigger);
 
-const HEADLINE_WORDS = [
-  "CUSTOMER",
-  "SERVICE",
-  "FOR",
-  "YOUR",
-  "WEB3",
-  "WEBSITE",
+const HEADLINE_BADGES = [
+  // Row 1
+  [
+    {
+      words: ["CUSTOMER", "AMAZING", "PROFESSIONAL"],
+      bg: "#6433CC",
+      text: "#7F9FFF",
+      dynamicWidth: true,
+    },
+    {
+      words: ["SERVICE", "SERVICES", "SERVICE"],
+      bg: "#F25430",
+      text: "#F6F4EF",
+      dynamicWidth: true,
+    },
+  ],
+  // Row 2
+  [
+    { words: ["FOR", "FOR", "FOR"], bg: "#F2B035", text: "#000000" },
+    { words: ["CUSTOMERS", "SAAS", "DEFI"], bg: "#7F9FFF", text: "#FFFFFF" },
+    { words: ["&", "&", "&"], bg: "#F2B035", text: "#FFFFFF", round: true },
+    {
+      words: ["BUSINESSES", "FINTECH", "CRYPTO"],
+      bg: "#F6F4EF",
+      text: "#000000",
+    },
+  ],
 ];
-
-// --- Component ---
 
 export function HeroSection() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-  const headlineRef = useRef<HTMLHeadingElement>(null);
+  const headlineRef = useRef<HTMLDivElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLElement>(null);
-  const checkerRef = useRef<HTMLDivElement>(null);
-  const scrollIndicatorRef = useRef<HTMLDivElement>(null);
+  const roadRef = useRef<HTMLDivElement>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % 3);
+    }, 2600);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Entrance animations
+      // Nav entrance
       gsap.from(navRef.current, {
         y: -40,
         opacity: 0,
@@ -42,23 +68,24 @@ export function HeroSection() {
         clearProps: "all",
       });
 
+      // Badge stagger entrance
       if (headlineRef.current) {
-        gsap.from(headlineRef.current.querySelectorAll(".hero-word"), {
-          y: 120,
+        gsap.from(headlineRef.current.querySelectorAll(".hero-badge"), {
+          y: 60,
           opacity: 0,
-          rotateX: -90,
-          stagger: 0.08,
-          duration: 1.2,
-          ease: "power4.out",
+          scale: 0.8,
+          stagger: 0.1,
+          duration: 0.8,
+          ease: "back.out(1.5)",
           delay: 0.4,
           clearProps: "transform,opacity",
         });
       }
 
       gsap.from(subtitleRef.current, {
-        y: 40,
+        y: 30,
         opacity: 0,
-        duration: 1,
+        duration: 0.9,
         ease: "power3.out",
         delay: 1.2,
         clearProps: "all",
@@ -66,57 +93,49 @@ export function HeroSection() {
 
       if (ctaRef.current) {
         gsap.from(ctaRef.current.children, {
-          y: 30,
+          y: 20,
           opacity: 0,
           stagger: 0.15,
-          duration: 0.8,
+          duration: 0.7,
           ease: "power3.out",
           delay: 1.5,
           clearProps: "all",
         });
       }
 
-      // Scroll indicator bounce
-      gsap.to(scrollIndicatorRef.current, {
-        y: 10,
-        duration: 1.5,
-        ease: "power1.inOut",
-        repeat: -1,
-        yoyo: true,
-        delay: 2,
-      });
-
-      // Parallax on scroll
-      ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: "top top",
-        end: "bottom top",
-        scrub: true,
-        onUpdate: (self) => {
-          if (checkerRef.current)
-            gsap.set(checkerRef.current, { y: self.progress * 150 });
-          if (headlineRef.current)
-            gsap.set(headlineRef.current, { y: self.progress * 80 });
-        },
-      });
+      // Road parallax
+      if (roadRef.current) {
+        ScrollTrigger.create({
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+          onUpdate: (self) => {
+            if (roadRef.current)
+              gsap.set(roadRef.current, { y: self.progress * 60 });
+          },
+        });
+      }
     }, sectionRef);
 
-    const indicator = scrollIndicatorRef.current;
-    return () => {
-      if (indicator) gsap.killTweensOf(indicator);
-      ctx.revert();
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
     <section
       ref={sectionRef}
-      className="relative h-screen overflow-hidden bg-white"
+      className="relative h-[90vh] min-h-[90vh] overflow-hidden bg-white"
     >
+      {/* Widget Script — stacks on top via widget's own fixed positioning */}
+      <Script
+        src="/widget.js"
+        data-company-id="01490b45-52bd-4317-b2f7-e93264210201"
+        strategy="afterInteractive"
+      />
       {/* Navigation */}
       <nav
         ref={navRef}
-        className="fixed top-4 right-0 left-0 z-50 mx-auto flex h-[70px] w-[92%] items-center justify-between border border-black bg-white px-4 md:top-5 md:grid md:h-[80px] md:w-[90%] md:grid-cols-[auto_1fr_auto] md:px-8"
+        className="fixed top-[90px] right-0 left-0 z-50 mx-auto flex h-[70px] w-[92%] items-center justify-between border border-black bg-white px-4 md:top-[92px] md:grid md:h-[80px] md:w-[90%] md:grid-cols-[auto_1fr_auto] md:px-8"
       >
         {/* Logo Container */}
         <Link
@@ -134,7 +153,7 @@ export function HeroSection() {
           </div>
         </Link>
 
-        {/* Middle Empty Section (Hidden on mobile) */}
+        {/* Middle Empty Section */}
         <div className="hidden h-full w-full md:block" />
 
         {/* Right Section */}
@@ -159,90 +178,126 @@ export function HeroSection() {
       </nav>
 
       {/* Hero Content */}
-      <div className="relative z-10 flex h-screen w-full flex-col items-center md:flex-row">
-        {/* Left Side: Content */}
-        <div className="relative z-20 flex w-full flex-col justify-center px-8 max-md:m-auto md:w-[60%] md:px-12 md:pt-0 md:pt-20 lg:w-[55%] lg:px-16">
-          <div className="relative w-full">
-            <h1
-              ref={headlineRef}
-              className="font-instrument font-condensed relative z-20 mb-6 text-[2rem] leading-[1.6] font-bold text-gray-900 uppercase md:mb-2 md:text-5xl md:leading-[1.4] md:tracking-tight lg:text-4xl xl:text-4xl"
-              style={{
-                perspective: "2000px",
-                transform: "scaleY(1.5)",
-                transformOrigin: "top",
-              }}
-            >
-              {HEADLINE_WORDS.map((word, i) => (
-                <span key={i} className="hero-word mr-[0.2em] inline-block">
-                  {word}
+      <div className="relative z-10 flex w-full flex-col px-6 pt-36 md:px-16 md:pt-44 lg:px-24 lg:pt-48">
+        {/* Pill Badge Headline */}
+        <div ref={headlineRef} className="flex flex-col gap-4">
+          {HEADLINE_BADGES.map((row, rowIdx) => (
+            <div key={rowIdx} className="flex flex-wrap items-center gap-3">
+              {row.map((badge, i) => (
+                <span
+                  key={i}
+                  className={`hero-badge font-greed-narrow relative inline-flex items-center justify-center overflow-hidden leading-none tracking-tight uppercase transition-all duration-1000 ease-in-out select-none ${
+                    "round" in badge && badge.round
+                      ? "h-16 w-16 rounded-full text-3xl md:h-20 md:w-20 md:text-5xl"
+                      : "rounded-md px-4 py-3 text-3xl md:rounded-[2rem] md:px-4 md:py-4 md:text-5xl lg:text-6xl"
+                  }`}
+                  style={{
+                    backgroundColor: badge.bg,
+                    color: badge.text,
+                  }}
+                >
+                  {badge.words.map((word, wIdx) => {
+                    const isActive = wIdx === currentIndex;
+                    return (
+                      <span
+                        key={wIdx}
+                        className="absolute inset-x-0 mx-auto text-center whitespace-nowrap transition-opacity duration-1000 ease-in-out"
+                        style={{
+                          opacity: isActive ? 1 : 0,
+                          visibility: isActive ? "visible" : "hidden",
+                        }}
+                      >
+                        {word}
+                      </span>
+                    );
+                  })}
+                  {/* Spacers for width sizing: dynamic vs. static longest-word */}
+                  {"dynamicWidth" in badge && badge.dynamicWidth ? (
+                    <span className="flex">
+                      {badge.words.map((word, wIdx) => {
+                        const isActive = wIdx === currentIndex;
+                        return (
+                          <span
+                            key={wIdx}
+                            className="grid overflow-hidden transition-[grid-template-columns] duration-1000 ease-in-out"
+                            style={{
+                              gridTemplateColumns: isActive
+                                ? "minmax(0, 1fr)"
+                                : "minmax(0, 0fr)",
+                            }}
+                          >
+                            <span className="invisible min-w-0 whitespace-nowrap">
+                              {word === "SERVICES"
+                                ? `\u00A0\u00A0\u00A0\u00A0${word}\u00A0\u00A0\u00A0\u00A0`
+                                : word}
+                            </span>
+                          </span>
+                        );
+                      })}
+                    </span>
+                  ) : (
+                    <span className="invisible whitespace-nowrap">
+                      {badge.words.reduce((longest, current) =>
+                        current.length > longest.length ? current : longest,
+                      )}
+                    </span>
+                  )}
                 </span>
               ))}
-            </h1>
-            {/* Orange block for mobile */}
-          </div>
-
-          <p
-            ref={subtitleRef}
-            className="font-stolzl text-md my-12 max-w-md leading-relaxed text-gray-600 max-md:mb-6"
-          >
-            Imagine a world where AI handles inquiries, providing instant
-            support. They resolve issues, answer questions, and learn to enhance
-            satisfaction.
-          </p>
-
-          <div
-            ref={ctaRef}
-            className="flex w-4/5 flex-col items-start gap-10 sm:flex-row"
-          >
-            <Link
-              href="/en/login"
-              className="group relative w-full overflow-hidden rounded-xl border-2 border-gray-900 bg-white px-8 py-3 text-sm font-bold tracking-[0.15em] text-gray-900 uppercase shadow-[4px_4px_0px_0px_#000000] transition-all hover:translate-y-1 hover:bg-gray-50 hover:shadow-none max-md:w-[90%] sm:w-auto"
-            >
-              <span className="font-dm-mono m relative flex w-full justify-center whitespace-nowrap">
-                GET STARTED
-              </span>
-            </Link>
-            <Link
-              href="#how-it-works"
-              className="group relative w-full overflow-hidden rounded-xl border-2 border-black bg-[#F25430] px-8 py-3 text-sm font-bold tracking-[0.15em] text-white uppercase shadow-[4px_4px_0px_0px_#000000] transition-all hover:translate-y-1 hover:shadow-none max-md:w-[90%] sm:w-auto"
-            >
-              <span className="font-dm-mono relative flex w-full justify-center whitespace-nowrap">
-                HOW IT WORKS?
-              </span>
-            </Link>
-          </div>
+            </div>
+          ))}
         </div>
 
-        {/* Orange background block for bottom right mobile */}
-        <div className="absolute top-[20%] right-[-10%] z-10 h-32 w-26 bg-[#F25430] md:hidden" />
-        <div className="absolute right-0 bottom-0 z-0 h-[25vh] w-26 bg-[#F25430] md:hidden" />
-        <div className="absolute right-0 -bottom-50 z-10 h-4/5 w-full md:hidden">
-          <Image
-            src="/images/agents.svg"
-            alt="Agents"
-            fill
-            className="object-contain object-bottom-right"
-            priority
-          />
-        </div>
-        {/* Right Side: Background & Agent (Desktop) */}
-        <div className="absolute top-0 right-0 bottom-0 z-0 hidden h-full w-full md:block md:w-[55%]">
-          {/* Background Patterns */}
-          <div
-            ref={checkerRef}
-            className="pointer-events-none absolute inset-0 z-0 bg-[url('/images/swift_bg.svg')] bg-cover bg-center bg-no-repeat"
-          />
-          <div className="absolute right-0 bottom-0 z-10 h-4/5 w-full">
-            <Image
-              src="/images/agents.svg"
-              alt="Agents"
-              fill
-              className="object-contain object-bottom-right"
-              priority
-            />
-          </div>
+        {/* Subtitle */}
+        <p
+          ref={subtitleRef}
+          className="mt-8 max-w-2xl text-sm leading-relaxed text-gray-700 max-md:hidden md:text-base"
+        >
+          Our AI agents handle inquiries seamlessly, offering instant support.
+          They resolve issues, answer questions, and continuously learn to
+          improve customer satisfaction.
+        </p>
+
+        <p
+          ref={subtitleRef}
+          className="mt-8 max-w-xl text-center text-sm leading-relaxed text-gray-700 md:hidden md:text-base"
+        >
+          Imagine a world where AI handles inquiries, providing instant support.
+          They resolve issues, answer questions, and learn to enhance
+          satisfaction.
+        </p>
+        {/* CTA Buttons */}
+        <div ref={ctaRef} className="mt-8 flex flex-wrap items-center gap-4">
+          <Link
+            href="/en/login"
+            className="font-dm-mono inline-flex items-center justify-center rounded-xl border-2 border-black bg-white px-8 py-3 text-xs font-bold tracking-[0.18em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:bg-gray-50 hover:shadow-none max-md:mx-auto max-md:w-[90%]"
+          >
+            GET STARTED
+          </Link>
+          <Link
+            href="#how-it-works"
+            className="font-dm-mono inline-flex items-center justify-center rounded-xl border-white bg-[#F25430] px-8 py-3 text-xs font-bold tracking-[0.18em] text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:bg-gray-900 hover:shadow-none max-md:mx-auto max-md:w-[90%] md:border-2 md:bg-black"
+          >
+            HOW IT WORKS?
+          </Link>
         </div>
       </div>
+
+      {/* Road / Intersection Image at Bottom */}
+      <div
+        ref={roadRef}
+        className="relative z-0 mt-16 w-full overflow-hidden"
+        style={{ height: "340px" }}
+      >
+        <Image
+          src="/spiral_landing.svg"
+          alt="Road intersection"
+          fill
+          className="object-cover object-top"
+          priority
+        />
+      </div>
+
       <NavigationMenu
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}
