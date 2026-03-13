@@ -3,14 +3,15 @@
 import { usePathname } from "next/navigation";
 import Script from "next/script";
 
-const WIDGET_SCRIPT_URL = "https://swiftagents.org/widget.js";
+const WIDGET_SCRIPT_URL = "/widget.js"; // relative so it works in both local dev and production
 const DEFAULT_COMPANY_ID = "01490b45-52bd-4317-b2f7-e93264210201";
 
 export function WidgetScriptLoader() {
   const pathname = usePathname();
-  const isEmbedRoute = pathname?.includes("/embed") ?? false;
+  // Only show on the landing page: '/' or locale roots like '/en', '/fr', etc.
+  const isLandingPage = /^\/?([a-z]{2})?$/.test(pathname ?? "");
 
-  if (isEmbedRoute) {
+  if (!isLandingPage) {
     return null;
   }
 
