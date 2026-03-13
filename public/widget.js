@@ -21,11 +21,16 @@
         return;
     }
 
-    // 2. Determine the base URL for the iframe
-    // In a real production environment, this would point to your deployed frontend domain
-    // (e.g., 'https://app.swiftagents.org')
-    // We use localhost for local testing.
-    let baseUrl = 'http://localhost:3000'; // Hardcoded for local Next.js testing
+    // Derive the base URL from the widget script's own src so it works in both
+    // local dev (localhost:3000) and production without any manual changes.
+    let baseUrl = 'http://localhost:3000'; // fallback for local dev
+    if (currentScript && currentScript.src) {
+        try {
+            baseUrl = new URL(currentScript.src).origin;
+        } catch {
+            // keep localhost fallback
+        }
+    }
 
 
     // 3. Create the iframe element
