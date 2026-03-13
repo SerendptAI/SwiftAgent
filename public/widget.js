@@ -21,6 +21,12 @@
         return;
     }
 
+    // Only show the widget on the landing page (pathname === '/')
+    if (window.location.pathname !== '/') {
+        return;
+    }
+
+
     // Derive the base URL from the widget script's own src so it works in both
     // local dev (localhost:3000) and production without any manual changes.
     let baseUrl = 'http://localhost:3000'; // fallback for local dev

@@ -164,10 +164,25 @@ function WidgetContent({ companyId }: { companyId: string }) {
     <div className="pointer-events-none fixed inset-0 flex flex-col items-center justify-start font-sans">
       <div className="pointer-events-auto z-[100] w-full">
         {/* --- THE BANNER STRIP (Moved to top) --- */}
-        <div className="relative z-[100] flex w-full flex-row items-center justify-between bg-[#F2B035] px-4 py-3 shadow-md sm:px-6">
-          <div className="font-dm-mono truncate pr-4 text-[10px] font-bold tracking-tight text-black uppercase sm:text-xs sm:tracking-wider md:text-sm">
-            If you have any questions or inquiries, please feel free to get on a
-            call with our Swift Agent.
+        <div className="relative z-[100] flex w-full flex-row items-center justify-between overflow-hidden bg-[#F2B035] px-4 py-3 shadow-md sm:px-6">
+          <style>{`
+            @keyframes marquee {
+              0%   { transform: translateX(100%); }
+              100% { transform: translateX(-100%); }
+            }
+            .widget-marquee {
+              display: inline-block;
+              white-space: nowrap;
+              animation: marquee 18s linear infinite;
+            }
+          `}</style>
+          <div className="font-dm-mono min-w-0 flex-1 overflow-hidden pr-4 text-[10px] font-bold tracking-tight text-black uppercase sm:text-xs sm:tracking-wider md:text-sm">
+            <span className="widget-marquee">
+              If you have any questions or inquiries, please feel free to get on
+              a call with our Swift Agent.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If
+              you have any questions or inquiries, please feel free to get on a
+              call with our Swift Agent.
+            </span>
           </div>
 
           <button
