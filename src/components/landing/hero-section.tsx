@@ -124,7 +124,7 @@ export function HeroSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative h-[90vh] min-h-[90vh] overflow-hidden bg-white"
+      className="relative min-h-screen overflow-hidden bg-white"
     >
       {/* Widget Script — stacks on top via widget's own fixed positioning */}
       <Script
@@ -178,7 +178,7 @@ export function HeroSection() {
       </nav>
 
       {/* Hero Content */}
-      <div className="relative z-10 flex w-full flex-col px-6 pt-36 md:px-16 md:pt-44 lg:px-24 lg:pt-48">
+      <div className="relative z-10 flex w-full flex-col px-6 pt-36 md:mb-50 md:px-16 md:pt-44 lg:px-24 lg:pt-38 xl:pt-48">
         {/* Pill Badge Headline */}
         <div ref={headlineRef} className="flex flex-col gap-4">
           {HEADLINE_BADGES.map((row, rowIdx) => (
@@ -188,8 +188,8 @@ export function HeroSection() {
                   key={i}
                   className={`hero-badge font-greed-narrow relative inline-flex items-center justify-center overflow-hidden leading-none tracking-tight uppercase transition-all duration-1000 ease-in-out select-none ${
                     "round" in badge && badge.round
-                      ? "h-16 w-16 rounded-full text-3xl md:h-20 md:w-20 md:text-5xl"
-                      : "rounded-md px-4 py-3 text-3xl md:rounded-[2rem] md:px-4 md:py-4 md:text-5xl lg:text-6xl"
+                      ? "h-16 w-16 rounded-full text-3xl md:h-20 md:w-20 md:text-5xl lg:text-3xl"
+                      : "rounded-md px-4 py-3 text-2xl md:rounded-[2rem] md:px-4 md:py-4 md:text-4xl lg:text-5xl"
                   }`}
                   style={{
                     backgroundColor: badge.bg,
@@ -283,19 +283,12 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Road / Intersection Image at Bottom */}
-      <div
-        ref={roadRef}
-        className="relative z-0 mt-8 h-[60vh] w-full overflow-hidden max-md:-mt-20 md:mt-16 md:h-[340px]"
-      >
-        <Image
-          src="/spiral_landing.svg"
-          alt="Road intersection"
-          fill
-          className="object-cover object-top"
-          priority
-        />
-      </div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/spiral_landing.svg"
+        alt="Road intersection"
+        className="absolute bottom-0 h-[350px] w-full overflow-hidden object-cover object-top md:h-[340px]"
+      />
 
       <NavigationMenu
         isOpen={isMenuOpen}

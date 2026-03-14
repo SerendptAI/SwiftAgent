@@ -176,7 +176,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
               animation: marquee 18s linear infinite;
             }
           `}</style>
-          <div className="font-dm-mono min-w-0 flex-1 overflow-hidden pr-4 text-[10px] font-bold tracking-tight text-black uppercase sm:text-xs sm:tracking-wider md:text-sm">
+          <div className="font-dm-mono max-w-[85vw] min-w-0 flex-1 overflow-hidden pr-4 text-[10px] font-normal tracking-tight text-black uppercase sm:max-w-[75vw] sm:text-xs sm:tracking-wider md:max-w-3xl md:text-sm xl:max-w-5xl">
             <span className="widget-marquee">
               If you have any questions or inquiries, please feel free to get on
               a call with our Swift Agent.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If
