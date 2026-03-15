@@ -1,4 +1,7 @@
+import axios from "axios";
+
 import { apiClient } from "@/lib/api-client";
+import { publicApiClient } from "@/lib/public-api-client";
 
 export interface Company {
   id: string;
@@ -87,5 +90,32 @@ export const companyApi = {
       { headers: { "Content-Type": "multipart/form-data" } },
     );
     return data;
+  },
+};
+
+export const publicCompanyApi = {
+  get: async (companyId: string): Promise<Company> => {
+    const url = `/api/v1/companies/${companyId}`;
+    console.log(`[publicCompanyApi] Fetching company from: ${url}`);
+    try {
+      const { data } = await publicApiClient.get<Company>(url);
+      console.log(`[publicCompanyApi] Success! data=`, data);
+      return data;
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        console.error(`[publicCompanyApi] FAILED to fetch company:`, {
+          url,
+          status: err.response?.status,
+          message: err.message,
+          data: err.response?.data,
+        });
+      } else {
+        console.error(
+          `[publicCompanyApi] FAILED to fetch company (non-axios):`,
+          err,
+        );
+      }
+      throw err;
+    }
   },
 };

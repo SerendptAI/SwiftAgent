@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/api-client";
+import { publicApiClient } from "@/lib/public-api-client";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -68,6 +69,15 @@ export const dashboardApi = {
 
   logVisitor: async (companyId: string, ipAddress: string): Promise<void> => {
     await apiClient.post(`/api/v1/dashboard/${companyId}/visitors/log`, {
+      ip_address: ipAddress,
+    });
+  },
+};
+
+export const publicDashboardApi = {
+  logVisitor: async (companyId: string, ipAddress: string): Promise<void> => {
+    // Uses the public client so we don't trigger 401 redirects in the widget
+    await publicApiClient.post(`/api/v1/dashboard/${companyId}/visitors/log`, {
       ip_address: ipAddress,
     });
   },

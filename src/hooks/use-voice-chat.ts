@@ -9,7 +9,6 @@ export interface VoiceChatOptions {
   onSpeechStart?: () => void;
   onReply?: (text: string) => void;
   onError?: (message: string) => void;
-  visualizerRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 export function useVoiceChat({
@@ -19,7 +18,6 @@ export function useVoiceChat({
   onSpeechStart,
   onReply,
   onError,
-  visualizerRef,
 }: VoiceChatOptions) {
   const [isActive, setIsActive] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -211,12 +209,6 @@ export function useVoiceChat({
         }
         const average = sum / bufferLength;
 
-        // Direct DOM update for high-performance animation (60fps)
-        if (visualizerRef?.current) {
-          const scale = 1 + average / 50;
-          visualizerRef.current.style.transform = `scale(${scale})`;
-        }
-
         // Silence detection (VAD)
         const SILENCE_THRESHOLD = 12; // Increased from 8 to ignore quiet noise
         const SILENCE_DURATION = 1500;
@@ -399,15 +391,7 @@ export function useVoiceChat({
       console.log("Cleaning up WebSocket effect");
       socket.close();
     };
-  }, [
-    isActive,
-    stream,
-    companyId,
-    handleStatusChange,
-    cleanup,
-    visualizerRef,
-    onSpeechStart,
-  ]);
+  }, [isActive, stream, companyId, handleStatusChange, cleanup, onSpeechStart]);
 
   const toggleMute = useCallback(() => {
     setIsMuted((prev) => !prev);

@@ -1,19 +1,13 @@
 "use client";
-
-import {
-  Mic,
-  MicOff,
-  MoreHorizontal,
-  Phone,
-  PhoneOff,
-  Volume2,
-} from "lucide-react";
-import { use, useCallback, useEffect, useRef, useState } from "react";
+import { MicOff, MoreHorizontal, Phone } from "lucide-react";
+import Image from "next/image";
+import { use, useCallback, useEffect, useState } from "react";
 
 import { Icons } from "@/components/icons";
+import { usePublicCompanyQuery } from "@/hooks/use-company";
 import { useVoiceChat } from "@/hooks/use-voice-chat";
 import { cn } from "@/lib/utils";
-import { dashboardApi } from "@/services/dashboard";
+import { publicDashboardApi } from "@/services/dashboard";
 
 // This is the main widget application that runs inside the iframe
 export default function WidgetPage({
@@ -30,12 +24,29 @@ export default function WidgetPage({
 }
 
 function WidgetContent({ companyId }: { companyId: string }) {
+  const {
+    data: company,
+    isLoading,
+    error: queryError,
+  } = usePublicCompanyQuery(companyId);
+  const companyName = company?.name;
+
+  useEffect(() => {
+    console.log("------------------ WidgetContent Log ------------------");
+    console.log("companyId    :", companyId);
+    console.log("isLoading    :", isLoading);
+    console.log("company      :", company);
+    console.log("companyName  :", companyName);
+    console.log("queryError   :", queryError);
+    if (queryError) console.error("WidgetContent Query Error:", queryError);
+    console.log("-------------------------------------------------------");
+  }, [companyId, isLoading, company, companyName, queryError]);
+
   const [elapsedTime, setElapsedTime] = useState(0);
   const [statusText, setStatusText] = useState("Idle");
   const [transcript, setTranscript] = useState("");
   const [agentReply, setAgentReply] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const visualizerRef = useRef<HTMLDivElement>(null);
 
   const handleStatusChange = useCallback((s: string) => setStatusText(s), []);
   const handleTranscript = useCallback((t: string) => setTranscript(t), []);
@@ -58,7 +69,6 @@ function WidgetContent({ companyId }: { companyId: string }) {
     onSpeechStart: handleSpeechStart,
     onReply: handleReply,
     onError: handleError,
-    visualizerRef,
   });
 
   const callStatus = isActive ? "ongoing" : "idle";
@@ -74,7 +84,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
         const res = await fetch("https://api.ipify.org?format=json");
         const data = await res.json();
         if (data.ip) {
-          await dashboardApi.logVisitor(companyId, data.ip);
+          await publicDashboardApi.logVisitor(companyId, data.ip);
           sessionStorage.setItem(sessionKey, "true");
           console.log("Visitor logged successfully.");
         }
@@ -152,13 +162,20 @@ function WidgetContent({ companyId }: { companyId: string }) {
       case "idle":
         return "Ended";
       default:
-        return status;
+        return s;
     }
   };
 
+  const handleStartCall = useCallback(() => {
+    setErrorMessage(null);
+    start();
+  }, [start]);
+
   const handleRequestCallClick = useCallback(() => {
-    if (callStatus === "idle") start();
-  }, [callStatus, start]);
+    if (callStatus === "idle") {
+      handleStartCall();
+    }
+  }, [callStatus, handleStartCall]);
 
   return (
     <div className="pointer-events-none fixed inset-0 flex flex-col items-center justify-start font-sans">
@@ -179,9 +196,10 @@ function WidgetContent({ companyId }: { companyId: string }) {
           <div className="font-dm-mono max-w-[85%] min-w-0 flex-1 overflow-hidden pr-4 text-[10px] font-normal tracking-tight text-black uppercase sm:text-xs sm:tracking-wider md:text-sm">
             <span className="widget-marquee">
               If you have any questions or inquiries, please feel free to get on
-              a call with our Swift Agent.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If
-              you have any questions or inquiries, please feel free to get on a
-              call with our Swift Agent.
+              a call with our {companyName}
+              .&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If you have any questions or
+              inquiries, please feel free to get on a call with our{" "}
+              {companyName}.
             </span>
           </div>
 
@@ -229,11 +247,12 @@ function WidgetContent({ companyId }: { companyId: string }) {
               <div className="relative flex h-[600px] flex-col items-center justify-center p-8 text-center">
                 <div className="absolute top-6 flex items-center gap-2">
                   <span className="text-sm font-semibold text-gray-400 uppercase">
+                    {companyName ? `${companyName} • ` : ""}
                     {getFriendlyStatus(statusText)}
                   </span>
                 </div>
 
-                {/* <div className="absolute top-20 w-full px-12">
+                <div className="absolute top-20 w-full px-12">
                   <div className="mx-auto max-w-lg space-y-4">
                     {errorMessage && (
                       <p className="rounded-lg bg-red-50 px-3 py-2 font-mono text-sm text-red-700">
@@ -251,21 +270,23 @@ function WidgetContent({ companyId }: { companyId: string }) {
                       </p>
                     )}
                   </div>
-                </div> */}
-
-                <div
-                  ref={visualizerRef}
-                  className="flex h-48 w-48 items-center justify-center rounded-full transition-transform duration-75"
-                >
-                  <img src="/images/aiblock.svg" alt="Phone" />
                 </div>
 
-                <div className="absolute bottom-10 flex w-full items-center justify-center gap-6">
+                <div className="flex h-48 w-48 items-center justify-center rounded-full transition-transform duration-75">
+                  <Image
+                    src="/images/aiblock.svg"
+                    alt="Phone"
+                    width={192}
+                    height={192}
+                  />
+                </div>
+
+                <div className="absolute bottom-10 flex w-full items-center justify-center gap-16">
                   <button className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200">
                     <MoreHorizontal className="h-6 w-6" />
                   </button>
                   <button className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200">
-                    <Volume2 className="h-6 w-6" />
+                    <Icons.Speaker className="h-6 w-6" />
                   </button>
                   <button
                     onClick={toggleMute}
@@ -279,7 +300,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
                     {isMuted ? (
                       <MicOff className="h-6 w-6" />
                     ) : (
-                      <Mic className="h-6 w-6" />
+                      <Icons.mic className="h-6 w-6" />
                     )}
                   </button>
 
