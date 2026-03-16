@@ -243,7 +243,12 @@ export function useVoiceChat({
                 socketRef.current &&
                 socketRef.current.readyState === WebSocket.OPEN
               ) {
-                socketRef.current.send(JSON.stringify({ type: "stop_audio" }));
+                // In blob mode, we stop the recorder to "finish" the file
+                const mr = mediaRecorderRef.current;
+                if (mr && mr.state !== "inactive") {
+                  mr.stop();
+                  console.log("VAD: Recorder stopped, waiting for blob...");
+                }
                 handleStatusChange("Thinking");
               }
               hasSpoken = false;
@@ -272,37 +277,28 @@ export function useVoiceChat({
           if (
             event.data.size > 0 &&
             socket.readyState === WebSocket.OPEN &&
-            !isMutedRef.current &&
-            currentStatus === "ready" // Gating: Only send audio if AI is ready/listening
+            !isMutedRef.current
+            // In blob-per-utterance mode, we don't gate by "ready" here because
+            // the data is only available when the utterance is FINISHED and recorder stopped.
           ) {
             const reader = new FileReader();
             reader.onloadend = () => {
+              if (!isActive) return;
+
               const base64data = (reader.result as string).split(",")[1];
+              console.log("VAD: Sending full utterance blob to server");
               socket.send(JSON.stringify({ type: "audio", data: base64data }));
-              chunksSentThisUtterance++;
-              if (chunksSentThisUtterance % 10 === 1) {
-                console.log(
-                  "VAD: Sent audio chunk",
-                  chunksSentThisUtterance,
-                  "this utterance",
-                );
-              }
+
+              // Immediately signal the server to process the buffer we just sent
+              socket.send(JSON.stringify({ type: "stop_audio" }));
             };
             reader.readAsDataURL(event.data);
-          } else if (event.data.size > 0 && currentStatus !== "ready") {
-            // Log dropped chunks occasionally to avoid spam but confirm behavior
-            if (Math.random() < 0.1) {
-              console.log(
-                "VAD: Dropping audio chunk while status is",
-                currentStatus,
-              );
-            }
           }
         };
       };
 
       setupMediaRecorder(mediaRecorder);
-      mediaRecorder.start(250);
+      mediaRecorder.start(); // No interval - capture as a single blob
 
       // Restart MediaRecorder for each new utterance so the server gets a clean segment (fixes 2nd+ transcription)
       restartMediaRecorderRef.current = () => {
@@ -314,7 +310,7 @@ export function useVoiceChat({
         const newMr = new MediaRecorder(stream, recorderOptions);
         mediaRecorderRef.current = newMr;
         setupMediaRecorder(newMr);
-        newMr.start(250);
+        newMr.start();
         console.log("VAD: MediaRecorder restarted for new utterance");
       };
 
