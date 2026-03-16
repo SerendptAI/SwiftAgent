@@ -288,12 +288,14 @@ function WidgetContent({ companyId }: { companyId: string }) {
               <div className="animate-float-in absolute -right-2 -bottom-16 z-10 flex h-14 w-14 items-center justify-center rounded-full border-2 border-black bg-white shadow-[0_4px_12px_rgba(0,0,0,0.15)] sm:-right-4 sm:-bottom-20">
                 <Icons.phoneIncoming className="h-6 w-6 -rotate-90 text-black" />
               </div>
-              <div className="relative flex h-full min-h-[400px] flex-col items-center justify-center p-4 text-center sm:h-[600px] sm:p-8">
-                <div className="animate-float-in absolute top-4 flex items-center gap-2 sm:top-6">
-                  <span className="text-xs font-semibold text-gray-400 uppercase sm:text-sm">
-                    {companyName ? `${companyName} • ` : ""}
+              <div className="relative mt-6 flex h-full min-h-[400px] flex-col items-center justify-center p-4 text-center sm:h-[600px] sm:p-8">
+                <div className="animate-float-in absolute top-4 flex flex-col items-center gap-2 sm:top-6">
+                  <div className="text-xl font-semibold text-gray-400 uppercase sm:text-sm">
+                    {companyName ? `${companyName}  ` : ""}
+                  </div>
+                  <div className="text-xs font-semibold text-gray-400 uppercase sm:text-sm">
                     {getFriendlyStatus(statusText)}
-                  </span>
+                  </div>
                 </div>
 
                 <div className="absolute top-14 w-full px-4 sm:top-20 sm:px-12">

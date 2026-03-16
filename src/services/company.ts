@@ -95,7 +95,7 @@ export const companyApi = {
 
 export const publicCompanyApi = {
   get: async (companyId: string): Promise<Company> => {
-    const url = `/api/v1/companies/${companyId}`;
+    const url = `/api/v1/companies/${companyId}/public`;
     console.log(`[publicCompanyApi] Fetching company from: ${url}`);
     try {
       const { data } = await publicApiClient.get<Company>(url);
