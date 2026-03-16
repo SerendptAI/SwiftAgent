@@ -32,6 +32,11 @@
         }
     }
 
+    // Helper to get the appropriate banner height based on viewport width
+    function getBannerHeight() {
+        return window.innerWidth < 640 ? '56px' : '72px';
+    }
+
     // 3. Create the iframe element
     const iframe = document.createElement('iframe');
     iframe.className = 'swift-agent-widget-iframe';
@@ -43,6 +48,8 @@
     style.textContent = 'iframe.swift-agent-widget-iframe { pointer-events: auto !important; }';
     document.head.appendChild(style);
 
+    var bannerHeight = getBannerHeight();
+
     iframe.style.position = 'fixed';
     iframe.style.top = '0';
     iframe.style.right = '0';
@@ -51,17 +58,27 @@
     iframe.style.background = 'transparent';
     iframe.style.display = 'block';
     iframe.style.width = '100vw';
-    iframe.style.height = '72px';
+    iframe.style.height = bannerHeight;
     iframe.style.pointerEvents = 'auto';
 
     // 4. Body push so the widget banner doesn't overlap the host page header
     document.body.style.transition = 'margin-top 0.3s ease-in-out';
-    document.body.style.marginTop = '72px';
+    document.body.style.marginTop = bannerHeight;
 
     // 5. Append to body — shows on ALL pages of the customer's website
     document.body.appendChild(iframe);
 
-    // 6. Message listener to handle resizing from the iframe (banner ↔ fullscreen call)
+    // 6. Update banner height on resize
+    var isFullScreen = false;
+    window.addEventListener('resize', function () {
+        if (!isFullScreen) {
+            var newHeight = getBannerHeight();
+            iframe.style.height = newHeight;
+            document.body.style.marginTop = newHeight;
+        }
+    });
+
+    // 7. Message listener to handle resizing from the iframe (banner ↔ fullscreen call)
     window.addEventListener('message', function (event) {
         if (event.origin !== baseUrl) return;
 
@@ -73,9 +90,13 @@
                 if (pointerEvents) iframe.style.pointerEvents = pointerEvents;
 
                 if (height === '100vh') {
+                    isFullScreen = true;
                     document.body.style.marginTop = '0px';
-                } else if (height === '72px') {
-                    document.body.style.marginTop = '72px';
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    isFullScreen = false;
+                    document.body.style.marginTop = height;
+                    document.body.style.overflow = '';
                 }
             }
         } catch {

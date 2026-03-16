@@ -123,6 +123,9 @@ function WidgetContent({ companyId }: { companyId: string }) {
   useEffect(() => {
     if (!window.parent) return;
 
+    const isMobile = window.innerWidth < 640;
+    const bannerHeight = isMobile ? "56px" : "72px";
+
     if (isActive) {
       window.parent.postMessage(
         {
@@ -138,7 +141,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
         {
           type: "SWIFT_AGENT_WIDGET_RESIZE",
           width: "100vw",
-          height: "72px",
+          height: bannerHeight,
           pointerEvents: "auto",
         },
         "*",
@@ -181,7 +184,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
     <div className="pointer-events-none fixed inset-0 flex flex-col items-center justify-start font-sans">
       <div className="pointer-events-auto z-[100] w-full">
         {/* --- THE BANNER STRIP (Moved to top) --- */}
-        <div className="relative z-[100] flex w-full flex-row items-center justify-between overflow-hidden bg-[#F2B035] px-4 py-3 shadow-md sm:px-6">
+        <div className="relative z-[100] flex w-full flex-row items-center justify-between overflow-hidden bg-[#F2B035] px-3 py-2 shadow-md sm:px-6 sm:py-3">
           <style>{`
             @keyframes marquee {
               0%   { transform: translateX(100%); }
@@ -193,7 +196,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
               animation: marquee 18s linear infinite;
             }
           `}</style>
-          <div className="font-dm-mono max-w-[85%] min-w-0 flex-1 overflow-hidden pr-4 text-[10px] font-normal tracking-tight text-black uppercase sm:text-xs sm:tracking-wider md:text-sm">
+          <div className="font-dm-mono max-w-[70%] min-w-0 flex-1 overflow-hidden pr-2 text-[9px] font-normal tracking-tight text-black uppercase sm:max-w-[85%] sm:pr-4 sm:text-xs sm:tracking-wider md:text-sm">
             <span className="widget-marquee">
               If you have any questions or inquiries, please feel free to get on
               a call with our {companyName}
@@ -207,7 +210,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
             type="button"
             onClick={handleRequestCallClick}
             className={cn(
-              "relative z-[101] flex shrink-0 items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 shadow-[-6px_6px_0_0_#000000] transition-all hover:-translate-y-0.5 hover:shadow-md sm:px-6",
+              "relative z-[101] flex shrink-0 items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 shadow-[-4px_4px_0_0_#000000] transition-all hover:-translate-y-0.5 hover:shadow-md sm:gap-2 sm:px-6 sm:py-2 sm:shadow-[-6px_6px_0_0_#000000]",
               callStatus === "ongoing"
                 ? "cursor-default border-transparent"
                 : "cursor-pointer",
@@ -242,73 +245,115 @@ function WidgetContent({ companyId }: { companyId: string }) {
 
         {/* --- FULL SCREEN CALL MODAL --- */}
         {callStatus === "ongoing" && (
-          <div className="fixed inset-0 z-50 flex items-start justify-center bg-[#000000A6] pt-[76px] backdrop-blur-sm sm:pt-[80px]">
-            <div className="relative w-[95%] max-w-[1200px] overflow-hidden rounded-4xl bg-white shadow-2xl transition-all duration-300">
-              <div className="relative flex h-[600px] flex-col items-center justify-center p-8 text-center">
-                <div className="absolute top-6 flex items-center gap-2">
-                  <span className="text-sm font-semibold text-gray-400 uppercase">
+          <div className="animate-fade-in fixed inset-0 z-50 flex items-start justify-center pt-[60px] backdrop-blur-sm sm:pt-[76px]">
+            <style>{`
+              @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+              }
+              @keyframes slideUp {
+                from { opacity: 0; transform: translateY(40px); }
+                to { opacity: 1; transform: translateY(0); }
+              }
+              @keyframes scaleIn {
+                from { opacity: 0; transform: scale(0.8); }
+                to { opacity: 1; transform: scale(1); }
+              }
+              @keyframes floatIn {
+                from { opacity: 0; transform: translateY(20px) scale(0.5); }
+                to { opacity: 1; transform: translateY(0) scale(1); }
+              }
+              .animate-fade-in {
+                animation: fadeIn 0.4s ease-out forwards;
+                background-color: #000000A6;
+              }
+              .animate-slide-up {
+                animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+              }
+              .animate-scale-in {
+                animation: scaleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+                opacity: 0;
+              }
+              .animate-float-in {
+                animation: floatIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+                opacity: 0;
+              }
+              .animate-control-1 { animation: floatIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards; opacity: 0; }
+              .animate-control-2 { animation: floatIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards; opacity: 0; }
+              .animate-control-3 { animation: floatIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.7s forwards; opacity: 0; }
+              .animate-control-4 { animation: floatIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards; opacity: 0; }
+            `}</style>
+            <div className="animate-slide-up relative h-[calc(100vh-60px)] w-full overflow-visible rounded-t-3xl bg-white shadow-2xl sm:h-auto sm:max-h-[calc(100vh-100px)] sm:w-[95%] sm:max-w-[1200px] sm:rounded-4xl">
+              {/* Floating call icon on the modal */}
+              <div className="animate-float-in absolute -right-2 -bottom-16 z-10 flex h-14 w-14 items-center justify-center rounded-full border-2 border-black bg-white shadow-[0_4px_12px_rgba(0,0,0,0.15)] sm:-right-4 sm:-bottom-20">
+                <Icons.phoneIncoming className="h-6 w-6 -rotate-90 text-black" />
+              </div>
+              <div className="relative flex h-full min-h-[400px] flex-col items-center justify-center p-4 text-center sm:h-[600px] sm:p-8">
+                <div className="animate-float-in absolute top-4 flex items-center gap-2 sm:top-6">
+                  <span className="text-xs font-semibold text-gray-400 uppercase sm:text-sm">
                     {companyName ? `${companyName} • ` : ""}
                     {getFriendlyStatus(statusText)}
                   </span>
                 </div>
 
-                <div className="absolute top-20 w-full px-12">
-                  <div className="mx-auto max-w-lg space-y-4">
+                <div className="absolute top-14 w-full px-4 sm:top-20 sm:px-12">
+                  <div className="mx-auto max-w-lg space-y-3 sm:space-y-4">
                     {errorMessage && (
-                      <p className="rounded-lg bg-red-50 px-3 py-2 font-mono text-sm text-red-700">
+                      <p className="rounded-lg bg-red-50 px-3 py-2 font-mono text-xs text-red-700 sm:text-sm">
                         {errorMessage}
                       </p>
                     )}
                     {transcript && (
-                      <p className="font-dm-mono text-sm leading-relaxed text-gray-500 italic">
+                      <p className="font-dm-mono text-xs leading-relaxed text-gray-500 italic sm:text-sm">
                         &quot;{transcript}&quot;
                       </p>
                     )}
                     {agentReply && (
-                      <p className="font-sans text-lg leading-tight font-medium text-black">
+                      <p className="font-sans text-base leading-tight font-medium text-black sm:text-lg">
                         {agentReply}
                       </p>
                     )}
                   </div>
                 </div>
 
-                <div className="flex h-48 w-48 items-center justify-center rounded-full transition-transform duration-75">
+                <div className="animate-scale-in flex h-28 w-28 items-center justify-center rounded-full sm:h-48 sm:w-48">
                   <Image
                     src="/images/aiblock.svg"
                     alt="Phone"
                     width={192}
                     height={192}
+                    className="h-full w-full"
                   />
                 </div>
 
-                <div className="absolute bottom-10 flex w-full items-center justify-center gap-16">
-                  <button className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200">
-                    <MoreHorizontal className="h-6 w-6" />
+                <div className="absolute bottom-6 flex w-full items-center justify-center gap-6 sm:bottom-10 sm:gap-16">
+                  <button className="animate-control-1 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200 sm:h-14 sm:w-14">
+                    <MoreHorizontal className="h-5 w-5 sm:h-6 sm:w-6" />
                   </button>
-                  <button className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200">
-                    <Icons.Speaker className="h-6 w-6" />
+                  <button className="animate-control-2 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200 sm:h-14 sm:w-14">
+                    <Icons.Speaker className="h-5 w-5 sm:h-6 sm:w-6" />
                   </button>
                   <button
                     onClick={toggleMute}
                     className={cn(
-                      "flex h-14 w-14 items-center justify-center rounded-full transition",
+                      "animate-control-3 flex h-11 w-11 items-center justify-center rounded-full transition sm:h-14 sm:w-14",
                       isMuted
                         ? "bg-red-100 text-red-600 hover:bg-red-200"
                         : "bg-gray-100 text-gray-600 hover:bg-gray-200",
                     )}
                   >
                     {isMuted ? (
-                      <MicOff className="h-6 w-6" />
+                      <MicOff className="h-5 w-5 sm:h-6 sm:w-6" />
                     ) : (
-                      <Icons.mic className="h-6 w-6" />
+                      <Icons.mic className="h-5 w-5 sm:h-6 sm:w-6" />
                     )}
                   </button>
 
                   <button
                     onClick={stop}
-                    className="flex h-14 w-14 items-center justify-center rounded-full bg-[#f25430] text-white shadow-lg transition hover:scale-105 hover:bg-red-600 hover:shadow-xl"
+                    className="animate-control-4 flex h-11 w-11 items-center justify-center rounded-full bg-[#f25430] text-white shadow-lg transition hover:scale-105 hover:bg-red-600 hover:shadow-xl sm:h-14 sm:w-14"
                   >
-                    <Icons.phonedown className="h-6 w-6" />
+                    <Icons.phonedown className="h-5 w-5 sm:h-6 sm:w-6" />
                   </button>
                 </div>
               </div>

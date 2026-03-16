@@ -127,13 +127,12 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
       >
         {/* Left Content */}
         <div className="relative z-10 flex w-full flex-1 flex-col px-12 pt-12 md:w-3/5 md:px-24 md:pt-24 xl:px-32">
-          {/* Mobile Close Button Container - Positioned to align with right block */}
-          <div className="absolute top-12 right-6 z-20 flex items-center md:hidden">
+          {/* Mobile Close Button Container - Below widget banner */}
+          <div className="absolute top-[72px] right-6 z-20 flex items-center md:hidden">
             <button
               onClick={onClose}
               className="flex items-center gap-2 font-mono text-[10px] font-bold tracking-[0.2em] text-gray-900 uppercase transition-colors hover:text-[#F25430]"
             >
-              {/* close menu icon */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

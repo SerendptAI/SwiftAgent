@@ -188,8 +188,8 @@ export function HeroSection() {
                   key={i}
                   className={`hero-badge font-greed-narrow relative inline-flex items-center justify-center overflow-hidden leading-none tracking-tight uppercase transition-all duration-1000 ease-in-out select-none ${
                     "round" in badge && badge.round
-                      ? "h-16 w-16 rounded-full text-3xl md:h-20 md:w-20 md:text-5xl lg:text-3xl"
-                      : "rounded-md px-4 py-3 text-2xl md:rounded-[2rem] md:px-4 md:py-4 md:text-4xl lg:text-5xl"
+                      ? "h-16 w-16 rounded-full text-4xl md:h-20 md:w-20 md:text-5xl lg:text-3xl"
+                      : "rounded-md px-4 py-3 text-3xl md:rounded-[2rem] md:px-4 md:py-4 md:text-4xl lg:text-5xl"
                   }`}
                   style={{
                     backgroundColor: badge.bg,
@@ -260,7 +260,7 @@ export function HeroSection() {
 
         <p
           ref={subtitleRef}
-          className="font-stolzl mt-8 max-w-xl text-center text-sm leading-relaxed text-gray-700 md:hidden md:text-base"
+          className="font-stolzl mt-8 max-w-xl text-center text-base leading-relaxed text-gray-700 md:hidden md:text-base"
         >
           Imagine a world where AI handles inquiries, providing instant support.
           They resolve issues, answer questions, and learn to enhance
