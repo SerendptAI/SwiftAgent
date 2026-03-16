@@ -161,17 +161,14 @@ export function useVoiceChat({
     socket.onopen = () => {
       console.log("WebSocket Opened successfully");
       handleStatusChange("Ready");
-      socket.send(
-        JSON.stringify({ type: "start", session_id: crypto.randomUUID() }),
-      );
-
-      // Use explicit mimeType so initial and restarted recorders use same codec (server may reject differing formats)
       const recorderOptions = (() => {
         if (typeof MediaRecorder === "undefined") return {};
         const prefer = [
           "audio/webm;codecs=opus",
           "audio/webm",
           "audio/ogg;codecs=opus",
+          "audio/mp4",
+          "audio/aac",
         ];
         for (const m of prefer) {
           if (MediaRecorder.isTypeSupported(m)) return { mimeType: m };
@@ -182,6 +179,14 @@ export function useVoiceChat({
       let chunksSentThisUtterance = 0;
       const mediaRecorder = new MediaRecorder(stream, recorderOptions);
       mediaRecorderRef.current = mediaRecorder;
+
+      socket.send(
+        JSON.stringify({
+          type: "start",
+          session_id: crypto.randomUUID(),
+          mime_type: mediaRecorder.mimeType,
+        }),
+      );
 
       // Audio analysis for volume meter
       const audioContext = new (
@@ -343,7 +348,13 @@ export function useVoiceChat({
             prevStatus !== "idle"
           ) {
             if (socketRef.current?.readyState === WebSocket.OPEN) {
-              socketRef.current.send(JSON.stringify({ type: "start_audio" }));
+              const recorder = mediaRecorderRef.current;
+              socketRef.current.send(
+                JSON.stringify({
+                  type: "start_audio",
+                  mime_type: recorder?.mimeType,
+                }),
+              );
             }
             restartMediaRecorderRef.current?.();
           }
