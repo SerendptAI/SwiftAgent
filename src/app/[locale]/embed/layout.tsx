@@ -16,7 +16,7 @@ export default function EmbedLayout({
       `,
         }}
       />
-      <div className="flex min-h-screen w-full flex-col bg-white">
+      <div className="flex min-h-screen w-full flex-col bg-transparent">
         {children}
       </div>
     </>
