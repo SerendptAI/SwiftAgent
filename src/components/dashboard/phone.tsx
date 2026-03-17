@@ -1,6 +1,6 @@
 "use client";
 
-import { Mic, MoreHorizontal, PhoneOff, Volume2 } from "lucide-react";
+import { Mic, MoreHorizontal, Volume2 } from "lucide-react";
 
 import { useOnboardingStore } from "@/store/onboarding-store";
 
@@ -29,6 +29,7 @@ export function Phone() {
 
         {/* Gradient Circle */}
         <div className="relative flex w-full flex-1 items-center justify-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/images/aiblock.svg"
             className="h-48 w-48 animate-pulse"

@@ -20,7 +20,8 @@ export function WidgetScriptLoader() {
         iframe.remove();
         document.body.style.marginTop = "";
         document.body.style.overflow = "";
-        window.__SWIFT_AGENT_WIDGET_LOADED__ = false;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (window as any).__SWIFT_AGENT_WIDGET_LOADED__ = false;
       }
     }
   }, [isLandingPage]);

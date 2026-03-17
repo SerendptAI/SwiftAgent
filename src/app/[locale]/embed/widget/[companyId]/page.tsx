@@ -1,5 +1,5 @@
 "use client";
-import { MicOff, MoreHorizontal, Phone } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import Image from "next/image";
 import { use, useCallback, useEffect, useRef, useState } from "react";
 

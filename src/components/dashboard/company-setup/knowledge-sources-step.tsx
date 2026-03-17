@@ -30,7 +30,6 @@ export function KnowledgeSourcesStep({
   companyId,
   isUpdateMode,
   onNext,
-  onBack,
   footerAction,
 }: KnowledgeSourcesStepProps) {
   const { updateCompany } = useCompanyMutations();

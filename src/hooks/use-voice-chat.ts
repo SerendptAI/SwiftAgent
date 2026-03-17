@@ -176,7 +176,6 @@ export function useVoiceChat({
         return {};
       })();
 
-      let chunksSentThisUtterance = 0;
       const mediaRecorder = new MediaRecorder(stream, recorderOptions);
       mediaRecorderRef.current = mediaRecorder;
 
@@ -273,7 +272,6 @@ export function useVoiceChat({
 
       const setupMediaRecorder = (recorder: MediaRecorder) => {
         recorder.ondataavailable = (event) => {
-          const currentStatus = statusRef.current.toLowerCase();
           if (
             event.data.size > 0 &&
             socket.readyState === WebSocket.OPEN &&
@@ -306,7 +304,6 @@ export function useVoiceChat({
         if (mr && mr.state !== "inactive") {
           mr.stop();
         }
-        chunksSentThisUtterance = 0;
         const newMr = new MediaRecorder(stream, recorderOptions);
         mediaRecorderRef.current = newMr;
         setupMediaRecorder(newMr);

@@ -44,6 +44,7 @@ export function FeaturesSection() {
   const cardsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const cardsEl = cardsRef.current;
     const ctx = gsap.context(() => {
       // Title animation
       if (titleRef.current) {
@@ -103,8 +104,8 @@ export function FeaturesSection() {
     }, sectionRef);
 
     return () => {
-      if (cardsRef.current) {
-        const glows = cardsRef.current.querySelectorAll(".card-glow");
+      if (cardsEl) {
+        const glows = cardsEl.querySelectorAll(".card-glow");
         gsap.killTweensOf(glows);
       }
       ScrollTrigger.getAll().forEach((t) => t.kill());

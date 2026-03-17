@@ -42,6 +42,7 @@ export default function LoginPage() {
   return (
     <div className="font-dm-mono container flex h-screen w-screen flex-col items-center justify-center">
       <div className="mx-auto flex w-full flex-col justify-center gap-6 space-y-10 sm:w-[400px]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/images/logo.svg" alt="Logo" />
 
         <Card className="border-0 shadow-none">

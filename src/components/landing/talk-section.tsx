@@ -39,6 +39,7 @@ export function TalkSection() {
   const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const imageEl = imageRef.current;
     const ctx = gsap.context(() => {
       // Text reveal - Staggered slide up
       if (textRef.current) {
@@ -143,8 +144,8 @@ export function TalkSection() {
     }, sectionRef);
 
     return () => {
-      if (imageRef.current) {
-        gsap.killTweensOf(imageRef.current);
+      if (imageEl) {
+        gsap.killTweensOf(imageEl);
       }
       ScrollTrigger.getAll().forEach((t) => t.kill());
       ctx.revert();
