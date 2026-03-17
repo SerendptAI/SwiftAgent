@@ -241,7 +241,12 @@ function WidgetContent({ companyId }: { companyId: string }) {
   }, [callStatus, handleStartCall]);
 
   return (
-    <div className="pointer-events-none fixed inset-0 flex flex-col items-center justify-start font-sans">
+    <div
+      className={cn(
+        "fixed inset-x-0 top-0 flex flex-col items-center justify-start font-sans",
+        isActive ? "pointer-events-none inset-0" : "pointer-events-auto",
+      )}
+    >
       <div className="pointer-events-auto z-[100] w-full">
         {/* --- THE BANNER STRIP (Moved to top) --- */}
         <div className="relative z-[100] flex w-full flex-row items-center justify-between overflow-hidden bg-[#F2B035] px-3 py-2 shadow-md sm:px-6 sm:py-3">

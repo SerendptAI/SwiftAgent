@@ -106,7 +106,7 @@ export function AboutSection() {
       >
         {/* Distinct Top Title */}
 
-        <div className="relative z-10 flex min-h-screen flex-col items-center justify-between pt-32 lg:flex-row lg:items-center lg:pt-0">
+        <div className="relative z-10 flex min-h-screen flex-col items-center justify-between pt-16 md:pt-32 lg:flex-row lg:items-center lg:pt-0">
           <div
             ref={textRef}
             className="w-full px-8 pb-12 lg:w-[45%] lg:px-16 lg:pb-16"
