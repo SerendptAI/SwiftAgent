@@ -401,7 +401,17 @@ export function useVoiceChat({
   }, [isActive, stream, companyId, handleStatusChange, cleanup, onSpeechStart]);
 
   const toggleMute = useCallback(() => {
-    setIsMuted((prev) => !prev);
+    setIsMuted((prev) => {
+      const newMuted = !prev;
+      // Disable/enable the actual mic tracks
+      const mr = mediaRecorderRef.current;
+      if (mr) {
+        mr.stream.getAudioTracks().forEach((track) => {
+          track.enabled = !newMuted;
+        });
+      }
+      return newMuted;
+    });
   }, []);
 
   useEffect(() => {

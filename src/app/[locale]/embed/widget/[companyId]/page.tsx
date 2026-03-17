@@ -1,13 +1,21 @@
 "use client";
 import { MicOff, MoreHorizontal, Phone } from "lucide-react";
 import Image from "next/image";
-import { use, useCallback, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { usePublicCompanyQuery } from "@/hooks/use-company";
 import { useVoiceChat } from "@/hooks/use-voice-chat";
 import { cn } from "@/lib/utils";
 import { publicDashboardApi } from "@/services/dashboard";
+
+// Preload feedback audio elements
+function createAudio(src: string): HTMLAudioElement | null {
+  if (typeof window === "undefined") return null;
+  const audio = new Audio(src);
+  audio.preload = "auto";
+  return audio;
+}
 
 // This is the main widget application that runs inside the iframe
 export default function WidgetPage({
@@ -42,13 +50,52 @@ function WidgetContent({ companyId }: { companyId: string }) {
     console.log("-------------------------------------------------------");
   }, [companyId, isLoading, company, companyName, queryError]);
 
+  // Audio feedback refs
+  const dialingAudioRef = useRef<HTMLAudioElement | null>(null);
+  const pickupAudioRef = useRef<HTMLAudioElement | null>(null);
+  const touchAudioRef = useRef<HTMLAudioElement | null>(null);
+  const hasPlayedPickupRef = useRef(false);
+  const dialingStartTimeRef = useRef(0);
+  const isDialingPhaseRef = useRef(false);
+
+  useEffect(() => {
+    dialingAudioRef.current = createAudio("/audio/dialing.mp3");
+    pickupAudioRef.current = createAudio("/audio/pick_audio.aac");
+    touchAudioRef.current = createAudio("/audio/touch_audio.aac");
+    // Loop the dialing sound so it plays continuously until connected
+    if (dialingAudioRef.current) dialingAudioRef.current.loop = true;
+  }, []);
+
   const [elapsedTime, setElapsedTime] = useState(0);
   const [statusText, setStatusText] = useState("Idle");
   const [transcript, setTranscript] = useState("");
   const [agentReply, setAgentReply] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleStatusChange = useCallback((s: string) => setStatusText(s), []);
+  const handleStatusChange = useCallback((s: string) => {
+    // When AI voice session is ready for the first time, keep showing "Calling" until dialing finishes (4s min)
+    if (s.toLowerCase() === "ready" && !hasPlayedPickupRef.current) {
+      hasPlayedPickupRef.current = true;
+      isDialingPhaseRef.current = true;
+      setStatusText("Calling");
+      const elapsed = Date.now() - dialingStartTimeRef.current;
+      const remaining = Math.max(0, 4000 - elapsed);
+      setTimeout(() => {
+        isDialingPhaseRef.current = false;
+        if (dialingAudioRef.current) {
+          dialingAudioRef.current.pause();
+          dialingAudioRef.current.currentTime = 0;
+        }
+        pickupAudioRef.current?.play().catch(() => {});
+        setStatusText("Ready");
+      }, remaining);
+    } else if (isDialingPhaseRef.current) {
+      // Suppress any status updates while dialing is still playing
+      return;
+    } else {
+      setStatusText(s);
+    }
+  }, []);
   const handleTranscript = useCallback((t: string) => setTranscript(t), []);
   const handleSpeechStart = useCallback(() => {
     setTranscript("");
@@ -60,6 +107,11 @@ function WidgetContent({ companyId }: { companyId: string }) {
     const msg = typeof err === "string" ? err : (err?.message ?? String(err));
     console.error("Voice Chat Error:", msg);
     setErrorMessage(msg);
+    // Stop dialing sound on error
+    if (dialingAudioRef.current) {
+      dialingAudioRef.current.pause();
+      dialingAudioRef.current.currentTime = 0;
+    }
   }, []);
 
   const { isActive, isMuted, start, stop, toggleMute } = useVoiceChat({
@@ -153,7 +205,8 @@ function WidgetContent({ companyId }: { companyId: string }) {
     const s = status.toLowerCase();
     switch (s) {
       case "connecting":
-        return "Connecting...";
+      case "calling":
+        return "Calling...";
       case "ready":
         return "Listening";
       case "thinking":
@@ -171,11 +224,17 @@ function WidgetContent({ companyId }: { companyId: string }) {
 
   const handleStartCall = useCallback(() => {
     setErrorMessage(null);
+    hasPlayedPickupRef.current = false;
+    isDialingPhaseRef.current = false;
+    dialingStartTimeRef.current = Date.now();
+    // Play dialing sound while AI session initializes
+    dialingAudioRef.current?.play().catch(() => {});
     start();
   }, [start]);
 
   const handleRequestCallClick = useCallback(() => {
     if (callStatus === "idle") {
+      touchAudioRef.current?.play().catch(() => {});
       handleStartCall();
     }
   }, [callStatus, handleStartCall]);
@@ -245,7 +304,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
 
         {/* --- FULL SCREEN CALL MODAL --- */}
         {callStatus === "ongoing" && (
-          <div className="animate-fade-in fixed inset-0 z-50 flex items-end justify-center pt-[56px] backdrop-blur-sm sm:items-center sm:pt-[76px]">
+          <div className="animate-fade-in fixed inset-0 z-50 flex items-start justify-center pt-[56px] backdrop-blur-sm sm:pt-[76px]">
             <style>{`
               @keyframes fadeIn {
                 from { opacity: 0; }
@@ -294,8 +353,13 @@ function WidgetContent({ companyId }: { companyId: string }) {
                     <div className="text-xl font-semibold text-gray-400 uppercase sm:text-sm">
                       {companyName ? `${companyName}  ` : ""}
                     </div>
-                    <div className="text-xs font-semibold text-gray-400 uppercase sm:text-sm">
-                      {getFriendlyStatus(statusText)}
+                    <div
+                      className={cn(
+                        "text-xs font-semibold uppercase sm:text-sm",
+                        isMuted ? "text-red-500" : "text-gray-400",
+                      )}
+                    >
+                      {isMuted ? "Muted" : getFriendlyStatus(statusText)}
                     </div>
                   </div>
 
@@ -333,30 +397,52 @@ function WidgetContent({ companyId }: { companyId: string }) {
                 </div>
 
                 <div className="flex w-full items-center justify-center gap-6 sm:gap-16">
-                  <button className="animate-control-1 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200 sm:h-16 sm:w-16">
+                  <button
+                    onClick={() => {
+                      touchAudioRef.current?.play().catch(() => {});
+                    }}
+                    className="animate-control-1 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200 sm:h-16 sm:w-16"
+                  >
                     <MoreHorizontal className="h-6 w-6 sm:h-7 sm:w-7" />
                   </button>
-                  <button className="animate-control-2 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200 sm:h-16 sm:w-16">
+                  <button
+                    onClick={() => {
+                      touchAudioRef.current?.play().catch(() => {});
+                    }}
+                    className="animate-control-2 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200 sm:h-16 sm:w-16"
+                  >
                     <Icons.Speaker className="h-6 w-6 sm:h-7 sm:w-7" />
                   </button>
                   <button
-                    onClick={toggleMute}
+                    onClick={() => {
+                      touchAudioRef.current?.play().catch(() => {});
+                      toggleMute();
+                    }}
                     className={cn(
                       "animate-control-3 flex h-14 w-14 items-center justify-center rounded-full transition sm:h-16 sm:w-16",
                       isMuted
-                        ? "bg-red-100 text-red-600 hover:bg-red-200"
+                        ? "bg-[#FBCDC3] text-[red-600] hover:bg-red-200"
                         : "bg-gray-100 text-gray-600 hover:bg-gray-200",
                     )}
                   >
                     {isMuted ? (
-                      <MicOff className="h-6 w-6 sm:h-7 sm:w-7" />
+                      <Icons.micoff className="h-6 w-6 sm:h-7 sm:w-7" />
                     ) : (
                       <Icons.mic className="h-6 w-6 sm:h-7 sm:w-7" />
                     )}
                   </button>
 
                   <button
-                    onClick={stop}
+                    onClick={() => {
+                      // Play button sound on end call
+                      touchAudioRef.current?.play().catch(() => {});
+                      // Stop dialing sound if still playing
+                      if (dialingAudioRef.current) {
+                        dialingAudioRef.current.pause();
+                        dialingAudioRef.current.currentTime = 0;
+                      }
+                      stop();
+                    }}
                     className="animate-control-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#f25430] text-white shadow-lg transition hover:scale-105 hover:bg-red-600 hover:shadow-xl sm:h-16 sm:w-16"
                   >
                     <Icons.phonedown className="h-6 w-6 sm:h-7 sm:w-7" />
