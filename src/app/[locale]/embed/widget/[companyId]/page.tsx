@@ -245,7 +245,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
 
         {/* --- FULL SCREEN CALL MODAL --- */}
         {callStatus === "ongoing" && (
-          <div className="animate-fade-in fixed inset-0 z-50 flex items-start justify-center pt-[60px] backdrop-blur-sm sm:pt-[76px]">
+          <div className="animate-fade-in fixed inset-0 z-50 flex items-end justify-center pt-[56px] backdrop-blur-sm sm:items-center sm:pt-[76px]">
             <style>{`
               @keyframes fadeIn {
                 from { opacity: 0; }
@@ -283,79 +283,83 @@ function WidgetContent({ companyId }: { companyId: string }) {
               .animate-control-3 { animation: floatIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.7s forwards; opacity: 0; }
               .animate-control-4 { animation: floatIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards; opacity: 0; }
             `}</style>
-            <div className="animate-slide-up relative h-[calc(100vh-60px)] w-full overflow-visible rounded-t-3xl bg-white shadow-2xl sm:h-auto sm:max-h-[calc(100vh-100px)] sm:w-[95%] sm:max-w-[1200px] sm:rounded-4xl">
+            <div className="animate-slide-up relative h-full max-h-[calc(100vh-56px)] w-full overflow-visible rounded-t-3xl bg-white shadow-2xl sm:h-auto sm:max-h-[calc(100vh-100px)] sm:w-[95%] sm:max-w-[1200px] sm:rounded-4xl">
               {/* Floating call icon on the modal */}
-              <div className="animate-float-in absolute -right-2 -bottom-16 z-10 flex h-14 w-14 items-center justify-center rounded-full border-2 border-black bg-white shadow-[0_4px_12px_rgba(0,0,0,0.15)] sm:-right-4 sm:-bottom-20">
+              <div className="animate-float-in absolute top-6 right-6 z-10 flex h-14 w-14 items-center justify-center rounded-full border-2 border-black bg-white shadow-[0_4px_12px_rgba(0,0,0,0.15)] sm:top-auto sm:-right-4 sm:-bottom-20">
                 <Icons.phoneIncoming className="h-6 w-6 -rotate-90 text-black" />
               </div>
-              <div className="relative mt-6 flex h-full min-h-[400px] flex-col items-center justify-center p-4 text-center sm:h-[600px] sm:p-8">
-                <div className="animate-float-in absolute top-4 flex flex-col items-center gap-2 sm:top-6">
-                  <div className="text-xl font-semibold text-gray-400 uppercase sm:text-sm">
-                    {companyName ? `${companyName}  ` : ""}
+              <div className="relative flex h-full min-h-[400px] flex-col items-center justify-between py-14 text-center sm:h-[600px] sm:px-8">
+                <div className="flex w-full flex-col items-center gap-4 sm:gap-8">
+                  <div className="animate-float-in flex flex-col items-center gap-2">
+                    <div className="text-xl font-semibold text-gray-400 uppercase sm:text-sm">
+                      {companyName ? `${companyName}  ` : ""}
+                    </div>
+                    <div className="text-xs font-semibold text-gray-400 uppercase sm:text-sm">
+                      {getFriendlyStatus(statusText)}
+                    </div>
                   </div>
-                  <div className="text-xs font-semibold text-gray-400 uppercase sm:text-sm">
-                    {getFriendlyStatus(statusText)}
+
+                  <div className="w-full px-4 sm:px-12">
+                    <div className="mx-auto max-w-lg space-y-3 sm:space-y-4">
+                      {errorMessage && (
+                        <p className="rounded-lg bg-red-50 px-3 py-2 font-mono text-xs text-red-700 sm:text-sm">
+                          {errorMessage}
+                        </p>
+                      )}
+                      {transcript && (
+                        <p className="font-dm-mono text-xs leading-relaxed text-gray-500 italic sm:text-sm">
+                          &quot;{transcript}&quot;
+                        </p>
+                      )}
+                      {agentReply && (
+                        <p className="font-sans text-base leading-tight font-medium text-black sm:text-lg">
+                          {agentReply}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                <div className="absolute top-14 w-full px-4 sm:top-20 sm:px-12">
-                  <div className="mx-auto max-w-lg space-y-3 sm:space-y-4">
-                    {errorMessage && (
-                      <p className="rounded-lg bg-red-50 px-3 py-2 font-mono text-xs text-red-700 sm:text-sm">
-                        {errorMessage}
-                      </p>
-                    )}
-                    {transcript && (
-                      <p className="font-dm-mono text-xs leading-relaxed text-gray-500 italic sm:text-sm">
-                        &quot;{transcript}&quot;
-                      </p>
-                    )}
-                    {agentReply && (
-                      <p className="font-sans text-base leading-tight font-medium text-black sm:text-lg">
-                        {agentReply}
-                      </p>
-                    )}
+                <div className="animate-scale-in flex flex-1 items-center justify-center py-6">
+                  <div className="flex h-48 w-48 items-center justify-center rounded-full">
+                    <Image
+                      src="/images/aiblock.svg"
+                      alt="Phone"
+                      width={192}
+                      height={192}
+                      className="h-full w-full"
+                    />
                   </div>
                 </div>
 
-                <div className="animate-scale-in flex h-28 w-28 items-center justify-center rounded-full sm:h-48 sm:w-48">
-                  <Image
-                    src="/images/aiblock.svg"
-                    alt="Phone"
-                    width={192}
-                    height={192}
-                    className="h-full w-full"
-                  />
-                </div>
-
-                <div className="absolute bottom-6 flex w-full items-center justify-center gap-6 sm:bottom-10 sm:gap-16">
-                  <button className="animate-control-1 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200 sm:h-14 sm:w-14">
-                    <MoreHorizontal className="h-5 w-5 sm:h-6 sm:w-6" />
+                <div className="flex w-full items-center justify-center gap-6 sm:gap-16">
+                  <button className="animate-control-1 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200 sm:h-16 sm:w-16">
+                    <MoreHorizontal className="h-6 w-6 sm:h-7 sm:w-7" />
                   </button>
-                  <button className="animate-control-2 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200 sm:h-14 sm:w-14">
-                    <Icons.Speaker className="h-5 w-5 sm:h-6 sm:w-6" />
+                  <button className="animate-control-2 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200 sm:h-16 sm:w-16">
+                    <Icons.Speaker className="h-6 w-6 sm:h-7 sm:w-7" />
                   </button>
                   <button
                     onClick={toggleMute}
                     className={cn(
-                      "animate-control-3 flex h-11 w-11 items-center justify-center rounded-full transition sm:h-14 sm:w-14",
+                      "animate-control-3 flex h-14 w-14 items-center justify-center rounded-full transition sm:h-16 sm:w-16",
                       isMuted
                         ? "bg-red-100 text-red-600 hover:bg-red-200"
                         : "bg-gray-100 text-gray-600 hover:bg-gray-200",
                     )}
                   >
                     {isMuted ? (
-                      <MicOff className="h-5 w-5 sm:h-6 sm:w-6" />
+                      <MicOff className="h-6 w-6 sm:h-7 sm:w-7" />
                     ) : (
-                      <Icons.mic className="h-5 w-5 sm:h-6 sm:w-6" />
+                      <Icons.mic className="h-6 w-6 sm:h-7 sm:w-7" />
                     )}
                   </button>
 
                   <button
                     onClick={stop}
-                    className="animate-control-4 flex h-11 w-11 items-center justify-center rounded-full bg-[#f25430] text-white shadow-lg transition hover:scale-105 hover:bg-red-600 hover:shadow-xl sm:h-14 sm:w-14"
+                    className="animate-control-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#f25430] text-white shadow-lg transition hover:scale-105 hover:bg-red-600 hover:shadow-xl sm:h-16 sm:w-16"
                   >
-                    <Icons.phonedown className="h-5 w-5 sm:h-6 sm:w-6" />
+                    <Icons.phonedown className="h-6 w-6 sm:h-7 sm:w-7" />
                   </button>
                 </div>
               </div>
