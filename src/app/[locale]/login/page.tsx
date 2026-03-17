@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
@@ -21,17 +21,23 @@ export default function LoginPage() {
   const router = useRouter();
   const t = useTranslations("login");
   const googleLogin = useGoogleLogin();
+  const [verified, setVerified] = useState(false);
 
   // Guard: must have passed the referral gate first
   useEffect(() => {
     if (!hasReferralCookie()) {
       router.replace("/invite");
+    } else {
+      setVerified(true);
     }
   }, [router]);
 
   const handleGoogleLogin = () => {
     googleLogin.mutate("en");
   };
+
+  // Don't render login UI until referral cookie is confirmed
+  if (!verified) return null;
 
   return (
     <div className="font-dm-mono container flex h-screen w-screen flex-col items-center justify-center">

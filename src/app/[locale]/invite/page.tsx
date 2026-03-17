@@ -57,14 +57,14 @@ export default function InvitePage() {
       <img
         src="/images/Referrals/referral1.svg"
         alt=""
-        className="absolute top-0 left-0"
+        className="absolute top-0 left-0 max-md:h-44"
         aria-hidden="true"
       />
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/images/Referrals/referral2.svg"
         alt=""
-        className="absolute right-0 bottom-0"
+        className="absolute right-0 bottom-0 max-md:h-44"
         aria-hidden="true"
       />
 

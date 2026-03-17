@@ -178,7 +178,7 @@ export function HeroSection() {
       </nav>
 
       {/* Hero Content */}
-      <div className="relative z-10 flex w-full flex-col px-6 pt-36 md:mb-50 md:px-16 md:pt-44 lg:px-24 lg:pt-38 xl:pt-48">
+      <div className="relative z-10 flex w-full flex-col px-6 pt-36 max-md:gap-2 md:mb-50 md:px-16 md:pt-44 lg:px-24 lg:pt-38 xl:pt-48">
         {/* Pill Badge Headline */}
         <div ref={headlineRef} className="flex flex-col gap-4">
           {HEADLINE_BADGES.map((row, rowIdx) => (
@@ -287,7 +287,7 @@ export function HeroSection() {
       <img
         src="/spiral_landing.svg"
         alt="Road intersection"
-        className="absolute bottom-0 h-[350px] w-full overflow-hidden object-cover object-top md:h-[340px]"
+        className="absolute bottom-0 w-full overflow-hidden object-cover object-top md:h-[340px]"
       />
 
       <NavigationMenu

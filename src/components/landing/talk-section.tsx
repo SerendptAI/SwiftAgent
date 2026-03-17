@@ -155,7 +155,7 @@ export function TalkSection() {
     <section
       id="talk"
       ref={sectionRef}
-      className="relative min-h-screen overflow-hidden bg-[#5B39C6] text-white"
+      className="relative min-h-screen overflow-hidden bg-[#6433CC] text-white"
     >
       {/* Main Content Area */}
       <div className="align-start relative z-10 mx-auto flex min-h-screen flex-col justify-start md:mt-30 lg:flex-row lg:items-start lg:justify-between">
