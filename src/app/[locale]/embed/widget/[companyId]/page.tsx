@@ -236,7 +236,6 @@ function WidgetContent({ companyId }: { companyId: string }) {
 
   const handleRequestCallClick = useCallback(() => {
     if (callStatus === "idle") {
-      touchAudioRef.current?.play().catch(() => {});
       handleStartCall();
     }
   }, [callStatus, handleStartCall]);
@@ -281,7 +280,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
               <>
                 <Icons.phoneIncoming className="h-3 w-3 text-black sm:h-4 sm:w-4" />
                 <span className="font-dm-mono text-xs font-bold tracking-tight text-black sm:text-sm">
-                  REQUEST CALL
+                  REQUEST A CALL
                 </span>
               </>
             ) : (
@@ -364,7 +363,6 @@ function WidgetContent({ companyId }: { companyId: string }) {
               {/* Floating call icon on the modal */}
               <button
                 onClick={() => {
-                  touchAudioRef.current?.play().catch(() => {});
                   setIsMinimized(true);
                 }}
                 className="animate-float-in absolute top-6 right-6 z-10 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full border-2 border-black bg-white shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition hover:scale-105 sm:top-auto sm:-right-4 sm:-bottom-20"
@@ -483,7 +481,6 @@ function WidgetContent({ companyId }: { companyId: string }) {
             {/* Main Restore Button - Bottom Right */}
             <button
               onClick={() => {
-                touchAudioRef.current?.play().catch(() => {});
                 setIsMinimized(false);
               }}
               className="animate-float-in pointer-events-auto absolute z-30 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-white shadow-[0_8px_24px_rgba(0,0,0,0.15)] transition-transform hover:scale-105 hover:shadow-[0_12px_28px_rgba(0,0,0,0.2)] sm:h-[72px] sm:w-[72px]"
