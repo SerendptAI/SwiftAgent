@@ -73,30 +73,40 @@ function WidgetContent({ companyId }: { companyId: string }) {
   const [agentReply, setAgentReply] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleStatusChange = useCallback((s: string) => {
-    // When AI voice session is ready for the first time, keep showing "Calling" until dialing finishes (4s min)
-    if (s.toLowerCase() === "ready" && !hasPlayedPickupRef.current) {
-      hasPlayedPickupRef.current = true;
-      isDialingPhaseRef.current = true;
-      setStatusText("Calling");
-      const elapsed = Date.now() - dialingStartTimeRef.current;
-      const remaining = Math.max(0, 4000 - elapsed);
-      setTimeout(() => {
-        isDialingPhaseRef.current = false;
-        if (dialingAudioRef.current) {
-          dialingAudioRef.current.pause();
-          dialingAudioRef.current.currentTime = 0;
-        }
-        pickupAudioRef.current?.play().catch(() => {});
-        setStatusText("Ready");
-      }, remaining);
-    } else if (isDialingPhaseRef.current) {
-      // Suppress any status updates while dialing is still playing
-      return;
-    } else {
-      setStatusText(s);
+  const stopDialingAudio = useCallback(() => {
+    if (dialingAudioRef.current) {
+      dialingAudioRef.current.pause();
+      dialingAudioRef.current.currentTime = 0;
     }
   }, []);
+
+  const playTouchSound = useCallback(() => {
+    touchAudioRef.current?.play().catch(() => {});
+  }, []);
+
+  const handleStatusChange = useCallback(
+    (s: string) => {
+      // When AI voice session is ready for the first time, keep showing "Calling" until dialing finishes (4s min)
+      if (s.toLowerCase() === "ready" && !hasPlayedPickupRef.current) {
+        hasPlayedPickupRef.current = true;
+        isDialingPhaseRef.current = true;
+        setStatusText("Calling");
+        const elapsed = Date.now() - dialingStartTimeRef.current;
+        const remaining = Math.max(0, 4000 - elapsed);
+        setTimeout(() => {
+          isDialingPhaseRef.current = false;
+          stopDialingAudio();
+          pickupAudioRef.current?.play().catch(() => {});
+          setStatusText("Ready");
+        }, remaining);
+      } else if (isDialingPhaseRef.current) {
+        return;
+      } else {
+        setStatusText(s);
+      }
+    },
+    [stopDialingAudio],
+  );
   const handleTranscript = useCallback((t: string) => setTranscript(t), []);
   const handleSpeechStart = useCallback(() => {
     setTranscript("");
@@ -104,16 +114,16 @@ function WidgetContent({ companyId }: { companyId: string }) {
     setErrorMessage(null);
   }, []);
   const handleReply = useCallback((r: string) => setAgentReply(r), []);
-  const handleError = useCallback((err: Error | string) => {
-    const msg = typeof err === "string" ? err : (err?.message ?? String(err));
-    console.error("Voice Chat Error:", msg);
-    setErrorMessage(msg);
-    // Stop dialing sound on error
-    if (dialingAudioRef.current) {
-      dialingAudioRef.current.pause();
-      dialingAudioRef.current.currentTime = 0;
-    }
-  }, []);
+
+  const handleError = useCallback(
+    (err: Error | string) => {
+      const msg = typeof err === "string" ? err : (err?.message ?? String(err));
+      console.error("Voice Chat Error:", msg);
+      setErrorMessage(msg);
+      stopDialingAudio();
+    },
+    [stopDialingAudio],
+  );
 
   const { isActive, isMuted, start, stop, toggleMute } = useVoiceChat({
     companyId,
@@ -229,10 +239,15 @@ function WidgetContent({ companyId }: { companyId: string }) {
     hasPlayedPickupRef.current = false;
     isDialingPhaseRef.current = false;
     dialingStartTimeRef.current = Date.now();
-    // Play dialing sound while AI session initializes
     dialingAudioRef.current?.play().catch(() => {});
     start();
   }, [start]);
+
+  const handleEndCall = useCallback(() => {
+    playTouchSound();
+    stopDialingAudio();
+    stop();
+  }, [playTouchSound, stopDialingAudio, stop]);
 
   const handleRequestCallClick = useCallback(() => {
     if (callStatus === "idle") {
@@ -425,24 +440,20 @@ function WidgetContent({ companyId }: { companyId: string }) {
 
                 <div className="flex w-full items-center justify-center gap-6 sm:gap-16">
                   <button
-                    onClick={() => {
-                      touchAudioRef.current?.play().catch(() => {});
-                    }}
+                    onClick={playTouchSound}
                     className="animate-control-1 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200 sm:h-16 sm:w-16"
                   >
                     <MoreHorizontal className="h-6 w-6 sm:h-7 sm:w-7" />
                   </button>
                   <button
-                    onClick={() => {
-                      touchAudioRef.current?.play().catch(() => {});
-                    }}
+                    onClick={playTouchSound}
                     className="animate-control-2 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200 sm:h-16 sm:w-16"
                   >
                     <Icons.Speaker className="h-6 w-6 sm:h-7 sm:w-7" />
                   </button>
                   <button
                     onClick={() => {
-                      touchAudioRef.current?.play().catch(() => {});
+                      playTouchSound();
                       toggleMute();
                     }}
                     className={cn(
@@ -460,16 +471,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
                   </button>
 
                   <button
-                    onClick={() => {
-                      // Play button sound on end call
-                      touchAudioRef.current?.play().catch(() => {});
-                      // Stop dialing sound if still playing
-                      if (dialingAudioRef.current) {
-                        dialingAudioRef.current.pause();
-                        dialingAudioRef.current.currentTime = 0;
-                      }
-                      stop();
-                    }}
+                    onClick={handleEndCall}
                     className="animate-control-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#f25430] text-white shadow-lg transition hover:scale-105 hover:bg-red-600 hover:shadow-xl sm:h-16 sm:w-16"
                   >
                     <Icons.phonedown className="h-6 w-6 sm:h-7 sm:w-7" />
@@ -497,14 +499,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
 
             {/* End Call - Top Right (~75 deg arc) */}
             <button
-              onClick={() => {
-                touchAudioRef.current?.play().catch(() => {});
-                if (dialingAudioRef.current) {
-                  dialingAudioRef.current.pause();
-                  dialingAudioRef.current.currentTime = 0;
-                }
-                stop();
-              }}
+              onClick={handleEndCall}
               className="animate-control-1 pointer-events-auto absolute z-20 flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-[#f25430] text-white shadow-lg transition hover:scale-105 hover:bg-red-600 hover:shadow-xl sm:h-[56px] sm:w-[56px]"
               style={{ bottom: "145px", right: "15px" }}
               title="End Call"
@@ -515,7 +510,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
             {/* Mute - Top Left (~120 deg arc) */}
             <button
               onClick={() => {
-                touchAudioRef.current?.play().catch(() => {});
+                playTouchSound();
                 toggleMute();
               }}
               className={cn(
@@ -536,9 +531,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
 
             {/* Speaker - Left (~165 deg arc) */}
             <button
-              onClick={() => {
-                touchAudioRef.current?.play().catch(() => {});
-              }}
+              onClick={playTouchSound}
               className="animate-control-3 pointer-events-auto absolute z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-gray-700 shadow-lg transition hover:scale-105 hover:bg-gray-50 hover:shadow-xl sm:h-12 sm:w-12"
               style={{ bottom: "85px", right: "129px" }}
               title="Speaker"
@@ -548,9 +541,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
 
             {/* More - Bottom Left (~210 deg arc) */}
             <button
-              onClick={() => {
-                touchAudioRef.current?.play().catch(() => {});
-              }}
+              onClick={playTouchSound}
               className="animate-control-4 pointer-events-auto absolute z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f3f4f6] text-gray-700 shadow-md transition hover:scale-105 hover:bg-gray-200 sm:h-12 sm:w-12"
               style={{ bottom: "17px", right: "120px" }}
               title="More Options"

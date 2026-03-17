@@ -11,6 +11,42 @@ export interface VoiceChatOptions {
   onError?: (message: string) => void;
 }
 
+// Browser SpeechRecognition types (not in all TS libs)
+interface SpeechRecognitionInstance extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onresult:
+    | ((event: {
+        results: SpeechRecognitionResultList;
+        resultIndex: number;
+      }) => void)
+    | null;
+  onend: (() => void) | null;
+  onerror: ((event: { error: string }) => void) | null;
+  start(): void;
+  stop(): void;
+  abort(): void;
+}
+
+type SpeechRecognitionCtor = new () => SpeechRecognitionInstance;
+
+function getSpeechRecognition(): SpeechRecognitionCtor | null {
+  const w = window as unknown as {
+    SpeechRecognition?: SpeechRecognitionCtor;
+    webkitSpeechRecognition?: SpeechRecognitionCtor;
+  };
+  return w.SpeechRecognition || w.webkitSpeechRecognition || null;
+}
+
+function getAudioContext(): AudioContext {
+  return new (
+    window.AudioContext ||
+    (window as unknown as { webkitAudioContext: typeof AudioContext })
+      .webkitAudioContext
+  )();
+}
+
 export function useVoiceChat({
   companyId,
   onStatusChange,
@@ -21,15 +57,13 @@ export function useVoiceChat({
 }: VoiceChatOptions) {
   const [isActive, setIsActive] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [stream, setStream] = useState<MediaStream | null>(null);
 
   const socketRef = useRef<WebSocket | null>(null);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const nextStartTimeRef = useRef<number>(0);
   const statusRef = useRef<string>("Idle");
-  const rafIdRef = useRef<number | null>(null);
-  const restartMediaRecorderRef = useRef<(() => void) | null>(null);
+  const thinkingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Refs for callbacks and state to avoid useEffect dependency churn
   const onStatusChangeRef = useRef(onStatusChange);
@@ -41,62 +75,80 @@ export function useVoiceChat({
 
   useEffect(() => {
     onStatusChangeRef.current = onStatusChange;
-  }, [onStatusChange]);
-  useEffect(() => {
     onTranscriptRef.current = onTranscript;
-  }, [onTranscript]);
-  useEffect(() => {
     onSpeechStartRef.current = onSpeechStart;
-  }, [onSpeechStart]);
-  useEffect(() => {
     onReplyRef.current = onReply;
-  }, [onReply]);
-  useEffect(() => {
     onErrorRef.current = onError;
-  }, [onError]);
-  useEffect(() => {
     isMutedRef.current = isMuted;
-  }, [isMuted]);
+  }, [onStatusChange, onTranscript, onSpeechStart, onReply, onError, isMuted]);
 
-  const handleStatusChange = useCallback((status: string) => {
-    statusRef.current = status;
-    onStatusChangeRef.current?.(status);
+  const THINKING_TIMEOUT_MS = 30_000;
+
+  const startRecognition = useCallback(() => {
+    const recognition = recognitionRef.current;
+    if (recognition) {
+      try {
+        recognition.start();
+      } catch {
+        // Already started — ignore
+      }
+    }
+  }, []);
+
+  const handleStatusChange = useCallback(
+    (status: string) => {
+      if (thinkingTimeoutRef.current) {
+        clearTimeout(thinkingTimeoutRef.current);
+        thinkingTimeoutRef.current = null;
+      }
+
+      statusRef.current = status;
+      onStatusChangeRef.current?.(status);
+
+      if (status.toLowerCase() === "thinking") {
+        thinkingTimeoutRef.current = setTimeout(() => {
+          if (statusRef.current.toLowerCase() === "thinking") {
+            console.warn("Thinking timeout reached, recovering to Ready");
+            statusRef.current = "Ready";
+            onStatusChangeRef.current?.("Ready");
+            startRecognition();
+          }
+        }, THINKING_TIMEOUT_MS);
+      }
+    },
+    [startRecognition],
+  );
+
+  const sendMessage = useCallback((data: Record<string, unknown>) => {
+    const socket = socketRef.current;
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify(data));
+    }
   }, []);
 
   const cleanup = useCallback(() => {
-    if (rafIdRef.current !== null) {
-      cancelAnimationFrame(rafIdRef.current);
-      rafIdRef.current = null;
+    if (thinkingTimeoutRef.current) {
+      clearTimeout(thinkingTimeoutRef.current);
+      thinkingTimeoutRef.current = null;
+    }
+    if (recognitionRef.current) {
+      recognitionRef.current.abort();
+      recognitionRef.current = null;
     }
     if (socketRef.current) {
       socketRef.current.close();
       socketRef.current = null;
     }
-    if (mediaRecorderRef.current) {
-      if (mediaRecorderRef.current.state !== "inactive") {
-        mediaRecorderRef.current.stop();
-      }
-      mediaRecorderRef.current.stream
-        .getTracks()
-        .forEach((track) => track.stop());
-      mediaRecorderRef.current = null;
-    }
     if (audioContextRef.current) {
       audioContextRef.current.close();
       audioContextRef.current = null;
     }
-    restartMediaRecorderRef.current = null;
     setIsActive(false);
-    setStream(null);
   }, []);
 
   const playAudioChunk = async (base64Data: string) => {
     if (!audioContextRef.current) {
-      audioContextRef.current = new (
-        window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext })
-          .webkitAudioContext
-      )();
+      audioContextRef.current = getAudioContext();
       nextStartTimeRef.current = audioContextRef.current.currentTime;
     }
 
@@ -128,10 +180,8 @@ export function useVoiceChat({
   const start = useCallback(async () => {
     try {
       handleStatusChange("Connecting");
-      console.log("Requesting microphone access...");
       const s = await navigator.mediaDevices.getUserMedia({ audio: true });
-      console.log("Microphone access granted");
-      setStream(s);
+      s.getTracks().forEach((t) => t.stop());
       setIsActive(true);
     } catch (err) {
       console.error("Failed to start voice chat:", err);
@@ -142,15 +192,21 @@ export function useVoiceChat({
 
   const stop = useCallback(() => {
     console.log("Stopping voice chat...");
-    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-      socketRef.current.send(JSON.stringify({ type: "end" }));
-    }
+    sendMessage({ type: "end" });
     cleanup();
     handleStatusChange("Idle");
-  }, [cleanup, handleStatusChange]);
+  }, [cleanup, handleStatusChange, sendMessage]);
 
+  // Main effect: connect WebSocket + start SpeechRecognition when active
   useEffect(() => {
-    if (!isActive || !stream) return;
+    if (!isActive) return;
+
+    const SpeechRecognitionCtor = getSpeechRecognition();
+    if (!SpeechRecognitionCtor) {
+      onErrorRef.current?.("Speech recognition not supported in this browser");
+      handleStatusChange("Error");
+      return;
+    }
 
     const wssUrl = `wss://api.swiftagents.org/api/v1/voice/${companyId}/call`;
     console.log("Connecting to WebSocket:", wssUrl);
@@ -161,159 +217,69 @@ export function useVoiceChat({
     socket.onopen = () => {
       console.log("WebSocket Opened successfully");
       handleStatusChange("Ready");
-      const recorderOptions = (() => {
-        if (typeof MediaRecorder === "undefined") return {};
-        const prefer = [
-          "audio/webm;codecs=opus",
-          "audio/webm",
-          "audio/ogg;codecs=opus",
-          "audio/mp4",
-          "audio/aac",
-        ];
-        for (const m of prefer) {
-          if (MediaRecorder.isTypeSupported(m)) return { mimeType: m };
-        }
-        return {};
-      })();
-
-      const mediaRecorder = new MediaRecorder(stream, recorderOptions);
-      mediaRecorderRef.current = mediaRecorder;
 
       socket.send(
         JSON.stringify({
           type: "start",
           session_id: crypto.randomUUID(),
-          mime_type: mediaRecorder.mimeType,
         }),
       );
 
-      // Audio analysis for volume meter
-      const audioContext = new (
-        window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext })
-          .webkitAudioContext
-      )();
-      const source = audioContext.createMediaStreamSource(stream);
-      const analyser = audioContext.createAnalyser();
-      analyser.fftSize = 256;
-      source.connect(analyser);
+      // Set up SpeechRecognition for client-side STT
+      const recognition = new SpeechRecognitionCtor();
+      recognition.continuous = false;
+      recognition.interimResults = true;
+      recognition.lang = "en-US";
+      recognitionRef.current = recognition;
 
-      const bufferLength = analyser.frequencyBinCount;
-      const dataArray = new Uint8Array(bufferLength);
+      let hasSpokenThisTurn = false;
 
-      let silenceStartTime: number | null = null;
-      let hasSpoken = false;
+      recognition.onresult = (event) => {
+        if (isMutedRef.current) return;
+        if (statusRef.current.toLowerCase() !== "ready") return;
 
-      const updateVolume = () => {
-        if (!isActive) return;
-        analyser.getByteFrequencyData(dataArray);
-        let sum = 0;
-        for (let i = 0; i < bufferLength; i++) {
-          sum += dataArray[i];
+        if (!hasSpokenThisTurn) {
+          hasSpokenThisTurn = true;
+          onSpeechStartRef.current?.();
         }
-        const average = sum / bufferLength;
 
-        // Silence detection (VAD)
-        const SILENCE_THRESHOLD = 12; // Increased from 8 to ignore quiet noise
-        const SILENCE_DURATION = 1500;
-        const currentStatus = statusRef.current.toLowerCase();
-
-        // ONLY detect silence if the AI is listening (Ready)
-        if (currentStatus === "ready") {
-          if (average > SILENCE_THRESHOLD) {
-            if (!hasSpoken) {
-              console.log(
-                "VAD: Speech started (vol:",
-                Math.round(average),
-                ")",
-              );
-              onSpeechStart?.();
-            }
-            hasSpoken = true;
-            silenceStartTime = null;
-          } else if (hasSpoken) {
-            if (silenceStartTime === null) {
-              silenceStartTime = Date.now();
-            } else if (Date.now() - silenceStartTime > SILENCE_DURATION) {
-              console.log(
-                "VAD: Silence detected (1.5s), triggering stop_audio",
-              );
-              if (
-                socketRef.current &&
-                socketRef.current.readyState === WebSocket.OPEN
-              ) {
-                // In blob mode, we stop the recorder to "finish" the file
-                const mr = mediaRecorderRef.current;
-                if (mr && mr.state !== "inactive") {
-                  mr.stop();
-                  console.log("VAD: Recorder stopped, waiting for blob...");
-                }
-                handleStatusChange("Thinking");
-              }
-              hasSpoken = false;
-              silenceStartTime = null;
-            }
+        const result = event.results[0];
+        if (result.isFinal) {
+          const text = result[0].transcript.trim();
+          if (text) {
+            console.log("STT final:", text);
+            onTranscriptRef.current?.(text);
+            sendMessage({ type: "user_text", text });
+            handleStatusChange("Thinking");
+            hasSpokenThisTurn = false;
           }
         } else {
-          // If we are not in "ready" state, reset VAD state to be ready for next turn
-          if (hasSpoken) {
-            console.log(
-              "VAD: Resetting hasSpoken because status is",
-              currentStatus,
-            );
-            hasSpoken = false;
-            silenceStartTime = null;
+          onTranscriptRef.current?.(result[0].transcript);
+        }
+      };
+
+      recognition.onend = () => {
+        hasSpokenThisTurn = false;
+        if (
+          statusRef.current.toLowerCase() === "ready" &&
+          !isMutedRef.current &&
+          socketRef.current?.readyState === WebSocket.OPEN
+        ) {
+          try {
+            recognition.start();
+          } catch {
+            // Already started
           }
         }
-
-        rafIdRef.current = requestAnimationFrame(updateVolume);
-      };
-      updateVolume();
-
-      const setupMediaRecorder = (recorder: MediaRecorder) => {
-        recorder.ondataavailable = (event) => {
-          if (
-            event.data.size > 0 &&
-            socket.readyState === WebSocket.OPEN &&
-            !isMutedRef.current
-            // In blob-per-utterance mode, we don't gate by "ready" here because
-            // the data is only available when the utterance is FINISHED and recorder stopped.
-          ) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-              if (!isActive) return;
-
-              const base64data = (reader.result as string).split(",")[1];
-              console.log("VAD: Sending full utterance blob to server");
-              socket.send(JSON.stringify({ type: "audio", data: base64data }));
-
-              // Immediately signal the server to process the buffer we just sent
-              socket.send(JSON.stringify({ type: "stop_audio" }));
-            };
-            reader.readAsDataURL(event.data);
-          }
-        };
       };
 
-      setupMediaRecorder(mediaRecorder);
-      mediaRecorder.start(); // No interval - capture as a single blob
-
-      // Restart MediaRecorder for each new utterance so the server gets a clean segment (fixes 2nd+ transcription)
-      restartMediaRecorderRef.current = () => {
-        const mr = mediaRecorderRef.current;
-        if (mr && mr.state !== "inactive") {
-          mr.stop();
+      recognition.onerror = (event) => {
+        if (event.error !== "no-speech" && event.error !== "aborted") {
+          console.error("Speech recognition error:", event.error);
         }
-        const newMr = new MediaRecorder(stream, recorderOptions);
-        mediaRecorderRef.current = newMr;
-        setupMediaRecorder(newMr);
-        newMr.start();
-        console.log("VAD: MediaRecorder restarted for new utterance");
       };
 
-      return () => {
-        cleanup();
-      };
+      recognition.start();
     };
 
     socket.onmessage = (event) => {
@@ -321,42 +287,13 @@ export function useVoiceChat({
       console.log("WS Received:", message.type, message);
       switch (message.type) {
         case "status": {
-          const prevStatus = statusRef.current.toLowerCase();
           const newStatus = message.status as string;
-          const newStatusLower = newStatus.toLowerCase();
-
-          // When leaving "ready" (thinking/transcribing/speaking), stop recording so we don't capture background or AI TTS
-          if (newStatusLower !== "ready" && prevStatus === "ready") {
-            const mr = mediaRecorderRef.current;
-            if (mr && mr.state !== "inactive") {
-              mr.stop();
-            }
-          }
-
-          // When server is ready for a new utterance after replying, signal new segment and restart recorder (fixes 2nd+ transcription)
-          if (
-            newStatusLower === "ready" &&
-            prevStatus !== "ready" &&
-            prevStatus !== "connecting" &&
-            prevStatus !== "idle"
-          ) {
-            if (socketRef.current?.readyState === WebSocket.OPEN) {
-              const recorder = mediaRecorderRef.current;
-              socketRef.current.send(
-                JSON.stringify({
-                  type: "start_audio",
-                  mime_type: recorder?.mimeType,
-                }),
-              );
-            }
-            restartMediaRecorderRef.current?.();
-          }
           handleStatusChange(newStatus);
+          if (newStatus.toLowerCase() === "ready") {
+            startRecognition();
+          }
           break;
         }
-        case "transcript":
-          onTranscriptRef.current?.(message.text);
-          break;
         case "reply_text":
           onReplyRef.current?.(message.text);
           break;
@@ -364,8 +301,7 @@ export function useVoiceChat({
           playAudioChunk(message.data);
           break;
         case "error": {
-          // Log full payload so we can see the actual reason from the server
-          console.error("Voice chat error (full payload):", message);
+          console.error("Voice chat error:", message);
           const parts = [
             message.message,
             message.detail,
@@ -380,8 +316,7 @@ export function useVoiceChat({
       }
     };
 
-    socket.onerror = (err) => {
-      console.error("WebSocket Error:", err);
+    socket.onerror = () => {
       onErrorRef.current?.("Connection failed");
     };
 
@@ -395,17 +330,29 @@ export function useVoiceChat({
       console.log("Cleaning up WebSocket effect");
       socket.close();
     };
-  }, [isActive, stream, companyId, handleStatusChange, cleanup, onSpeechStart]);
+  }, [
+    isActive,
+    companyId,
+    handleStatusChange,
+    cleanup,
+    sendMessage,
+    startRecognition,
+  ]);
 
   const toggleMute = useCallback(() => {
     setIsMuted((prev) => {
       const newMuted = !prev;
-      // Disable/enable the actual mic tracks
-      const mr = mediaRecorderRef.current;
-      if (mr) {
-        mr.stream.getAudioTracks().forEach((track) => {
-          track.enabled = !newMuted;
-        });
+      const recognition = recognitionRef.current;
+      if (recognition) {
+        if (newMuted) {
+          recognition.abort();
+        } else if (statusRef.current.toLowerCase() === "ready") {
+          try {
+            recognition.start();
+          } catch {
+            // Already started
+          }
+        }
       }
       return newMuted;
     });
