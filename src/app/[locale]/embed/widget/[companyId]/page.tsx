@@ -376,7 +376,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
             `}</style>
             <div
               className={cn(
-                "widget-container relative h-full max-h-[calc(100vh-56px)] w-full overflow-visible rounded-t-3xl bg-white shadow-2xl sm:h-auto sm:max-h-[calc(100vh-100px)] sm:w-[95%] sm:max-w-[1200px] sm:rounded-4xl",
+                "widget-container relative h-full max-h-[calc(100vh-56px)] w-full overflow-hidden rounded-t-3xl bg-white shadow-2xl sm:h-auto sm:max-h-[calc(100vh-100px)] sm:w-[95%] sm:max-w-[1200px] sm:rounded-4xl",
                 isMinimized ? "widget-minimized" : "animate-slide-up",
               )}
             >
@@ -389,7 +389,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
               >
                 <Icons.phoneIncoming className="h-6 w-6 -rotate-90 text-black" />
               </button>
-              <div className="relative flex h-full min-h-[400px] flex-col items-center justify-between py-14 text-center sm:h-[600px] sm:px-8">
+              <div className="relative flex h-full max-h-[calc(100vh-56px)] flex-col items-center justify-between overflow-y-auto py-4 text-center sm:max-h-[calc(100vh-100px)] sm:px-8 sm:py-14">
                 <div className="flex w-full flex-col items-center gap-4 sm:gap-8">
                   <div className="animate-float-in flex flex-col items-center gap-2">
                     <div className="text-xl font-semibold text-gray-400 uppercase sm:text-sm">
@@ -404,29 +404,30 @@ function WidgetContent({ companyId }: { companyId: string }) {
                       {isMuted ? "Muted" : getFriendlyStatus(statusText)}
                     </div>
                   </div>
+                </div>
 
-                  <div className="w-full px-4 sm:px-12">
-                    <div className="mx-auto max-w-lg space-y-3 sm:space-y-4">
-                      {errorMessage && (
-                        <p className="rounded-lg bg-red-50 px-3 py-2 font-mono text-xs text-red-700 sm:text-sm">
-                          {errorMessage}
-                        </p>
-                      )}
-                      {transcript && (
-                        <p className="font-dm-mono text-xs leading-relaxed text-gray-500 italic sm:text-sm">
-                          &quot;{transcript}&quot;
-                        </p>
-                      )}
-                      {agentReply && (
-                        <p className="font-sans text-base leading-tight font-medium text-black sm:text-lg">
-                          {agentReply}
-                        </p>
-                      )}
-                    </div>
+                {/* Transcript/reply overlay - positioned absolutely so it doesn't push layout */}
+                <div className="pointer-events-none absolute inset-x-0 top-20 z-10 w-full px-4 sm:top-28 sm:px-12">
+                  <div className="mx-auto max-w-lg space-y-3 sm:space-y-4">
+                    {errorMessage && (
+                      <p className="pointer-events-auto rounded-lg bg-red-50 px-3 py-2 font-mono text-xs text-red-700 sm:text-sm">
+                        {errorMessage}
+                      </p>
+                    )}
+                    {transcript && (
+                      <p className="font-dm-mono text-xs leading-relaxed text-gray-500 italic sm:text-sm">
+                        &quot;{transcript}&quot;
+                      </p>
+                    )}
+                    {agentReply && (
+                      <p className="font-sans text-base leading-tight font-medium text-black sm:text-lg">
+                        {agentReply}
+                      </p>
+                    )}
                   </div>
                 </div>
 
-                <div className="animate-scale-in flex flex-1 items-center justify-center py-6">
+                <div className="animate-scale-in flex items-center justify-center py-6">
                   <div className="flex h-48 w-48 items-center justify-center rounded-full">
                     <Image
                       src="/images/aiblock.svg"
@@ -438,7 +439,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
                   </div>
                 </div>
 
-                <div className="flex w-full items-center justify-center gap-6 sm:gap-16">
+                <div className="flex w-full shrink-0 items-center justify-center gap-6 pb-4 sm:gap-16 sm:pb-0">
                   <button
                     onClick={playTouchSound}
                     className="animate-control-1 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200 sm:h-16 sm:w-16"
