@@ -252,8 +252,6 @@ export function useVoiceChat({
         }),
       );
 
-      speakText("Hello, how can I help you?");
-
       // Set up SpeechRecognition for client-side STT
       const recognition = new SpeechRecognitionCtor();
       recognition.continuous = false;
@@ -308,7 +306,8 @@ export function useVoiceChat({
         }
       };
 
-      recognition.start();
+      // Play greeting — this aborts recognition and restarts it when done
+      speakText("Hello, how can I help you?");
     };
 
     socket.onmessage = (event) => {
