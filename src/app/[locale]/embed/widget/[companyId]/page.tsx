@@ -415,26 +415,16 @@ function WidgetContent({ companyId }: { companyId: string }) {
                   </div>
                 </div>
 
-                {/* Transcript/reply overlay - positioned absolutely so it doesn't push layout */}
-                <div className="pointer-events-none absolute inset-x-0 top-20 z-10 w-full px-4 sm:top-28 sm:px-12">
-                  <div className="mx-auto max-w-lg space-y-3 sm:space-y-4">
-                    {errorMessage && (
+                {/* Error overlay */}
+                {errorMessage && (
+                  <div className="pointer-events-none absolute inset-x-0 top-20 z-10 w-full px-4 sm:top-28 sm:px-12">
+                    <div className="mx-auto max-w-lg">
                       <p className="pointer-events-auto rounded-lg bg-red-50 px-3 py-2 font-mono text-xs text-red-700 sm:text-sm">
                         {errorMessage}
                       </p>
-                    )}
-                    {transcript && (
-                      <p className="font-dm-mono text-xs leading-relaxed text-gray-500 italic sm:text-sm">
-                        &quot;{transcript}&quot;
-                      </p>
-                    )}
-                    {agentReply && (
-                      <p className="font-sans text-base leading-tight font-medium text-black sm:text-lg">
-                        {agentReply}
-                      </p>
-                    )}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="animate-scale-in flex items-center justify-center py-6">
                   <div className="flex h-48 w-48 items-center justify-center rounded-full">
