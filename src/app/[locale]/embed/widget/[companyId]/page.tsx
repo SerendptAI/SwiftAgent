@@ -376,7 +376,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
             `}</style>
             <div
               className={cn(
-                "widget-container relative h-full max-h-[calc(100vh-56px)] w-full overflow-hidden rounded-t-3xl bg-white shadow-2xl sm:h-auto sm:max-h-[calc(100vh-100px)] sm:w-[95%] sm:max-w-[1200px] sm:rounded-4xl",
+                "widget-container relative h-full max-h-[calc(100vh-56px)] w-full overflow-visible rounded-t-3xl bg-white shadow-2xl sm:h-auto sm:max-h-[calc(100vh-100px)] sm:w-[95%] sm:max-w-[1200px] sm:rounded-4xl",
                 isMinimized ? "widget-minimized" : "animate-slide-up",
               )}
             >
