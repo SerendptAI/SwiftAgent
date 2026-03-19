@@ -316,6 +316,8 @@ export function useVoiceChat({
       switch (message.type) {
         case "status": {
           const newStatus = message.status as string;
+          // Ignore backend status updates while TTS is playing to prevent feedback loop
+          if (statusRef.current.toLowerCase() === "speaking") break;
           handleStatusChange(newStatus);
           if (newStatus.toLowerCase() === "ready") {
             startRecognition();
