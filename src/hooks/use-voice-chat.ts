@@ -159,6 +159,7 @@ export function useVoiceChat({
 
       try {
         handleStatusChange("Speaking");
+        recognitionRef.current?.abort();
 
         const response = await fetch("/api/tts", {
           method: "POST",
