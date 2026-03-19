@@ -61,9 +61,9 @@ export function useVoiceChat({
   const socketRef = useRef<WebSocket | null>(null);
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
-  const nextStartTimeRef = useRef<number>(0);
   const statusRef = useRef<string>("Idle");
   const thinkingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const ttsAbortRef = useRef<AbortController | null>(null);
 
   // Refs for callbacks and state to avoid useEffect dependency churn
   const onStatusChangeRef = useRef(onStatusChange);
@@ -131,6 +131,8 @@ export function useVoiceChat({
       clearTimeout(thinkingTimeoutRef.current);
       thinkingTimeoutRef.current = null;
     }
+    ttsAbortRef.current?.abort();
+    ttsAbortRef.current = null;
     if (recognitionRef.current) {
       recognitionRef.current.abort();
       recognitionRef.current = null;
@@ -146,36 +148,56 @@ export function useVoiceChat({
     setIsActive(false);
   }, []);
 
-  const playAudioChunk = async (base64Data: string) => {
-    if (!audioContextRef.current) {
-      audioContextRef.current = getAudioContext();
-      nextStartTimeRef.current = audioContextRef.current.currentTime;
-    }
+  const speakText = useCallback(
+    async (text: string) => {
+      // Cancel any ongoing TTS request
+      ttsAbortRef.current?.abort();
+      const controller = new AbortController();
+      ttsAbortRef.current = controller;
 
-    try {
-      const binaryString = window.atob(base64Data);
-      const bytes = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
+      try {
+        handleStatusChange("Speaking");
+
+        const response = await fetch("/api/tts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text }),
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error(`TTS request failed: ${response.status}`);
+        }
+
+        if (!audioContextRef.current) {
+          audioContextRef.current = getAudioContext();
+        }
+
+        const arrayBuffer = await response.arrayBuffer();
+        const audioBuffer =
+          await audioContextRef.current.decodeAudioData(arrayBuffer);
+        const source = audioContextRef.current.createBufferSource();
+        source.buffer = audioBuffer;
+        source.connect(audioContextRef.current.destination);
+
+        source.onended = () => {
+          if (statusRef.current.toLowerCase() === "speaking") {
+            handleStatusChange("Ready");
+            startRecognition();
+          }
+        };
+
+        source.start();
+      } catch (err) {
+        if ((err as Error).name === "AbortError") return;
+        console.error("TTS playback error:", err);
+        onErrorRef.current?.("Failed to play agent response");
+        handleStatusChange("Ready");
+        startRecognition();
       }
-
-      const audioBuffer = await audioContextRef.current.decodeAudioData(
-        bytes.buffer,
-      );
-      const source = audioContextRef.current.createBufferSource();
-      source.buffer = audioBuffer;
-      source.connect(audioContextRef.current.destination);
-
-      const startTime = Math.max(
-        nextStartTimeRef.current,
-        audioContextRef.current.currentTime,
-      );
-      source.start(startTime);
-      nextStartTimeRef.current = startTime + audioBuffer.duration;
-    } catch (err) {
-      console.error("Error playing audio chunk:", err);
-    }
-  };
+    },
+    [handleStatusChange, startRecognition],
+  );
 
   const start = useCallback(async () => {
     try {
@@ -296,9 +318,7 @@ export function useVoiceChat({
         }
         case "reply_text":
           onReplyRef.current?.(message.text);
-          break;
-        case "audio":
-          playAudioChunk(message.data);
+          speakText(message.text);
           break;
         case "error": {
           console.error("Voice chat error:", message);
@@ -337,6 +357,7 @@ export function useVoiceChat({
     cleanup,
     sendMessage,
     startRecognition,
+    speakText,
   ]);
 
   const toggleMute = useCallback(() => {
