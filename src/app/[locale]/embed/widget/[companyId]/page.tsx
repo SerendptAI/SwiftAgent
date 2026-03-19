@@ -96,7 +96,15 @@ function WidgetContent({ companyId }: { companyId: string }) {
         setTimeout(() => {
           isDialingPhaseRef.current = false;
           stopDialingAudio();
-          pickupAudioRef.current?.play().catch(() => {});
+          const pickupAudio = pickupAudioRef.current;
+          if (pickupAudio) {
+            pickupAudio.onended = () => {
+              speakText("Hello, how can I help you?");
+            };
+            pickupAudio.play().catch(() => {});
+          } else {
+            speakText("Hello, how can I help you?");
+          }
           setStatusText("Ready");
         }, remaining);
       } else if (isDialingPhaseRef.current) {
@@ -125,14 +133,15 @@ function WidgetContent({ companyId }: { companyId: string }) {
     [stopDialingAudio],
   );
 
-  const { isActive, isMuted, start, stop, toggleMute } = useVoiceChat({
-    companyId,
-    onStatusChange: handleStatusChange,
-    onTranscript: handleTranscript,
-    onSpeechStart: handleSpeechStart,
-    onReply: handleReply,
-    onError: handleError,
-  });
+  const { isActive, isMuted, start, stop, toggleMute, speakText } =
+    useVoiceChat({
+      companyId,
+      onStatusChange: handleStatusChange,
+      onTranscript: handleTranscript,
+      onSpeechStart: handleSpeechStart,
+      onReply: handleReply,
+      onError: handleError,
+    });
 
   const callStatus = isActive ? "ongoing" : "idle";
 

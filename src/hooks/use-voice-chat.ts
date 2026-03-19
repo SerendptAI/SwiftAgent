@@ -305,9 +305,6 @@ export function useVoiceChat({
           console.error("Speech recognition error:", event.error);
         }
       };
-
-      // Play greeting — this aborts recognition and restarts it when done
-      speakText("Hello, how can I help you?");
     };
 
     socket.onmessage = (event) => {
@@ -397,5 +394,6 @@ export function useVoiceChat({
     start,
     stop,
     toggleMute,
+    speakText,
   };
 }
