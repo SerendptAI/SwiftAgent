@@ -39,14 +39,6 @@ function getSpeechRecognition(): SpeechRecognitionCtor | null {
   return w.SpeechRecognition || w.webkitSpeechRecognition || null;
 }
 
-function getAudioContext(): AudioContext {
-  return new (
-    window.AudioContext ||
-    (window as unknown as { webkitAudioContext: typeof AudioContext })
-      .webkitAudioContext
-  )();
-}
-
 export function useVoiceChat({
   companyId,
   onStatusChange,
@@ -60,7 +52,7 @@ export function useVoiceChat({
 
   const socketRef = useRef<WebSocket | null>(null);
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
+  const audioElementRef = useRef<HTMLAudioElement | null>(null);
   const statusRef = useRef<string>("Idle");
   const thinkingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const ttsAbortRef = useRef<AbortController | null>(null);
@@ -133,6 +125,13 @@ export function useVoiceChat({
     }
     ttsAbortRef.current?.abort();
     ttsAbortRef.current = null;
+    if (audioElementRef.current) {
+      audioElementRef.current.pause();
+      if (audioElementRef.current.src) {
+        URL.revokeObjectURL(audioElementRef.current.src);
+      }
+      audioElementRef.current = null;
+    }
     if (recognitionRef.current) {
       recognitionRef.current.abort();
       recognitionRef.current = null;
@@ -141,17 +140,20 @@ export function useVoiceChat({
       socketRef.current.close();
       socketRef.current = null;
     }
-    if (audioContextRef.current) {
-      audioContextRef.current.close();
-      audioContextRef.current = null;
-    }
     setIsActive(false);
   }, []);
 
   const speakText = useCallback(
     async (text: string) => {
-      // Cancel any ongoing TTS request
+      // Cancel any ongoing TTS request and stop current audio
       ttsAbortRef.current?.abort();
+      if (audioElementRef.current) {
+        audioElementRef.current.pause();
+        if (audioElementRef.current.src) {
+          URL.revokeObjectURL(audioElementRef.current.src);
+        }
+      }
+
       const controller = new AbortController();
       ttsAbortRef.current = controller;
 
@@ -169,25 +171,27 @@ export function useVoiceChat({
           throw new Error(`TTS request failed: ${response.status}`);
         }
 
-        if (!audioContextRef.current) {
-          audioContextRef.current = getAudioContext();
-        }
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+        audioElementRef.current = audio;
 
-        const arrayBuffer = await response.arrayBuffer();
-        const audioBuffer =
-          await audioContextRef.current.decodeAudioData(arrayBuffer);
-        const source = audioContextRef.current.createBufferSource();
-        source.buffer = audioBuffer;
-        source.connect(audioContextRef.current.destination);
-
-        source.onended = () => {
+        audio.onended = () => {
+          URL.revokeObjectURL(url);
           if (statusRef.current.toLowerCase() === "speaking") {
             handleStatusChange("Ready");
             startRecognition();
           }
         };
 
-        source.start();
+        audio.onerror = () => {
+          URL.revokeObjectURL(url);
+          onErrorRef.current?.("Failed to play agent response");
+          handleStatusChange("Ready");
+          startRecognition();
+        };
+
+        await audio.play();
       } catch (err) {
         if ((err as Error).name === "AbortError") return;
         console.error("TTS playback error:", err);

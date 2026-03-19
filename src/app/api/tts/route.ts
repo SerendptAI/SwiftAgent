@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const ELEVENLABS_VOICE_ID =
-  process.env.ELEVENLABS_VOICE_ID || "21m00Tcm4TlvDq8ikWAM"; // Default: Rachel
+  process.env.ELEVENLABS_VOICE_ID || "TxGEqnHWrfWFTfGW9XjX"; // Default: Josh
 
 export async function POST(req: NextRequest) {
   if (!ELEVENLABS_API_KEY) {
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   }
 
   const response = await fetch(
-    `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`,
+    `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}/stream?output_format=mp3_44100_128`,
     {
       method: "POST",
       headers: {
@@ -29,9 +29,9 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         text,
-        model_id: "eleven_turbo_v2_5",
+        model_id: "eleven_multilingual_v2",
         voice_settings: {
-          stability: 0.5,
+          stability: 0.7,
           similarity_boost: 0.75,
         },
       }),
@@ -47,9 +47,17 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const audioBuffer = await response.arrayBuffer();
+  if (!response.body) {
+    const audioBuffer = await response.arrayBuffer();
+    return new NextResponse(audioBuffer, {
+      headers: {
+        "Content-Type": "audio/mpeg",
+        "Cache-Control": "no-cache",
+      },
+    });
+  }
 
-  return new NextResponse(audioBuffer, {
+  return new NextResponse(response.body, {
     headers: {
       "Content-Type": "audio/mpeg",
       "Cache-Control": "no-cache",
