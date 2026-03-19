@@ -252,6 +252,8 @@ export function useVoiceChat({
         }),
       );
 
+      speakText("Hello, how can I help you?");
+
       // Set up SpeechRecognition for client-side STT
       const recognition = new SpeechRecognitionCtor();
       recognition.continuous = false;
