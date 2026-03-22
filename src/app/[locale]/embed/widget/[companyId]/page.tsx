@@ -362,30 +362,38 @@ function WidgetContent({ companyId }: { companyId: string }) {
                 isMinimized ? "widget-minimized" : "animate-slide-up",
               )}
             >
-              {/* Shared Header (Call/Chat toggle, Minimize) */}
-              <WidgetHeader
-                activeWidgetTab={activeWidgetTab}
-                setActiveWidgetTab={setActiveWidgetTab}
-                setIsMinimized={setIsMinimized}
-              />
+              <button
+                onClick={() => setIsMinimized(true)}
+                className="animate-float-in absolute right-4 bottom-24 z-50 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full border-2 border-black bg-white shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition hover:scale-105 sm:top-auto sm:-right-4 sm:-bottom-20"
+              >
+                <Icons.phoneIncoming className="h-6 w-6 -rotate-90 text-black" />
+              </button>
 
-              {/* Tab Content */}
-              <WidgetCallTab
-                companyName={companyName}
-                isMuted={isMuted}
-                statusText={statusText}
-                errorMessage={errorMessage}
-                showHashInput={showHashInput}
-                setShowHashInput={setShowHashInput}
-                hashValue={hashValue}
-                setHashValue={setHashValue}
-                handleHashSubmit={handleHashSubmit}
-                playTouchSound={playTouchSound}
-                toggleMute={toggleMute}
-                handleEndCall={handleEndCall}
-              />
+              {activeWidgetTab === "call" ? (
+                <>
+                  {/* Shared Header (Call/Chat toggle, Minimize) */}
+                  <WidgetHeader
+                    activeWidgetTab={activeWidgetTab}
+                    setActiveWidgetTab={setActiveWidgetTab}
+                  />
 
-              {activeWidgetTab === "chat" && (
+                  {/* Tab Content */}
+                  <WidgetCallTab
+                    companyName={companyName}
+                    isMuted={isMuted}
+                    statusText={statusText}
+                    errorMessage={errorMessage}
+                    showHashInput={showHashInput}
+                    setShowHashInput={setShowHashInput}
+                    hashValue={hashValue}
+                    setHashValue={setHashValue}
+                    handleHashSubmit={handleHashSubmit}
+                    playTouchSound={playTouchSound}
+                    toggleMute={toggleMute}
+                    handleEndCall={handleEndCall}
+                  />
+                </>
+              ) : (
                 <WidgetChatTab
                   companyName={companyName}
                   chatMessages={chatMessages}
@@ -393,6 +401,8 @@ function WidgetContent({ companyId }: { companyId: string }) {
                   setChatInput={setChatInput}
                   handleSendChat={handleSendChat}
                   chatEndRef={chatEndRef}
+                  setActiveWidgetTab={setActiveWidgetTab}
+                  setIsMinimized={setIsMinimized}
                 />
               )}
             </div>

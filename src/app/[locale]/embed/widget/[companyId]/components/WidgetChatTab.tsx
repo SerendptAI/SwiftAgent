@@ -1,8 +1,10 @@
 "use client";
+import { Minimize2 } from "lucide-react";
+
 import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
-import { ChatMsg } from "./types";
+import { ChatMsg, WidgetTab } from "./types";
 
 interface WidgetChatTabProps {
   companyName?: string;
@@ -11,6 +13,8 @@ interface WidgetChatTabProps {
   setChatInput: (val: string) => void;
   handleSendChat: () => void;
   chatEndRef: React.RefObject<HTMLDivElement | null>;
+  setActiveWidgetTab: (tab: WidgetTab) => void;
+  setIsMinimized: (val: boolean) => void;
 }
 
 export function WidgetChatTab({
@@ -20,13 +24,46 @@ export function WidgetChatTab({
   setChatInput,
   handleSendChat,
   chatEndRef,
+  setActiveWidgetTab,
+  setIsMinimized,
 }: WidgetChatTabProps) {
+  const initial = companyName ? companyName.charAt(0).toUpperCase() : "W";
+  const displayName = companyName || "WELLSPRING NETWORKS SWIFT AGENTS";
+
   return (
-    <div className="pointer-events-auto absolute inset-0 top-[60px] z-20 flex w-full flex-col rounded-b-3xl bg-white sm:rounded-b-4xl">
-      {/* Chat Header */}
-      <div className="shrink-0 border-b border-gray-100 bg-white px-6 py-4">
-        <h3 className="text-sm font-semibold text-gray-900">{companyName}</h3>
-        <p className="text-xs text-gray-400">Chat support</p>
+    <div className="pointer-events-auto relative z-20 flex h-full w-full flex-col rounded-3xl bg-white sm:h-[600px] sm:max-h-[calc(100vh-100px)] sm:rounded-4xl">
+      {/* Custom Chat Header from mock */}
+      <div className="flex shrink-0 items-center justify-between rounded-t-3xl border-b border-gray-100 bg-white px-4 py-3 sm:rounded-t-4xl sm:px-6 sm:py-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#6433CC] text-sm font-bold text-white sm:h-10 sm:w-10">
+            {initial}
+          </div>
+          <span className="font-dm-mono text-xs font-bold tracking-wide text-gray-800 uppercase sm:text-sm">
+            {displayName}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-1 rounded-full bg-gray-100 p-1">
+          <button
+            onClick={() => setActiveWidgetTab("call")}
+            className="rounded-full px-4 py-1.5 text-xs font-semibold text-gray-500 transition-all duration-200 hover:text-gray-700"
+          >
+            Call
+          </button>
+          <button
+            onClick={() => setActiveWidgetTab("chat")}
+            className="rounded-full bg-black px-4 py-1.5 text-xs font-semibold text-white shadow-sm transition-all duration-200"
+          >
+            CHAT
+          </button>
+        </div>
+
+        <button
+          onClick={() => setIsMinimized(true)}
+          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-gray-50 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900"
+        >
+          <Minimize2 className="h-4 w-4" />
+        </button>
       </div>
 
       <div className="scrollbar-none flex-1 space-y-6 overflow-y-auto bg-white px-4 py-6 sm:px-8 sm:py-8">
