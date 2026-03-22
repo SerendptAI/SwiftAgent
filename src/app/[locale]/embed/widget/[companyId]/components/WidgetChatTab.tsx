@@ -5,6 +5,7 @@ import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
 import { ChatMsg, WidgetTab } from "./types";
+import { WidgetHeader } from "./WidgetHeader";
 
 interface WidgetChatTabProps {
   companyName?: string;
@@ -33,29 +34,21 @@ export function WidgetChatTab({
   return (
     <div className="pointer-events-auto relative z-20 flex h-full w-full flex-col rounded-3xl bg-white sm:h-[600px] sm:max-h-[calc(100vh-100px)] sm:rounded-4xl">
       {/* Custom Chat Header from mock */}
-      <div className="flex shrink-0 items-center justify-between rounded-t-3xl border-b border-gray-100 bg-white px-4 py-3 sm:rounded-t-4xl sm:px-6 sm:py-4">
+      <div className="relative flex shrink-0 items-center justify-between rounded-t-3xl border-b border-gray-100 bg-white px-4 py-3 sm:rounded-t-4xl sm:px-6 sm:py-3">
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#6433CC] text-sm font-bold text-white sm:h-10 sm:w-10">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#6433CC] text-sm font-bold text-white sm:h-10 sm:w-10">
             {initial}
           </div>
-          <span className="font-dm-mono text-xs font-bold tracking-wide text-gray-800 uppercase sm:text-sm">
+          <span className="font-dm-mono max-w-[75px] truncate text-xs font-bold tracking-wide text-gray-800 uppercase sm:max-w-[200px] sm:text-sm">
             {displayName}
           </span>
         </div>
 
-        <div className="flex items-center gap-1 rounded-full bg-gray-100 p-1">
-          <button
-            onClick={() => setActiveWidgetTab("call")}
-            className="rounded-full px-4 py-1.5 text-xs font-semibold text-gray-500 transition-all duration-200 hover:text-gray-700"
-          >
-            Call
-          </button>
-          <button
-            onClick={() => setActiveWidgetTab("chat")}
-            className="rounded-full bg-black px-4 py-1.5 text-xs font-semibold text-white shadow-sm transition-all duration-200"
-          >
-            CHAT
-          </button>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <WidgetHeader
+            activeWidgetTab="chat"
+            setActiveWidgetTab={setActiveWidgetTab}
+          />
         </div>
 
         <button

@@ -12,6 +12,7 @@ import { WidgetBanner } from "./components/WidgetBanner";
 import { WidgetCallTab } from "./components/WidgetCallTab";
 import { WidgetChatTab } from "./components/WidgetChatTab";
 import { WidgetHeader } from "./components/WidgetHeader";
+import { WidgetMinimizedChat } from "./components/WidgetMinimizedChat";
 import { WidgetMinimizedControls } from "./components/WidgetMinimizedControls";
 
 // Preload feedback audio elements
@@ -410,15 +411,32 @@ function WidgetContent({ companyId }: { companyId: string }) {
         )}
 
         {/* --- MINIMIZED WIDGET CONTROLS --- */}
-        {callStatus === "ongoing" && isMinimized && (
-          <WidgetMinimizedControls
-            isMuted={isMuted}
-            handleEndCall={handleEndCall}
-            playTouchSound={playTouchSound}
-            toggleMute={toggleMute}
-            setIsMinimized={setIsMinimized}
-          />
-        )}
+        {callStatus === "ongoing" &&
+          isMinimized &&
+          activeWidgetTab === "call" && (
+            <WidgetMinimizedControls
+              isMuted={isMuted}
+              handleEndCall={handleEndCall}
+              playTouchSound={playTouchSound}
+              toggleMute={toggleMute}
+              setIsMinimized={setIsMinimized}
+            />
+          )}
+
+        {/* --- MINIMIZED CHAT WIDGET --- */}
+        {callStatus === "ongoing" &&
+          isMinimized &&
+          activeWidgetTab === "chat" && (
+            <WidgetMinimizedChat
+              companyName={companyName}
+              chatMessages={chatMessages}
+              chatInput={chatInput}
+              setChatInput={setChatInput}
+              handleSendChat={handleSendChat}
+              chatEndRef={chatEndRef}
+              setIsMinimized={setIsMinimized}
+            />
+          )}
       </div>
     </div>
   );
