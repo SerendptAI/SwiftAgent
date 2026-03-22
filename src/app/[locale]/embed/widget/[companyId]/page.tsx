@@ -1,6 +1,4 @@
 "use client";
-import { MoreHorizontal } from "lucide-react";
-import Image from "next/image";
 import { use, useCallback, useEffect, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
@@ -8,6 +6,13 @@ import { usePublicCompanyQuery } from "@/hooks/use-company";
 import { useVoiceChat } from "@/hooks/use-voice-chat";
 import { cn } from "@/lib/utils";
 import { publicDashboardApi } from "@/services/dashboard";
+
+import { ChatMsg, WidgetTab } from "./components/types";
+import { WidgetBanner } from "./components/WidgetBanner";
+import { WidgetCallTab } from "./components/WidgetCallTab";
+import { WidgetChatTab } from "./components/WidgetChatTab";
+import { WidgetHeader } from "./components/WidgetHeader";
+import { WidgetMinimizedControls } from "./components/WidgetMinimizedControls";
 
 // Preload feedback audio elements
 function createAudio(src: string): HTMLAudioElement | null {
@@ -69,9 +74,56 @@ function WidgetContent({ companyId }: { companyId: string }) {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isMinimized, setIsMinimized] = useState(false);
   const [statusText, setStatusText] = useState("Idle");
-  const [transcript, setTranscript] = useState("");
-  const [agentReply, setAgentReply] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Call/Chat tab state
+  const [activeWidgetTab, setActiveWidgetTab] = useState<WidgetTab>("call");
+  const [showHashInput, setShowHashInput] = useState(false);
+  const [hashValue, setHashValue] = useState("");
+  const [chatMessages, setChatMessages] = useState<ChatMsg[]>([
+    {
+      id: 1,
+      text: "Hello! How can I assist you today?",
+      sender: "agent",
+      time: "",
+    },
+  ]);
+  const [chatInput, setChatInput] = useState("");
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  const handleHashSubmit = useCallback(() => {
+    if (!hashValue.trim()) return;
+    const msg: ChatMsg = {
+      id: Date.now(),
+      text: hashValue.trim(),
+      sender: "user",
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
+    setChatMessages((prev) => [...prev, msg]);
+    setHashValue("");
+  }, [hashValue]);
+
+  const handleSendChat = useCallback(() => {
+    if (!chatInput.trim()) return;
+    const msg: ChatMsg = {
+      id: Date.now(),
+      text: chatInput.trim(),
+      sender: "user",
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
+    setChatMessages((prev) => [...prev, msg]);
+    setChatInput("");
+    setTimeout(
+      () => chatEndRef.current?.scrollIntoView({ behavior: "smooth" }),
+      50,
+    );
+  }, [chatInput]);
 
   const stopDialingAudio = useCallback(() => {
     if (dialingAudioRef.current) {
@@ -113,15 +165,14 @@ function WidgetContent({ companyId }: { companyId: string }) {
         setStatusText(s);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [stopDialingAudio],
   );
-  const handleTranscript = useCallback((t: string) => setTranscript(t), []);
+  const handleTranscript = useCallback(() => {}, []);
   const handleSpeechStart = useCallback(() => {
-    setTranscript("");
-    setAgentReply("");
     setErrorMessage(null);
   }, []);
-  const handleReply = useCallback((r: string) => setAgentReply(r), []);
+  const handleReply = useCallback(() => {}, []);
 
   const handleError = useCallback(
     (err: Error | string) => {
@@ -176,21 +227,11 @@ function WidgetContent({ companyId }: { companyId: string }) {
       }, 1000);
     } else {
       setElapsedTime(0);
-      setTranscript("");
-      setAgentReply("");
       setErrorMessage(null);
       setIsMinimized(false);
     }
     return () => clearInterval(interval);
   }, [callStatus]);
-
-  const formatTime = (seconds: number) => {
-    const m = Math.floor(seconds / 60)
-      .toString()
-      .padStart(2, "0");
-    const s = (seconds % 60).toString().padStart(2, "0");
-    return `${m}:${s}`;
-  };
 
   // Resize logic inside the component that knows about isActive
   useEffect(() => {
@@ -222,27 +263,6 @@ function WidgetContent({ companyId }: { companyId: string }) {
     }
   }, [isActive]);
 
-  const getFriendlyStatus = (status: string) => {
-    const s = status.toLowerCase();
-    switch (s) {
-      case "connecting":
-      case "calling":
-        return "Calling...";
-      case "ready":
-        return "Listening";
-      case "thinking":
-        return "Thinking...";
-      case "speaking":
-        return "Speaking";
-      case "error":
-        return "Error";
-      case "idle":
-        return "Ended";
-      default:
-        return s;
-    }
-  };
-
   const handleStartCall = useCallback(() => {
     setErrorMessage(null);
     hasPlayedPickupRef.current = false;
@@ -272,63 +292,15 @@ function WidgetContent({ companyId }: { companyId: string }) {
       )}
     >
       <div className="pointer-events-auto z-[100] w-full">
-        {/* --- THE BANNER STRIP (Moved to top) --- */}
-        <div className="relative z-[100] flex w-full flex-row items-center justify-between overflow-hidden bg-[#F2B035] px-3 py-2 shadow-md sm:px-6 sm:py-3">
-          <style>{`
-            @keyframes marquee {
-              0%   { transform: translateX(100%); }
-              100% { transform: translateX(-100%); }
-            }
-            .widget-marquee {
-              display: inline-block;
-              white-space: nowrap;
-              animation: marquee 18s linear infinite;
-            }
-          `}</style>
-          <div className="font-dm-mono max-w-[70%] min-w-0 flex-1 overflow-hidden pr-2 text-[9px] font-normal tracking-tight text-black uppercase sm:max-w-[85%] sm:pr-4 sm:text-xs sm:tracking-wider md:text-sm">
-            <span className="widget-marquee">
-              If you have any questions or inquiries, please feel free to get on
-              a call with our {companyName}
-              .&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If you have any questions or
-              inquiries, please feel free to get on a call with our{" "}
-              {companyName}.
-            </span>
-          </div>
+        {/* --- THE BANNER STRIP --- */}
+        <WidgetBanner
+          companyName={companyName}
+          callStatus={callStatus as "idle" | "ongoing"}
+          elapsedTime={elapsedTime}
+          handleRequestCallClick={handleRequestCallClick}
+        />
 
-          <button
-            type="button"
-            onClick={handleRequestCallClick}
-            className={cn(
-              "relative z-[101] flex shrink-0 items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 shadow-[-4px_4px_0_0_#000000] transition-all hover:-translate-y-0.5 hover:shadow-md sm:gap-2 sm:px-6 sm:py-2 sm:shadow-[-6px_6px_0_0_#000000]",
-              callStatus === "ongoing"
-                ? "cursor-default border-transparent"
-                : "cursor-pointer",
-            )}
-          >
-            {callStatus === "idle" ? (
-              <>
-                <Icons.phoneIncoming className="h-3 w-3 text-black sm:h-4 sm:w-4" />
-                <span className="font-dm-mono text-xs font-bold tracking-tight text-black sm:text-sm">
-                  REQUEST A CALL
-                </span>
-              </>
-            ) : (
-              <>
-                <div className="flex items-center gap-2">
-                  <Icons.widgetphone className="h-6 w-6 animate-pulse text-gray-500 sm:h-4 sm:w-4" />
-                </div>
-                <span className="font-dm-mono text-xs font-bold tracking-tight text-black sm:text-sm">
-                  ONGOING..{" "}
-                  <span className="text-gray-500">
-                    {formatTime(elapsedTime)}
-                  </span>
-                </span>
-              </>
-            )}
-          </button>
-        </div>
-
-        {/* --- FULL SCREEN CALL MODAL --- */}
+        {/* --- FULL SCREEN CALL/CHAT MODAL --- */}
         {callStatus === "ongoing" && (
           <div
             className={cn(
@@ -383,172 +355,59 @@ function WidgetContent({ companyId }: { companyId: string }) {
                 pointer-events: none;
               }
             `}</style>
+
             <div
               className={cn(
                 "widget-container relative h-full max-h-[calc(100vh-56px)] w-full overflow-visible rounded-t-3xl bg-white shadow-2xl sm:h-auto sm:max-h-[calc(100vh-100px)] sm:w-[95%] sm:max-w-[1200px] sm:rounded-4xl",
                 isMinimized ? "widget-minimized" : "animate-slide-up",
               )}
             >
-              {/* Floating call icon on the modal */}
-              <button
-                onClick={() => {
-                  setIsMinimized(true);
-                }}
-                className="animate-float-in absolute top-6 right-6 z-10 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full border-2 border-black bg-white shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition hover:scale-105 sm:top-auto sm:-right-4 sm:-bottom-20"
-              >
-                <Icons.phoneIncoming className="h-6 w-6 -rotate-90 text-black" />
-              </button>
-              <div className="relative flex h-full max-h-[calc(100vh-56px)] flex-col items-center justify-between overflow-y-auto py-4 text-center sm:max-h-[calc(100vh-100px)] sm:px-8 sm:py-14">
-                <div className="flex w-full flex-col items-center gap-4 sm:gap-8">
-                  <div className="animate-float-in flex flex-col items-center gap-2">
-                    <div className="text-xl font-semibold text-gray-400 uppercase sm:text-sm">
-                      {companyName ? `${companyName}  ` : ""}
-                    </div>
-                    <div
-                      className={cn(
-                        "text-xs font-semibold uppercase sm:text-sm",
-                        isMuted ? "text-red-500" : "text-gray-400",
-                      )}
-                    >
-                      {isMuted ? "Muted" : getFriendlyStatus(statusText)}
-                    </div>
-                  </div>
-                </div>
+              {/* Shared Header (Call/Chat toggle, Minimize) */}
+              <WidgetHeader
+                activeWidgetTab={activeWidgetTab}
+                setActiveWidgetTab={setActiveWidgetTab}
+                setIsMinimized={setIsMinimized}
+              />
 
-                {/* Error overlay */}
-                {errorMessage && (
-                  <div className="pointer-events-none absolute inset-x-0 top-20 z-10 w-full px-4 sm:top-28 sm:px-12">
-                    <div className="mx-auto max-w-lg">
-                      <p className="pointer-events-auto rounded-lg bg-red-50 px-3 py-2 font-mono text-xs text-red-700 sm:text-sm">
-                        {errorMessage}
-                      </p>
-                    </div>
-                  </div>
-                )}
+              {/* Tab Content */}
+              <WidgetCallTab
+                companyName={companyName}
+                isMuted={isMuted}
+                statusText={statusText}
+                errorMessage={errorMessage}
+                showHashInput={showHashInput}
+                setShowHashInput={setShowHashInput}
+                hashValue={hashValue}
+                setHashValue={setHashValue}
+                handleHashSubmit={handleHashSubmit}
+                playTouchSound={playTouchSound}
+                toggleMute={toggleMute}
+                handleEndCall={handleEndCall}
+              />
 
-                <div className="animate-scale-in flex items-center justify-center py-6">
-                  <div className="flex h-48 w-48 items-center justify-center rounded-full">
-                    <Image
-                      src="/images/aiblock.svg"
-                      alt="Phone"
-                      width={192}
-                      height={192}
-                      className="h-full w-full"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex w-full shrink-0 items-center justify-center gap-6 pb-4 sm:gap-16 sm:pb-0">
-                  <button
-                    onClick={playTouchSound}
-                    className="animate-control-1 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200 sm:h-16 sm:w-16"
-                  >
-                    <MoreHorizontal className="h-6 w-6 sm:h-7 sm:w-7" />
-                  </button>
-                  <button
-                    onClick={playTouchSound}
-                    className="animate-control-2 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200 sm:h-16 sm:w-16"
-                  >
-                    <Icons.Speaker className="h-6 w-6 sm:h-7 sm:w-7" />
-                  </button>
-                  <button
-                    onClick={() => {
-                      playTouchSound();
-                      toggleMute();
-                    }}
-                    className={cn(
-                      "animate-control-3 flex h-14 w-14 items-center justify-center rounded-full transition sm:h-16 sm:w-16",
-                      isMuted
-                        ? "bg-[#FBCDC3] text-[red-600] hover:bg-red-200"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200",
-                    )}
-                  >
-                    {isMuted ? (
-                      <Icons.micoff className="h-6 w-6 sm:h-7 sm:w-7" />
-                    ) : (
-                      <Icons.mic className="h-6 w-6 sm:h-7 sm:w-7" />
-                    )}
-                  </button>
-
-                  <button
-                    onClick={handleEndCall}
-                    className="animate-control-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#f25430] text-white shadow-lg transition hover:scale-105 hover:bg-red-600 hover:shadow-xl sm:h-16 sm:w-16"
-                  >
-                    <Icons.phonedown className="h-6 w-6 sm:h-7 sm:w-7" />
-                  </button>
-                </div>
-              </div>
+              {activeWidgetTab === "chat" && (
+                <WidgetChatTab
+                  companyName={companyName}
+                  chatMessages={chatMessages}
+                  chatInput={chatInput}
+                  setChatInput={setChatInput}
+                  handleSendChat={handleSendChat}
+                  chatEndRef={chatEndRef}
+                />
+              )}
             </div>
           </div>
         )}
 
-        {/* --- MINIMIZED WIDGET --- */}
+        {/* --- MINIMIZED WIDGET CONTROLS --- */}
         {callStatus === "ongoing" && isMinimized && (
-          <div className="pointer-events-none fixed right-0 bottom-0 z-50 h-full w-full">
-            {/* Main Restore Button - Bottom Right */}
-            <button
-              onClick={() => {
-                setIsMinimized(false);
-              }}
-              className="animate-float-in pointer-events-auto absolute z-30 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-white shadow-[0_8px_24px_rgba(0,0,0,0.15)] transition-transform hover:scale-105 hover:shadow-[0_12px_28px_rgba(0,0,0,0.2)] sm:h-[72px] sm:w-[72px]"
-              style={{ bottom: "30px", right: "30px" }}
-              title="Expand Call"
-            >
-              <Icons.phoneIncoming className="h-7 w-7 animate-pulse text-black sm:h-8 sm:w-8" />
-            </button>
-
-            {/* End Call - Top Right (~75 deg arc) */}
-            <button
-              onClick={handleEndCall}
-              className="animate-control-1 pointer-events-auto absolute z-20 flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-[#f25430] text-white shadow-lg transition hover:scale-105 hover:bg-red-600 hover:shadow-xl sm:h-[56px] sm:w-[56px]"
-              style={{ bottom: "145px", right: "15px" }}
-              title="End Call"
-            >
-              <Icons.phonedown className="h-6 w-6" />
-            </button>
-
-            {/* Mute - Top Left (~120 deg arc) */}
-            <button
-              onClick={() => {
-                playTouchSound();
-                toggleMute();
-              }}
-              className={cn(
-                "animate-control-2 pointer-events-auto absolute z-20 flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full shadow-lg transition hover:scale-105 hover:shadow-xl sm:h-[56px] sm:w-[56px]",
-                isMuted
-                  ? "bg-[#FBCDC3] text-red-600 hover:bg-red-200"
-                  : "bg-[#fce5e1] text-gray-700 hover:bg-[#faccd0]",
-              )}
-              style={{ bottom: "136px", right: "83px" }}
-              title={isMuted ? "Unmute" : "Mute"}
-            >
-              {isMuted ? (
-                <Icons.micoff className="h-5 w-5 sm:h-6 sm:w-6" />
-              ) : (
-                <Icons.mic className="h-5 w-5 sm:h-6 sm:w-6" />
-              )}
-            </button>
-
-            {/* Speaker - Left (~165 deg arc) */}
-            <button
-              onClick={playTouchSound}
-              className="animate-control-3 pointer-events-auto absolute z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-gray-700 shadow-lg transition hover:scale-105 hover:bg-gray-50 hover:shadow-xl sm:h-12 sm:w-12"
-              style={{ bottom: "85px", right: "129px" }}
-              title="Speaker"
-            >
-              <Icons.Speaker className="h-5 w-5" />
-            </button>
-
-            {/* More - Bottom Left (~210 deg arc) */}
-            <button
-              onClick={playTouchSound}
-              className="animate-control-4 pointer-events-auto absolute z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f3f4f6] text-gray-700 shadow-md transition hover:scale-105 hover:bg-gray-200 sm:h-12 sm:w-12"
-              style={{ bottom: "17px", right: "120px" }}
-              title="More Options"
-            >
-              <MoreHorizontal className="h-5 w-5" />
-            </button>
-          </div>
+          <WidgetMinimizedControls
+            isMuted={isMuted}
+            handleEndCall={handleEndCall}
+            playTouchSound={playTouchSound}
+            toggleMute={toggleMute}
+            setIsMinimized={setIsMinimized}
+          />
         )}
       </div>
     </div>
