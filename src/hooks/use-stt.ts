@@ -18,10 +18,10 @@ export interface UseSTTReturn {
 
 // --- VAD Constants ---
 
-const SPEECH_THRESHOLD = 30; // Volume level (0–255) to consider as speech
-const SPEECH_START_FRAMES = 3; // Consecutive loud frames to trigger recording
-const SILENCE_DURATION_MS = 800; // Silence duration before stopping recording
-const MIN_RECORDING_MS = 300; // Minimum recording length to avoid noise blips
+const SPEECH_THRESHOLD = 25; // Volume level (0–255) to consider as speech
+const SPEECH_START_FRAMES = 2; // Consecutive loud frames to trigger recording
+const SILENCE_DURATION_MS = 400; // Silence duration before stopping recording
+const MIN_RECORDING_MS = 200; // Minimum recording length to avoid noise blips
 
 // --- Hook ---
 
