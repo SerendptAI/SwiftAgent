@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const ELEVENLABS_VOICE_ID =
-  process.env.ELEVENLABS_VOICE_ID || "TxGEqnHWrfWFTfGW9XjX"; // Default: Josh
+  process.env.ELEVENLABS_VOICE_ID || "JBFqnCBsd6RMkjVDRZzb"; // Default: George (deep, mature male)
 
 export async function POST(req: NextRequest) {
   if (!ELEVENLABS_API_KEY) {
@@ -31,8 +31,8 @@ export async function POST(req: NextRequest) {
         text,
         model_id: "eleven_turbo_v2_5",
         voice_settings: {
-          stability: 0.5,
-          similarity_boost: 0.75,
+          stability: 0.7,
+          similarity_boost: 0.8,
         },
       }),
     },
