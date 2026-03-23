@@ -13,6 +13,8 @@ interface WidgetChatTabProps {
   chatInput: string;
   setChatInput: (val: string) => void;
   handleSendChat: () => void;
+  isChatLoading?: boolean;
+  chatThinkingText?: string | null;
   chatEndRef: React.RefObject<HTMLDivElement | null>;
   setActiveWidgetTab: (tab: WidgetTab) => void;
   setIsMinimized: (val: boolean) => void;
@@ -24,6 +26,8 @@ export function WidgetChatTab({
   chatInput,
   setChatInput,
   handleSendChat,
+  isChatLoading,
+  chatThinkingText,
   chatEndRef,
   setActiveWidgetTab,
   setIsMinimized,
@@ -85,6 +89,16 @@ export function WidgetChatTab({
             </div>
           </div>
         ))}
+        {/* Typing indicator */}
+        {chatThinkingText && (
+          <div className="flex w-full justify-start">
+            <div className="flex items-center gap-1.5 rounded-3xl rounded-tl-md bg-[#f0f7ff] px-5 py-4">
+              <span className="h-2 w-2 animate-[bounce_1.2s_ease-in-out_infinite] rounded-full bg-[#1a73e8]/50" />
+              <span className="h-2 w-2 animate-[bounce_1.2s_ease-in-out_0.2s_infinite] rounded-full bg-[#1a73e8]/50" />
+              <span className="h-2 w-2 animate-[bounce_1.2s_ease-in-out_0.4s_infinite] rounded-full bg-[#1a73e8]/50" />
+            </div>
+          </div>
+        )}
         {/* We need a little padding at the bottom so the last message isn't flush */}
         <div ref={chatEndRef} className="h-2 w-full" />
       </div>
@@ -101,10 +115,10 @@ export function WidgetChatTab({
           />
           <button
             onClick={handleSendChat}
-            disabled={!chatInput.trim()}
+            disabled={!chatInput.trim() || isChatLoading}
             className="flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#1a73e8] px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-600 disabled:opacity-50"
           >
-            Send
+            {isChatLoading ? "..." : "Send"}
             <Icons.sendIcon className="h-4 w-4 fill-white text-white" />
           </button>
         </div>

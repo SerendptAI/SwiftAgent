@@ -12,6 +12,8 @@ interface WidgetMinimizedChatProps {
   chatInput: string;
   setChatInput: (val: string) => void;
   handleSendChat: () => void;
+  isChatLoading?: boolean;
+  chatThinkingText?: string | null;
   chatEndRef: React.RefObject<HTMLDivElement | null>;
   setIsMinimized: (val: boolean) => void;
 }
@@ -22,6 +24,8 @@ export function WidgetMinimizedChat({
   chatInput,
   setChatInput,
   handleSendChat,
+  isChatLoading,
+  chatThinkingText,
   chatEndRef,
   setIsMinimized,
 }: WidgetMinimizedChatProps) {
@@ -38,8 +42,23 @@ export function WidgetMinimizedChat({
 
   return (
     <div className="pointer-events-none fixed right-0 bottom-0 z-50 flex h-full w-full flex-col items-end justify-end p-4 sm:p-6">
+      <style>{`
+        @keyframes minimized-chat-in {
+          0% {
+            opacity: 0;
+            transform: translateY(40px) scale(0.95);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+        .animate-minimized-chat-in {
+          animation: minimized-chat-in 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+        }
+      `}</style>
       {/* Minimized Chat Card */}
-      <div className="pointer-events-auto mb-20 flex w-[340px] flex-col rounded-2xl bg-white shadow-[0_8px_30px_rgba(0,0,0,0.12)] sm:w-[380px]">
+      <div className="animate-minimized-chat-in pointer-events-auto mb-5 flex h-[400px] w-[340px] flex-col rounded-2xl bg-white shadow-[0_8px_30px_rgba(0,0,0,0.12)] sm:w-[380px]">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
@@ -65,7 +84,7 @@ export function WidgetMinimizedChat({
         </div>
 
         {/* Messages */}
-        <div className="scrollbar-none flex max-h-[450px] flex-1 flex-col gap-3 overflow-y-auto px-4 py-2">
+        <div className="scrollbar-none flex h-[280px] flex-1 flex-col gap-3 overflow-y-auto px-4 py-2">
           {chatMessages.map((msg) => (
             <div
               key={msg.id}
@@ -86,6 +105,16 @@ export function WidgetMinimizedChat({
               </div>
             </div>
           ))}
+          {/* Typing indicator */}
+          {chatThinkingText && (
+            <div className="flex w-full justify-start">
+              <div className="flex items-center gap-1 rounded-2xl rounded-tl-sm bg-[#f0f7ff] px-4 py-3">
+                <span className="h-1.5 w-1.5 animate-[bounce_1.2s_ease-in-out_infinite] rounded-full bg-[#1a73e8]/50" />
+                <span className="h-1.5 w-1.5 animate-[bounce_1.2s_ease-in-out_0.2s_infinite] rounded-full bg-[#1a73e8]/50" />
+                <span className="h-1.5 w-1.5 animate-[bounce_1.2s_ease-in-out_0.4s_infinite] rounded-full bg-[#1a73e8]/50" />
+              </div>
+            </div>
+          )}
           <div ref={chatEndRef} className="h-1 w-full" />
         </div>
 
@@ -102,10 +131,10 @@ export function WidgetMinimizedChat({
             />
             <button
               onClick={handleSendChat}
-              disabled={!chatInput.trim()}
+              disabled={!chatInput.trim() || isChatLoading}
               className="flex shrink-0 items-center gap-1.5 rounded-full bg-[#1a73e8] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-600 disabled:opacity-50"
             >
-              Send
+              {isChatLoading ? "..." : "Send"}
               <Icons.sendIcon className="h-3.5 w-3.5 fill-white text-white" />
             </button>
           </div>

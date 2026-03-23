@@ -1,5 +1,5 @@
 "use client";
-import { use, useCallback, useEffect, useRef, useState } from "react";
+import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { usePublicCompanyQuery } from "@/hooks/use-company";
@@ -90,7 +90,10 @@ function WidgetContent({ companyId }: { companyId: string }) {
     },
   ]);
   const [chatInput, setChatInput] = useState("");
+  const [isChatLoading, setIsChatLoading] = useState(false);
+  const [chatThinkingText, setChatThinkingText] = useState<string | null>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const chatSessionId = useMemo(() => crypto.randomUUID(), []);
 
   const handleHashSubmit = useCallback(() => {
     if (!hashValue.trim()) return;
@@ -107,24 +110,131 @@ function WidgetContent({ companyId }: { companyId: string }) {
     setHashValue("");
   }, [hashValue]);
 
-  const handleSendChat = useCallback(() => {
-    if (!chatInput.trim()) return;
-    const msg: ChatMsg = {
+  const handleSendChat = useCallback(async () => {
+    if (!chatInput.trim() || isChatLoading) return;
+    const userText = chatInput.trim();
+    const userMsg: ChatMsg = {
       id: Date.now(),
-      text: chatInput.trim(),
+      text: userText,
       sender: "user",
       time: new Date().toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
       }),
     };
-    setChatMessages((prev) => [...prev, msg]);
+    setChatMessages((prev) => [...prev, userMsg]);
     setChatInput("");
+    setIsChatLoading(true);
     setTimeout(
       () => chatEndRef.current?.scrollIntoView({ behavior: "smooth" }),
       50,
     );
-  }, [chatInput]);
+
+    const agentMsgId = Date.now() + 1;
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          company_id: companyId,
+          session_id: chatSessionId,
+          message: userText,
+        }),
+      });
+
+      if (!res.ok || !res.body) {
+        throw new Error(`Chat request failed: ${res.status}`);
+      }
+
+      // Read SSE stream (events separated by double newlines)
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let agentText = "";
+      let buffer = "";
+
+      // Add placeholder agent message
+      setChatMessages((prev) => [
+        ...prev,
+        { id: agentMsgId, text: "", sender: "agent", time: "" },
+      ]);
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+
+        // SSE events are separated by double newlines
+        const events = buffer.split("\n\n");
+        // Last element may be incomplete — keep it in the buffer
+        buffer = events.pop() ?? "";
+
+        for (const event of events) {
+          // Extract the data line from the event
+          const dataLine = event
+            .split("\n")
+            .find((l) => l.startsWith("data: "));
+          if (!dataLine) continue;
+
+          try {
+            const parsed = JSON.parse(dataLine.slice(6));
+            const stage = parsed?.data?.stage;
+            const message = parsed?.data?.message;
+
+            if (stage === "thinking" && typeof message === "string") {
+              setChatThinkingText(message);
+              chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            } else if (stage === "stream" && typeof message === "string") {
+              setChatThinkingText(null);
+              agentText += message;
+              setChatMessages((prev) =>
+                prev.map((m) =>
+                  m.id === agentMsgId ? { ...m, text: agentText } : m,
+                ),
+              );
+              chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            }
+          } catch {
+            // Skip malformed data
+          }
+        }
+      }
+
+      // Set final timestamp
+      setChatMessages((prev) =>
+        prev.map((m) =>
+          m.id === agentMsgId
+            ? {
+                ...m,
+                text: agentText || "Sorry, I couldn't generate a response.",
+                time: new Date().toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }),
+              }
+            : m,
+        ),
+      );
+    } catch (err) {
+      console.error("Chat error:", err);
+      setChatMessages((prev) => [
+        ...prev.filter((m) => m.id !== agentMsgId),
+        {
+          id: agentMsgId,
+          text: "Sorry, something went wrong. Please try again.",
+          sender: "agent" as const,
+          time: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        },
+      ]);
+    } finally {
+      setIsChatLoading(false);
+      setChatThinkingText(null);
+    }
+  }, [chatInput, isChatLoading, companyId, chatSessionId]);
 
   const stopDialingAudio = useCallback(() => {
     if (dialingAudioRef.current) {
@@ -401,6 +511,8 @@ function WidgetContent({ companyId }: { companyId: string }) {
                   chatInput={chatInput}
                   setChatInput={setChatInput}
                   handleSendChat={handleSendChat}
+                  isChatLoading={isChatLoading}
+                  chatThinkingText={chatThinkingText}
                   chatEndRef={chatEndRef}
                   setActiveWidgetTab={setActiveWidgetTab}
                   setIsMinimized={setIsMinimized}
@@ -433,6 +545,8 @@ function WidgetContent({ companyId }: { companyId: string }) {
               chatInput={chatInput}
               setChatInput={setChatInput}
               handleSendChat={handleSendChat}
+              isChatLoading={isChatLoading}
+              chatThinkingText={chatThinkingText}
               chatEndRef={chatEndRef}
               setIsMinimized={setIsMinimized}
             />
