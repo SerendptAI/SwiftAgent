@@ -54,9 +54,6 @@ export function usePublicCompanyQuery(companyId: string | null | undefined) {
   return useQuery({
     queryKey: ["public-company", companyId],
     queryFn: () => {
-      console.log(
-        `[usePublicCompanyQuery] Triggering query for companyId: ${companyId}`,
-      );
       if (!companyId) throw new Error("No company ID provided");
       return publicCompanyApi.get(companyId);
     },

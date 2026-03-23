@@ -96,10 +96,8 @@ export const companyApi = {
 export const publicCompanyApi = {
   get: async (companyId: string): Promise<Company> => {
     const url = `/api/v1/companies/${companyId}/public`;
-    console.log(`[publicCompanyApi] Fetching company from: ${url}`);
     try {
       const { data } = await publicApiClient.get<Company>(url);
-      console.log(`[publicCompanyApi] Success! data=`, data);
       return data;
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {

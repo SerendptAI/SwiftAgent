@@ -5,7 +5,6 @@ import { Icons } from "@/components/icons";
 import { usePublicCompanyQuery } from "@/hooks/use-company";
 import { useVoiceChat } from "@/hooks/use-voice-chat";
 import { cn } from "@/lib/utils";
-import { publicDashboardApi } from "@/services/dashboard";
 
 import { ChatMsg, WidgetTab } from "./components/types";
 import { WidgetBanner } from "./components/WidgetBanner";
@@ -32,29 +31,12 @@ export default function WidgetPage({
   const unwrappedParams = use(params);
   const companyId = unwrappedParams.companyId;
 
-  console.log("WidgetPage rendering for companyId:", companyId);
-
   return <WidgetContent companyId={companyId} />;
 }
 
 function WidgetContent({ companyId }: { companyId: string }) {
-  const {
-    data: company,
-    isLoading,
-    error: queryError,
-  } = usePublicCompanyQuery(companyId);
+  const { data: company } = usePublicCompanyQuery(companyId);
   const companyName = company?.name;
-
-  useEffect(() => {
-    console.log("------------------ WidgetContent Log ------------------");
-    console.log("companyId    :", companyId);
-    console.log("isLoading    :", isLoading);
-    console.log("company      :", company);
-    console.log("companyName  :", companyName);
-    console.log("queryError   :", queryError);
-    if (queryError) console.error("WidgetContent Query Error:", queryError);
-    console.log("-------------------------------------------------------");
-  }, [companyId, isLoading, company, companyName, queryError]);
 
   // Audio feedback refs
   const dialingAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -310,20 +292,22 @@ function WidgetContent({ companyId }: { companyId: string }) {
   // Log visitor when the widget is first loaded
   useEffect(() => {
     const logVisitorIfNew = async () => {
-      // Basic check to see if we already logged them in this session to prevent spamming
       const sessionKey = `swift_agent_visited_${companyId}`;
       if (sessionStorage.getItem(sessionKey)) return;
 
       try {
         const res = await fetch("https://api.ipify.org?format=json");
-        const data = await res.json();
-        if (data.ip) {
-          await publicDashboardApi.logVisitor(companyId, data.ip);
+        const { ip } = await res.json();
+        if (ip) {
+          await fetch("/api/visitors", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ company_id: companyId, ip_address: ip }),
+          });
           sessionStorage.setItem(sessionKey, "true");
-          console.log("Visitor logged successfully.");
         }
-      } catch (err) {
-        console.error("Failed to log visitor:", err);
+      } catch {
+        // Silently fail — visitor logging is non-critical
       }
     };
 
