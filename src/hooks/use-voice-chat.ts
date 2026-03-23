@@ -56,6 +56,8 @@ export function useVoiceChat({
   const statusRef = useRef<string>("Idle");
   const thinkingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const ttsAbortRef = useRef<AbortController | null>(null);
+  const speechErrorCountRef = useRef(0);
+  const MAX_SPEECH_ERRORS = 3;
 
   // Refs for callbacks and state to avoid useEffect dependency churn
   const onStatusChangeRef = useRef(onStatusChange);
@@ -100,7 +102,6 @@ export function useVoiceChat({
       if (status.toLowerCase() === "thinking") {
         thinkingTimeoutRef.current = setTimeout(() => {
           if (statusRef.current.toLowerCase() === "thinking") {
-            console.warn("Thinking timeout reached, recovering to Ready");
             statusRef.current = "Ready";
             onStatusChangeRef.current?.("Ready");
             startRecognition();
@@ -195,7 +196,6 @@ export function useVoiceChat({
         await audio.play();
       } catch (err) {
         if ((err as Error).name === "AbortError") return;
-        console.error("TTS playback error:", err);
         onErrorRef.current?.("Failed to play agent response");
         handleStatusChange("Ready");
         startRecognition();
@@ -211,14 +211,12 @@ export function useVoiceChat({
       s.getTracks().forEach((t) => t.stop());
       setIsActive(true);
     } catch (err) {
-      console.error("Failed to start voice chat:", err);
       onErrorRef.current?.("Microphone access denied or failed to initialize");
       handleStatusChange("Error");
     }
   }, [handleStatusChange]);
 
   const stop = useCallback(() => {
-    console.log("Stopping voice chat...");
     sendMessage({ type: "end" });
     cleanup();
     handleStatusChange("Idle");
@@ -236,13 +234,10 @@ export function useVoiceChat({
     }
 
     const wssUrl = `wss://api.swiftagents.org/api/v1/voice/${companyId}/call`;
-    console.log("Connecting to WebSocket:", wssUrl);
-
     const socket = new WebSocket(wssUrl);
     socketRef.current = socket;
 
     socket.onopen = () => {
-      console.log("WebSocket Opened successfully");
       handleStatusChange("Ready");
 
       socket.send(
@@ -265,6 +260,8 @@ export function useVoiceChat({
         if (isMutedRef.current) return;
         if (statusRef.current.toLowerCase() !== "ready") return;
 
+        speechErrorCountRef.current = 0; // Reset on successful recognition
+
         if (!hasSpokenThisTurn) {
           hasSpokenThisTurn = true;
           onSpeechStartRef.current?.();
@@ -274,7 +271,6 @@ export function useVoiceChat({
         if (result.isFinal) {
           const text = result[0].transcript.trim();
           if (text) {
-            console.log("STT final:", text);
             onTranscriptRef.current?.(text);
             sendMessage({ type: "user_text", text });
             handleStatusChange("Thinking");
@@ -288,28 +284,34 @@ export function useVoiceChat({
       recognition.onend = () => {
         hasSpokenThisTurn = false;
         if (
-          statusRef.current.toLowerCase() === "ready" &&
-          !isMutedRef.current &&
-          socketRef.current?.readyState === WebSocket.OPEN
+          speechErrorCountRef.current >= MAX_SPEECH_ERRORS ||
+          statusRef.current.toLowerCase() !== "ready" ||
+          isMutedRef.current ||
+          socketRef.current?.readyState !== WebSocket.OPEN
         ) {
-          try {
-            recognition.start();
-          } catch {
-            // Already started
-          }
+          return;
+        }
+        try {
+          recognition.start();
+        } catch {
+          // Already started
         }
       };
 
       recognition.onerror = (event) => {
-        if (event.error !== "no-speech" && event.error !== "aborted") {
-          console.error("Speech recognition error:", event.error);
+        if (event.error === "no-speech" || event.error === "aborted") return;
+
+        speechErrorCountRef.current += 1;
+        if (speechErrorCountRef.current >= MAX_SPEECH_ERRORS) {
+          onErrorRef.current?.(
+            "Speech recognition unavailable. Check your network connection and reload.",
+          );
         }
       };
     };
 
     socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
-      console.log("WS Received:", message.type, message);
       switch (message.type) {
         case "status": {
           const newStatus = message.status as string;
@@ -326,7 +328,6 @@ export function useVoiceChat({
           speakText(message.text);
           break;
         case "error": {
-          console.error("Voice chat error:", message);
           const parts = [
             message.message,
             message.detail,
@@ -346,13 +347,11 @@ export function useVoiceChat({
     };
 
     socket.onclose = () => {
-      console.log("WebSocket Closed");
       setIsActive(false);
       cleanup();
     };
 
     return () => {
-      console.log("Cleaning up WebSocket effect");
       socket.close();
     };
   }, [
