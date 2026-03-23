@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { useSTT } from "./use-stt";
+
 export interface VoiceChatOptions {
   companyId: string;
   onStatusChange?: (status: string) => void;
@@ -9,34 +11,6 @@ export interface VoiceChatOptions {
   onSpeechStart?: () => void;
   onReply?: (text: string) => void;
   onError?: (message: string) => void;
-}
-
-// Browser SpeechRecognition types (not in all TS libs)
-interface SpeechRecognitionInstance extends EventTarget {
-  continuous: boolean;
-  interimResults: boolean;
-  lang: string;
-  onresult:
-    | ((event: {
-        results: SpeechRecognitionResultList;
-        resultIndex: number;
-      }) => void)
-    | null;
-  onend: (() => void) | null;
-  onerror: ((event: { error: string }) => void) | null;
-  start(): void;
-  stop(): void;
-  abort(): void;
-}
-
-type SpeechRecognitionCtor = new () => SpeechRecognitionInstance;
-
-function getSpeechRecognition(): SpeechRecognitionCtor | null {
-  const w = window as unknown as {
-    SpeechRecognition?: SpeechRecognitionCtor;
-    webkitSpeechRecognition?: SpeechRecognitionCtor;
-  };
-  return w.SpeechRecognition || w.webkitSpeechRecognition || null;
 }
 
 export function useVoiceChat({
@@ -51,15 +25,12 @@ export function useVoiceChat({
   const [isMuted, setIsMuted] = useState(false);
 
   const socketRef = useRef<WebSocket | null>(null);
-  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
   const audioElementRef = useRef<HTMLAudioElement | null>(null);
   const statusRef = useRef<string>("Idle");
   const thinkingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const ttsAbortRef = useRef<AbortController | null>(null);
-  const speechErrorCountRef = useRef(0);
-  const MAX_SPEECH_ERRORS = 3;
 
-  // Refs for callbacks and state to avoid useEffect dependency churn
+  // Stable refs for callbacks
   const onStatusChangeRef = useRef(onStatusChange);
   const onTranscriptRef = useRef(onTranscript);
   const onSpeechStartRef = useRef(onSpeechStart);
@@ -78,15 +49,42 @@ export function useVoiceChat({
 
   const THINKING_TIMEOUT_MS = 30_000;
 
-  const startRecognition = useCallback(() => {
-    const recognition = recognitionRef.current;
-    if (recognition) {
-      try {
-        recognition.start();
-      } catch {
-        // Already started — ignore
-      }
-    }
+  // --- STT (ElevenLabs via use-stt hook) ---
+
+  const sendMessageRef = useRef<(data: Record<string, unknown>) => void>(
+    () => {},
+  );
+
+  const {
+    start: sttStart,
+    stop: sttStop,
+    abort: sttAbort,
+  } = useSTT({
+    onTranscript: (text) => {
+      if (isMutedRef.current) return;
+      if (statusRef.current.toLowerCase() !== "ready") return;
+
+      onTranscriptRef.current?.(text);
+      sendMessageRef.current({ type: "user_text", text });
+      handleStatusChange("Thinking");
+    },
+    onSpeechStart: () => onSpeechStartRef.current?.(),
+    onError: (msg) => onErrorRef.current?.(msg),
+  });
+
+  const sttStartRef = useRef(sttStart);
+  const sttAbortRef = useRef(sttAbort);
+  const sttStopRef = useRef(sttStop);
+  useEffect(() => {
+    sttStartRef.current = sttStart;
+    sttAbortRef.current = sttAbort;
+    sttStopRef.current = sttStop;
+  }, [sttStart, sttAbort, sttStop]);
+
+  // --- Status management ---
+
+  const startListening = useCallback(() => {
+    sttStartRef.current();
   }, []);
 
   const handleStatusChange = useCallback(
@@ -104,13 +102,15 @@ export function useVoiceChat({
           if (statusRef.current.toLowerCase() === "thinking") {
             statusRef.current = "Ready";
             onStatusChangeRef.current?.("Ready");
-            startRecognition();
+            startListening();
           }
         }, THINKING_TIMEOUT_MS);
       }
     },
-    [startRecognition],
+    [startListening],
   );
+
+  // --- WebSocket messaging ---
 
   const sendMessage = useCallback((data: Record<string, unknown>) => {
     const socket = socketRef.current;
@@ -118,6 +118,13 @@ export function useVoiceChat({
       socket.send(JSON.stringify(data));
     }
   }, []);
+
+  // Keep ref in sync so STT callback can use it
+  useEffect(() => {
+    sendMessageRef.current = sendMessage;
+  }, [sendMessage]);
+
+  // --- Cleanup ---
 
   const cleanup = useCallback(() => {
     if (thinkingTimeoutRef.current) {
@@ -133,10 +140,7 @@ export function useVoiceChat({
       }
       audioElementRef.current = null;
     }
-    if (recognitionRef.current) {
-      recognitionRef.current.abort();
-      recognitionRef.current = null;
-    }
+    sttAbortRef.current();
     if (socketRef.current) {
       socketRef.current.close();
       socketRef.current = null;
@@ -144,9 +148,10 @@ export function useVoiceChat({
     setIsActive(false);
   }, []);
 
+  // --- TTS (ElevenLabs) ---
+
   const speakText = useCallback(
     async (text: string) => {
-      // Cancel any ongoing TTS request and stop current audio
       ttsAbortRef.current?.abort();
       if (audioElementRef.current) {
         audioElementRef.current.pause();
@@ -160,7 +165,7 @@ export function useVoiceChat({
 
       try {
         handleStatusChange("Speaking");
-        recognitionRef.current?.abort();
+        sttAbortRef.current(); // Stop listening while speaking
 
         const response = await fetch("/api/tts", {
           method: "POST",
@@ -182,7 +187,7 @@ export function useVoiceChat({
           URL.revokeObjectURL(url);
           if (statusRef.current.toLowerCase() === "speaking") {
             handleStatusChange("Ready");
-            startRecognition();
+            startListening();
           }
         };
 
@@ -190,7 +195,7 @@ export function useVoiceChat({
           URL.revokeObjectURL(url);
           onErrorRef.current?.("Failed to play agent response");
           handleStatusChange("Ready");
-          startRecognition();
+          startListening();
         };
 
         await audio.play();
@@ -198,22 +203,17 @@ export function useVoiceChat({
         if ((err as Error).name === "AbortError") return;
         onErrorRef.current?.("Failed to play agent response");
         handleStatusChange("Ready");
-        startRecognition();
+        startListening();
       }
     },
-    [handleStatusChange, startRecognition],
+    [handleStatusChange, startListening],
   );
 
-  const start = useCallback(async () => {
-    try {
-      handleStatusChange("Connecting");
-      const s = await navigator.mediaDevices.getUserMedia({ audio: true });
-      s.getTracks().forEach((t) => t.stop());
-      setIsActive(true);
-    } catch (err) {
-      onErrorRef.current?.("Microphone access denied or failed to initialize");
-      handleStatusChange("Error");
-    }
+  // --- Start / Stop ---
+
+  const start = useCallback(() => {
+    handleStatusChange("Connecting");
+    setIsActive(true);
   }, [handleStatusChange]);
 
   const stop = useCallback(() => {
@@ -222,16 +222,10 @@ export function useVoiceChat({
     handleStatusChange("Idle");
   }, [cleanup, handleStatusChange, sendMessage]);
 
-  // Main effect: connect WebSocket + start SpeechRecognition when active
+  // --- Main effect: WebSocket connection + STT when active ---
+
   useEffect(() => {
     if (!isActive) return;
-
-    const SpeechRecognitionCtor = getSpeechRecognition();
-    if (!SpeechRecognitionCtor) {
-      onErrorRef.current?.("Speech recognition not supported in this browser");
-      handleStatusChange("Error");
-      return;
-    }
 
     const wssUrl = `wss://api.swiftagents.org/api/v1/voice/${companyId}/call`;
     const socket = new WebSocket(wssUrl);
@@ -247,67 +241,8 @@ export function useVoiceChat({
         }),
       );
 
-      // Set up SpeechRecognition for client-side STT
-      const recognition = new SpeechRecognitionCtor();
-      recognition.continuous = false;
-      recognition.interimResults = true;
-      recognition.lang = "en-US";
-      recognitionRef.current = recognition;
-
-      let hasSpokenThisTurn = false;
-
-      recognition.onresult = (event) => {
-        if (isMutedRef.current) return;
-        if (statusRef.current.toLowerCase() !== "ready") return;
-
-        speechErrorCountRef.current = 0; // Reset on successful recognition
-
-        if (!hasSpokenThisTurn) {
-          hasSpokenThisTurn = true;
-          onSpeechStartRef.current?.();
-        }
-
-        const result = event.results[0];
-        if (result.isFinal) {
-          const text = result[0].transcript.trim();
-          if (text) {
-            onTranscriptRef.current?.(text);
-            sendMessage({ type: "user_text", text });
-            handleStatusChange("Thinking");
-            hasSpokenThisTurn = false;
-          }
-        } else {
-          onTranscriptRef.current?.(result[0].transcript);
-        }
-      };
-
-      recognition.onend = () => {
-        hasSpokenThisTurn = false;
-        if (
-          speechErrorCountRef.current >= MAX_SPEECH_ERRORS ||
-          statusRef.current.toLowerCase() !== "ready" ||
-          isMutedRef.current ||
-          socketRef.current?.readyState !== WebSocket.OPEN
-        ) {
-          return;
-        }
-        try {
-          recognition.start();
-        } catch {
-          // Already started
-        }
-      };
-
-      recognition.onerror = (event) => {
-        if (event.error === "no-speech" || event.error === "aborted") return;
-
-        speechErrorCountRef.current += 1;
-        if (speechErrorCountRef.current >= MAX_SPEECH_ERRORS) {
-          onErrorRef.current?.(
-            "Speech recognition unavailable. Check your network connection and reload.",
-          );
-        }
-      };
+      // Start listening for speech
+      sttStartRef.current();
     };
 
     socket.onmessage = (event) => {
@@ -315,11 +250,10 @@ export function useVoiceChat({
       switch (message.type) {
         case "status": {
           const newStatus = message.status as string;
-          // Ignore backend status updates while TTS is playing to prevent feedback loop
           if (statusRef.current.toLowerCase() === "speaking") break;
           handleStatusChange(newStatus);
           if (newStatus.toLowerCase() === "ready") {
-            startRecognition();
+            startListening();
           }
           break;
         }
@@ -359,30 +293,25 @@ export function useVoiceChat({
     companyId,
     handleStatusChange,
     cleanup,
-    sendMessage,
-    startRecognition,
+    startListening,
     speakText,
   ]);
+
+  // --- Mute toggle ---
 
   const toggleMute = useCallback(() => {
     setIsMuted((prev) => {
       const newMuted = !prev;
-      const recognition = recognitionRef.current;
-      if (recognition) {
-        if (newMuted) {
-          recognition.abort();
-        } else if (statusRef.current.toLowerCase() === "ready") {
-          try {
-            recognition.start();
-          } catch {
-            // Already started
-          }
-        }
+      if (newMuted) {
+        sttAbortRef.current();
+      } else if (statusRef.current.toLowerCase() === "ready") {
+        sttStartRef.current();
       }
       return newMuted;
     });
   }, []);
 
+  // Cleanup on unmount
   useEffect(() => {
     return () => cleanup();
   }, [cleanup]);
