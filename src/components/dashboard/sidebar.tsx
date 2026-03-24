@@ -12,6 +12,9 @@ export function Sidebar() {
     {
       href: "/dashboard",
       icon: (props: { className?: string }) => <Icons.Document {...props} />,
+      activeIcon: (props: { className?: string }) => (
+        <Icons.DocumentBold {...props} />
+      ),
       label: "Dashboard",
     },
     {
