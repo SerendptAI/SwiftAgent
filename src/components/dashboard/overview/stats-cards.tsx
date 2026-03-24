@@ -1,14 +1,9 @@
 "use client";
-import {
-  ArrowDown,
-  ArrowUp,
-  Info,
-  TrendingDown,
-  TrendingUp,
-} from "lucide-react";
+import { ArrowDown, ArrowUp, TrendingDown, TrendingUp } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Icons } from "@/components/icons";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { useDashboardStats } from "@/hooks/use-dashboard";
 import { cn } from "@/lib/utils";
 import { DashboardStats } from "@/services/dashboard";
@@ -32,6 +27,7 @@ interface StatCardProps {
   showTrendLine?: boolean;
   hideTrendIndicator?: boolean;
   isLoading?: boolean;
+  tooltip?: string;
 }
 
 function StatCard({
@@ -46,6 +42,7 @@ function StatCard({
   showTrendLine,
   hideTrendIndicator,
   isLoading,
+  tooltip,
 }: StatCardProps) {
   const percentChange = trend?.value || 0;
   const isUp = percentChange >= 0;
@@ -70,9 +67,10 @@ function StatCard({
               {title}
             </span>
           </div>
-          <button className="text-gray-400 hover:text-gray-600">
-            <Info className="h-5 w-5" />
-          </button>
+          <InfoTooltip
+            text={tooltip || `View ${title.toLowerCase()} details`}
+            className="h-5 w-5"
+          />
         </div>
 
         <div>
@@ -163,6 +161,7 @@ export function StatsCards({
           last7DaysDown: stats?.visitors.last_7_days_down || 0,
         }}
         iconColor="text-[#F25430]"
+        tooltip="Total unique visitors to your site today"
         isLoading={isLoading}
       />
 
@@ -176,6 +175,7 @@ export function StatsCards({
           onClick: () => router.push("/dashboard/ticketing"),
         }}
         iconColor="text-[#6433CC]"
+        tooltip="Pending chat conversations awaiting response"
         isLoading={isLoading}
       />
 
@@ -189,6 +189,7 @@ export function StatsCards({
           last7DaysDown: stats?.calls.last_7_days_down || 0,
         }}
         iconColor="text-[#F2B035]"
+        tooltip="Total voice calls received today"
         isLoading={isLoading}
       />
 
@@ -203,6 +204,7 @@ export function StatsCards({
         }}
         hideTrendIndicator
         iconColor="text-[#7F9FFF]"
+        tooltip="Documents uploaded to your knowledge base"
         isLoading={isLoading}
       />
 
@@ -216,6 +218,7 @@ export function StatsCards({
           last7DaysDown: stats?.scrapes.last_7_days_down || 0,
         }}
         iconColor="text-[#F25430]"
+        tooltip="Web pages scraped for your knowledge base"
         isLoading={isLoading}
       />
     </>

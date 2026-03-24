@@ -6,7 +6,11 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Icons } from "@/components/icons";
-import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
+import {
+  useCompaniesQuery,
+  useCompanyMutations,
+  useCompanyQuery,
+} from "@/hooks/use-company";
 import { cn } from "@/lib/utils";
 import { useOnboardingStore } from "@/store/onboarding-store";
 
@@ -32,12 +36,6 @@ interface Company {
   initial?: string;
 }
 
-const COMPANIES: Company[] = [
-  { id: "1", name: "Serendpt AI", initial: "S" },
-  { id: "2", name: "I-FITNESS GYM", initial: "I" },
-  { id: "3", name: "TechVentures Inc", initial: "T" },
-];
-
 interface CompanyInfoStepProps {
   companyId?: string | null;
   isUpdateMode?: boolean;
@@ -56,9 +54,16 @@ export function CompanyInfoStep({
   hideLogoUpload,
 }: CompanyInfoStepProps) {
   const { createCompany, updateCompany, uploadLogo } = useCompanyMutations();
+  const { data: rawCompanies } = useCompaniesQuery();
   const setTypedCompanyName = useOnboardingStore(
     (state) => state.setTypedCompanyName,
   );
+
+  const companies: Company[] = (rawCompanies ?? []).map((c) => ({
+    id: c.id,
+    name: c.name,
+    initial: c.name.charAt(0).toUpperCase(),
+  }));
 
   const { data: companyData } = useCompanyQuery(
     isUpdateMode ? companyId : null,
@@ -115,10 +120,18 @@ export function CompanyInfoStep({
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
-  const [selectedCompany, setSelectedCompany] = useState<Company>(COMPANIES[1]); // Default to I-FITNESS
+  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Default-select the current company or the first one
+  useEffect(() => {
+    if (companies.length > 0 && !selectedCompany) {
+      const current = companies.find((c) => c.id === companyId);
+      setSelectedCompany(current || companies[0]);
+    }
+  }, [companies, selectedCompany, companyId]);
 
   const onSubmit = async (data: CompanyInfoValues) => {
     try {
@@ -219,9 +232,9 @@ export function CompanyInfoStep({
               className="font-dm-mono flex items-center gap-2 rounded-full border border-gray-100 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-100"
             >
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-[10px] font-bold text-gray-600">
-                {selectedCompany.initial}
+                {selectedCompany?.initial ?? "?"}
               </span>
-              {selectedCompany.name}
+              {selectedCompany?.name ?? "Select company"}
               <ChevronDown
                 className={cn(
                   "h-4 w-4 text-gray-400 transition-transform",
@@ -232,11 +245,11 @@ export function CompanyInfoStep({
 
             {/* Dropdown Menu */}
             {isDropdownOpen && (
-              <div className="animate-in fade-in slide-in-from-top-2 absolute left-0 z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-gray-100 bg-white py-1 shadow-xl duration-200">
+              <div className="animate-in fade-in slide-in-from-top-2 font-dm-mono absolute left-0 z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-gray-100 bg-white py-1 shadow-xl duration-200">
                 <div className="px-3 py-2 text-xs font-semibold tracking-wider text-gray-400 uppercase">
                   Switch Company
                 </div>
-                {COMPANIES.map((company) => (
+                {companies.map((company) => (
                   <button
                     key={company.id}
                     onClick={() => {
@@ -248,10 +261,10 @@ export function CompanyInfoStep({
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#6433CC]/10 text-xs font-bold text-[#6433CC]">
                       {company.initial}
                     </div>
-                    <span className="flex-1 text-left font-medium">
+                    <span className="font-dm-mono flex-1 text-left font-medium">
                       {company.name}
                     </span>
-                    {selectedCompany.id === company.id && (
+                    {selectedCompany?.id === company.id && (
                       <Check className="h-4 w-4 text-[#6433CC]" />
                     )}
                   </button>

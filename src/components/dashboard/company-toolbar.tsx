@@ -57,7 +57,7 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
         <button
           onClick={() => setIsOpen(!isOpen)}
           disabled={isLoading || companies.length === 0}
-          className="flex items-center gap-3 rounded-2xl bg-gray-50 px-4 py-3 text-sm font-bold text-gray-900 transition-colors hover:bg-gray-100 disabled:opacity-60"
+          className="font-dm-mono flex items-center gap-3 rounded-2xl bg-gray-50 px-4 py-3 text-sm font-bold text-gray-900 transition-colors hover:bg-gray-100 disabled:opacity-60"
         >
           <ChevronDown
             className={`h-4 w-4 text-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
@@ -71,7 +71,7 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
 
         {/* Dropdown Menu */}
         {isOpen && (
-          <div className="animate-in fade-in slide-in-from-top-2 absolute left-0 z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-gray-100 bg-white py-1 shadow-xl duration-200">
+          <div className="animate-in fade-in slide-in-from-top-2 font-dm-mono absolute left-0 z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-gray-100 bg-white py-1 shadow-xl duration-200">
             <div className="px-3 py-2 text-xs font-semibold tracking-wider text-gray-400 uppercase">
               Switch Company
             </div>
@@ -84,10 +84,10 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
                 }}
                 className="flex w-full items-center gap-3 px-3 py-2.5 text-sm text-gray-700 transition-colors hover:bg-gray-50"
               >
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#6433CC]/10 text-xs font-bold text-[#6433CC]">
+                <div className="font-dm-mono flex h-8 w-8 items-center justify-center rounded-full bg-[#6433CC]/10 text-xs font-bold text-[#6433CC]">
                   {company.initial}
                 </div>
-                <span className="flex-1 text-left font-medium">
+                <span className="font-dm-mono flex-1 text-left font-medium">
                   {company.name}
                 </span>
                 {selectedCompany?.id === company.id && (
