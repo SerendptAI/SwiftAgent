@@ -157,7 +157,7 @@ export function VisitorsModal({
           </div>
 
           {/* Visitor List */}
-          <div className="min-h-0 flex-1 overflow-y-auto">
+          <div className="min-h-0 flex-1">
             {/* Header pills */}
             <div className="font-dm-mono sticky top-0 flex justify-between gap-2 bg-white pb-3">
               <span className="flex-1 rounded-xl border border-gray-200 px-6 py-2 text-center text-sm tracking-wider text-gray-400 uppercase">
@@ -172,7 +172,7 @@ export function VisitorsModal({
             </div>
 
             {/* Rows */}
-            <div className="flex flex-col gap-2">
+            <div className="flex max-h-[340px] flex-col gap-2 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-900 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-200">
               {visitors.map((visitor) => (
                 <div
                   key={visitor.id}
