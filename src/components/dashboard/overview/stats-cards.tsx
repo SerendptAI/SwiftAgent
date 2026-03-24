@@ -81,7 +81,7 @@ function StatCard({
           )}
 
           <div className="flex items-end justify-between gap-3">
-            <span className="font-greed-narrow font-condensed text-5xl font-semibold tracking-tight text-gray-900">
+            <span className="font-greed-narrow font-condensed text-5xl font-medium tracking-tight text-gray-900">
               {isLoading ? "-" : value}
             </span>
             {pending && (

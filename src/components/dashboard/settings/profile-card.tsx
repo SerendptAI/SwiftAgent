@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { useCurrentUser, useLogout } from "@/hooks/use-auth";
@@ -25,6 +25,7 @@ export function ProfileCard({
   const logoutMutation = useLogout();
 
   const [currentIp, setCurrentIp] = useState<string>("");
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
     fetch("https://api.ipify.org?format=json")
@@ -41,13 +42,13 @@ export function ProfileCard({
   const avatarSrc = user?.picture || propAvatarSrc;
   const displayIp = currentIp || propIp;
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     if (propOnLogout) {
       propOnLogout();
     } else {
       logoutMutation.mutate(undefined);
     }
-  };
+  }, [propOnLogout, logoutMutation]);
 
   return (
     <aside className="flex h-[450px] w-[320px] shrink-0 flex-col items-center gap-4 rounded-3xl bg-white p-6 shadow-sm">
@@ -85,12 +86,58 @@ export function ProfileCard({
 
       {/* Log Out */}
       <button
-        onClick={handleLogout}
+        onClick={() => setShowLogoutModal(true)}
         disabled={logoutMutation.isPending}
         className="font-dm-mono mt-auto w-full rounded-md bg-red-500 py-2.5 text-sm font-bold tracking-widest text-white uppercase shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-red-600 disabled:opacity-50"
       >
         {logoutMutation.isPending ? "LOGGING OUT..." : "LOG OUT"}
       </button>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutModal && (
+        // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70"
+          onClick={() => setShowLogoutModal(false)}
+        >
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */}
+          <div
+            className="relative mx-4 w-full max-w-[420px] rounded-3xl bg-white px-6 py-12 shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex flex-col items-center">
+              {/* Icon */}
+              <div className="relative mb-6">
+                <Image src="/logout.svg" alt="Logout" width={80} height={80} />
+              </div>
+
+              {/* Text */}
+              <h2 className="font-greed-narrow mb-8 line-clamp-6 text-center text-4xl font-bold tracking-tight text-black uppercase">
+                ARE YOU SURE YOU
+                <br />
+                WANT TO LOG OUT?
+              </h2>
+
+              {/* Buttons */}
+              <div className="flex w-full flex-col gap-3">
+                <button
+                  onClick={handleLogout}
+                  disabled={logoutMutation.isPending}
+                  className="font-dm-mono w-full rounded-lg bg-[#006BE5] py-2 text-sm font-bold tracking-widest text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#1E88E5] disabled:opacity-50"
+                >
+                  {logoutMutation.isPending ? "LOGGING OUT..." : "YES"}
+                </button>
+                <button
+                  onClick={() => setShowLogoutModal(false)}
+                  className="font-dm-mono w-full rounded-lg border border-gray-200 bg-gray-100 py-2 text-sm font-bold tracking-widest text-gray-900 uppercase shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-gray-200"
+                >
+                  NO
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </aside>
   );
 }
