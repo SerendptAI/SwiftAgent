@@ -79,7 +79,7 @@ export default function InvitePage() {
         />
 
         {/* Heading */}
-        <h1 className="font-instrument text-3xl font-bold text-white">
+        <h1 className="font-greed-narrow text-3xl font-bold text-white">
           Enter your referral code
         </h1>
 

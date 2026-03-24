@@ -43,7 +43,7 @@ export function MobileBlocker() {
           />
         </div>
 
-        <h1 className="font-instrument text-center text-[32px] leading-[1.1] font-bold tracking-tight text-black">
+        <h1 className="font-greed-narrow text-center text-[32px] leading-[1.1] font-bold tracking-tight text-black">
           Not available
           <br />
           on mobile devices
