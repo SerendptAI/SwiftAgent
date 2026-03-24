@@ -74,7 +74,7 @@ export function VisitorsList({
           )}
         </div>
 
-        <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
+        <div className="min-h-0 flex-1 overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {isLoading ? (
             <div className="flex h-40 items-center justify-center">
               <Loader />

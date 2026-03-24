@@ -89,20 +89,26 @@ function truncateAroundMatch(text: string, query: string, maxLen = 60): string {
 export function DashboardSearch() {
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [focusedSection, setFocusedSection] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { data: user } = useCurrentUser();
   const { data: chats } = useChats();
 
-  // Close on click outside
+  // Close on click outside (check both input container and portalled dropdown)
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
+      const target = e.target as Node;
       if (
         containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
+        !containerRef.current.contains(target) &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(target)
       ) {
         setIsOpen(false);
+        setFocusedSection(null);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -211,6 +217,7 @@ export function DashboardSearch() {
   const handleClear = () => {
     setQuery("");
     setIsOpen(false);
+    setFocusedSection(null);
     inputRef.current?.blur();
   };
 
@@ -227,6 +234,7 @@ export function DashboardSearch() {
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);
+            setFocusedSection(null);
             if (e.target.value.trim()) setIsOpen(true);
           }}
           onFocus={() => {
@@ -266,6 +274,16 @@ export function DashboardSearch() {
         typeof document !== "undefined" &&
         createPortal(
           <>
+            <style>{`
+              @keyframes searchFadeIn {
+                from { opacity: 0; transform: translateY(-8px); }
+                to { opacity: 1; transform: translateY(0); }
+              }
+              @keyframes searchSlideIn {
+                from { opacity: 0; transform: translateX(-6px); }
+                to { opacity: 1; transform: translateX(0); }
+              }
+            `}</style>
             {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */}
             <div
               className="fixed inset-0 bg-black/80"
@@ -273,7 +291,8 @@ export function DashboardSearch() {
               onClick={() => setIsOpen(false)}
             />
             <div
-              className="fixed max-h-[70vh] overflow-y-auto rounded-2xl bg-white p-4 shadow-lg"
+              ref={dropdownRef}
+              className="fixed max-h-[70vh] overflow-y-auto rounded-2xl bg-white p-4 shadow-lg [&_.search-result]:animate-[searchSlideIn_0.2s_ease-out_both] [&_.search-section]:animate-[searchFadeIn_0.25s_ease-out] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 hover:[&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-transparent"
               style={{
                 zIndex: 9999,
                 top:
@@ -284,57 +303,85 @@ export function DashboardSearch() {
                   containerRef.current?.getBoundingClientRect().width ?? "auto",
               }}
             >
-              {sections.map((section) => (
-                <div
-                  key={section.name}
-                  className="my-2 rounded-md border-b border-gray-100 bg-[#F3F3F3] p-4 first:pt-0 last:border-b-0 last:pb-0"
-                >
-                  {/* Section header */}
-                  <div className="mb-3 flex items-baseline gap-3">
-                    <h3 className="font-greed-narrow text-2xl font-bold text-black">
-                      {section.name}
-                    </h3>
-                    <span className="font-dm-mono text-xs font-semibold tracking-wider text-black uppercase">
-                      &ldquo;{query.trim()}&rdquo;
-                    </span>
-                    <span className="font-dm-mono text-xs tracking-wider text-gray-400 uppercase">
-                      {section.results.length} RESULT
-                      {section.results.length !== 1 ? "S" : ""}
-                    </span>
-                    {section.results.length > 0 && (
-                      <span className="ml-auto cursor-pointer rounded-full border border-gray-200 px-3 py-0.5 text-xs font-semibold tracking-wider text-gray-500 uppercase hover:bg-gray-50">
-                        SEE ALL
-                      </span>
-                    )}
-                  </div>
+              {sections
+                .filter((s) => !focusedSection || s.name === focusedSection)
+                .map((section) => {
+                  const isFocused = focusedSection === section.name;
+                  const displayResults = isFocused
+                    ? section.results
+                    : section.results.slice(0, 3);
 
-                  {/* Results or empty state */}
-                  {section.results.length === 0 ? (
-                    <div className="flex items-center gap-3 py-2 text-sm text-gray-400">
-                      <Icons.notfoundsearch className="h-8 w-8 shrink-0" />
-                      <span className="font-dm-mono text-xs tracking-wider uppercase">
-                        NO MATCHING INFO FOUND
-                      </span>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      {section.results.slice(0, 3).map((result) => (
-                        <div
-                          key={result.id}
-                          className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-gray-50"
-                        >
-                          <span
-                            className="font-dm-mono text-sm text-gray-600"
-                            dangerouslySetInnerHTML={{
-                              __html: result.highlight,
-                            }}
-                          />
+                  return (
+                    <div
+                      key={`${section.name}-${isFocused}`}
+                      className="search-section my-2 rounded-md border-b border-gray-100 bg-[#F3F3F3] p-4 first:pt-0 last:border-b-0 last:pb-0"
+                    >
+                      {/* Section header */}
+                      <div className="mb-3 flex items-baseline gap-3">
+                        <h3 className="font-greed-narrow text-2xl font-bold text-black">
+                          {section.name}
+                        </h3>
+                        <span className="font-dm-mono text-xs font-semibold tracking-wider text-black uppercase">
+                          &ldquo;{query.trim()}&rdquo;
+                        </span>
+                        <span className="font-dm-mono text-xs tracking-wider text-gray-400 uppercase">
+                          {section.results.length} RESULT
+                          {section.results.length !== 1 ? "S" : ""}
+                        </span>
+                        {section.results.length > 0 && !isFocused && (
+                          <button
+                            onClick={() => setFocusedSection(section.name)}
+                            className="ml-auto cursor-pointer rounded-full border border-gray-200 px-3 py-0.5 text-xs font-semibold tracking-wider text-gray-500 uppercase hover:bg-gray-50"
+                          >
+                            SEE ALL
+                          </button>
+                        )}
+                        {isFocused && (
+                          <button
+                            onClick={() => setFocusedSection(null)}
+                            className="ml-auto cursor-pointer rounded-full border border-gray-200 px-3 py-0.5 text-xs font-semibold tracking-wider text-gray-500 uppercase hover:bg-gray-50"
+                          >
+                            BACK
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Results or empty state */}
+                      {section.results.length === 0 ? (
+                        <div className="flex items-center gap-3 py-2 text-sm text-gray-400">
+                          <Icons.notfoundsearch className="h-8 w-8 shrink-0" />
+                          <span className="font-dm-mono text-xs tracking-wider uppercase">
+                            NO MATCHING INFO FOUND
+                          </span>
                         </div>
-                      ))}
+                      ) : (
+                        <div className="space-y-2">
+                          {displayResults.map((result, i) => (
+                            <div
+                              key={result.id}
+                              className="search-result flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-gray-50"
+                              style={{ animationDelay: `${i * 30}ms` }}
+                            >
+                              {section.name === "Ticketing" && (
+                                <img
+                                  src={`/images/chats/img${(i % 3) + 1}.svg`}
+                                  alt=""
+                                  className="h-8 w-8 shrink-0 rounded"
+                                />
+                              )}
+                              <span
+                                className="font-dm-mono text-sm text-gray-600"
+                                dangerouslySetInnerHTML={{
+                                  __html: result.highlight,
+                                }}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              ))}
+                  );
+                })}
             </div>
           </>,
           document.body,
