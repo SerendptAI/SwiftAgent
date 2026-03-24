@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { Icons } from "@/components/icons";
 import { useCurrentUser } from "@/hooks/use-auth";
@@ -216,7 +217,10 @@ export function DashboardSearch() {
   return (
     <div ref={containerRef} className="relative w-full">
       {/* Search input */}
-      <div className="font-dm-mono relative w-full">
+      <div
+        className="font-dm-mono relative w-full"
+        style={isOpen && query.trim() ? { zIndex: 9999 } : undefined}
+      >
         <input
           ref={inputRef}
           type="text"
@@ -229,7 +233,7 @@ export function DashboardSearch() {
             if (query.trim()) setIsOpen(true);
           }}
           placeholder="SEARCH YOUR DASHBOARD"
-          className="focus:ring-primary/20 h-10 w-full rounded-full bg-[#EDEDED] px-4 pr-10 text-lg outline-none focus:ring-2"
+          className="focus:ring-primary/20 h-10 w-full rounded-full bg-[#EDEDED] px-4 pr-10 text-[16px] outline-none placeholder:text-[16px] focus:ring-2"
         />
         {isOpen && query.trim() ? (
           <button
@@ -256,151 +260,85 @@ export function DashboardSearch() {
         )}
       </div>
 
-      {/* Search results dropdown */}
-      {isOpen && query.trim() && (
-        <div className="absolute top-full right-0 left-0 z-50 mt-2 max-h-[70vh] overflow-y-auto rounded-2xl bg-white p-4 shadow-lg">
-          {sections.map((section) => (
+      {/* Backdrop + Search results dropdown (portalled to body) */}
+      {isOpen &&
+        query.trim() &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <>
+            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */}
             <div
-              key={section.name}
-              className="border-b border-gray-100 py-4 first:pt-0 last:border-b-0 last:pb-0"
+              className="fixed inset-0 bg-black/80"
+              style={{ zIndex: 9998 }}
+              onClick={() => setIsOpen(false)}
+            />
+            <div
+              className="fixed max-h-[70vh] overflow-y-auto rounded-2xl bg-white p-4 shadow-lg"
+              style={{
+                zIndex: 9999,
+                top:
+                  (containerRef.current?.getBoundingClientRect().bottom ?? 0) +
+                  8,
+                left: containerRef.current?.getBoundingClientRect().left ?? 0,
+                width:
+                  containerRef.current?.getBoundingClientRect().width ?? "auto",
+              }}
             >
-              {/* Section header */}
-              <div className="mb-3 flex items-baseline gap-3">
-                <h3 className="font-greed text-2xl font-bold text-black">
-                  {section.name}
-                </h3>
-                <span className="font-dm-mono text-xs tracking-wider text-gray-400 uppercase">
-                  &ldquo;{query.trim()}&rdquo;
-                </span>
-                <span className="font-dm-mono text-xs tracking-wider text-gray-400 uppercase">
-                  {section.results.length} RESULT
-                  {section.results.length !== 1 ? "S" : ""}
-                </span>
-                {section.results.length > 0 && (
-                  <span className="ml-auto cursor-pointer rounded-full border border-gray-200 px-3 py-0.5 text-xs font-semibold tracking-wider text-gray-500 uppercase hover:bg-gray-50">
-                    SEE ALL
-                  </span>
-                )}
-              </div>
-
-              {/* Results or empty state */}
-              {section.results.length === 0 ? (
-                <div className="flex items-center gap-3 py-2 text-sm text-gray-400">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <rect
-                        x="3"
-                        y="3"
-                        width="7"
-                        height="18"
-                        rx="1"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                      />
-                      <rect
-                        x="14"
-                        y="3"
-                        width="7"
-                        height="10"
-                        rx="1"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                      />
-                      <line
-                        x1="14"
-                        y1="17"
-                        x2="21"
-                        y2="17"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                      />
-                      <line
-                        x1="14"
-                        y1="20"
-                        x2="21"
-                        y2="20"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                      />
-                    </svg>
+              {sections.map((section) => (
+                <div
+                  key={section.name}
+                  className="my-2 rounded-md border-b border-gray-100 bg-[#F3F3F3] p-4 first:pt-0 last:border-b-0 last:pb-0"
+                >
+                  {/* Section header */}
+                  <div className="mb-3 flex items-baseline gap-3">
+                    <h3 className="font-greed-narrow text-2xl font-bold text-black">
+                      {section.name}
+                    </h3>
+                    <span className="font-dm-mono text-xs font-semibold tracking-wider text-black uppercase">
+                      &ldquo;{query.trim()}&rdquo;
+                    </span>
+                    <span className="font-dm-mono text-xs tracking-wider text-gray-400 uppercase">
+                      {section.results.length} RESULT
+                      {section.results.length !== 1 ? "S" : ""}
+                    </span>
+                    {section.results.length > 0 && (
+                      <span className="ml-auto cursor-pointer rounded-full border border-gray-200 px-3 py-0.5 text-xs font-semibold tracking-wider text-gray-500 uppercase hover:bg-gray-50">
+                        SEE ALL
+                      </span>
+                    )}
                   </div>
-                  <span className="font-dm-mono text-xs tracking-wider uppercase">
-                    NO MATCHING INFO FOUND
-                  </span>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {section.results.slice(0, 3).map((result) => (
-                    <div
-                      key={result.id}
-                      className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-gray-50"
-                    >
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50">
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <rect
-                            x="3"
-                            y="3"
-                            width="18"
-                            height="18"
-                            rx="2"
-                            stroke="#2196F3"
-                            strokeWidth="1.5"
-                          />
-                          <line
-                            x1="7"
-                            y1="8"
-                            x2="17"
-                            y2="8"
-                            stroke="#2196F3"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                          />
-                          <line
-                            x1="7"
-                            y1="12"
-                            x2="17"
-                            y2="12"
-                            stroke="#2196F3"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                          />
-                          <line
-                            x1="7"
-                            y1="16"
-                            x2="13"
-                            y2="16"
-                            stroke="#2196F3"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                          />
-                        </svg>
-                      </div>
-                      <span
-                        className="font-dm-mono text-sm text-gray-600"
-                        dangerouslySetInnerHTML={{ __html: result.highlight }}
-                      />
+
+                  {/* Results or empty state */}
+                  {section.results.length === 0 ? (
+                    <div className="flex items-center gap-3 py-2 text-sm text-gray-400">
+                      <Icons.notfoundsearch className="h-8 w-8 shrink-0" />
+                      <span className="font-dm-mono text-xs tracking-wider uppercase">
+                        NO MATCHING INFO FOUND
+                      </span>
                     </div>
-                  ))}
+                  ) : (
+                    <div className="space-y-2">
+                      {section.results.slice(0, 3).map((result) => (
+                        <div
+                          key={result.id}
+                          className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-gray-50"
+                        >
+                          <span
+                            className="font-dm-mono text-sm text-gray-600"
+                            dangerouslySetInnerHTML={{
+                              __html: result.highlight,
+                            }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )}
+              ))}
             </div>
-          ))}
-        </div>
-      )}
+          </>,
+          document.body,
+        )}
     </div>
   );
 }
