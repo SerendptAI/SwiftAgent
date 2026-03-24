@@ -21,23 +21,29 @@ function formatDate(isoString: string): string {
   });
 }
 
+/** Convert a 2-letter country code to its emoji flag (e.g. "NG" → 🇳🇬). */
+function countryCodeToEmoji(code: string): string {
+  const upper = code.toUpperCase();
+  const offset = 0x1f1e6 - 65; // Regional indicator 'A'
+  return String.fromCodePoint(
+    upper.charCodeAt(0) + offset,
+    upper.charCodeAt(1) + offset,
+  );
+}
+
 function CountryFlag({ code }: { code: string }) {
-  // A simple fallback for flags, could be replaced with a proper icon library later
-  if (code?.toLowerCase() === "ng") {
+  if (!code || code.length !== 2) {
     return (
-      <div className="relative flex h-5 w-7 shrink-0 flex-col overflow-hidden rounded-sm shadow-sm">
-        <div className="h-1/3 w-full bg-[#008751]"></div>
-        <div className="h-1/3 w-full bg-white"></div>
-        <div className="h-1/3 w-full bg-[#008751]"></div>
+      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-sm bg-gray-100 text-[10px] font-bold text-gray-400">
+        --
       </div>
     );
   }
 
-  // Generic fallback flag
   return (
-    <div className="flex h-5 w-7 shrink-0 items-center justify-center rounded-sm bg-gray-100 text-[10px] font-bold text-gray-500 uppercase shadow-sm">
-      {code}
-    </div>
+    <span className="shrink-0 text-xl leading-none" title={code.toUpperCase()}>
+      {countryCodeToEmoji(code)}
+    </span>
   );
 }
 

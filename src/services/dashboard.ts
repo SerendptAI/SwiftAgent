@@ -53,9 +53,10 @@ export const dashboardApi = {
     companyId: string,
     limit: number = 20,
   ): Promise<DashboardVisitor[]> => {
+    // Route through our Next.js API to enrich visitors with geo data
     const { data } = await apiClient.get<DashboardVisitor[]>(
-      `/api/v1/dashboard/${companyId}/visitors`,
-      { params: { limit } },
+      "/api/visitors/geo",
+      { baseURL: "", params: { companyId, limit } },
     );
     return data;
   },

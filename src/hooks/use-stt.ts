@@ -2,6 +2,8 @@
 
 import { useCallback, useRef } from "react";
 
+import { localApiClient } from "@/lib/local-api-client";
+
 // --- Types ---
 
 export interface UseSTTOptions {
@@ -84,20 +86,19 @@ export function useSTT({
       const form = new FormData();
       form.append("audio", blob);
 
-      const res = await fetch("/api/stt", {
-        method: "POST",
-        body: form,
+      const { data } = await localApiClient.post("/api/stt", form, {
         signal: controller.signal,
       });
 
-      if (!res.ok) throw new Error(`STT failed: ${res.status}`);
-
-      const { text } = await res.json();
-      if (text?.trim()) {
-        onTranscriptRef.current(text.trim());
+      if (data.text?.trim()) {
+        onTranscriptRef.current(data.text.trim());
       }
     } catch (err) {
-      if ((err as Error).name === "AbortError") return;
+      if (
+        (err as Error).name === "AbortError" ||
+        (err as Error).name === "CanceledError"
+      )
+        return;
       onErrorRef.current?.("Failed to transcribe speech");
     } finally {
       abortRef.current = null;

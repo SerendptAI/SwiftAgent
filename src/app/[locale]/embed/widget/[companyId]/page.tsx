@@ -1,9 +1,11 @@
 "use client";
+import axios from "axios";
 import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { usePublicCompanyQuery } from "@/hooks/use-company";
 import { useVoiceChat } from "@/hooks/use-voice-chat";
+import { localApiClient } from "@/lib/local-api-client";
 import { cn } from "@/lib/utils";
 
 import { ChatMsg, WidgetTab } from "./components/types";
@@ -115,6 +117,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
     const agentMsgId = Date.now() + 1;
 
     try {
+      // fetch is required here — axios doesn't support ReadableStream for SSE in the browser
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -296,13 +299,13 @@ function WidgetContent({ companyId }: { companyId: string }) {
       if (sessionStorage.getItem(sessionKey)) return;
 
       try {
-        const res = await fetch("https://api.ipify.org?format=json");
-        const { ip } = await res.json();
-        if (ip) {
-          await fetch("/api/visitors", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ company_id: companyId, ip_address: ip }),
+        const { data: ipData } = await axios.get(
+          "https://api.ipify.org?format=json",
+        );
+        if (ipData.ip) {
+          await localApiClient.post("/api/visitors", {
+            company_id: companyId,
+            ip_address: ipData.ip,
           });
           sessionStorage.setItem(sessionKey, "true");
         }

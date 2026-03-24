@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { localApiClient } from "@/lib/local-api-client";
+
 import { useSTT } from "./use-stt";
 
 export interface VoiceChatOptions {
@@ -167,18 +169,11 @@ export function useVoiceChat({
         handleStatusChange("Speaking");
         sttAbortRef.current(); // Stop listening while speaking
 
-        const response = await fetch("/api/tts", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text }),
-          signal: controller.signal,
-        });
-
-        if (!response.ok) {
-          throw new Error(`TTS request failed: ${response.status}`);
-        }
-
-        const blob = await response.blob();
+        const { data: blob } = await localApiClient.post(
+          "/api/tts",
+          { text },
+          { signal: controller.signal, responseType: "blob" },
+        );
         const url = URL.createObjectURL(blob);
         const audio = new Audio(url);
         audioElementRef.current = audio;
