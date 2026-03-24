@@ -160,7 +160,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                 key={i}
                 href={link.href}
                 onClick={onClose}
-                className="font-instrument relative z-20 w-max origin-left text-2xl font-black tracking-tighter text-gray-900 uppercase transition-colors hover:text-[#F25430] sm:text-3xl md:text-6xl lg:text-7xl"
+                className="font-greed-narrow relative z-20 w-max origin-left text-2xl font-black tracking-tighter text-gray-900 uppercase transition-colors hover:text-[#F25430] sm:text-3xl md:text-6xl lg:text-7xl"
               >
                 {link.label}
               </Link>

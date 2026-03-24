@@ -16,13 +16,13 @@ export function ContactSection() {
             <span className="inline-block font-mono text-xl font-semibold tracking-widest text-[#D3E1FF] uppercase md:pb-8">
               WANT TO REACH US?
             </span>
-            <h2 className="font-instrument text-4xl leading-none font-black tracking-tighter text-white md:text-8xl">
+            <h2 className="font-greed-narrow text-4xl leading-none font-black tracking-tighter text-white md:text-8xl">
               CONTACT US
             </h2>
           </div>
 
           <div className="max-w-md pb-4">
-            <p className="font-instrument text-xl leading-relaxed font-medium text-[#2C3E5D]">
+            <p className="font-greed-narrow text-xl leading-relaxed font-medium text-[#2C3E5D]">
               For partnership or business inquiries, contact
               <br />
               Thelma at{" "}
