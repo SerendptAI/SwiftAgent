@@ -49,10 +49,10 @@ export function VisitorsList({
   const { data: visitors, isLoading } = useDashboardVisitors(20, initialData);
 
   return (
-    <div className="rounded-3xl bg-white p-6 shadow-sm">
+    <div className="flex max-h-[350px] flex-col rounded-3xl bg-white p-6 shadow-sm">
       <h3 className="mb-6 text-lg font-bold text-gray-900">Visitors</h3>
 
-      <div className="overflow-x-auto">
+      <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
         {isLoading ? (
           <div className="flex h-40 items-center justify-center">
             <Loader />

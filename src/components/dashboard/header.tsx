@@ -16,6 +16,7 @@ import {
 import { useCurrentUser, useLogout } from "@/hooks/use-auth";
 
 import { Icons } from "../icons";
+import { DashboardSearch } from "./dashboard-search";
 
 export function Header() {
   const { data: user } = useCurrentUser();
@@ -30,15 +31,7 @@ export function Header() {
   return (
     <header className="flex h-20 items-center justify-between gap-4 px-6 lg:h-[90px]">
       <div className="mt-6 flex w-[60%] items-center gap-6">
-        <div className="font-dm-mono relative w-full">
-          <input
-            type="search"
-            placeholder="SEARCH YOUR DASHBOARD"
-            className="focus:ring-primary/20 h-10 w-full rounded-full bg-[#EDEDED] px-4 pr-10 text-lg outline-none focus:ring-2"
-          />
-          {/* the search icon should be in the center vertically */}
-          <Icons.Search className="text-muted-foreground absolute -top-0.5 right-0 m-1 h-[90%] w-12 rounded-full bg-white p-2" />
-        </div>
+        <DashboardSearch />
         <div className="flex h-10 cursor-pointer items-center gap-2 rounded-full bg-[#EDEDED] px-1 py-1">
           <Icons.Questiondark className="mr-2 h-8 w-8 rounded-full bg-white p-2" />
           <span className="font-stolzl pr-2 text-lg font-medium whitespace-nowrap">
