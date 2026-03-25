@@ -5,7 +5,8 @@ import { createPortal } from "react-dom";
 
 import { Icons } from "@/components/icons";
 import { useCurrentUser } from "@/hooks/use-auth";
-import { useChats } from "@/hooks/use-conversations";
+import { useAllChatDetails, useChats } from "@/hooks/use-conversations";
+import { useRouter } from "@/i18n/navigation";
 
 // ── Section definitions ─────────────────────────────────────────────────────
 
@@ -13,6 +14,7 @@ interface SearchResult {
   id: string;
   text: string;
   highlight: string;
+  route?: string;
 }
 
 interface SectionResult {
@@ -94,8 +96,10 @@ export function DashboardSearch() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const router = useRouter();
   const { data: user } = useCurrentUser();
   const { data: chats } = useChats();
+  const chatDetails = useAllChatDetails();
 
   // Close on click outside (check both input container and portalled dropdown)
   useEffect(() => {
@@ -142,21 +146,40 @@ export function DashboardSearch() {
           id: `home-${item}`,
           text: item,
           highlight: highlightMatch(item, query),
+          route: "/dashboard",
         });
       }
     }
     results.push({ name: "Home", results: homeResults });
 
-    // Ticketing - search through chat sessions
+    // Ticketing - search through chat sessions and message content
     const ticketResults: SearchResult[] = [];
     if (chats) {
-      for (const chat of chats) {
+      for (let ci = 0; ci < chats.length; ci++) {
+        const chat = chats[ci];
         const sessionLabel = `VIGSHST-${chat.session_id.slice(0, 7).toUpperCase()}`;
-        const searchText = `${sessionLabel}: ${chat.message_count} messages`;
-        if (
-          searchText.toLowerCase().includes(q) ||
-          chat.session_id.toLowerCase().includes(q)
-        ) {
+        const detail = chatDetails[ci]?.data;
+        const messages = detail?.messages ?? [];
+
+        // Search in message content
+        const matchedMessage = messages.find((m) =>
+          m.content.toLowerCase().includes(q),
+        );
+
+        const sessionMatch =
+          sessionLabel.toLowerCase().includes(q) ||
+          chat.session_id.toLowerCase().includes(q);
+
+        if (matchedMessage) {
+          const snippet = truncateAroundMatch(matchedMessage.content, query);
+          ticketResults.push({
+            id: `ticket-${chat.id}`,
+            text: matchedMessage.content,
+            highlight: `<span class="text-gray-400">${sessionLabel}:</span> ${highlightMatch(snippet, query)}`,
+            route: `/dashboard/ticketing?chat=${chat.id}`,
+          });
+        } else if (sessionMatch) {
+          const searchText = `${sessionLabel}: ${chat.message_count} messages`;
           ticketResults.push({
             id: `ticket-${chat.id}`,
             text: searchText,
@@ -164,6 +187,7 @@ export function DashboardSearch() {
               truncateAroundMatch(searchText, query),
               query,
             ),
+            route: `/dashboard/ticketing?chat=${chat.id}`,
           });
         }
       }
@@ -178,6 +202,7 @@ export function DashboardSearch() {
           id: `billing-${item}`,
           text: item,
           highlight: highlightMatch(item, query),
+          route: "/dashboard/billing",
         });
       }
     }
@@ -185,12 +210,26 @@ export function DashboardSearch() {
 
     // Settings
     const settingsResults: SearchResult[] = [];
+    const SETTINGS_ROUTES: Record<string, string> = {
+      "Personal Email Address": "/dashboard/settings",
+      "Personal Phone Number": "/dashboard/settings",
+      Profile: "/dashboard/settings",
+      Integrations: "/dashboard/settings/integrations",
+      Billings: "/dashboard/settings/billings",
+      Notifications: "/dashboard/settings/notifications",
+      "Company Information": "/dashboard/settings",
+      "Company Identity": "/dashboard/settings",
+      "Knowledge Sources": "/dashboard/settings",
+      "Answer Boundaries": "/dashboard/settings",
+      "Voice Conversation": "/dashboard/settings",
+    };
     for (const item of STATIC_CONTENT.Settings) {
       if (item.toLowerCase().includes(q)) {
         settingsResults.push({
           id: `settings-${item}`,
           text: item,
           highlight: highlightMatch(item, query),
+          route: SETTINGS_ROUTES[item] || "/dashboard/settings",
         });
       }
     }
@@ -200,6 +239,7 @@ export function DashboardSearch() {
         id: "settings-email",
         text: user.email,
         highlight: highlightMatch(user.email, query),
+        route: "/dashboard/settings",
       });
     }
     if (user?.name && user.name.toLowerCase().includes(q)) {
@@ -207,6 +247,7 @@ export function DashboardSearch() {
         id: "settings-name",
         text: user.name,
         highlight: highlightMatch(user.name, query),
+        route: "/dashboard/settings",
       });
     }
     results.push({ name: "Settings", results: settingsResults });
@@ -357,12 +398,20 @@ export function DashboardSearch() {
                       ) : (
                         <div className="space-y-2">
                           {displayResults.map((result, i) => (
-                            <div
+                            <button
                               key={result.id}
-                              className="search-result flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-gray-50"
+                              type="button"
+                              className="search-result flex w-full cursor-pointer items-center gap-3 rounded-lg px-2 py-2 text-left transition-colors hover:bg-gray-50"
                               style={{ animationDelay: `${i * 30}ms` }}
+                              onClick={() => {
+                                if (result.route) {
+                                  router.push(result.route);
+                                  handleClear();
+                                }
+                              }}
                             >
                               {section.name === "Ticketing" && (
+                                // eslint-disable-next-line @next/next/no-img-element
                                 <img
                                   src={`/images/chats/img${(i % 3) + 1}.svg`}
                                   alt=""
@@ -375,7 +424,7 @@ export function DashboardSearch() {
                                   __html: result.highlight,
                                 }}
                               />
-                            </div>
+                            </button>
                           ))}
                         </div>
                       )}

@@ -1,6 +1,7 @@
 import {
   keepPreviousData,
   useMutation,
+  useQueries,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
@@ -30,6 +31,22 @@ export function useChat(chatId: string | null) {
     queryFn: () => chatsApi.getById(companyId!, chatId!),
     enabled: !!companyId && !!chatId,
     placeholderData: keepPreviousData,
+  });
+}
+
+/** Fetch all chat details (with messages) for search. */
+export function useAllChatDetails() {
+  const { data: user } = useCurrentUser();
+  const companyId = user?.company_id;
+  const { data: chats } = useChats();
+
+  return useQueries({
+    queries: (chats ?? []).map((chat) => ({
+      queryKey: ["chats", companyId, chat.id],
+      queryFn: () => chatsApi.getById(companyId!, chat.id),
+      enabled: !!companyId,
+      staleTime: 5 * 60 * 1000,
+    })),
   });
 }
 

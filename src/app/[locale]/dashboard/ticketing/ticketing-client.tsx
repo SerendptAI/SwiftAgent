@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { CompanyToolbar } from "@/components/dashboard/company-toolbar";
 import { ChatView } from "@/components/dashboard/ticketing/chat-view";
@@ -9,10 +10,23 @@ import { Icons } from "@/components/icons";
 import { useChats } from "@/hooks/use-conversations";
 
 export function TicketingClient() {
+  const searchParams = useSearchParams();
   const [selectedTicketId, setSelectedTicketId] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const { data: chats } = useChats();
+
+  // Auto-select chat from URL query param (e.g. ?chat=abc123)
+  useEffect(() => {
+    const chatId = searchParams.get("chat");
+    if (chatId && chats) {
+      const index = chats.findIndex((c) => c.id === chatId);
+      if (index !== -1) {
+        setSelectedTicketId(chatId);
+        setSelectedIndex(index);
+      }
+    }
+  }, [searchParams, chats]);
   const chatCount = chats?.filter((chat) => !chat.seen).length ?? 0;
 
   const handleSelectTicket = (id: string, index: number) => {
