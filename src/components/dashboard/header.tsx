@@ -3,6 +3,7 @@
 import Image from "next/image";
 
 import { useCurrentUser } from "@/hooks/use-auth";
+import { getProfileImage } from "@/lib/utils";
 
 import { Icons } from "../icons";
 import { DashboardSearch } from "./dashboard-search";
@@ -31,27 +32,14 @@ export function Header() {
           <Icons.bell className="h-10 w-10 p-2" />
         </div>
 
-        <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-purple-500 to-yellow-500">
-          {user?.picture ? (
-            <Image
-              src={user.picture}
-              alt={user.name || "User avatar"}
-              width={40}
-              height={40}
-              className="h-full w-full object-cover"
-            />
-          ) : user?.name ? (
-            <div className="bg-primary text-primary-foreground flex h-full w-full items-center justify-center text-lg font-semibold">
-              {user.name.charAt(0).toUpperCase()}
-            </div>
-          ) : (
-            <div className="grid h-full w-full grid-cols-2">
-              <div className="bg-yellow-400" />
-              <div className="bg-purple-600" />
-              <div className="bg-purple-600" />
-              <div className="bg-yellow-400" />
-            </div>
-          )}
+        <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full">
+          <Image
+            src={getProfileImage(user?.id)}
+            alt={user?.name || "User avatar"}
+            width={40}
+            height={40}
+            className="h-full w-full object-cover"
+          />
         </div>
       </div>
     </header>

@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { useCurrentUser, useLogout } from "@/hooks/use-auth";
+import { getProfileImage } from "@/lib/utils";
 
 interface ProfileCardProps {
   name?: string;
@@ -54,18 +55,12 @@ export function ProfileCard({
     <aside className="flex h-[450px] w-[320px] shrink-0 flex-col items-center gap-4 rounded-3xl bg-white p-6 shadow-sm">
       {/* Avatar */}
       <div className="relative h-30 w-30 overflow-hidden rounded-full border-2 border-gray-100">
-        {avatarSrc ? (
-          <Image
-            src={avatarSrc}
-            alt={name || "User Avatar"}
-            fill
-            className="object-cover"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-orange-300 to-orange-500 text-2xl font-bold text-white">
-            {name?.charAt(0) || "U"}
-          </div>
-        )}
+        <Image
+          src={getProfileImage(user?.id)}
+          alt={name || "User Avatar"}
+          fill
+          className="object-cover"
+        />
       </div>
 
       {/* Name */}
