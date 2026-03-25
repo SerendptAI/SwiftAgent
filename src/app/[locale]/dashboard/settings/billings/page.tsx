@@ -6,16 +6,13 @@ import { useState } from "react";
 import { AddCardModal } from "@/components/dashboard/settings/add-card-modal";
 import { HelpBanner } from "@/components/dashboard/settings/help-banner";
 import { Icons } from "@/components/icons";
-
-interface SavedCard {
-  last4: string;
-}
+import { useCardStore } from "@/store/card-store";
 
 const PRESENT_PLAN = { label: "PRESENT PLAN", name: "FREE" };
 
 export default function BillingsPage() {
   const [showAddCard, setShowAddCard] = useState(false);
-  const [savedCards, setSavedCards] = useState<SavedCard[]>([]);
+  const { savedCards, addCard } = useCardStore();
 
   return (
     <div className="flex min-h-[450px] flex-col gap-6 rounded-xl bg-white p-4 shadow-sm">
@@ -32,27 +29,25 @@ export default function BillingsPage() {
           <span className="font-dm-mono text-sm font-semibold tracking-[0.15em] text-gray-500 uppercase">
             SAVED CARDS
           </span>
-          <div className="flex items-center gap-3">
-            {savedCards.length > 0 ? (
-              <button className="flex items-center gap-2 rounded-2xl border border-gray-100 px-4 py-2.5">
-                <Icons.mastercard />
-                <span className="font-dm-mono text-sm font-medium text-gray-700">
-                  {savedCards[0].last4}
-                </span>
-                <ChevronDown className="h-4 w-4 text-gray-400" />
-              </button>
-            ) : (
-              <span className="font-dm-mono text-sm text-gray-400">
-                No cards saved
+          {savedCards.length > 0 ? (
+            <button className="flex items-center gap-2 rounded-2xl border border-gray-100 px-4 py-2.5">
+              <Icons.mastercard />
+              <span className="font-dm-mono text-sm font-medium text-gray-700">
+                {savedCards[0].last4}
               </span>
-            )}
+              <ChevronDown className="h-4 w-4 text-gray-400" />
+            </button>
+          ) : (
             <button
               onClick={() => setShowAddCard(true)}
-              className="font-dm-mono rounded-lg bg-[#006BE5] px-4 py-2.5 text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-[#1E88E5]"
+              className="flex items-center gap-2 rounded-2xl border border-gray-100 px-4 py-2.5 transition-colors hover:bg-gray-50"
             >
-              + Add Card
+              <span className="font-dm-mono text-sm font-semibold tracking-[0.15em] text-gray-600 uppercase">
+                ADD NEW CARD
+              </span>
+              <ChevronDown className="h-4 w-4 text-gray-400" />
             </button>
-          </div>
+          )}
         </div>
 
         {/* Present Plan */}
@@ -75,7 +70,7 @@ export default function BillingsPage() {
           onClose={() => setShowAddCard(false)}
           onSubmit={(card) => {
             const last4 = card.cardNumber.slice(-4) || "****";
-            setSavedCards((prev) => [...prev, { last4 }]);
+            addCard({ last4, nameOnCard: card.nameOnCard });
             setShowAddCard(false);
           }}
         />
