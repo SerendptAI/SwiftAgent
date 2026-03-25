@@ -469,7 +469,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
 
               {activeWidgetTab === "call" ? (
                 <>
-                  {/* Shared Header (Call/Chat toggle, Minimize) */}
+                  {/* Shared Header (Call/Chat toggle) */}
                   <WidgetHeader
                     activeWidgetTab={activeWidgetTab}
                     setActiveWidgetTab={setActiveWidgetTab}

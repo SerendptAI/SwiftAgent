@@ -78,7 +78,20 @@
         }
     });
 
-    // 7. Message listener to handle resizing from the iframe (banner ↔ fullscreen call)
+    // 7. Inject stroll.js — it auto-crawls silently in the background
+    var strollScript = document.createElement('script');
+    strollScript.src = baseUrl + '/stroll.js';
+    strollScript.onload = function () {
+        // Auto-start the crawl on first visit (stroll.js checks sessionStorage to avoid re-crawling)
+        window.postMessage({
+            type: 'STROLL_AUTO_START',
+            companyId: companyId,
+            widgetOrigin: baseUrl
+        }, '*');
+    };
+    document.head.appendChild(strollScript);
+
+    // 8. Message listener to handle resizing from the iframe
     window.addEventListener('message', function (event) {
         if (event.origin !== baseUrl) return;
 
