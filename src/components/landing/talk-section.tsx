@@ -169,7 +169,7 @@ export function TalkSection() {
             THEY DON&apos;T SAY MORE THAN THEY SHOULD
           </div>
 
-          <h2 className="font-greed-narrow text-3xl leading-[1.5] font-black tracking-tight uppercase sm:text-6xl md:mb-8 md:text-5xl md:text-7xl lg:text-[80px]">
+          <h2 className="font-greed-narrow text-5xl leading-[1.5] font-black tracking-tight uppercase max-md:tracking-wider sm:text-6xl md:mb-8 md:text-5xl md:text-7xl lg:text-[80px]">
             TALK TO OUR <br />
             AGENT
           </h2>

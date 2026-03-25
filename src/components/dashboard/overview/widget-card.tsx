@@ -101,7 +101,7 @@ export function WidgetCard() {
               </div>
 
               {/* Code snippet */}
-              <pre className="font-dm-mono rounded-lg p-4 text-[13px] leading-relaxed break-all whitespace-pre-wrap text-gray-700">
+              <pre className="font-stolzl rounded-lg p-4 text-[13px] leading-relaxed break-all whitespace-pre-wrap text-gray-700">
                 {codeSnippet || "No widget code found."}
               </pre>
 

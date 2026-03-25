@@ -75,7 +75,7 @@ function StatCard({
 
         <div>
           {!action && (
-            <p className="font-dm-mono mb-1 text-sm font-medium text-gray-400">
+            <p className="font-dm-mono mb-1 text-sm font-normal text-gray-400">
               Today
             </p>
           )}
