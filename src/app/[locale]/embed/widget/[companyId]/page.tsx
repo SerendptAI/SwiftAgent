@@ -280,15 +280,33 @@ function WidgetContent({ companyId }: { companyId: string }) {
     [stopDialingAudio],
   );
 
-  const { isActive, isMuted, start, stop, toggleMute, speakText } =
-    useVoiceChat({
-      companyId,
-      onStatusChange: handleStatusChange,
-      onTranscript: handleTranscript,
-      onSpeechStart: handleSpeechStart,
-      onReply: handleReply,
-      onError: handleError,
-    });
+  const {
+    isActive,
+    isMuted,
+    start,
+    stop,
+    toggleMute,
+    speakText,
+    pause,
+    resume,
+  } = useVoiceChat({
+    companyId,
+    onStatusChange: handleStatusChange,
+    onTranscript: handleTranscript,
+    onSpeechStart: handleSpeechStart,
+    onReply: handleReply,
+    onError: handleError,
+  });
+
+  // Pause voice when switching to chat, resume when switching back to call
+  useEffect(() => {
+    if (!isActive) return;
+    if (activeWidgetTab === "chat") {
+      pause();
+    } else {
+      resume();
+    }
+  }, [activeWidgetTab, isActive, pause, resume]);
 
   const callStatus = isActive ? "ongoing" : "idle";
 

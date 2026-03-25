@@ -292,6 +292,27 @@ export function useVoiceChat({
     speakText,
   ]);
 
+  // --- Pause / Resume (for tab switching) ---
+
+  const pause = useCallback(() => {
+    sttAbortRef.current();
+    ttsAbortRef.current?.abort();
+    ttsAbortRef.current = null;
+    if (audioElementRef.current) {
+      audioElementRef.current.pause();
+    }
+  }, []);
+
+  const resume = useCallback(() => {
+    if (
+      isActive &&
+      statusRef.current.toLowerCase() === "ready" &&
+      !isMutedRef.current
+    ) {
+      sttStartRef.current();
+    }
+  }, [isActive]);
+
   // --- Mute toggle ---
 
   const toggleMute = useCallback(() => {
@@ -318,5 +339,7 @@ export function useVoiceChat({
     stop,
     toggleMute,
     speakText,
+    pause,
+    resume,
   };
 }
