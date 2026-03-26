@@ -25,6 +25,7 @@ export function useVoiceChat({
 }: VoiceChatOptions) {
   const [isActive, setIsActive] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const isPausedRef = useRef(false);
 
   const socketRef = useRef<WebSocket | null>(null);
   const audioElementRef = useRef<HTMLAudioElement | null>(null);
@@ -86,6 +87,7 @@ export function useVoiceChat({
   // --- Status management ---
 
   const startListening = useCallback(() => {
+    if (isPausedRef.current) return;
     sttStartRef.current();
   }, []);
 
@@ -154,6 +156,8 @@ export function useVoiceChat({
 
   const speakText = useCallback(
     async (text: string) => {
+      if (isPausedRef.current) return;
+
       ttsAbortRef.current?.abort();
       if (audioElementRef.current) {
         audioElementRef.current.pause();
@@ -295,6 +299,7 @@ export function useVoiceChat({
   // --- Pause / Resume (for tab switching) ---
 
   const pause = useCallback(() => {
+    isPausedRef.current = true;
     sttAbortRef.current();
     ttsAbortRef.current?.abort();
     ttsAbortRef.current = null;
@@ -304,6 +309,7 @@ export function useVoiceChat({
   }, []);
 
   const resume = useCallback(() => {
+    isPausedRef.current = false;
     if (
       isActive &&
       statusRef.current.toLowerCase() === "ready" &&

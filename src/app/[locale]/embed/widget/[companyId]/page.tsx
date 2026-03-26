@@ -8,7 +8,7 @@ import { useVoiceChat } from "@/hooks/use-voice-chat";
 import { localApiClient } from "@/lib/local-api-client";
 import { cn } from "@/lib/utils";
 
-import { ChatMsg, WidgetTab } from "./components/types";
+import { ChatMsg, NavigationGuide, WidgetTab } from "./components/types";
 import { WidgetBanner } from "./components/WidgetBanner";
 import { WidgetCallTab } from "./components/WidgetCallTab";
 import { WidgetChatTab } from "./components/WidgetChatTab";
@@ -137,6 +137,7 @@ function WidgetContent({ companyId }: { companyId: string }) {
       const decoder = new TextDecoder();
       let agentText = "";
       let buffer = "";
+      let navGuide: NavigationGuide | undefined;
 
       // Add placeholder agent message
       setChatMessages((prev) => [
@@ -169,6 +170,25 @@ function WidgetContent({ companyId }: { companyId: string }) {
 
             if (stage === "thinking" && typeof message === "string") {
               setChatThinkingText(message);
+              chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            } else if (stage === "tool") {
+              // Show tool label as thinking text
+              const label = parsed?.data?.label;
+              if (typeof label === "string") {
+                setChatThinkingText(label);
+                chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+              }
+            } else if (stage === "navigation_guide") {
+              setChatThinkingText(null);
+              navGuide = {
+                steps: parsed?.data?.steps ?? [],
+                path_summary: parsed?.data?.path_summary ?? [],
+              };
+              setChatMessages((prev) =>
+                prev.map((m) =>
+                  m.id === agentMsgId ? { ...m, navigationGuide: navGuide } : m,
+                ),
+              );
               chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
             } else if (stage === "stream" && typeof message === "string") {
               setChatThinkingText(null);

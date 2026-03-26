@@ -1,9 +1,11 @@
 "use client";
 import { Minimize2 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
+import { NavigationGuideCard } from "./NavigationGuideCard";
 import { ChatMsg, WidgetTab } from "./types";
 import { WidgetHeader } from "./WidgetHeader";
 
@@ -80,7 +82,52 @@ export function WidgetChatTab({
                   : "rounded-3xl rounded-tl-md bg-[#f0f7ff] text-[#1a73e8]",
               )}
             >
-              <p>{msg.text}</p>
+              {msg.sender === "agent" ? (
+                <>
+                  {msg.navigationGuide && (
+                    <NavigationGuideCard guide={msg.navigationGuide} />
+                  )}
+                  {msg.text && (
+                    <ReactMarkdown
+                      components={{
+                        p: ({ children }) => (
+                          <p className="mb-2 last:mb-0">{children}</p>
+                        ),
+                        strong: ({ children }) => (
+                          <strong className="font-semibold">{children}</strong>
+                        ),
+                        ol: ({ children }) => (
+                          <ol className="mb-2 list-decimal pl-4 last:mb-0">
+                            {children}
+                          </ol>
+                        ),
+                        ul: ({ children }) => (
+                          <ul className="mb-2 list-disc pl-4 last:mb-0">
+                            {children}
+                          </ul>
+                        ),
+                        li: ({ children }) => (
+                          <li className="mb-1">{children}</li>
+                        ),
+                        a: ({ href, children }) => (
+                          <a
+                            href={href}
+                            className="underline"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {children}
+                          </a>
+                        ),
+                      }}
+                    >
+                      {msg.text}
+                    </ReactMarkdown>
+                  )}
+                </>
+              ) : (
+                <p>{msg.text}</p>
+              )}
               {msg.time && (
                 <p className="mt-1 text-right text-[10px] opacity-50">
                   {msg.time}

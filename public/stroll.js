@@ -228,7 +228,33 @@
         scale: 1,
         logging: false,
         windowWidth: document.documentElement.scrollWidth,
-        windowHeight: window.innerHeight
+        windowHeight: window.innerHeight,
+        onclone: function (clonedDoc) {
+          // Strip unsupported CSS color functions (lab, lch, oklch, oklab)
+          // that html2canvas 1.4.1 cannot parse
+          var unsupportedColorRe = /\b(lab|lch|oklch|oklab)\s*\([^)]*\)/gi;
+          // Patch stylesheets
+          var sheets = clonedDoc.styleSheets;
+          for (var s = 0; s < sheets.length; s++) {
+            try {
+              var rules = sheets[s].cssRules;
+              if (!rules) continue;
+              for (var r = rules.length - 1; r >= 0; r--) {
+                if (rules[r].cssText && unsupportedColorRe.test(rules[r].cssText)) {
+                  sheets[s].deleteRule(r);
+                }
+              }
+            } catch (e) { /* cross-origin stylesheet, skip */ }
+          }
+          // Patch inline styles
+          var allEls = clonedDoc.querySelectorAll('*');
+          for (var i = 0; i < allEls.length; i++) {
+            var style = allEls[i].style;
+            if (style.color && unsupportedColorRe.test(style.color)) style.color = '';
+            if (style.backgroundColor && unsupportedColorRe.test(style.backgroundColor)) style.backgroundColor = '';
+            if (style.borderColor && unsupportedColorRe.test(style.borderColor)) style.borderColor = '';
+          }
+        }
       }).then(function (canvas) {
         saveNode(canvas.toDataURL('image/png'));
       }).catch(function (err) {
