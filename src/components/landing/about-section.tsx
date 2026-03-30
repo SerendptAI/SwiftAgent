@@ -3,161 +3,194 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import { Icons } from "../icons";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Colors mapped in previous iterations not needed, using svgs now
+const FEATURES = [
+  {
+    id: "chatbots",
+    icon: "diamond", // ♦ expanded icon
+    title: "SMART AI CHATBOTS",
+    description:
+      "OUR AI CHATBOTS HANDLE ENTIRE CUSTOMER INTERACTIONS FROM BEGINNING TO END, WITHOUT HUMAN INTERVENTION.",
+    image: "/images/chatbot_pixel_art.svg",
+  },
+  {
+    id: "agents",
+    icon: "play", // ▶ collapsed icon
+    title: "POWERFUL AI AGENTS",
+    description:
+      "DEPLOY AUTONOMOUS AI AGENTS THAT LEARN, ADAPT, AND RESOLVE COMPLEX SUPPORT SCENARIOS INDEPENDENTLY.",
+    image: "/images/chatbot_pixel_art.png",
+  },
+  {
+    id: "calls",
+    icon: "play",
+    title: "REALISTIC AI CALLS",
+    description:
+      "LIFELIKE VOICE AI HANDLES YOUR CALLS WITH NATURAL CONVERSATIONAL FLOW — NO HUMAN NEEDED.",
+    image: "/images/chatbot_pixel_art.svg",
+  },
+];
 
 export function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
+  const headlineRef = useRef<HTMLDivElement>(null);
+  const leftRef = useRef<HTMLDivElement>(null);
+  const [openId, setOpenId] = useState<string>("chatbots");
 
   useEffect(() => {
-    const imgElement = imageRef.current;
-
     const ctx = gsap.context(() => {
-      // Text reveal - Snappier "arcade" typing feel
-      if (textRef.current) {
-        gsap.from(textRef.current.children, {
+      // Headline stagger on scroll
+      if (headlineRef.current) {
+        gsap.from(headlineRef.current.children, {
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: "top 75%",
+            start: "top 70%",
           },
-          x: -20,
+          y: 60,
           opacity: 0,
-          stagger: 0.2, // Segmented
-          duration: 0.6,
-          ease: "back.out(2)", // Snappy overshoot
+          stagger: 0.12,
+          duration: 0.7,
+          ease: "back.out(1.5)",
         });
       }
 
-      // Image entrance - Gamey dramatic drop and BOUNCE
-      gsap.fromTo(
-        imageRef.current,
-        {
-          y: -200,
-          opacity: 0,
-          scale: 0.5,
-          rotation: -10,
-        },
-        {
+      // Left accordion entrance
+      if (leftRef.current) {
+        gsap.from(leftRef.current, {
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: "top 60%",
+            start: "top 70%",
           },
-          y: 0, // Hit the "ground"
-          opacity: 1,
-          scale: 1,
-          rotation: 0,
-          ease: "bounce.out", // Heavy bounce
-          duration: 1.5,
-        },
-      );
-
-      // Bottom grid blocks falling from top - Tetris/Gamey drop
-      if (gridRef.current) {
-        const blocks = gridRef.current.querySelectorAll(".bottom-block");
-
-        // Blocks fall deliberately, bouncy and slow
-        gsap.fromTo(
-          blocks,
-          {
-            y: -800, // Drop from off-screen
-            opacity: 0,
-            scale: 0.8,
-          },
-          {
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: "top 50%",
-            },
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            rotation: 0,
-            stagger: {
-              amount: 2.5, // Slow cascade
-              from: "random", // Random order, like falling debris
-            },
-            duration: 1.8,
-            ease: "bounce.out", // Tetris piece hitting the floor bounce
-          },
-        );
+          x: -40,
+          opacity: 0,
+          duration: 0.8,
+          ease: "power3.out",
+        });
       }
     }, sectionRef);
 
-    return () => {
-      if (imgElement) {
-        gsap.killTweensOf(imgElement);
-      }
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-      ctx.revert();
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
-    <section ref={sectionRef} className="min-h-screen bg-[#F25430]">
-      <div
-        id="how-it-works"
-        className="relative mx-auto min-h-screen max-w-[1512px] overflow-hidden text-white"
-      >
-        {/* Distinct Top Title */}
-
-        <div className="relative z-10 flex min-h-screen flex-col items-center justify-between pt-16 md:pt-32 lg:flex-row lg:items-center lg:pt-0">
-          <div
-            ref={textRef}
-            className="w-full px-8 pb-12 lg:w-[45%] lg:px-16 lg:pb-16"
+    <section
+      ref={sectionRef}
+      id="how-it-works"
+      className="relative overflow-hidden"
+      style={{ backgroundColor: "#6433CC" }}
+    >
+      <div className="relative mx-auto my-4 flex max-w-[1512px] flex-col p-4">
+        {/* Top-right label */}
+        <div className="flex justify-end px-8 pt-8 md:px-14 md:pt-12">
+          <span
+            className="font-dm-mono text-base tracking-[0.25em] uppercase"
+            style={{ color: "rgba(255,255,255,0.55)" }}
           >
-            <div className="font-dm-mono mb-8 text-sm font-bold tracking-[0.15em] text-gray-900 uppercase">
-              ABOUT SWIFT AGENTS
-            </div>
-            <p className="font-stolzl mb-12 text-lg leading-[1.6] font-light text-white sm:text-xl md:text-xl lg:text-xl xl:text-xl">
-              When a transaction encounters an issue, users often find
-              themselves without answers or accountability. Currently, there is
-              a lack of clarity in these situations. Swift agents are dedicated
-              to addressing any failed transactions, providing users with
-              real-time responses to their on-chain concerns.
-            </p>
-
-            <div className="font-dm-mono text-sm font-bold tracking-[0.15em] text-gray-900 uppercase">
-              INTRODUCTION
-            </div>
-          </div>
-
-          {/* Right Image */}
-          <div
-            ref={imageRef}
-            className="relative z-20 flex w-full justify-center px-0 pb-12 lg:z-20 lg:w-[45%] lg:px-8 lg:pr-16 lg:pb-32 lg:pl-0"
-          >
-            <div className="relative z-20 -ml-[5%] w-[110%] lg:ml-0 lg:w-full lg:max-w-[540px]">
-              <Image
-                src="/images/about_section_img.svg"
-                alt="About Swift Agents - Transactions"
-                width={600}
-                height={500}
-                className="relative z-20 h-auto w-full object-cover max-md:left-[-10%]"
-              />
-            </div>
-          </div>
+            ABOUT SWIFT AGENTS
+          </span>
         </div>
-        {/* Bottom Blocks */}
-        <div className="pointer-events-none absolute -right-16 bottom-0 left-0 z-0 md:-bottom-32 lg:-bottom-48">
+
+        {/* Main two-column layout */}
+        <div className="flex flex-1 flex-col lg:flex-row">
+          {/* ── Left column: Accordion ── */}
           <div
-            ref={gridRef}
-            className="flex w-full justify-end overflow-hidden pt-20"
+            ref={leftRef}
+            className="flex w-full flex-col justify-start px-8 pt-4 pb-10 lg:w-[45%] lg:px-14 lg:pt-6 lg:pb-16"
           >
-            <div className="bottom-block w-full max-w-[1512px] max-md:bg-[#6433CC]">
-              <Image
-                src="/images/decorative.svg"
-                alt="Decorative Background"
-                width={1512}
-                height={600}
-                className="h-auto w-full object-contain object-bottom"
-              />
-            </div>
+            {FEATURES.map((feature) => {
+              const isOpen = openId === feature.id;
+              return (
+                <div
+                  key={feature.id}
+                  className="border-t border-white/20 last:border-b last:border-white/20"
+                >
+                  {/* Accordion header */}
+                  <button
+                    onClick={() => setOpenId(isOpen ? "" : feature.id)}
+                    className="flex w-full cursor-pointer items-center gap-3 py-5 text-left transition-opacity hover:opacity-80"
+                  >
+                    {/* Icon */}
+                    <span
+                      className="flex-shrink-0 text-sm"
+                      style={{ color: "rgba(255,255,255,0.75)" }}
+                    >
+                      {isOpen ? (
+                        <Icons.PolygonDown className="size-4" />
+                      ) : (
+                        /* Play triangle */
+                        <Icons.Polygon className="size-4" />
+                      )}
+                    </span>
+
+                    {/* Title */}
+                    <span
+                      className="font-dm-mono text-xl font-normal tracking-[0.2em] uppercase"
+                      style={{ color: "rgba(255,255,255,0.9)" }}
+                    >
+                      {feature.title}
+                    </span>
+                  </button>
+
+                  {/* Accordion body */}
+                  <div
+                    className="overflow-hidden transition-all duration-500 ease-in-out"
+                    style={{
+                      maxHeight: isOpen ? "600px" : "0px",
+                      opacity: isOpen ? 1 : 0,
+                    }}
+                  >
+                    {/* Description text */}
+                    <p
+                      className="font-dm-mono pb-4 text-[11px] leading-[1.8] tracking-[0.1em] uppercase"
+                      style={{ color: "rgba(255,255,255,0.65)" }}
+                    >
+                      {feature.description}
+                    </p>
+
+                    {/* Image box */}
+                    {feature.image && (
+                      <div
+                        className="mb-6 overflow-hidden rounded-sm"
+                        style={{ backgroundColor: "#fff" }}
+                      >
+                        <Image
+                          src={feature.image}
+                          alt={feature.title}
+                          width={400}
+                          height={220}
+                          className="h-auto w-full object-contain"
+                          style={{ maxHeight: "220px" }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* ── Right column: Big headline ── */}
+          <div
+            ref={headlineRef}
+            className="flex w-full flex-col items-start justify-start gap-10 px-8 pt-4 pb-10 lg:w-[55%] lg:items-end lg:gap-14 lg:px-10 lg:pt-6 lg:pb-16 lg:pl-4"
+          >
+            {(["WHY USE", "SWIFT", "AGENTS?"] as const).map((word) => (
+              <span
+                key={word}
+                className="font-greed-narrow block leading-[0.9] font-black text-white uppercase"
+                style={{
+                  fontSize: "clamp(3rem, 8.5vw, 8.5rem)",
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                {word}
+              </span>
+            ))}
           </div>
         </div>
       </div>

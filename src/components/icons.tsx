@@ -1386,6 +1386,39 @@ export const Icons = {
       />
     </svg>
   ),
+
+  Polygon: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      {...props}
+      width="19"
+      height="26"
+      viewBox="0 0 19 26"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        opacity="0.66"
+        d="M17.1295 15.6604C19.1228 14.0592 19.1228 11.0246 17.1295 9.42338L6.50499 0.889059C3.88723 -1.21371 0 0.649824 0 4.00756V21.0762C0 24.4339 3.88723 26.2975 6.50499 24.1947L17.1295 15.6604Z"
+        fill="white"
+      />
+    </svg>
+  ),
+  PolygonDown: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      {...props}
+      width="26"
+      height="19"
+      viewBox="0 0 26 19"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        opacity="0.66"
+        d="M9.42335 17.1295C11.0245 19.1228 14.0591 19.1228 15.6603 17.1295L24.1947 6.50499C26.2974 3.88723 24.4339 0 21.0762 0H4.00752C0.649795 0 -1.21375 3.88723 0.889024 6.50499L9.42335 17.1295Z"
+        fill="white"
+      />
+    </svg>
+  ),
   floating: (props: React.SVGProps<SVGSVGElement>) => (
     <svg
       {...props}

@@ -11,8 +11,8 @@ export default function HomePage() {
       <main>
         <HeroSection />
         <AboutSection />
-        <TalkSection />
-        <PricingSection />
+        {/* <TalkSection /> */}
+        {/* <PricingSection /> */}
         <ContactSection />
       </main>
     </SmoothScrollProvider>
