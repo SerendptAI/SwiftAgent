@@ -47,6 +47,18 @@ export function ContactSection() {
           {/* Bottom Links Overlaid on Image */}
           <div className="absolute bottom-16 left-12 z-20 flex flex-col gap-6 max-md:bottom-40">
             <Link
+              href="https://x.com/swftagents"
+              className="font-mono text-sm font-semibold tracking-widest text-white uppercase transition-colors hover:text-gray-300"
+            >
+              TWITTER
+            </Link>
+            <Link
+              href="/"
+              className="font-mono text-sm font-semibold tracking-widest text-white uppercase transition-colors hover:text-gray-300"
+            >
+              INSTAGRAM
+            </Link>
+            <Link
               href="/"
               className="font-mono text-sm font-semibold tracking-widest text-white uppercase transition-colors hover:text-gray-300"
             >
@@ -57,6 +69,12 @@ export function ContactSection() {
               className="font-mono text-sm font-semibold tracking-widest text-white uppercase transition-colors hover:text-gray-300"
             >
               BLOG
+            </Link>
+            <Link
+              href="mailto:thelma@swiftagents.org"
+              className="font-mono text-sm font-semibold tracking-widest text-white uppercase transition-colors hover:text-gray-300"
+            >
+              EMAIL
             </Link>
           </div>
 
