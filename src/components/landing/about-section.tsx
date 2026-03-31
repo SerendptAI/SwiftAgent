@@ -86,7 +86,7 @@ export function AboutSection() {
     >
       <div className="relative mx-auto my-4 flex max-w-[1512px] flex-col p-4">
         {/* Top-right label */}
-        <div className="flex justify-end px-8 pt-8 md:px-14 md:pt-12">
+        <div className="flex justify-end px-8 pt-8 max-md:hidden md:px-14 md:pt-12">
           <span
             className="font-dm-mono text-base tracking-[0.25em] uppercase"
             style={{ color: "rgba(255,255,255,0.55)" }}
@@ -96,11 +96,11 @@ export function AboutSection() {
         </div>
 
         {/* Main two-column layout */}
-        <div className="flex flex-1 flex-col lg:flex-row">
+        <div className="flex flex-1 flex-col-reverse lg:flex-row">
           {/* ── Left column: Accordion ── */}
           <div
             ref={leftRef}
-            className="flex w-full flex-col justify-start px-8 pt-4 pb-10 lg:w-[45%] lg:px-14 lg:pt-6 lg:pb-16"
+            className="flex w-full flex-col justify-start pt-4 pb-10 md:px-8 lg:w-[45%] lg:px-14 lg:pt-6 lg:pb-16"
           >
             {FEATURES.map((feature) => {
               const isOpen = openId === feature.id;
@@ -174,12 +174,26 @@ export function AboutSection() {
           {/* ── Right column: Big headline ── */}
           <div
             ref={headlineRef}
-            className="flex w-full flex-col items-start justify-start gap-10 px-8 pt-4 pb-10 lg:w-[55%] lg:items-end lg:gap-14 lg:px-10 lg:pt-6 lg:pb-16 lg:pl-4"
+            className="flex w-full flex-col items-start justify-start gap-10 pt-4 md:px-8 md:pb-10 lg:w-[55%] lg:items-end lg:gap-14 lg:px-10 lg:pt-6 lg:pb-16 lg:pl-4"
           >
+            {/* Mobile: 2 lines */}
+            {(["WHY USE", "SWIFT AGENTS?"] as const).map((word) => (
+              <span
+                key={word}
+                className="font-greed-narrow block leading-[0.9] font-black text-white uppercase lg:hidden"
+                style={{
+                  fontSize: "clamp(2.2rem, 6vw, 4rem)",
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                {word}
+              </span>
+            ))}
+            {/* Desktop: 3 lines */}
             {(["WHY USE", "SWIFT", "AGENTS?"] as const).map((word) => (
               <span
                 key={word}
-                className="font-greed-narrow block leading-[0.9] font-black text-white uppercase"
+                className="font-greed-narrow hidden leading-[0.9] font-black text-white uppercase lg:block"
                 style={{
                   fontSize: "clamp(3rem, 8.5vw, 8.5rem)",
                   letterSpacing: "-0.02em",

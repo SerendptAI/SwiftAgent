@@ -208,7 +208,7 @@ export function FeaturesSection() {
           </div>
 
           {/* Quote block — icon floats inline within the text */}
-          <div className="w-full lg:w-[50%]">
+          <div className="w-full max-md:hidden lg:w-[50%]">
             <h3 className="font-greed-narrow text-3xl leading-[1.15] font-black tracking-tight text-black uppercase md:text-5xl lg:text-6xl">
               ALL THESE AGENTS PLAY A
               <br /> CRUCIAL ROLE IN
