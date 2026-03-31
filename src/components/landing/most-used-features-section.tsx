@@ -68,7 +68,7 @@ export function MostUsedFeaturesSection() {
       {/* Top blue border accent */}
       <div className="h-1 w-full bg-[#7B8CDE]" />
 
-      <div className="relative mx-auto max-w-[1512px] px-6 py-16 md:px-14 md:py-24">
+      <div className="relative mx-auto max-w-7xl px-6 py-16 md:px-14 md:py-24">
         {/* ── Section header ── */}
         <div
           ref={headerRef}

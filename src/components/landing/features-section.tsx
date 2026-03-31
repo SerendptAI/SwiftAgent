@@ -161,7 +161,7 @@ export function FeaturesSection() {
 
   return (
     <section ref={sectionRef} className="relative overflow-hidden bg-white">
-      <div className="relative mx-auto max-w-[1512px] px-6 py-16 md:px-14 md:py-24">
+      <div className="relative mx-auto max-w-7xl px-6 py-16 md:px-14 md:py-24">
         {/* ── Section header ── */}
         <div
           ref={headerRef}
