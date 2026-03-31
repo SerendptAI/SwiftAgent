@@ -22,26 +22,27 @@ export function ContactSection() {
           </div>
 
           <div className="max-w-md pb-4">
-            <p className="font-greed-narrow text-xl leading-relaxed font-medium text-[#2C3E5D]">
-              For partnership or business inquiries, contact
-              <br />
-              Thelma at{" "}
-              <a
-                href="mailto:Thelma@swiftagents.org"
-                className="text-gray-900 hover:underline"
-              >
-                Thelma@swiftagents.org
-              </a>
+            <p className="font-stolze text-xl leading-relaxed font-medium text-[#2C3E5D]">
+              For business inquiries, check our links below.
             </p>
           </div>
         </div>
         <div className="relative mx-auto w-full max-md:h-[600px] max-md:pl-8 md:p-[2rem]">
+          {/* Mobile: show footer.png */}
+          <Image
+            src="/images/footer.png"
+            alt="Street view"
+            width={500}
+            height={600}
+            className="absolute h-4/5 w-full bg-[#7CA2FE] object-cover object-left md:hidden"
+          />
+          {/* Desktop: show contact_img.svg */}
           <Image
             src="/images/contact_img.svg"
             alt="Street view"
             width={500}
             height={500}
-            className="h-full w-full bg-[#7CA2FE] object-left max-md:absolute max-md:h-4/5 max-md:object-cover"
+            className="hidden h-full w-full bg-[#7CA2FE] object-left md:block"
           />
 
           {/* Bottom Links Overlaid on Image */}
@@ -79,9 +80,9 @@ export function ContactSection() {
           </div>
 
           {/* Copyright Footer Centered in Image */}
-          <div className="absolute bottom-16 left-0 z-20 w-full text-center">
-            <span className="font-mono text-[10px] tracking-widest text-white/60 uppercase sm:text-xs">
-              ©COPYRIGHT @SWIFTAGENTS.ORG
+          <div className="absolute bottom-34 left-0 z-20 w-full text-center md:bottom-16">
+            <span className="font-mono text-[10px] tracking-widest text-white uppercase sm:text-xs">
+              © 2026 SerendptAI (swiftagents.org)
             </span>
           </div>
         </div>

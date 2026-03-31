@@ -75,7 +75,7 @@ export function DashboardSection() {
             <h2
               className="font-greed-narrow leading-[1.2] font-normal text-white uppercase"
               style={{
-                fontSize: "clamp(1.5rem, 4vw, 4.5rem)",
+                fontSize: "clamp(2.5rem, 4vw, 4.5rem)",
                 letterSpacing: "-0.02em",
               }}
             >
@@ -87,7 +87,7 @@ export function DashboardSection() {
           {/* GET STARTED button */}
           <button
             ref={btnRef}
-            className="font-dm-mono mt-10 inline-flex w-3/5 cursor-pointer items-center justify-center rounded-md bg-white px-10 py-2 text-sm font-bold tracking-[0.2em] text-black uppercase shadow-[-4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-black hover:text-white"
+            className="font-dm-mono mt-10 inline-flex cursor-pointer items-center justify-center rounded-md bg-white px-10 py-2 text-sm font-bold tracking-[0.2em] text-black uppercase shadow-[-4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-black hover:text-white md:w-3/5"
           >
             GET STARTED
           </button>

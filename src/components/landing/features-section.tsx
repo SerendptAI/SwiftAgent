@@ -50,14 +50,14 @@ const AGENT_001: Agent = {
 // ─── Reusable Agent Card ──────────────────────────────────────
 function AgentCard({ agent }: { agent: Agent }) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 max-md:mb-6">
       {/* Agent name */}
-      <h3 className="font-dm-mono -mt-4.5 mb-3 ml-10 text-3xl font-normal tracking-[0.2em] text-black uppercase">
+      <h3 className="font-dm-mono -mt-4.5 ml-10 font-normal tracking-[0.2em] text-[#666666] uppercase md:mb-3 md:text-3xl">
         {agent.name}
       </h3>
 
       {/* Agent image */}
-      <div className="overflow-hidden rounded-md">
+      <div className="overflow-hidden">
         <Image
           src={agent.image}
           alt={agent.name}
