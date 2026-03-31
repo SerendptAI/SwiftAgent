@@ -1403,6 +1403,19 @@ export const Icons = {
       />
     </svg>
   ),
+  Cross: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      {...props}
+      width="60"
+      height="60"
+      viewBox="0 0 60 60"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M13 30.75V29H46.5V30.75H13Z" fill="#1F1F1F" />
+      <path d="M29.25 13.25H31V46.75H29.25V13.25Z" fill="#1F1F1F" />
+    </svg>
+  ),
   PolygonDown: (props: React.SVGProps<SVGSVGElement>) => (
     <svg
       {...props}

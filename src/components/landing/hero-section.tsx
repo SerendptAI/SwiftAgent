@@ -7,6 +7,7 @@ import Link from "next/link";
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 
+import { Icons } from "../icons";
 import { NavigationMenu } from "./navigation-menu";
 gsap.registerPlugin(ScrollTrigger);
 
@@ -209,15 +210,37 @@ export function HeroSection() {
             </Link>
           </div>
 
-          {/* Mobile hamburger */}
+          {/* Mobile hamburger / close toggle */}
           <button
-            onClick={() => setIsMenuOpen(true)}
-            className="font-dm-mono flex cursor-pointer items-center gap-3 text-xs font-bold tracking-[0.2em] text-gray-900 uppercase transition-opacity hover:opacity-70 md:hidden"
+            onClick={() => setIsMenuOpen((prev) => !prev)}
+            className="font-dm-mono relative flex h-[22px] w-[22px] cursor-pointer items-center justify-center text-gray-900 transition-opacity hover:opacity-70 md:hidden"
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           >
-            <div className="flex flex-col gap-[5px]">
+            {/* Hamburger lines — visible when closed */}
+            <div
+              className="absolute flex flex-col gap-[5px] transition-all duration-300"
+              style={{
+                opacity: isMenuOpen ? 0 : 1,
+                transform: isMenuOpen
+                  ? "rotate(45deg) scale(0.5)"
+                  : "rotate(0) scale(1)",
+              }}
+            >
               <div className="h-[2px] w-[22px] bg-black" />
               <div className="h-[2px] w-[22px] bg-black" />
             </div>
+            {/* Plus/X icon — visible when open */}
+            <span
+              className="font-dm-mono absolute text-2xl leading-none font-light transition-all duration-300"
+              style={{
+                opacity: isMenuOpen ? 1 : 0,
+                transform: isMenuOpen
+                  ? "rotate(90deg) scale(1)"
+                  : "rotate(0) scale(0.5)",
+              }}
+            >
+              <Icons.Cross />
+            </span>
           </button>
           <Link
             href="/en/login"

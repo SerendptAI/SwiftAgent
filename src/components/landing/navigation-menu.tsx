@@ -2,6 +2,7 @@
 
 import gsap from "gsap";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 interface NavigationMenuProps {
@@ -11,95 +12,67 @@ interface NavigationMenuProps {
 
 const MENU_LINKS = [
   { label: "HOME", href: "/" },
-  { label: "ABOUT SWIFT AGENTS", href: "/#how-it-works" },
-  { label: "TALK TO OUR AGENT", href: "/#talk" },
+  { label: "ABOUT", href: "/#how-it-works" },
+  { label: "TYPES OF AGENTS", href: "/#talk" },
   { label: "BILLING", href: "/#pricing" },
-];
-
-const CHECKER_GRID = [
-  0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1,
 ];
 
 export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const linksRef = useRef<HTMLDivElement>(null);
-  const checkerRef = useRef<HTMLDivElement>(null);
-  const mobilePatternRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
-    if (
-      !overlayRef.current ||
-      !containerRef.current ||
-      !linksRef.current ||
-      !checkerRef.current
-    )
+    if (!overlayRef.current || !containerRef.current || !linksRef.current)
       return;
 
     if (isOpen) {
-      gsap.set(overlayRef.current, { display: "block", autoAlpha: 1 });
+      // Show the overlay
+      gsap.set(overlayRef.current, { display: "block" });
+      gsap.to(overlayRef.current, {
+        autoAlpha: 1,
+        duration: 0.3,
+        ease: "power2.out",
+      });
 
-      // Animate container sliding down or from right
+      // Slide the menu down
       gsap.fromTo(
         containerRef.current,
-        { x: "100%" },
-        { x: "0%", duration: 0.8, ease: "power4.inOut" },
+        { y: "-100%", opacity: 0 },
+        { y: "0%", opacity: 1, duration: 0.4, ease: "power3.out" },
       );
 
+      // Stagger links in
       gsap.fromTo(
         linksRef.current.children,
-        { y: 60, opacity: 0 },
+        { y: -15, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.6,
-          stagger: 0.1,
-          delay: 0.4,
-          ease: "power3.out",
+          duration: 0.3,
+          stagger: 0.06,
+          delay: 0.15,
+          ease: "power2.out",
         },
       );
-
-      gsap.fromTo(
-        checkerRef.current.querySelectorAll(".checker-block"),
-        { scale: 0, opacity: 0 },
-        {
-          scale: 1,
-          opacity: 1,
-          duration: 0.6,
-          stagger: { each: 0.03, from: "random" },
-          delay: 0.5,
-          ease: "back.out(1.5)",
-        },
-      );
-
-      if (mobilePatternRef.current) {
-        gsap.fromTo(
-          mobilePatternRef.current.children,
-          { scale: 0, opacity: 0 },
-          {
-            scale: 1,
-            opacity: 1,
-            duration: 0.6,
-            stagger: { each: 0.1, from: "random" },
-            delay: 0.5,
-            ease: "back.out(1.5)",
-          },
-        );
-      }
     } else {
+      // Slide the menu up
       gsap.to(containerRef.current, {
-        x: "100%",
-        duration: 0.6,
-        ease: "power4.inOut",
-        onComplete: () => {
-          gsap.set(overlayRef.current, { display: "none" });
-        },
+        y: "-100%",
+        opacity: 0,
+        duration: 0.3,
+        ease: "power3.in",
       });
 
       gsap.to(overlayRef.current, {
         autoAlpha: 0,
-        duration: 0.6,
-        ease: "power2.inOut",
+        duration: 0.3,
+        delay: 0.1,
+        ease: "power2.in",
+        onComplete: () => {
+          gsap.set(overlayRef.current, { display: "none" });
+        },
       });
     }
   }, [isOpen]);
@@ -108,7 +81,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-100 hidden bg-black/20 backdrop-blur-sm"
+      className="fixed inset-0 z-[99] hidden"
       onClick={onClose}
       onKeyDown={(e) => {
         if (e.key === "Escape") onClose();
@@ -120,87 +93,46 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
         ref={containerRef}
-        className="absolute top-0 right-0 flex h-full w-full bg-white shadow-2xl"
+        className="absolute top-[130px] right-0 left-0 mx-auto w-[92%] overflow-hidden border-r border-b border-l border-black bg-white"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
         role="document"
       >
-        {/* Left Content */}
-        <div className="relative z-10 flex w-full flex-1 flex-col px-12 pt-12 md:w-3/5 md:px-24 md:pt-24 xl:px-32">
-          {/* Mobile Close Button Container - Below widget banner */}
-          <div className="absolute top-[72px] right-6 z-20 flex items-center md:hidden">
-            <button
-              onClick={onClose}
-              className="flex items-center gap-2 font-mono text-[10px] font-bold tracking-[0.2em] text-gray-900 uppercase transition-colors hover:text-[#F25430]"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="h-6 w-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-              CLOSE MENU
-            </button>
-          </div>
+        <div ref={linksRef} className="flex flex-col">
+          {MENU_LINKS.map((link, i) => {
+            const isActive =
+              link.href === "/"
+                ? pathname === "/" || pathname === "/en"
+                : pathname +
+                    (typeof window !== "undefined"
+                      ? window.location.hash
+                      : "") ===
+                  link.href;
 
-          <div
-            ref={linksRef}
-            className="mt-32 flex flex-col gap-10 md:mt-24 md:gap-14"
-          >
-            {MENU_LINKS.map((link, i) => (
+            return (
               <Link
                 key={i}
                 href={link.href}
                 onClick={onClose}
-                className="font-greed-narrow relative z-20 w-max origin-left text-2xl font-black tracking-tighter text-gray-900 uppercase transition-colors hover:text-[#F25430] sm:text-3xl md:text-6xl lg:text-7xl"
+                className={`font-dm-mono mx-4 px-6 py-4 text-xs font-bold tracking-[0.2em] text-gray-900 uppercase transition-colors hover:bg-gray-50 ${
+                  isActive ? "border border-black bg-gray-50" : ""
+                }`}
               >
                 {link.label}
               </Link>
-            ))}
-          </div>
-        </div>
+            );
+          })}
 
-        {/* Right Checkerboard & Close Button */}
-        <div className="absolute top-0 right-0 hidden h-full w-[45%] flex-col md:flex">
-          <div className="absolute top-12 left-12 z-20 md:top-24">
-            <button
+          {/* Login button inside menu */}
+          <div className="p-4">
+            <Link
+              href="/en/login"
               onClick={onClose}
-              className="font-mono text-xs font-bold tracking-[0.2em] text-gray-900 uppercase transition-colors hover:text-[#F25430]"
+              className="font-dm-mono flex w-full items-center justify-center rounded-lg border bg-[#F2B035] px-8 py-3 text-xs font-bold tracking-[0.15em] text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-800"
             >
-              CLOSE MENU
-            </button>
+              LOGIN/SIGN UP
+            </Link>
           </div>
-
-          <div
-            ref={checkerRef}
-            className="pointer-events-none grid h-full w-full grid-cols-4 grid-rows-6"
-          >
-            {CHECKER_GRID.map((isOrange, i) => (
-              <div
-                key={i}
-                className={`checker-block h-full w-full ${isOrange ? "bg-[#F25430]" : "bg-transparent"}`}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Mobile Background Pattern Overlay */}
-        <div
-          ref={mobilePatternRef}
-          className="pointer-events-none absolute inset-0 z-0 block overflow-hidden md:hidden"
-        >
-          <div className="absolute top-10 right-0 h-[15vh] w-[15%] bg-[#F25430]" />
-          <div className="absolute top-[38%] right-0 h-[17vh] w-[20%] bg-[#F25430]" />
-          <div className="absolute top-[55%] left-1/2 h-[17vh] w-[30%] bg-[#F25430]" />
-          <div className="absolute right-0 bottom-10 h-[17vh] w-[20%] bg-[#F25430]" />
         </div>
       </div>
     </div>
