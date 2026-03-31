@@ -75,32 +75,6 @@ function AgentCard({ agent }: { agent: Agent }) {
   );
 }
 
-// ─── Chat icon for the quote block ────────────────────────────
-function ChatIcon() {
-  return (
-    <svg
-      width="64"
-      height="64"
-      viewBox="0 0 48 48"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="inline-block shrink-0 align-middle"
-      style={{ margin: "0 0.15em" }}
-    >
-      <circle cx="24" cy="24" r="23" stroke="black" strokeWidth="2" />
-      <path
-        d="M16 18C16 16.8954 16.8954 16 18 16H30C31.1046 16 32 16.8954 32 18V26C32 27.1046 31.1046 28 30 28H22L18 32V28C16.8954 28 16 27.1046 16 26V18Z"
-        stroke="black"
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
-      <circle cx="21" cy="22" r="1" fill="black" />
-      <circle cx="25" cy="22" r="1" fill="black" />
-      <circle cx="29" cy="22" r="1" fill="black" />
-    </svg>
-  );
-}
-
 // ─── Main Section ─────────────────────────────────────────────
 export function FeaturesSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -237,7 +211,7 @@ export function FeaturesSection() {
           <div className="w-full lg:w-[50%]">
             <h3 className="font-greed-narrow text-3xl leading-[1.15] font-black tracking-tight text-black uppercase md:text-5xl lg:text-6xl">
               ALL THESE AGENTS PLAY A
-              <br /> CRUCIAL ROLE IN <ChatIcon />
+              <br /> CRUCIAL ROLE IN
               <br />
               ENHANCING THE <br />
               CUSTOMER EXPERIENCE DURING LIVE CHATS.
@@ -249,6 +223,15 @@ export function FeaturesSection() {
                 width={230}
                 height={154}
                 className="h-[154px] w-[230px]"
+              />
+            </div>
+            <div className="absolute top-15 right-10">
+              <Image
+                src="/images/info.svg"
+                alt=""
+                width={200}
+                height={144}
+                className="h-[124px] w-[150px]"
               />
             </div>
           </div>
