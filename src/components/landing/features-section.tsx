@@ -2,188 +2,257 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Bot, MessageCircle, Shield, Zap } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const features = [
+// ─── Agent data ───────────────────────────────────────────────
+interface Agent {
+  id: string;
+  name: string;
+  image: string;
+  description: string;
+}
+
+const AGENTS: Agent[] = [
   {
-    icon: Bot,
-    title: "AI-Powered Agents",
+    id: "047",
+    name: "AGENT 047",
+    image: "/images/Agents/agent47.svg",
     description:
-      "Intelligent agents that learn from every interaction, continuously improving response quality and accuracy.",
-    color: "#F25430",
+      "AGENT 047 POSSESSES THE CAPABILITY TO LOCATE ANY FEATURE WITHIN A DASHBOARD FOR USERS, REGARDLESS OF THE DASHBOARD'S COMPLEXITY. THIS AGENT IS AWARE OF THE PRECISE LOCATION OF EACH FEATURE AND CAN PROVIDE DETAILED DIRECTIONS ALONG WITH SCREENSHOTS UPON REQUEST.",
   },
   {
-    icon: Zap,
-    title: "Instant Response",
+    id: "007",
+    name: "AGENT 007",
+    image: "/images/Agents/agent007.svg",
     description:
-      "Sub-second response times ensuring your customers never wait. Handle thousands of concurrent conversations.",
-    color: "#FFB800",
+      "AGENT 007 HAS THE ABILITY TO THOROUGHLY SEARCH AN ENTIRE WEBSITE TO RETRIEVE INFORMATION FOR CUSTOMERS WHEN THE ANSWER IS NOT AVAILABLE IN ITS DATABASE.",
   },
   {
-    icon: Shield,
-    title: "Web3 Native Security",
+    id: "626",
+    name: "AGENT 626",
+    image: "/images/Agents/agent626.svg",
     description:
-      "Built with blockchain-grade security. Your data and conversations are encrypted and decentralized.",
-    color: "#6433CC",
-  },
-  {
-    icon: MessageCircle,
-    title: "Omnichannel Support",
-    description:
-      "Deploy across Discord, Telegram, your website, and any platform your community uses.",
-    color: "#2196F3",
+      "AGENT 626 POSSESSES THE CAPABILITY TO ANALYZE CRYPTOCURRENCY TRANSACTIONS VIA HASHCODES AND INFORM USERS OF ANY POTENTIAL ISSUES THAT MAY ARISE DURING THE TRANSACTION PROCESS.",
   },
 ];
 
+const AGENT_001: Agent = {
+  id: "001",
+  name: "AGENT 001",
+  image: "/images/Agents/agent001.svg",
+  description:
+    "AGENT 001 REVIEWS BANK RECORDS AND UPDATES CUSTOMERS ON PAYMENT STATUSES, INCLUDING REFUND PROCESSES, BANK ACKNOWLEDGMENTS, AND ANY PAYMENT ISSUES.",
+};
+
+// ─── Reusable Agent Card ──────────────────────────────────────
+function AgentCard({ agent }: { agent: Agent }) {
+  return (
+    <div className="flex flex-col gap-4">
+      {/* Agent name */}
+      <h3 className="font-dm-mono -mt-4.5 mb-3 ml-10 text-3xl font-normal tracking-[0.2em] text-black uppercase">
+        {agent.name}
+      </h3>
+
+      {/* Agent image */}
+      <div className="overflow-hidden rounded-md">
+        <Image
+          src={agent.image}
+          alt={agent.name}
+          width={420}
+          height={494}
+          className="h-auto w-full object-cover"
+        />
+      </div>
+
+      {/* Agent description */}
+      <p className="font-dm-mono text-sm leading-[1.8] tracking-[0.08em] text-black/70 uppercase">
+        {agent.description}
+      </p>
+    </div>
+  );
+}
+
+// ─── Chat icon for the quote block ────────────────────────────
+function ChatIcon() {
+  return (
+    <svg
+      width="64"
+      height="64"
+      viewBox="0 0 48 48"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="inline-block shrink-0 align-middle"
+      style={{ margin: "0 0.15em" }}
+    >
+      <circle cx="24" cy="24" r="23" stroke="black" strokeWidth="2" />
+      <path
+        d="M16 18C16 16.8954 16.8954 16 18 16H30C31.1046 16 32 16.8954 32 18V26C32 27.1046 31.1046 28 30 28H22L18 32V28C16.8954 28 16 27.1046 16 26V18Z"
+        stroke="black"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <circle cx="21" cy="22" r="1" fill="black" />
+      <circle cx="25" cy="22" r="1" fill="black" />
+      <circle cx="29" cy="22" r="1" fill="black" />
+    </svg>
+  );
+}
+
+// ─── Main Section ─────────────────────────────────────────────
 export function FeaturesSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const cardsEl = cardsRef.current;
     const ctx = gsap.context(() => {
-      // Title animation
-      if (titleRef.current) {
-        gsap.from(titleRef.current.children, {
+      // Header entrance
+      if (headerRef.current) {
+        gsap.from(headerRef.current.children, {
           scrollTrigger: {
-            trigger: titleRef.current,
-            start: "top 80%",
-            toggleActions: "play none none reverse",
+            trigger: sectionRef.current,
+            start: "top 70%",
           },
-          y: 80,
+          y: 40,
           opacity: 0,
-          stagger: 0.15,
-          duration: 1,
+          stagger: 0.1,
+          duration: 0.7,
           ease: "power3.out",
         });
       }
 
-      // Cards stagger animation
-      if (cardsRef.current) {
-        const cards = cardsRef.current.querySelectorAll(".feature-card");
-        cards.forEach((card, i) => {
-          gsap.from(card, {
-            scrollTrigger: {
-              trigger: card,
-              start: "top 85%",
-              toggleActions: "play none none reverse",
-            },
-            y: 100,
-            opacity: 0,
-            scale: 0.9,
-            rotation: i % 2 === 0 ? -3 : 3,
-            duration: 0.8,
-            ease: "power3.out",
-            delay: i * 0.1,
-          });
+      // Agent cards stagger
+      if (gridRef.current) {
+        gsap.from(gridRef.current.children, {
+          scrollTrigger: {
+            trigger: gridRef.current,
+            start: "top 75%",
+          },
+          y: 60,
+          opacity: 0,
+          stagger: 0.15,
+          duration: 0.8,
+          ease: "power3.out",
+        });
+      }
 
-          // Hover-like pulsing glow
-          const glowEl = card.querySelector(".card-glow");
-          if (glowEl) {
-            gsap.to(glowEl, {
-              scrollTrigger: {
-                trigger: card,
-                start: "top 80%",
-                toggleActions: "play none none reverse",
-              },
-              opacity: 0.6,
-              scale: 1.2,
-              duration: 2,
-              ease: "power1.inOut",
-              repeat: -1,
-              yoyo: true,
-              delay: i * 0.3,
-            });
-          }
+      // Bottom row entrance
+      if (bottomRef.current) {
+        gsap.from(bottomRef.current.children, {
+          scrollTrigger: {
+            trigger: bottomRef.current,
+            start: "top 80%",
+          },
+          y: 50,
+          opacity: 0,
+          stagger: 0.2,
+          duration: 0.8,
+          ease: "power3.out",
         });
       }
     }, sectionRef);
 
-    return () => {
-      if (cardsEl) {
-        const glows = cardsEl.querySelectorAll(".card-glow");
-        gsap.killTweensOf(glows);
-      }
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-      ctx.revert();
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
-    <section
-      id="how-it-works"
-      ref={sectionRef}
-      className="relative overflow-hidden bg-white px-8 py-32 md:px-12 lg:px-16"
-    >
-      {/* Background decoration */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-[#F25430]/5" />
-        <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-[#6433CC]/5" />
-      </div>
+    <section ref={sectionRef} className="relative overflow-hidden bg-white">
+      <div className="relative mx-auto max-w-[1512px] px-6 py-16 md:px-14 md:py-24">
+        {/* ── Section header ── */}
+        <div
+          ref={headerRef}
+          className="mb-12 flex flex-col items-center gap-4 text-center"
+        >
+          {/* Label */}
+          <span className="font-dm-mono text-xs tracking-[0.25em] text-black/50 uppercase">
+            OUR AI AGENTS
+          </span>
 
-      {/* Title */}
-      <div ref={titleRef} className="relative mb-20 text-center">
-        <span className="mb-4 inline-block text-xs font-bold tracking-[0.3em] text-[#F25430] uppercase">
-          How It Works
-        </span>
-        <h2 className="text-4xl font-black tracking-tight text-gray-900 uppercase md:text-6xl">
-          BUILT FOR THE
-          <br />
-          <span className="text-[#F25430]">FUTURE</span>
-        </h2>
-      </div>
+          {/* Headline */}
+          <h2 className="font-greed-narrow max-w-3xl text-4xl leading-[1.1] font-black tracking-tight text-black uppercase md:text-6xl lg:text-7xl">
+            OUR AGENTS ACCOMPLISH DIFFERENT FUNCTIONS
+          </h2>
+        </div>
 
-      {/* Feature Cards */}
-      <div
-        ref={cardsRef}
-        className="relative mx-auto grid max-w-6xl gap-8 md:grid-cols-2"
-      >
-        {features.map((feature, i) => (
-          <div
-            key={i}
-            className="feature-card group relative overflow-hidden rounded-3xl border border-gray-100 bg-white p-10 shadow-sm transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
-          >
-            {/* Glow effect */}
-            <div
-              className="card-glow absolute -top-20 -right-20 h-40 w-40 rounded-full opacity-0 blur-3xl"
-              style={{ backgroundColor: feature.color }}
-            />
+        <div
+          ref={gridRef}
+          className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          {AGENTS.map((agent) => (
+            <AgentCard key={agent.id} agent={agent} />
+          ))}
+        </div>
 
-            {/* Step number */}
-            <div className="mb-6 text-8xl font-black text-gray-100">
-              0{i + 1}
-            </div>
-
-            {/* Icon */}
-            <div
-              className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl"
-              style={{ backgroundColor: feature.color + "15" }}
-            >
-              <feature.icon
-                className="h-8 w-8"
-                style={{ color: feature.color }}
-              />
-            </div>
-
-            {/* Content */}
-            <h3 className="mb-3 text-xl font-bold text-gray-900">
-              {feature.title}
-            </h3>
-            <p className="leading-relaxed text-gray-500">
-              {feature.description}
-            </p>
-
-            {/* Bottom accent line */}
-            <div
-              className="absolute bottom-0 left-0 h-1 w-0 transition-all duration-500 group-hover:w-full"
-              style={{ backgroundColor: feature.color }}
+        {/* ── Decorative dashed lines (1-3) between agent cards and bottom row ── */}
+        <div className="relative hidden h-[182px] lg:block">
+          {/* Segment 1 — line1 (\): descending from upper-left */}
+          <div className="absolute" style={{ left: "25%", top: 0 }}>
+            <Image
+              src="/images/lines/line1.svg"
+              alt=""
+              width={208}
+              height={182}
+              className="h-[182px] w-[208px]"
             />
           </div>
-        ))}
+
+          {/* Segment 2 — line3 (/): ascending from lower-left to upper-right */}
+          <div className="absolute" style={{ left: "48%", top: "8px" }}>
+            <Image
+              src="/images/lines/line2.svg"
+              alt=""
+              width={109}
+              height={166}
+              className="h-[166px] w-[109px]"
+            />
+          </div>
+
+          {/* Segment 3 — line2 (\): steep descent from upper area */}
+          <div className="absolute" style={{ left: "76%", top: 20 }}>
+            <Image
+              src="/images/lines/line3.svg"
+              alt=""
+              width={79}
+              height={182}
+              className="h-[182px] w-[79px]"
+            />
+          </div>
+        </div>
+
+        {/* ── Bottom row: Agent 001 + Quote ── */}
+        <div
+          ref={bottomRef}
+          className="mt-16 flex flex-col justify-between gap-8 lg:flex-row lg:gap-12"
+        >
+          {/* Agent 001 card */}
+          <div className="w-full lg:w-[35%]">
+            <AgentCard agent={AGENT_001} />
+          </div>
+
+          {/* Quote block — icon floats inline within the text */}
+          <div className="w-full lg:w-[50%]">
+            <h3 className="font-greed-narrow text-3xl leading-[1.15] font-black tracking-tight text-black uppercase md:text-5xl lg:text-6xl">
+              ALL THESE AGENTS PLAY A
+              <br /> CRUCIAL ROLE IN <ChatIcon />
+              <br />
+              ENHANCING THE <br />
+              CUSTOMER EXPERIENCE DURING LIVE CHATS.
+            </h3>
+            <div className="absolute bottom-30 -left-20">
+              <Image
+                src="/images/lines/line4.svg"
+                alt=""
+                width={230}
+                height={154}
+                className="h-[154px] w-[230px]"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

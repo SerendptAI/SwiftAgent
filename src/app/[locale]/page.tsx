@@ -1,5 +1,6 @@
 import { AboutSection } from "@/components/landing/about-section";
 import { ContactSection } from "@/components/landing/contact-section";
+import { FeaturesSection } from "@/components/landing/features-section";
 import { HeroSection } from "@/components/landing/hero-section";
 import { PricingSection } from "@/components/landing/pricing-section";
 import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provider";
@@ -11,6 +12,7 @@ export default function HomePage() {
       <main>
         <HeroSection />
         <AboutSection />
+        <FeaturesSection />
         {/* <TalkSection /> */}
         {/* <PricingSection /> */}
         <ContactSection />

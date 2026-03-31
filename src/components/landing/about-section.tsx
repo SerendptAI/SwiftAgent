@@ -105,10 +105,7 @@ export function AboutSection() {
             {FEATURES.map((feature) => {
               const isOpen = openId === feature.id;
               return (
-                <div
-                  key={feature.id}
-                  className="border-t border-white/20 last:border-b last:border-white/20"
-                >
+                <div key={feature.id}>
                   {/* Accordion header */}
                   <button
                     onClick={() => setOpenId(isOpen ? "" : feature.id)}
