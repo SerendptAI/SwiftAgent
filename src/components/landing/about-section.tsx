@@ -24,7 +24,7 @@ const FEATURES = [
     title: "POWERFUL AI AGENTS",
     description:
       "DEPLOY AUTONOMOUS AI AGENTS THAT LEARN, ADAPT, AND RESOLVE COMPLEX SUPPORT SCENARIOS INDEPENDENTLY.",
-    image: "/images/chatbot_pixel_art.png",
+    image: "/images/chatbot_pixel_art2.svg",
   },
   {
     id: "calls",
@@ -32,7 +32,7 @@ const FEATURES = [
     title: "REALISTIC AI CALLS",
     description:
       "LIFELIKE VOICE AI HANDLES YOUR CALLS WITH NATURAL CONVERSATIONAL FLOW — NO HUMAN NEEDED.",
-    image: "/images/chatbot_pixel_art.svg",
+    image: "/images/chatbot_pixel_art1.svg",
   },
 ];
 

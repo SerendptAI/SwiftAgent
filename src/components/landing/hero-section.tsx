@@ -41,6 +41,34 @@ const HEADLINE_BADGES = [
   ],
 ];
 
+// Mobile layout: stacked vertically with different arrangement
+const MOBILE_BADGES = [
+  {
+    words: ["LIVE CHAT", "LIVE CHAT", "LIVE CHAT"],
+    bg: "#6433CC",
+    text: "#7F9FFF",
+    fullWidth: true,
+  },
+  {
+    words: ["TICKETING", "TICKETING", "TICKETING"],
+    bg: "#F25430",
+    text: "#F6F4EF",
+    fullWidth: true,
+  },
+  {
+    words: ["FORMS", "FORMS", "FORMS"],
+    bg: "#F2B035",
+    text: "black",
+    fullWidth: false,
+  },
+  {
+    words: ["EMAILS", "EMAILS", "EMAILS"],
+    bg: "#7F9FFF",
+    text: "#FFFFFF",
+    fullWidth: false,
+  },
+];
+
 export function HeroSection() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
@@ -136,7 +164,7 @@ export function HeroSection() {
       {/* Navigation */}
       <nav
         ref={navRef}
-        className="fixed top-[90px] right-0 left-0 z-50 mx-auto flex h-[70px] w-[92%] items-center justify-between border border-black bg-white px-4 md:top-[92px] md:grid md:h-[80px] md:w-[90%] md:grid-cols-[auto_1fr_auto] md:gap-4 md:px-8"
+        className="fixed top-[70px] right-0 left-0 z-50 mx-auto flex h-[70px] w-[92%] items-center justify-between border border-black bg-white px-4 md:top-[92px] md:grid md:h-[80px] md:w-[90%] md:grid-cols-[auto_1fr_auto] md:gap-4 md:px-8"
       >
         {/* Logo */}
         <Link href="/" className="flex shrink-0 items-center">
@@ -201,11 +229,14 @@ export function HeroSection() {
       </nav>
 
       {/* Hero Content — Two Column Layout */}
-      <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-col items-center px-6 pt-38 pb-12 md:flex-row md:items-center md:justify-between md:px-12 md:pt-52 md:pb-16 lg:px-16 lg:pt-56">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-col items-center px-6 pt-28 pb-12 md:flex-row md:items-center md:justify-between md:px-12 md:pt-52 md:pb-16 lg:px-16 lg:pt-56">
         {/* Left Column */}
         <div className="flex w-full flex-col md:w-[55%] lg:w-[50%]">
-          {/* Pill Badge Headline */}
-          <div ref={headlineRef} className="flex flex-col gap-5 md:gap-6">
+          {/* Pill Badge Headline — Desktop */}
+          <div
+            ref={headlineRef}
+            className="hidden flex-col gap-5 md:flex md:gap-6"
+          >
             {HEADLINE_BADGES.map((row, rowIdx) => (
               <div
                 key={rowIdx}
@@ -265,10 +296,125 @@ export function HeroSection() {
             ))}
           </div>
 
+          {/* Pill Badge Headline — Mobile */}
+          <div className="flex flex-col items-start gap-3 md:hidden">
+            {/* LIVE CHAT — full width */}
+            <span
+              className="hero-badge font-greed-narrow relative flex w-[75%] items-center justify-center overflow-hidden rounded-2xl px-6 py-3 text-3xl leading-none tracking-tight uppercase select-none"
+              style={{ backgroundColor: "#6433CC", color: "#7F9FFF" }}
+            >
+              {MOBILE_BADGES[0].words.map((word, wIdx) => {
+                const isActive = wIdx === currentIndex;
+                return (
+                  <span
+                    key={wIdx}
+                    className="absolute inset-x-0 mx-auto text-center whitespace-nowrap transition-opacity duration-1000 ease-in-out"
+                    style={{
+                      opacity: isActive ? 1 : 0,
+                      visibility: isActive ? "visible" : "hidden",
+                    }}
+                  >
+                    {word}
+                  </span>
+                );
+              })}
+              <span className="invisible whitespace-nowrap">LIVE CHAT</span>
+            </span>
+
+            {/* + */}
+            <span className="font-dm-mono w-full text-center text-2xl font-light text-gray-400">
+              +
+            </span>
+
+            {/* TICKETING — full width */}
+            <span
+              className="hero-badge font-greed-narrow relative flex w-full items-center justify-center overflow-hidden rounded-2xl px-6 py-3 text-4xl leading-none tracking-tight uppercase select-none"
+              style={{ backgroundColor: "#F25430", color: "#F6F4EF" }}
+            >
+              {MOBILE_BADGES[1].words.map((word, wIdx) => {
+                const isActive = wIdx === currentIndex;
+                return (
+                  <span
+                    key={wIdx}
+                    className="absolute inset-x-0 mx-auto text-center whitespace-nowrap transition-opacity duration-1000 ease-in-out"
+                    style={{
+                      opacity: isActive ? 1 : 0,
+                      visibility: isActive ? "visible" : "hidden",
+                    }}
+                  >
+                    {word}
+                  </span>
+                );
+              })}
+              <span className="invisible whitespace-nowrap">TICKETING</span>
+            </span>
+
+            {/* + + row */}
+            <div className="flex w-full items-center justify-around px-2">
+              <span className="font-dm-mono text-2xl font-light text-gray-400">
+                +
+              </span>
+              <span className="font-dm-mono text-2xl font-light text-gray-400">
+                +
+              </span>
+            </div>
+
+            {/* FORMS + EMAILS row */}
+            <div className="flex w-full items-center gap-2">
+              <span
+                className="hero-badge font-greed-narrow relative inline-flex flex-1 items-center justify-center overflow-hidden rounded-2xl px-6 py-3 text-3xl leading-none tracking-tight uppercase select-none"
+                style={{ backgroundColor: "#F2B035", color: "black" }}
+              >
+                {MOBILE_BADGES[2].words.map((word, wIdx) => {
+                  const isActive = wIdx === currentIndex;
+                  return (
+                    <span
+                      key={wIdx}
+                      className="absolute inset-x-0 mx-auto text-center whitespace-nowrap transition-opacity duration-1000 ease-in-out"
+                      style={{
+                        opacity: isActive ? 1 : 0,
+                        visibility: isActive ? "visible" : "hidden",
+                      }}
+                    >
+                      {word}
+                    </span>
+                  );
+                })}
+                <span className="invisible whitespace-nowrap">FORMS</span>
+              </span>
+
+              <span className="font-dm-mono text-2xl font-light text-gray-400">
+                +
+              </span>
+
+              <span
+                className="hero-badge font-greed-narrow relative inline-flex flex-1 items-center justify-center overflow-hidden rounded-2xl px-6 py-3 text-3xl leading-none tracking-tight uppercase select-none"
+                style={{ backgroundColor: "#7F9FFF", color: "#FFFFFF" }}
+              >
+                {MOBILE_BADGES[3].words.map((word, wIdx) => {
+                  const isActive = wIdx === currentIndex;
+                  return (
+                    <span
+                      key={wIdx}
+                      className="absolute inset-x-0 mx-auto text-center whitespace-nowrap transition-opacity duration-1000 ease-in-out"
+                      style={{
+                        opacity: isActive ? 1 : 0,
+                        visibility: isActive ? "visible" : "hidden",
+                      }}
+                    >
+                      {word}
+                    </span>
+                  );
+                })}
+                <span className="invisible whitespace-nowrap">EMAILS</span>
+              </span>
+            </div>
+          </div>
+
           {/* Subtitle */}
           <p
             ref={subtitleRef}
-            className="font-stolzl mt-10 max-w-xl text-[15px] leading-relaxed text-gray-600 md:mt-12 md:text-base lg:text-lg"
+            className="font-stolzl mt-8 max-w-xl text-[14px] leading-relaxed text-gray-600 md:mt-12 md:text-base lg:text-lg"
           >
             Our AI service understands your startup, managing inquiries
             efficiently and providing support. It addresses issues, answers
@@ -276,7 +422,7 @@ export function HeroSection() {
           </p>
 
           {/* CTA Button */}
-          <div ref={ctaRef} className="mt-10 md:mt-12">
+          <div ref={ctaRef} className="mt-8 md:mt-12">
             <Link
               href="/en/login"
               className="font-dm-mono inline-flex w-full items-center justify-center rounded-xl border-1 border-white bg-black px-10 py-4 text-xs font-bold tracking-[0.2em] text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-800 sm:w-auto sm:min-w-[340px]"
