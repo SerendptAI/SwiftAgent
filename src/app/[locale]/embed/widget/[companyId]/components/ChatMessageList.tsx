@@ -55,8 +55,8 @@ export function ChatMessageList({
   compact = false,
 }: ChatMessageListProps) {
   const bubbleBase = compact
-    ? "max-w-[85%] px-4 py-2.5 text-[13px] leading-relaxed"
-    : "max-w-[85%] px-5 py-3 text-[14px] leading-relaxed sm:max-w-[75%] sm:text-[15px]";
+    ? "max-w-[85%] overflow-hidden break-words px-4 py-2.5 text-[13px] leading-relaxed"
+    : "max-w-[85%] overflow-hidden break-words px-5 py-3 text-[14px] leading-relaxed sm:max-w-[75%] sm:text-[15px]";
 
   const userBubble = compact
     ? "rounded-2xl rounded-tr-sm bg-[#f6f6f5] text-gray-900"
