@@ -161,7 +161,7 @@ export function HeroSection() {
       >
         {/* Logo */}
         <Link href="/" className="flex shrink-0 items-center">
-          <div className="relative h-10 w-10 md:h-12 md:w-12">
+          <div className="relative h-14 w-14">
             <Image
               src="/images/newlogo.svg"
               alt="Logo"
@@ -218,8 +218,7 @@ export function HeroSection() {
                   : "rotate(0) scale(1)",
               }}
             >
-              <div className="h-[2px] w-[22px] bg-black" />
-              <div className="h-[2px] w-[22px] bg-black" />
+              <Icons.MenuOpen />
             </div>
             {/* Plus/X icon — visible when open */}
             <span
@@ -431,7 +430,7 @@ export function HeroSection() {
             ref={subtitleRef}
             className="font-stolzl mt-8 max-w-xl text-[14px] leading-relaxed text-gray-600 md:mt-12 md:text-base lg:text-lg"
           >
-            Our AI service understands your startup, managing inquiries
+            Our AI Chatbot understands your startup, managing inquiries
             efficiently and providing support. It addresses issues, answers
             questions, and evolves to enhance satisfaction.
           </p>

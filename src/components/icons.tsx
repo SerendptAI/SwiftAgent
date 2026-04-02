@@ -1416,6 +1416,21 @@ export const Icons = {
       <path d="M29.25 13.25H31V46.75H29.25V13.25Z" fill="#1F1F1F" />
     </svg>
   ),
+  MenuOpen: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      {...props}
+      width="60"
+      height="60"
+      viewBox="0 0 60 60"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M13.25 35.875V34.125H46.75V35.875H13.25ZM13.25 25.875V24.125H46.75V25.875H13.25Z"
+        fill="#1F1F1F"
+      />
+    </svg>
+  ),
   PolygonDown: (props: React.SVGProps<SVGSVGElement>) => (
     <svg
       {...props}

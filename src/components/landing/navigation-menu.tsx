@@ -93,7 +93,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
         ref={containerRef}
-        className="absolute top-[130px] right-0 left-0 mx-auto w-[92%] overflow-hidden border-r border-b border-l border-black bg-white"
+        className="absolute top-[130px] right-0 left-0 mx-auto w-[92%] overflow-hidden border-r border-b border-l border-black bg-white pt-8"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
         role="document"
@@ -114,7 +114,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                 key={i}
                 href={link.href}
                 onClick={onClose}
-                className={`font-dm-mono m-4 px-6 py-4 text-xs font-bold tracking-[0.2em] text-gray-900 uppercase transition-colors hover:bg-gray-50 ${
+                className={`font-dm-mono m-4 px-6 py-3 text-base font-normal tracking-[0.2em] text-gray-900 uppercase transition-colors hover:bg-gray-50 ${
                   isActive ? "border border-black bg-gray-50" : ""
                 }`}
               >
@@ -128,7 +128,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
             <Link
               href="/en/login"
               onClick={onClose}
-              className="font-dm-mono flex w-full items-center justify-center rounded-lg border bg-[#F2B035] px-8 py-3 text-xs font-bold tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-800"
+              className="font-dm-mono flex w-full items-center justify-center rounded-lg border bg-[#F2B035] px-8 py-3 text-base font-normal tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-800"
             >
               LOGIN/SIGN UP
             </Link>
