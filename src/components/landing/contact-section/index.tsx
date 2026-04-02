@@ -14,7 +14,7 @@ export function ContactSection() {
       <div className="mx-auto max-w-[1400px]">
         <ContactHeader />
 
-        <div className="relative mx-auto w-full max-md:h-[600px] max-md:pl-8 md:p-[2rem]">
+        <div className="relative mx-auto w-full max-md:h-[600px] max-md:pl-8 md:p-8">
           <ContactImage />
           <ContactLinks />
           <ContactCopyright />

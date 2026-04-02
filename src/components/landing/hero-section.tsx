@@ -4,7 +4,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import Link from "next/link";
-import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 
 import { Icons } from "../icons";
@@ -155,13 +154,6 @@ export function HeroSection() {
       ref={sectionRef}
       className="relative min-h-screen overflow-hidden bg-white"
     >
-      {/* Widget Script */}
-      <Script
-        src="/widget.js"
-        data-company-id="01490b45-52bd-4317-b2f7-e93264210201"
-        strategy="afterInteractive"
-      />
-
       {/* Navigation */}
       <nav
         ref={navRef}

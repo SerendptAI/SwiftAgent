@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "./widget-animations.css";
 
 @font-face {
   font-family: "Stolzl";

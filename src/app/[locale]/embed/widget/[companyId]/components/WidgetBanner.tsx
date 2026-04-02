@@ -25,17 +25,6 @@ export function WidgetBanner({
 
   return (
     <div className="relative z-100 flex w-full flex-row items-center justify-between overflow-hidden bg-[#F2B035] px-3 py-2 shadow-md sm:px-6 sm:py-3">
-      <style>{`
-        @keyframes marquee {
-          0%   { transform: translateX(100%); }
-          100% { transform: translateX(-100%); }
-        }
-        .widget-marquee {
-          display: inline-block;
-          white-space: nowrap;
-          animation: marquee 18s linear infinite;
-        }
-      `}</style>
       <div className="font-dm-mono max-w-[70%] min-w-0 flex-1 overflow-hidden pr-2 text-[9px] font-normal tracking-tight text-black uppercase sm:max-w-[85%] sm:pr-4 sm:text-xs sm:tracking-wider md:text-sm">
         <span className="widget-marquee">
           If you have any questions or inquiries, please feel free to get on a

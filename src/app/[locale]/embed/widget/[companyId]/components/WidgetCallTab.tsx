@@ -5,6 +5,8 @@ import Image from "next/image";
 import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
+import { getFriendlyStatus } from "./utils";
+
 interface WidgetCallTabProps {
   companyName?: string;
   isMuted: boolean;
@@ -34,31 +36,10 @@ export function WidgetCallTab({
   toggleMute,
   handleEndCall,
 }: WidgetCallTabProps) {
-  const getFriendlyStatus = (status: string) => {
-    const s = status.toLowerCase();
-    switch (s) {
-      case "connecting":
-      case "calling":
-        return "Calling...";
-      case "ready":
-        return "Listening";
-      case "thinking":
-        return "Thinking...";
-      case "speaking":
-        return "Speaking";
-      case "error":
-        return "Error";
-      case "idle":
-        return "Ended";
-      default:
-        return s;
-    }
-  };
-
   return (
     <div className="relative flex h-full max-h-[calc(100vh-130px)] w-full flex-col items-center justify-between overflow-y-auto py-4 text-center sm:px-8 sm:py-14">
       <div className="flex w-full flex-col items-center gap-4 sm:gap-8">
-        <div className="animate-float-in flex flex-col items-center gap-2">
+        <div className="widget-animate-float-in flex flex-col items-center gap-2">
           <div className="text-xl font-semibold text-gray-400 uppercase sm:text-sm">
             {companyName ? `${companyName}  ` : ""}
           </div>
@@ -83,7 +64,7 @@ export function WidgetCallTab({
         </div>
       )}
 
-      <div className="animate-scale-in flex items-center justify-center py-6">
+      <div className="widget-animate-scale-in flex items-center justify-center py-6">
         <div className="flex h-48 w-48 items-center justify-center rounded-full">
           <Image
             src="/images/aiblock.svg"
@@ -133,7 +114,7 @@ export function WidgetCallTab({
           <button
             onClick={() => setShowHashInput((prev) => !prev)}
             className={cn(
-              "animate-control-1 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full transition sm:h-16 sm:w-16",
+              "widget-animate-control-1 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full transition sm:h-16 sm:w-16",
               showHashInput
                 ? "bg-gray-200 text-gray-800"
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200",
@@ -144,7 +125,7 @@ export function WidgetCallTab({
         </div>
         <button
           onClick={playTouchSound}
-          className="animate-control-2 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200 sm:h-16 sm:w-16"
+          className="widget-animate-control-2 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200 sm:h-16 sm:w-16"
         >
           <Icons.Speaker className="h-6 w-6 sm:h-7 sm:w-7" />
         </button>
@@ -154,9 +135,9 @@ export function WidgetCallTab({
             toggleMute();
           }}
           className={cn(
-            "animate-control-3 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full transition sm:h-16 sm:w-16",
+            "widget-animate-control-3 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full transition sm:h-16 sm:w-16",
             isMuted
-              ? "bg-[#FBCDC3] text-[red-600] hover:bg-red-200"
+              ? "bg-[#FBCDC3] text-red-600 hover:bg-red-200"
               : "bg-gray-100 text-gray-600 hover:bg-gray-200",
           )}
         >
@@ -169,7 +150,7 @@ export function WidgetCallTab({
 
         <button
           onClick={handleEndCall}
-          className="animate-control-4 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-[#f25430] text-white shadow-lg transition hover:scale-105 hover:bg-red-600 hover:shadow-xl sm:h-16 sm:w-16"
+          className="widget-animate-control-4 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-[#f25430] text-white shadow-lg transition hover:scale-105 hover:bg-red-600 hover:shadow-xl sm:h-16 sm:w-16"
         >
           <Icons.phonedown className="h-6 w-6 sm:h-7 sm:w-7" />
         </button>

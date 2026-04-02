@@ -18,7 +18,7 @@ export function WidgetScriptLoader() {
       const iframe = document.querySelector("iframe.swift-agent-widget-iframe");
       if (iframe) {
         iframe.remove();
-        document.body.style.marginTop = "";
+        document.body.style.paddingTop = "";
         document.body.style.overflow = "";
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (window as any).__SWIFT_AGENT_WIDGET_LOADED__ = false;

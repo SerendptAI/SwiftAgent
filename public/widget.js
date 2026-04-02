@@ -4,11 +4,11 @@
     window.__SWIFT_AGENT_WIDGET_LOADED__ = true;
 
     // 1. Find the script tag that loaded this script to extract the company ID
-    const scripts = document.getElementsByTagName('script');
-    let currentScript = null;
-    let companyId = null;
+    var scripts = document.getElementsByTagName('script');
+    var currentScript = null;
+    var companyId = null;
 
-    for (let i = 0; i < scripts.length; i++) {
+    for (var i = 0; i < scripts.length; i++) {
         if (scripts[i].src && scripts[i].src.includes('widget.js')) {
             currentScript = scripts[i];
             companyId = currentScript.getAttribute('data-company-id');
@@ -23,7 +23,7 @@
 
     // 2. Derive the base URL from the widget script's own src so it works in both
     // local dev (localhost:3000) and production without any manual changes.
-    let baseUrl = 'http://localhost:3000'; // fallback for local dev
+    var baseUrl = 'http://localhost:3000'; // fallback for local dev
     if (currentScript && currentScript.src) {
         try {
             baseUrl = new URL(currentScript.src).origin;
@@ -38,13 +38,13 @@
     }
 
     // 3. Create the iframe element
-    const iframe = document.createElement('iframe');
+    var iframe = document.createElement('iframe');
     iframe.className = 'swift-agent-widget-iframe';
-    iframe.src = `${baseUrl}/en/embed/widget/${companyId}`;
+    iframe.src = baseUrl + '/en/embed/widget/' + companyId;
     iframe.setAttribute('allow', 'microphone');
 
     // Ensure iframe stays clickable even when host uses Lenis
-    const style = document.createElement('style');
+    var style = document.createElement('style');
     style.textContent = 'iframe.swift-agent-widget-iframe { pointer-events: auto !important; }';
     document.head.appendChild(style);
 
@@ -52,7 +52,7 @@
 
     iframe.style.position = 'fixed';
     iframe.style.top = '0';
-    iframe.style.right = '0';
+    iframe.style.left = '0';
     iframe.style.border = 'none';
     iframe.style.zIndex = '2147483647';
     iframe.style.background = 'transparent';
@@ -61,20 +61,24 @@
     iframe.style.height = bannerHeight;
     iframe.style.pointerEvents = 'auto';
 
-    // 4. Body push so the widget banner doesn't overlap the host page header
-    document.body.style.transition = 'margin-top 0.3s ease-in-out';
-    document.body.style.marginTop = bannerHeight;
+    // 4. Body push so the widget banner doesn't overlap the host page header.
+    // Use paddingTop instead of marginTop to avoid collapsing margin issues and
+    // to maintain a consistent offset that the sticky nav can rely on.
+    document.body.style.transition = 'padding-top 0.3s ease-in-out';
+    document.body.style.paddingTop = bannerHeight;
 
     // 5. Append to body — shows on ALL pages of the customer's website
     document.body.appendChild(iframe);
 
-    // 6. Update banner height on resize
+    // Track state
     var isFullScreen = false;
+
+    // 6. Update banner height on resize
     window.addEventListener('resize', function () {
         if (!isFullScreen) {
             var newHeight = getBannerHeight();
             iframe.style.height = newHeight;
-            document.body.style.marginTop = newHeight;
+            document.body.style.paddingTop = newHeight;
         }
     });
 
@@ -97,18 +101,26 @@
 
         try {
             if (event.data && event.data.type === 'SWIFT_AGENT_WIDGET_RESIZE') {
-                const { width, height, pointerEvents } = event.data;
+                var width = event.data.width;
+                var height = event.data.height;
+                var pointerEvents = event.data.pointerEvents;
+
                 if (width) iframe.style.width = width;
                 if (height) iframe.style.height = height;
                 if (pointerEvents) iframe.style.pointerEvents = pointerEvents;
 
                 if (height === '100vh') {
+                    // Full-screen call mode:
+                    // Keep the banner padding on the body so that the host page layout
+                    // doesn't jump. Lock body scrolling to prevent background scroll.
                     isFullScreen = true;
-                    document.body.style.marginTop = '0px';
                     document.body.style.overflow = 'hidden';
                 } else {
+                    // Back to banner-only mode:
+                    // Restore normal scrolling and ensure the body padding matches the
+                    // banner height so the host sticky-nav stays visible.
                     isFullScreen = false;
-                    document.body.style.marginTop = height;
+                    document.body.style.paddingTop = height;
                     document.body.style.overflow = '';
                 }
             }

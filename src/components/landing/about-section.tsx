@@ -12,7 +12,7 @@ gsap.registerPlugin(ScrollTrigger);
 const FEATURES = [
   {
     id: "chatbots",
-    icon: "diamond", // ♦ expanded icon
+    icon: "diamond",
     title: "SMART AI CHATBOTS",
     description:
       "OUR AI CHATBOTS HANDLE ENTIRE CUSTOMER INTERACTIONS FROM BEGINNING TO END, WITHOUT HUMAN INTERVENTION.",
@@ -20,7 +20,7 @@ const FEATURES = [
   },
   {
     id: "agents",
-    icon: "play", // ▶ collapsed icon
+    icon: "play",
     title: "POWERFUL AI AGENTS",
     description:
       "DEPLOY AUTONOMOUS AI AGENTS THAT LEARN, ADAPT, AND RESOLVE COMPLEX SUPPORT SCENARIOS INDEPENDENTLY.",
