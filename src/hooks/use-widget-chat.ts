@@ -19,6 +19,8 @@ interface UseWidgetChatReturn {
   chatThinkingText: string | null;
   chatEndRef: React.RefObject<HTMLDivElement | null>;
   handleSendChat: () => void;
+  /** Send a specific message directly (e.g. hash/ticket ID from the call tab) */
+  sendMessage: (text: string) => void;
   showHashInput: boolean;
   setShowHashInput: React.Dispatch<React.SetStateAction<boolean>>;
   hashValue: string;
@@ -63,160 +65,170 @@ export function useWidgetChat({
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
-  const handleHashSubmit = useCallback(() => {
-    if (!hashValue.trim()) return;
-    const msg: ChatMsg = {
-      id: Date.now(),
-      text: hashValue.trim(),
-      sender: "user",
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
-    setChatMessages((prev) => [...prev, msg]);
-    setHashValue("");
-  }, [hashValue]);
+  /** Core send logic — shared by handleSendChat and sendMessage */
+  const sendMessageInternal = useCallback(
+    async (userText: string) => {
+      if (!userText.trim() || isChatLoadingRef.current) return;
 
-  const handleSendChat = useCallback(async () => {
-    const currentInput = chatInputRef.current;
-    if (!currentInput.trim() || isChatLoadingRef.current) return;
-
-    const userText = currentInput.trim();
-    const userMsg: ChatMsg = {
-      id: Date.now(),
-      text: userText,
-      sender: "user",
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
-    setChatMessages((prev) => [...prev, userMsg]);
-    setChatInput("");
-    setIsChatLoading(true);
-    setTimeout(scrollToBottom, 50);
-
-    const agentMsgId = Date.now() + 1;
-
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          company_id: companyId,
-          session_id: chatSessionId,
-          message: userText,
+      const text = userText.trim();
+      const userMsg: ChatMsg = {
+        id: Date.now(),
+        text,
+        sender: "user",
+        time: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
         }),
-      });
+      };
+      setChatMessages((prev) => [...prev, userMsg]);
+      setChatInput("");
+      setIsChatLoading(true);
+      setTimeout(scrollToBottom, 50);
 
-      if (!res.ok || !res.body) {
-        throw new Error(`Chat request failed: ${res.status}`);
-      }
+      const agentMsgId = Date.now() + 1;
 
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let agentText = "";
-      let buffer = "";
-      let navGuide: NavigationGuide | undefined;
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            company_id: companyId,
+            session_id: chatSessionId,
+            message: text,
+          }),
+        });
 
-      // Add placeholder agent message
-      setChatMessages((prev) => [
-        ...prev,
-        { id: agentMsgId, text: "", sender: "agent", time: "" },
-      ]);
+        if (!res.ok || !res.body) {
+          throw new Error(`Chat request failed: ${res.status}`);
+        }
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let agentText = "";
+        let buffer = "";
+        let navGuide: NavigationGuide | undefined;
 
-        buffer += decoder.decode(value, { stream: true });
+        // Add placeholder agent message
+        setChatMessages((prev) => [
+          ...prev,
+          { id: agentMsgId, text: "", sender: "agent", time: "" },
+        ]);
 
-        const events = buffer.split("\n\n");
-        buffer = events.pop() ?? "";
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
 
-        for (const event of events) {
-          const dataLine = event
-            .split("\n")
-            .find((l) => l.startsWith("data: "));
-          if (!dataLine) continue;
+          buffer += decoder.decode(value, { stream: true });
 
-          try {
-            const parsed = JSON.parse(dataLine.slice(6));
-            const stage = parsed?.data?.stage;
-            const message = parsed?.data?.message;
+          const events = buffer.split("\n\n");
+          buffer = events.pop() ?? "";
 
-            if (stage === "thinking" && typeof message === "string") {
-              setChatThinkingText(message);
-              scrollToBottom();
-            } else if (stage === "tool") {
-              const label = parsed?.data?.label;
-              if (typeof label === "string") {
-                setChatThinkingText(label);
+          for (const event of events) {
+            const dataLine = event
+              .split("\n")
+              .find((l) => l.startsWith("data: "));
+            if (!dataLine) continue;
+
+            try {
+              const parsed = JSON.parse(dataLine.slice(6));
+              const stage = parsed?.data?.stage;
+              const message = parsed?.data?.message;
+
+              if (stage === "thinking" && typeof message === "string") {
+                setChatThinkingText(message);
+                scrollToBottom();
+              } else if (stage === "tool") {
+                const label = parsed?.data?.label;
+                if (typeof label === "string") {
+                  setChatThinkingText(label);
+                  scrollToBottom();
+                }
+              } else if (stage === "navigation_guide") {
+                setChatThinkingText(null);
+                navGuide = {
+                  steps: parsed?.data?.steps ?? [],
+                  path_summary: parsed?.data?.path_summary ?? [],
+                };
+                setChatMessages((prev) =>
+                  prev.map((m) =>
+                    m.id === agentMsgId
+                      ? { ...m, navigationGuide: navGuide }
+                      : m,
+                  ),
+                );
+                scrollToBottom();
+              } else if (stage === "stream" && typeof message === "string") {
+                setChatThinkingText(null);
+                agentText += message;
+                setChatMessages((prev) =>
+                  prev.map((m) =>
+                    m.id === agentMsgId ? { ...m, text: agentText } : m,
+                  ),
+                );
                 scrollToBottom();
               }
-            } else if (stage === "navigation_guide") {
-              setChatThinkingText(null);
-              navGuide = {
-                steps: parsed?.data?.steps ?? [],
-                path_summary: parsed?.data?.path_summary ?? [],
-              };
-              setChatMessages((prev) =>
-                prev.map((m) =>
-                  m.id === agentMsgId ? { ...m, navigationGuide: navGuide } : m,
-                ),
-              );
-              scrollToBottom();
-            } else if (stage === "stream" && typeof message === "string") {
-              setChatThinkingText(null);
-              agentText += message;
-              setChatMessages((prev) =>
-                prev.map((m) =>
-                  m.id === agentMsgId ? { ...m, text: agentText } : m,
-                ),
-              );
-              scrollToBottom();
+            } catch {
+              // Skip malformed data
             }
-          } catch {
-            // Skip malformed data
           }
         }
-      }
 
-      // Set final timestamp
-      setChatMessages((prev) =>
-        prev.map((m) =>
-          m.id === agentMsgId
-            ? {
-                ...m,
-                text: agentText || "Sorry, I couldn't generate a response.",
-                time: new Date().toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                }),
-              }
-            : m,
-        ),
-      );
-    } catch (err) {
-      console.error("Chat error:", err);
-      setChatMessages((prev) => [
-        ...prev.filter((m) => m.id !== agentMsgId),
-        {
-          id: agentMsgId,
-          text: "Sorry, something went wrong. Please try again.",
-          sender: "agent" as const,
-          time: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-        },
-      ]);
-    } finally {
-      setIsChatLoading(false);
-      setChatThinkingText(null);
-    }
-  }, [companyId, chatSessionId, scrollToBottom]);
+        // Set final timestamp
+        setChatMessages((prev) =>
+          prev.map((m) =>
+            m.id === agentMsgId
+              ? {
+                  ...m,
+                  text: agentText || "Sorry, I couldn't generate a response.",
+                  time: new Date().toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }),
+                }
+              : m,
+          ),
+        );
+      } catch (err) {
+        console.error("Chat error:", err);
+        setChatMessages((prev) => [
+          ...prev.filter((m) => m.id !== agentMsgId),
+          {
+            id: agentMsgId,
+            text: "Sorry, something went wrong. Please try again.",
+            sender: "agent" as const,
+            time: new Date().toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+          },
+        ]);
+      } finally {
+        setIsChatLoading(false);
+        setChatThinkingText(null);
+      }
+    },
+    [companyId, chatSessionId, scrollToBottom],
+  );
+
+  const handleHashSubmit = useCallback(() => {
+    if (!hashValue.trim()) return;
+    const text = hashValue.trim();
+    setHashValue("");
+    setShowHashInput(false);
+    sendMessageInternal(text);
+  }, [hashValue, sendMessageInternal]);
+
+  const handleSendChat = useCallback(() => {
+    sendMessageInternal(chatInputRef.current);
+  }, [sendMessageInternal]);
+
+  /** Send a specific message programmatically (e.g. from hash input on call tab) */
+  const sendMessage = useCallback(
+    (text: string) => {
+      sendMessageInternal(text);
+    },
+    [sendMessageInternal],
+  );
 
   return {
     chatMessages,
@@ -226,6 +238,7 @@ export function useWidgetChat({
     chatThinkingText,
     chatEndRef,
     handleSendChat,
+    sendMessage,
     showHashInput,
     setShowHashInput,
     hashValue,

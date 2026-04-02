@@ -233,7 +233,10 @@ function WidgetContent({ companyId }: { companyId: string }) {
                     setShowHashInput={chat.setShowHashInput}
                     hashValue={chat.hashValue}
                     setHashValue={chat.setHashValue}
-                    handleHashSubmit={chat.handleHashSubmit}
+                    handleHashSubmit={() => {
+                      chat.handleHashSubmit();
+                      setActiveWidgetTab("chat");
+                    }}
                     playTouchSound={playTouchSound}
                     toggleMute={toggleMute}
                     handleEndCall={handleEndCall}

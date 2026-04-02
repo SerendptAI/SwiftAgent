@@ -17,12 +17,6 @@ interface UseWidgetAudioReturn {
   stopDialingAudio: () => void;
 }
 
-/**
- * Manages all audio feedback for the widget:
- * - Dialing tone (loops until connected)
- * - Pickup sound (plays once on connect)
- * - Touch/tap sound (button feedback)
- */
 export function useWidgetAudio(): UseWidgetAudioReturn {
   const dialingAudioRef = useRef<HTMLAudioElement | null>(null);
   const pickupAudioRef = useRef<HTMLAudioElement | null>(null);
