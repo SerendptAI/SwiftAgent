@@ -895,7 +895,7 @@ export const Icons = {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g clip-path="url(#clip0_891_201)">
+      <g clipPath="url(#clip0_891_201)">
         <rect width="129" height="133" fill="#F25430" />
         <path
           d="M10.4561 104.792H21.6318V93H38V109.104H26.8242V120.896H38V137H21.5439V125.208H10.3682V137H-6V120.896H5.17578V109.104H-6V93H10.4561V104.792Z"
@@ -934,7 +934,7 @@ export const Icons = {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g clip-path="url(#clip0_459_558)">
+      <g clipPath="url(#clip0_459_558)">
         <path
           d="M20.0002 3.8125H19.0439V6.66875H20.0002V3.8125Z"
           fill="#000001"
@@ -1273,7 +1273,7 @@ export const Icons = {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g clip-path="url(#clip0_1196_1406)">
+      <g clipPath="url(#clip0_1196_1406)">
         <path
           d="M28.96 6.1V0H13.72V1.52H7.62V3.05H3.05V13.72H1.53V16.76H0V32H32V6.1H28.96ZM7.62 30.48H1.53V21.33H7.62V30.48ZM7.62 19.81H4.58V4.57H7.62V19.81ZM9.15 3.05H13.72V4.57H10.67V19.81H9.15V3.05ZM13.72 6.1V19.81H12.2V6.1H13.72ZM15.24 30.48H9.15V21.33H15.24V30.48ZM30.48 30.48H16.77V19.81H15.24V1.52H27.43V6.1H22.86V7.62H30.48V30.48Z"
           fill="#7E7E7E"
@@ -1310,7 +1310,7 @@ export const Icons = {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g clip-path="url(#clip0_1340_230)">
+      <g clipPath="url(#clip0_1340_230)">
         <path
           d="M18.8548 4.5675H17.7148V22.8525H18.8548V4.5675Z"
           fill="#000001"

@@ -5,7 +5,7 @@ import { join } from "path";
 const TEMPLATES_DIR = join(process.cwd(), "src/emails");
 
 const PLACEHOLDER_DATA: Record<string, string> = {
-  logoUrl: "/images/logo.svg",
+  logoUrl: "/images/newlogo.svg",
   heroImageUrl: "/images/emails/welcome.svg",
   dashboardUrl: "#",
   unsubscribeUrl: "#",

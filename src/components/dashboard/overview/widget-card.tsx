@@ -21,7 +21,7 @@ export function WidgetCard() {
 
   const codeSnippet = useMemo(() => {
     if (!companyId) return "";
-    const scriptTag = `<script src="${origin}/widget.js" data-company-id="${companyId}" defer></script>`;
+    const scriptTag = `<script src="${origin}/widget-ui.js" data-company-id="${companyId}" defer></script>`;
     if (position === "floating") {
       return `${scriptTag} <div id="chat-widget"></div> <style>#chat-widget { position: fixed; bottom: 20px; right: 20px; width: 300px; height: 400px; border: 1px solid #ccc; background-color: #fff; z-index: 1000; }</style>`;
     }

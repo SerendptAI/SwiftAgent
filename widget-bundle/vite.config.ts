@@ -5,6 +5,10 @@ import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), cssInjectedByJsPlugin()],
+  define: {
+    "process.env.NODE_ENV": JSON.stringify("production"),
+    "process.env": JSON.stringify({}),
+  },
   build: {
     lib: {
       entry: "src/main.tsx",
@@ -18,6 +22,7 @@ export default defineConfig({
     },
     // Single output file, no chunk splitting
     cssCodeSplit: false,
+    commonjsOptions: { transformMixedEsModules: true },
     outDir: "dist",
     emptyOutDir: true,
   },

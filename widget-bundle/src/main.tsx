@@ -1,6 +1,5 @@
 import "./widget.css";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 
@@ -20,13 +19,6 @@ import { useWidgetAudio } from "./hooks/use-widget-audio";
 import { useWidgetChat } from "./hooks/use-widget-chat";
 import { initApiClients } from "./lib/api-client";
 import { cn } from "./lib/cn";
-
-// --- Query Client ---
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: { staleTime: 5 * 60 * 1000, retry: 1 },
-  },
-});
 
 // --- Main Widget Component ---
 
@@ -132,23 +124,6 @@ function WidgetContent({ companyId }: { companyId: string }) {
       resume();
     }
   }, [activeWidgetTab, isActive, pause, resume]);
-
-  // Resize iframe via postMessage
-  useEffect(() => {
-    if (!window.parent) return;
-    const isMobile = window.innerWidth < 640;
-    const bannerHeight = isMobile ? "56px" : "72px";
-
-    window.parent.postMessage(
-      {
-        type: "SWIFT_AGENT_WIDGET_RESIZE",
-        width: "100vw",
-        height: isActive ? "100vh" : bannerHeight,
-        pointerEvents: "auto",
-      },
-      "*",
-    );
-  }, [isActive]);
 
   const handleStartCall = useCallback(() => {
     setErrorMessage(null);
@@ -282,56 +257,85 @@ function WidgetContent({ companyId }: { companyId: string }) {
   );
 }
 
-// --- App wrapper with providers ---
+// --- App wrapper ---
 
 function App({ companyId }: { companyId: string }) {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <WidgetContent companyId={companyId} />
-    </QueryClientProvider>
-  );
+  return <WidgetContent companyId={companyId} />;
 }
 
-// --- Mount logic ---
-// The loader script creates a container and passes config via data attributes or globals.
+// --- Public API + Mount logic ---
 
-function mount() {
-  // Find the script tag that loaded this bundle
+let widgetRoot: ReturnType<typeof createRoot> | null = null;
+
+function mountWidget(companyId: string, baseUrl?: string) {
+  // Prevent multiple mounts
+  if (document.getElementById("swift-agent-widget-root")) return;
+
+  // Resolve baseUrl
+  let resolvedBase = baseUrl ?? "";
+  if (!resolvedBase) {
+    const script = document.querySelector<HTMLScriptElement>(
+      "script[data-company-id]",
+    );
+    const src = script?.getAttribute("src") ?? "";
+    try {
+      resolvedBase = new URL(src, window.location.href).origin;
+    } catch {
+      resolvedBase = window.location.origin;
+    }
+  }
+
+  initApiClients(resolvedBase);
+
+  const container = document.createElement("div");
+  container.id = "swift-agent-widget-root";
+  document.body.appendChild(container);
+
+  widgetRoot = createRoot(container);
+  widgetRoot.render(<App companyId={companyId} />);
+}
+
+function unmountWidget() {
+  if (widgetRoot) {
+    widgetRoot.unmount();
+    widgetRoot = null;
+  }
+  document.getElementById("swift-agent-widget-root")?.remove();
+}
+
+// Expose global API for framework integrations
+// Usage: window.SwiftAgentWidget.mount("company-id", "https://api.example.com")
+(window as unknown as Record<string, unknown>).SwiftAgentWidget = {
+  mount: mountWidget,
+  unmount: unmountWidget,
+  get isLoaded() {
+    return !!document.getElementById("swift-agent-widget-root");
+  },
+};
+
+// Auto-mount from script tag (backward-compatible with plain HTML usage)
+function autoMount() {
   const script =
     document.currentScript ??
     document.querySelector<HTMLScriptElement>("script[data-company-id]");
 
   const companyId = script?.getAttribute("data-company-id") ?? "";
-  if (!companyId) {
-    console.error("[SwiftAgent Widget] Missing data-company-id attribute");
-    return;
-  }
+  if (!companyId) return; // No data attr = framework will call mount() manually
 
-  // Derive the base URL from the script's src
-  const scriptSrc = script?.getAttribute("src") ?? "";
-  let baseUrl = "";
-  try {
-    const url = new URL(scriptSrc, window.location.href);
-    baseUrl = url.origin;
-  } catch {
-    baseUrl = window.location.origin;
-  }
+  const baseUrl = (() => {
+    const src = script?.getAttribute("src") ?? "";
+    try {
+      return new URL(src, window.location.href).origin;
+    } catch {
+      return window.location.origin;
+    }
+  })();
 
-  // Initialize API clients
-  initApiClients(baseUrl);
-
-  // Create mount point
-  const container = document.createElement("div");
-  container.id = "swift-agent-widget-root";
-  document.body.appendChild(container);
-
-  const root = createRoot(container);
-  root.render(<App companyId={companyId} />);
+  mountWidget(companyId, baseUrl);
 }
 
-// Auto-mount when script loads
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", mount);
+  document.addEventListener("DOMContentLoaded", autoMount);
 } else {
-  mount();
+  autoMount();
 }

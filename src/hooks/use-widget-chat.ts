@@ -2,10 +2,7 @@
 
 import { useCallback, useMemo, useRef, useState } from "react";
 
-import {
-  ChatMsg,
-  NavigationGuide,
-} from "@/app/[locale]/embed/widget/[companyId]/components/types";
+import { ChatMsg, NavigationGuide } from "@/types/widget";
 
 interface UseWidgetChatOptions {
   companyId: string;

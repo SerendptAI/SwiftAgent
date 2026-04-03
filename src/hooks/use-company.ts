@@ -1,7 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
-import type { CompanyUpdateSection } from "@/services/company";
+import type { Company, CompanyUpdateSection } from "@/services/company";
 import { companyApi, publicCompanyApi } from "@/services/company";
+
+/**
+ * Module-level cache so re-mounts never re-fetch.
+ */
+const publicCompanyCache = new Map<string, Company>();
+const publicCompanyPending = new Set<string>();
 
 export function useCompaniesQuery() {
   return useQuery({
@@ -50,14 +57,40 @@ export function useCompanyQuery(companyId: string | null | undefined) {
   });
 }
 
+/**
+ * Fetches public company data exactly once per companyId for the entire
+ * lifetime of the page. Module-level cache survives component re-mounts.
+ */
 export function usePublicCompanyQuery(companyId: string | null | undefined) {
-  return useQuery({
-    queryKey: ["public-company", companyId],
-    queryFn: () => {
-      if (!companyId) throw new Error("No company ID provided");
-      return publicCompanyApi.get(companyId);
-    },
-    enabled: !!companyId,
-    retry: 1, // Only retry once for public requests
-  });
+  const [data, setData] = useState<Company | undefined>(() =>
+    companyId ? publicCompanyCache.get(companyId) : undefined,
+  );
+
+  useEffect(() => {
+    if (!companyId) return;
+
+    const cached = publicCompanyCache.get(companyId);
+    if (cached) {
+      setData(cached);
+      return;
+    }
+
+    if (publicCompanyPending.has(companyId)) return;
+    publicCompanyPending.add(companyId);
+
+    publicCompanyApi
+      .get(companyId)
+      .then((company) => {
+        publicCompanyCache.set(companyId, company);
+        setData(company);
+      })
+      .catch(() => {
+        // Silently fail — company name is optional for the widget
+      })
+      .finally(() => {
+        publicCompanyPending.delete(companyId);
+      });
+  }, [companyId]);
+
+  return { data };
 }

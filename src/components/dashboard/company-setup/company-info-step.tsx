@@ -318,7 +318,7 @@ export function CompanyInfoStep({
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
-                      <g clip-path="url(#clip0_891_201)">
+                      <g clipPath="url(#clip0_891_201)">
                         <rect width="129" height="133" fill="#F25430" />
                         <path
                           d="M10.4561 104.792H21.6318V93H38V109.104H26.8242V120.896H38V137H21.5439V125.208H10.3682V137H-6V120.896H5.17578V109.104H-6V93H10.4561V104.792Z"

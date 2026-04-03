@@ -113,7 +113,7 @@
     var elements = [];
 
     allEls.forEach(function (el) {
-      if (el.closest('.swift-agent-widget-iframe')) return;
+      if (el.closest('#swift-agent-widget-root')) return;
 
       var rect = el.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) return;
@@ -155,7 +155,7 @@
     var allAnchors = document.querySelectorAll('a[href]');
 
     allAnchors.forEach(function (a) {
-      if (a.closest('.swift-agent-widget-iframe')) return;
+      if (a.closest('#swift-agent-widget-root')) return;
 
       var href = a.getAttribute('href');
       if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
@@ -179,16 +179,16 @@
   function captureCurrentPage(state, callback) {
     var elements = mapElements();
 
-    // Hide widget iframe for screenshot
-    var widgetIframe = document.querySelector('.swift-agent-widget-iframe');
+    // Hide widget for screenshot
+    var widgetRoot = document.getElementById('swift-agent-widget-root');
     var prevDisplay = '';
-    if (widgetIframe) {
-      prevDisplay = widgetIframe.style.display;
-      widgetIframe.style.display = 'none';
+    if (widgetRoot) {
+      prevDisplay = widgetRoot.style.display;
+      widgetRoot.style.display = 'none';
     }
 
     function saveNode(base64) {
-      if (widgetIframe) widgetIframe.style.display = prevDisplay;
+      if (widgetRoot) widgetRoot.style.display = prevDisplay;
 
       var node = {
         url: window.location.href,
@@ -347,12 +347,9 @@
     });
   }
 
-  // ── Communicate with the widget iframe ───────────────────────────────────────
+  // ── Communicate with the widget ──────────────────────────────────────────────
   function notifyWidget(data) {
-    var iframe = document.querySelector('.swift-agent-widget-iframe');
-    if (iframe && iframe.contentWindow) {
-      iframe.contentWindow.postMessage(data, '*');
-    }
+    window.postMessage(data, '*');
   }
 
   // ── Main: run on every page load ─────────────────────────────────────────────
