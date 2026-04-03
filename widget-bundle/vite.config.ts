@@ -4,7 +4,17 @@ import { defineConfig } from "vite";
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), cssInjectedByJsPlugin()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    cssInjectedByJsPlugin({
+      // Don't auto-inject into <head> — we'll inject into Shadow DOM manually
+      injectCodeFunction: (css) => {
+        (window as unknown as Record<string, unknown>).__SWIFT_WIDGET_CSS__ =
+          css;
+      },
+    }),
+  ],
   define: {
     "process.env.NODE_ENV": JSON.stringify("production"),
     "process.env": JSON.stringify({}),

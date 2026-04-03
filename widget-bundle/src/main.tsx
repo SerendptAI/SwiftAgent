@@ -1,7 +1,7 @@
 import "./widget.css";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { createRoot } from "react-dom/client";
+import { createRoot, type Root } from "react-dom/client";
 
 import { Icons } from "./components/icons";
 import { WidgetTab } from "./components/types";
@@ -265,7 +265,7 @@ function App({ companyId }: { companyId: string }) {
 
 // --- Public API + Mount logic ---
 
-let widgetRoot: ReturnType<typeof createRoot> | null = null;
+let widgetRoot: Root | null = null;
 
 function mountWidget(companyId: string, baseUrl?: string) {
   // Prevent multiple mounts
@@ -287,9 +287,27 @@ function mountWidget(companyId: string, baseUrl?: string) {
 
   initApiClients(resolvedBase);
 
+  // Create host element
+  const host = document.createElement("div");
+  host.id = "swift-agent-widget-root";
+  document.body.appendChild(host);
+
+  // Attach Shadow DOM to isolate styles
+  const shadow = host.attachShadow({ mode: "open" });
+
+  // Inject widget CSS into shadow root (stored by vite-plugin-css-injected-by-js)
+  const css = (window as unknown as Record<string, string>)
+    .__SWIFT_WIDGET_CSS__;
+  if (css) {
+    const style = document.createElement("style");
+    style.textContent = css;
+    shadow.appendChild(style);
+  }
+
+  // Create React mount point inside shadow
   const container = document.createElement("div");
-  container.id = "swift-agent-widget-root";
-  document.body.appendChild(container);
+  container.id = "swift-agent-widget-inner";
+  shadow.appendChild(container);
 
   widgetRoot = createRoot(container);
   widgetRoot.render(<App companyId={companyId} />);

@@ -1,3 +1,5 @@
+import Script from "next/script";
+
 import { AboutSection } from "@/components/landing/about-section";
 import { ContactSection } from "@/components/landing/contact-section";
 import { DashboardSection } from "@/components/landing/dashboard-section";
@@ -19,6 +21,11 @@ export default function HomePage() {
         <PricingSection />
         <ContactSection />
       </main>
+      <Script
+        src="/widget-ui.js"
+        data-company-id="01490b45-52bd-4317-b2f7-e93264210201"
+        strategy="afterInteractive"
+      />
     </SmoothScrollProvider>
   );
 }
