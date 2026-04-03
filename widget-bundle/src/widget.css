@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+/* ── Widget animations ────────────────────────────────────── */
+
+@keyframes widget-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes widget-slide-up {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes widget-scale-in {
+  from { opacity: 0; transform: scale(0.8); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes widget-float-in {
+  from { opacity: 0; transform: translateY(20px) scale(0.5); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+@keyframes widget-minimized-chat-in {
+  0%   { opacity: 0; transform: translateY(40px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+@keyframes widget-marquee {
+  0%   { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+/* Fade overlay */
+.widget-animate-fade-in {
+  animation: widget-fade-in 0.4s ease-out forwards;
+  background-color: rgba(0, 0, 0, 0.65);
+}
+
+/* Slide up entrance */
+.widget-animate-slide-up {
+  animation: widget-slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Scale in entrance */
+.widget-animate-scale-in {
+  animation: widget-scale-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+  opacity: 0;
+}
+
+/* Float in entrance */
+.widget-animate-float-in {
+  animation: widget-float-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+  opacity: 0;
+}
+
+/* Staggered control button entrances */
+.widget-animate-control-1 { animation: widget-float-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards; opacity: 0; }
+.widget-animate-control-2 { animation: widget-float-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards; opacity: 0; }
+.widget-animate-control-3 { animation: widget-float-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.7s forwards; opacity: 0; }
+.widget-animate-control-4 { animation: widget-float-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards; opacity: 0; }
+
+/* Widget container transition */
+.widget-container {
+  transition: all 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Minimized state */
+.widget-minimized {
+  transform: scale(0) translate(50vw, 50vh);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Minimized chat entrance */
+.widget-animate-minimized-chat-in {
+  animation: widget-minimized-chat-in 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+/* Banner marquee */
+.widget-marquee {
+  display: inline-block;
+  white-space: nowrap;
+  animation: widget-marquee 18s linear infinite;
+}
+
+/* Hide scrollbar */
+.scrollbar-none { scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
+
+/* Font families used inside the widget */
+.font-dm-mono {
+  font-family: "DM Mono", "Courier New", monospace;
+}
