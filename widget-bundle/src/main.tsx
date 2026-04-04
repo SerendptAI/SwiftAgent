@@ -287,9 +287,15 @@ function mountWidget(companyId: string, baseUrl?: string) {
 
   initApiClients(resolvedBase);
 
-  // Create host element
+  // Create host element — positioned above all page content
   const host = document.createElement("div");
   host.id = "swift-agent-widget-root";
+  host.style.position = "fixed";
+  host.style.top = "0";
+  host.style.left = "0";
+  host.style.width = "100%";
+  host.style.zIndex = "2147483647";
+  host.style.pointerEvents = "none";
   document.body.appendChild(host);
 
   // Attach Shadow DOM to isolate styles
