@@ -243,7 +243,7 @@ export function HeroSection() {
       </nav>
 
       {/* Hero Content — Two Column Layout */}
-      <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-col items-center px-6 pt-28 pb-12 md:flex-row md:items-center md:justify-between md:px-12 md:pt-52 md:pb-16 lg:px-16 lg:pt-56">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-col items-center px-6 pt-45 pb-12 md:flex-row md:items-center md:justify-between md:px-12 md:pt-52 md:pb-16 lg:px-16 lg:pt-56">
         {/* Left Column */}
         <div className="flex w-full flex-col md:w-[55%] lg:w-[50%]">
           {/* Pill Badge Headline — Desktop */}
