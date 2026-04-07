@@ -5,7 +5,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
-import BriggsAnimation from "../briggs-face-animation";
 import { Icons } from "../icons";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -203,17 +202,6 @@ export function AboutSection() {
                 {word}
               </span>
             ))}
-            <div
-              style={{
-                width: "100%",
-                maxWidth: 400,
-                height: 180,
-                overflow: "hidden",
-                borderRadius: "50%",
-              }}
-            >
-              <BriggsAnimation style={{ width: "100%", height: "100%" }} />
-            </div>
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@ import "./widget.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createRoot, type Root } from "react-dom/client";
 
-import { Icons } from "./components/icons";
+import { BriggsFace } from "./components/BriggsFace";
 import { WidgetTab } from "./components/types";
 import { WidgetBanner } from "./components/WidgetBanner";
 import { WidgetCallTab } from "./components/WidgetCallTab";
@@ -176,12 +176,11 @@ function WidgetContent({ companyId }: { companyId: string }) {
                 isMinimized ? "widget-minimized" : "widget-animate-slide-up",
               )}
             >
-              <button
+              <BriggsFace
+                className="widget-animate-float-in absolute right-4 bottom-24 z-50 cursor-pointer overflow-hidden rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition hover:scale-105 sm:top-auto sm:-right-4 sm:-bottom-20"
+                style={{ width: 72, height: 72 }}
                 onClick={() => setIsMinimized(true)}
-                className="widget-animate-float-in absolute right-4 bottom-24 z-50 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full border-2 border-black bg-white shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition hover:scale-105 sm:top-auto sm:-right-4 sm:-bottom-20"
-              >
-                <Icons.phoneIncoming className="h-6 w-6 -rotate-90 text-black" />
-              </button>
+              />
 
               {activeWidgetTab === "call" ? (
                 <>

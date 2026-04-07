@@ -1,6 +1,7 @@
 import { MoreHorizontal } from "lucide-react";
 
 import { cn } from "../lib/cn";
+import { BriggsFace } from "./BriggsFace";
 import { Icons } from "./icons";
 
 interface WidgetMinimizedControlsProps {
@@ -21,14 +22,11 @@ export function WidgetMinimizedControls({
   return (
     <div className="pointer-events-none fixed right-0 bottom-0 z-50 h-full w-full">
       {/* Main Restore Button - Bottom Right */}
-      <button
+      <BriggsFace
+        className="widget-animate-float-in pointer-events-auto absolute z-30 shrink-0 cursor-pointer overflow-hidden rounded-full shadow-[0_8px_24px_rgba(0,0,0,0.15)] transition-transform hover:scale-105 hover:shadow-[0_12px_28px_rgba(0,0,0,0.2)]"
+        style={{ bottom: "30px", right: "30px", width: 72, height: 72 }}
         onClick={() => setIsMinimized(false)}
-        className="widget-animate-float-in pointer-events-auto absolute z-30 flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-white shadow-[0_8px_24px_rgba(0,0,0,0.15)] transition-transform hover:scale-105 hover:shadow-[0_12px_28px_rgba(0,0,0,0.2)] sm:h-[72px] sm:w-[72px]"
-        style={{ bottom: "30px", right: "30px" }}
-        title="Expand Call"
-      >
-        <Icons.phoneIncoming className="h-7 w-7 animate-pulse text-black sm:h-8 sm:w-8" />
-      </button>
+      />
 
       {/* End Call */}
       <button

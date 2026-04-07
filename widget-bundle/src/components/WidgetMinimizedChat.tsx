@@ -1,9 +1,9 @@
 import { Maximize2 } from "lucide-react";
 import { useMemo } from "react";
 
+import { BriggsFace } from "./BriggsFace";
 import { ChatInput } from "./ChatInput";
 import { ChatMessageList } from "./ChatMessageList";
-import { Icons } from "./icons";
 import { ChatMsg } from "./types";
 
 interface WidgetMinimizedChatProps {
@@ -93,13 +93,11 @@ export function WidgetMinimizedChat({
       </div>
 
       {/* Restore Button */}
-      <button
+      <BriggsFace
+        className="widget-animate-float-in pointer-events-auto shrink-0 cursor-pointer overflow-hidden rounded-full shadow-[0_8px_24px_rgba(0,0,0,0.15)] transition-transform hover:scale-105"
+        style={{ width: 72, height: 72 }}
         onClick={() => setIsMinimized(false)}
-        className="widget-animate-float-in pointer-events-auto flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-white shadow-[0_8px_24px_rgba(0,0,0,0.15)] transition-transform hover:scale-105 sm:h-[72px] sm:w-[72px]"
-        title="Expand Call"
-      >
-        <Icons.phoneIncoming className="h-7 w-7 animate-pulse text-black sm:h-8 sm:w-8" />
-      </button>
+      />
     </div>
   );
 }
