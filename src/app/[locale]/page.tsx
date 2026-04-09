@@ -22,7 +22,7 @@ export default function HomePage() {
         <ContactSection />
       </main>
       <Script
-        src="/widget-ui.js"
+        src="https://app.swiftagents.org/widget-ui.js"
         data-company-id="01490b45-52bd-4317-b2f7-e93264210201"
         strategy="afterInteractive"
       />
