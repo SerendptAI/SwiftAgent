@@ -5,7 +5,6 @@ import { createRoot, type Root } from "react-dom/client";
 
 import { BriggsFace } from "./components/BriggsFace";
 import { WidgetTab } from "./components/types";
-import { WidgetBanner } from "./components/WidgetBanner";
 import { WidgetCallTab } from "./components/WidgetCallTab";
 import { WidgetChatTab } from "./components/WidgetChatTab";
 import { WidgetHeader } from "./components/WidgetHeader";
@@ -149,109 +148,108 @@ function WidgetContent({ companyId }: { companyId: string }) {
   return (
     <div
       className={cn(
-        "fixed inset-x-0 top-0 flex flex-col items-center justify-start font-sans",
-        isActive ? "pointer-events-none inset-0" : "pointer-events-auto",
+        "fixed inset-0 flex flex-col items-center justify-start font-sans",
+        isActive && !isMinimized
+          ? "pointer-events-none"
+          : "pointer-events-none",
       )}
     >
-      <div className="pointer-events-auto z-[100] w-full">
-        <WidgetBanner
-          companyName={companyName}
-          callStatus={callStatus as "idle" | "ongoing"}
-          elapsedTime={elapsedTime}
-          handleRequestCallClick={handleRequestCallClick}
-        />
+      {/* Expanded widget */}
+      {callStatus === "ongoing" && !isMinimized && (
+        <div className="widget-animate-fade-in pointer-events-auto fixed inset-0 z-50 flex items-start justify-center backdrop-blur-sm">
+          <div className="widget-container widget-animate-slide-up relative h-full max-h-screen w-full overflow-visible rounded-t-3xl bg-white shadow-2xl sm:mt-5 sm:h-auto sm:max-h-[calc(100vh-40px)] sm:w-[95%] sm:max-w-[1200px] sm:rounded-4xl">
+            <BriggsFace
+              className="widget-animate-float-in absolute right-4 bottom-24 z-50 cursor-pointer overflow-hidden rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition hover:scale-105 sm:top-auto sm:-right-4 sm:-bottom-20"
+              style={{ width: 72, height: 72 }}
+              onClick={() => setIsMinimized(true)}
+            />
 
-        {callStatus === "ongoing" && (
-          <div
-            className={cn(
-              "pointer-events-auto fixed inset-0 z-50 flex items-start justify-center pt-[56px] sm:pt-[76px]",
-              !isMinimized
-                ? "widget-animate-fade-in backdrop-blur-sm"
-                : "pointer-events-none",
-            )}
-          >
-            <div
-              className={cn(
-                "widget-container relative h-full max-h-[calc(100vh-56px)] w-full overflow-visible rounded-t-3xl bg-white shadow-2xl sm:h-auto sm:max-h-[calc(100vh-100px)] sm:w-[95%] sm:max-w-[1200px] sm:rounded-4xl",
-                isMinimized ? "widget-minimized" : "widget-animate-slide-up",
-              )}
-            >
-              <BriggsFace
-                className="widget-animate-float-in absolute right-4 bottom-24 z-50 cursor-pointer overflow-hidden rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.15)] transition hover:scale-105 sm:top-auto sm:-right-4 sm:-bottom-20"
-                style={{ width: 72, height: 72 }}
-                onClick={() => setIsMinimized(true)}
-              />
-
-              {activeWidgetTab === "call" ? (
-                <>
-                  <WidgetHeader
-                    activeWidgetTab={activeWidgetTab}
-                    setActiveWidgetTab={setActiveWidgetTab}
-                  />
-                  <WidgetCallTab
-                    companyName={companyName}
-                    isMuted={isMuted}
-                    statusText={statusText}
-                    errorMessage={errorMessage}
-                    showHashInput={chat.showHashInput}
-                    setShowHashInput={chat.setShowHashInput}
-                    hashValue={chat.hashValue}
-                    setHashValue={chat.setHashValue}
-                    handleHashSubmit={() => {
-                      chat.handleHashSubmit();
-                      setActiveWidgetTab("chat");
-                    }}
-                    playTouchSound={playTouchSound}
-                    toggleMute={toggleMute}
-                    handleEndCall={handleEndCall}
-                  />
-                </>
-              ) : (
-                <WidgetChatTab
-                  companyName={companyName}
-                  chatMessages={chat.chatMessages}
-                  chatInput={chat.chatInput}
-                  setChatInput={chat.setChatInput}
-                  handleSendChat={chat.handleSendChat}
-                  isChatLoading={chat.isChatLoading}
-                  chatThinkingText={chat.chatThinkingText}
-                  chatEndRef={chat.chatEndRef}
+            {activeWidgetTab === "call" ? (
+              <>
+                <WidgetHeader
+                  activeWidgetTab={activeWidgetTab}
                   setActiveWidgetTab={setActiveWidgetTab}
-                  setIsMinimized={setIsMinimized}
                 />
-              )}
-            </div>
+                <WidgetCallTab
+                  companyName={companyName}
+                  isMuted={isMuted}
+                  statusText={statusText}
+                  errorMessage={errorMessage}
+                  showHashInput={chat.showHashInput}
+                  setShowHashInput={chat.setShowHashInput}
+                  hashValue={chat.hashValue}
+                  setHashValue={chat.setHashValue}
+                  handleHashSubmit={() => {
+                    chat.handleHashSubmit();
+                    setActiveWidgetTab("chat");
+                  }}
+                  playTouchSound={playTouchSound}
+                  toggleMute={toggleMute}
+                  handleEndCall={handleEndCall}
+                />
+              </>
+            ) : (
+              <WidgetChatTab
+                companyName={companyName}
+                chatMessages={chat.chatMessages}
+                chatInput={chat.chatInput}
+                setChatInput={chat.setChatInput}
+                handleSendChat={chat.handleSendChat}
+                isChatLoading={chat.isChatLoading}
+                chatThinkingText={chat.chatThinkingText}
+                chatEndRef={chat.chatEndRef}
+                setActiveWidgetTab={setActiveWidgetTab}
+                setIsMinimized={setIsMinimized}
+              />
+            )}
           </div>
+        </div>
+      )}
+
+      {/* Minimized call controls */}
+      {callStatus === "ongoing" &&
+        isMinimized &&
+        activeWidgetTab === "call" && (
+          <WidgetMinimizedControls
+            isMuted={isMuted}
+            handleEndCall={handleEndCall}
+            playTouchSound={playTouchSound}
+            toggleMute={toggleMute}
+            setIsMinimized={setIsMinimized}
+          />
         )}
 
-        {callStatus === "ongoing" &&
-          isMinimized &&
-          activeWidgetTab === "call" && (
-            <WidgetMinimizedControls
-              isMuted={isMuted}
-              handleEndCall={handleEndCall}
-              playTouchSound={playTouchSound}
-              toggleMute={toggleMute}
-              setIsMinimized={setIsMinimized}
-            />
-          )}
+      {/* Minimized chat */}
+      {callStatus === "ongoing" &&
+        isMinimized &&
+        activeWidgetTab === "chat" && (
+          <WidgetMinimizedChat
+            companyName={companyName}
+            chatMessages={chat.chatMessages}
+            chatInput={chat.chatInput}
+            setChatInput={chat.setChatInput}
+            handleSendChat={chat.handleSendChat}
+            isChatLoading={chat.isChatLoading}
+            chatThinkingText={chat.chatThinkingText}
+            chatEndRef={chat.chatEndRef}
+            setIsMinimized={setIsMinimized}
+          />
+        )}
 
-        {callStatus === "ongoing" &&
-          isMinimized &&
-          activeWidgetTab === "chat" && (
-            <WidgetMinimizedChat
-              companyName={companyName}
-              chatMessages={chat.chatMessages}
-              chatInput={chat.chatInput}
-              setChatInput={chat.setChatInput}
-              handleSendChat={chat.handleSendChat}
-              isChatLoading={chat.isChatLoading}
-              chatThinkingText={chat.chatThinkingText}
-              chatEndRef={chat.chatEndRef}
-              setIsMinimized={setIsMinimized}
-            />
-          )}
-      </div>
+      {/* Main Briggs face launcher - always visible in bottom right when idle or minimized */}
+      {(callStatus === "idle" || isMinimized) && (
+        <BriggsFace
+          className="pointer-events-auto fixed z-[100] cursor-pointer overflow-hidden rounded-full shadow-[0_8px_24px_rgba(0,0,0,0.15)] transition-transform hover:scale-105"
+          style={{ bottom: 30, right: 30, width: 72, height: 72 }}
+          onClick={() => {
+            if (callStatus === "idle") {
+              handleRequestCallClick();
+            } else {
+              setIsMinimized(false);
+            }
+          }}
+        />
+      )}
     </div>
   );
 }
