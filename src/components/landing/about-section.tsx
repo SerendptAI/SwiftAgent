@@ -40,7 +40,14 @@ export function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const headlineRef = useRef<HTMLDivElement>(null);
   const leftRef = useRef<HTMLDivElement>(null);
-  const [openId, setOpenId] = useState<string>("chatbots");
+  const [openId, setOpenId] = useState<string>("");
+
+  // Open first item by default on desktop only (after mount to avoid SSR mismatch)
+  useEffect(() => {
+    if (window.innerWidth >= 1024) {
+      setOpenId("chatbots");
+    }
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
