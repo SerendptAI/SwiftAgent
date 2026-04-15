@@ -8,8 +8,10 @@
   "login": {
     "welcomeBack": "Welcome back",
     "logInToYourAccount": "Log in to your account",
-    "googleLogin": "Sign up/log In with Google",
-    "serendptLogin": "Sign up/log In with Serendpt"
+    "googleLogin": "Sign in with",
+    "serendptLogin": "Sign in with",
+    "or": "OR",
+    "companyEmailPlaceholder": "Company email"
   },
   "dashboard": {
     "welcomeMessage": "Welcome to your Dashboard"

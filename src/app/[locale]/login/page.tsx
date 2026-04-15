@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useGoogleLogin } from "@/hooks/use-auth";
 
 const REFERRAL_COOKIE = "referral_verified";
@@ -22,58 +21,72 @@ export default function LoginPage() {
   const t = useTranslations("login");
   const googleLogin = useGoogleLogin();
   const [verified, setVerified] = useState(false);
+  const [email, setEmail] = useState("");
 
   // Guard: must have passed the referral gate first
   useEffect(() => {
-    if (!hasReferralCookie()) {
-      router.replace("/invite");
-    } else {
-      setVerified(true);
-    }
+    // if (!hasReferralCookie()) {
+    //   router.replace("/invite");
+    // } else {
+    //   setVerified(true);
+    // }
+    setVerified(true);
   }, [router]);
 
   const handleGoogleLogin = () => {
     googleLogin.mutate("en");
   };
 
-  // Don't render login UI until referral cookie is confirmed
   if (!verified) return null;
 
   return (
-    <div className="font-dm-mono container flex h-screen w-screen flex-col items-center justify-center">
-      <div className="mx-auto flex w-full flex-col justify-center gap-6 space-y-10 sm:w-[400px]">
+    <div className="font-dm-mono flex min-h-screen w-full items-start justify-center px-4 pt-24 sm:pt-32">
+      <div className="flex w-full max-w-md flex-col items-center gap-8">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/images/logo.svg" alt="Logo" />
+        <img src="/images/newlogo.svg" alt="Logo" className="h-14 w-14" />
 
-        <Card className="border-0 shadow-none">
-          <CardHeader className="space-y-1 text-left">
-            <h3 className="text-muted-foreground font-stolzl text-xs font-medium tracking-wider uppercase">
-              {t("welcomeBack")}
-            </h3>
-            <h2 className="font-stolzl text-xl font-semibold tracking-tight">
-              {t("logInToYourAccount")}
-            </h2>
-          </CardHeader>
-          <CardContent className="grid gap-4">
+        <div className="flex flex-col items-center gap-2 text-center">
+          <h3 className="text-muted-foreground font-stolzl text-[11px] font-normal tracking-[0.2em] uppercase">
+            {t("welcomeBack")}
+          </h3>
+          <h2 className="font-stolzl text-xl font-normal tracking-tight">
+            {t("logInToYourAccount")}
+          </h2>
+        </div>
+
+        <div className="flex w-full flex-col items-center gap-4">
+          <div className="flex w-full items-center justify-center gap-3">
             <Button
               variant="outline"
-              className="text-muted-foreground h-12 w-full justify-start px-8 font-normal shadow-[-3px_3px_0px_0px_#000000]"
+              className="text-muted-foreground font-dm-mono h-11 flex-1 text-[10px] font-normal tracking-[0.15em] uppercase shadow-[-3px_3px_0px_0px_#000000]"
               onClick={handleGoogleLogin}
               disabled={googleLogin.isPending}
             >
-              <Icons.google className="mr-3 h-5 w-5" />
-              {googleLogin.isPending ? "Redirecting..." : t("googleLogin")}
+              {t("googleLogin")}
+              <Icons.google className="ml-2 h-4 w-4" />
             </Button>
             <Button
               variant="outline"
-              className="text-muted-foreground h-12 w-full justify-start px-8 font-normal shadow-[-3px_3px_0px_0px_#000000]"
+              className="text-muted-foreground font-dm-mono h-11 flex-1 text-[10px] font-normal tracking-[0.15em] uppercase shadow-[-3px_3px_0px_0px_#000000]"
               disabled={googleLogin.isPending}
             >
-              <Icons.serendpt className="mr-3 h-5 w-5" />
               {t("serendptLogin")}
+              <Icons.serendpt className="ml-2 h-4 w-4" />
             </Button>
-          </CardContent>
-        </Card>
+          </div>
+
+          <span className="text-muted-foreground text-[11px] tracking-[0.2em] uppercase">
+            {t("or")}
+          </span>
+
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={t("companyEmailPlaceholder")}
+            className="text-muted-foreground placeholder:text-muted-foreground focus:ring-ring/50 h-11 w-full rounded-md border border-black/20 bg-transparent px-4 text-[11px] tracking-[0.2em] uppercase outline-none focus:ring-2"
+          />
+        </div>
       </div>
     </div>
   );
