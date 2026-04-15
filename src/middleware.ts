@@ -31,6 +31,11 @@ export default function middleware(req: NextRequest) {
     return res;
   }
 
+  // Skip intl middleware for auth callback to preserve query params (tokens)
+  if (pathname.includes("/auth/callback")) {
+    return NextResponse.next();
+  }
+
   // Everything else — intl routing
   return intlMiddleware(req);
 }
