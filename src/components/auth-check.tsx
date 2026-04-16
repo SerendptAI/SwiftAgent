@@ -4,13 +4,20 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Loader } from "@/components/loader";
-import { getAccessToken } from "@/lib/api-client";
 import { useCurrentUser } from "@/hooks/use-auth";
+import { getAccessToken } from "@/lib/api-client";
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { data: user, isLoading, isFetching, isError, status, fetchStatus } = useCurrentUser();
+  const {
+    data: user,
+    isLoading,
+    isFetching,
+    isError,
+    status,
+    fetchStatus,
+  } = useCurrentUser();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -20,7 +27,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   // The query is "busy" if it's loading, fetching, or if there's a token
   // but we haven't resolved user data yet (query was just enabled).
   const hasToken = typeof window !== "undefined" && !!getAccessToken();
-  const isResolving = isLoading || isFetching || (hasToken && status === "pending");
+  const isResolving =
+    isLoading || isFetching || (hasToken && status === "pending");
 
   // Compute redirect target synchronously during render
   const redirectTo = (() => {
@@ -34,10 +42,6 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     // Onboarding incomplete — bounce out of dashboard
     if (!user.onboarding_completed && pathname.includes("/dashboard"))
       return "/en/onboarding";
-
-    // Onboarding complete — bounce out of onboarding (e.g. browser back button)
-    if (user.onboarding_completed && pathname.includes("/onboarding"))
-      return "/en/dashboard";
 
     return null;
   })();
