@@ -50,6 +50,65 @@ export async function updateProfile(payload: {
   return data;
 }
 
+// ── OTP Authentication ────────────────────────────────────────────────────────
+
+export interface OtpSendResponse {
+  message: string;
+  email: string;
+  otp_required: boolean;
+  is_new_user: boolean;
+  access_token: string | null;
+  refresh_token: string | null;
+}
+
+export interface OtpVerifyResponse {
+  message: string;
+  email: string;
+  otp_required: boolean;
+  is_new_user: boolean;
+  access_token: string;
+  refresh_token: string;
+  token_type: string;
+}
+
+export async function sendOtp(
+  email: string,
+  isSignup: boolean = false,
+  fullName?: string,
+): Promise<OtpSendResponse> {
+  const { data } = await apiClient.post<OtpSendResponse>(
+    "/api/v1/auth/otp/send",
+    {
+      email,
+      is_signup: isSignup,
+      ...(fullName ? { full_name: fullName } : {}),
+    },
+  );
+
+  // Handle grace period — tokens returned directly
+  if (!data.otp_required && data.access_token && data.refresh_token) {
+    setAuthTokens(data.access_token, data.refresh_token);
+  }
+
+  return data;
+}
+
+export async function verifyOtp(
+  email: string,
+  otpCode: string,
+): Promise<OtpVerifyResponse> {
+  const { data } = await apiClient.post<OtpVerifyResponse>(
+    "/api/v1/auth/otp/verify",
+    { email, otp_code: otpCode },
+  );
+
+  if (data.access_token && data.refresh_token) {
+    setAuthTokens(data.access_token, data.refresh_token);
+  }
+
+  return data;
+}
+
 // ── Token Refresh ──────────────────────────────────────────────────────────────
 
 interface TokenResponse {
