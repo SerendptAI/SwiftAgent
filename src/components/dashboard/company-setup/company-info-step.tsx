@@ -208,15 +208,12 @@ export function CompanyInfoStep({
                 className="object-cover"
               />
             ) : (
-              <div className="absolute inset-0 overflow-hidden bg-[#FF5722]">
-                <div className="absolute -top-2 -left-2 flex items-center justify-center text-[#FF8A65]/50">
-                  <div className="flex flex-wrap gap-1 p-2">
-                    {[...Array(6)].map((_, i) => (
-                      <div key={i} className="h-4 w-4 rounded-xs bg-current" />
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <Image
+                src="/images/company_logo_new.svg"
+                alt="Default Logo"
+                fill
+                className="object-cover"
+              />
             )}
             <button
               onClick={() => fileInputRef.current?.click()}
@@ -296,59 +293,12 @@ export function CompanyInfoStep({
                   className="object-cover"
                 />
               ) : (
-                <div className="absolute inset-0 overflow-hidden bg-[#FF5722]">
-                  <div className="absolute -top-4 -left-4 text-[#FF8A65]/50">
-                    <Icons.logoHolder width="60" height="60" />
-                  </div>
-                  <div className="absolute top-8 right-4 rotate-45 text-[#FFCCBC]/50">
-                    <svg
-                      width="40"
-                      height="40"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                    >
-                      <rect x="2" y="2" width="20" height="20" rx="4" />
-                    </svg>
-                  </div>
-                  <div className="absolute bottom-2 left-8 -rotate-12 text-[#FFAB91]/50">
-                    <svg
-                      width="129"
-                      height="133"
-                      viewBox="0 0 129 133"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <g clipPath="url(#clip0_891_201)">
-                        <rect width="129" height="133" fill="#F25430" />
-                        <path
-                          d="M10.4561 104.792H21.6318V93H38V109.104H26.8242V120.896H38V137H21.5439V125.208H10.3682V137H-6V120.896H5.17578V109.104H-6V93H10.4561V104.792Z"
-                          fill="#F2B035"
-                        />
-                        <path
-                          d="M59.4561 55.792H70.6318V44H87V60.1035H75.8242V71.8965H87V88H70.5439V76.208H59.3682V88H43V71.8965H54.1758V60.1035H43V44H59.4561V55.792Z"
-                          fill="#F2B035"
-                        />
-                        <path
-                          d="M1.45605 11.792H12.6318V0H29V16.1035H17.8242V27.8965H29V44H12.5439V32.208H1.36816V44H-15V27.8965H-3.82422V16.1035H-15V0H1.45605V11.792Z"
-                          fill="#F2B035"
-                        />
-                        <path
-                          d="M106.456 6.79199H117.632V-5H134V11.1035H122.824V22.8965H134V39H117.544V27.208H106.368V39H90V22.8965H101.176V11.1035H90V-5H106.456V6.79199Z"
-                          fill="#F2B035"
-                        />
-                        <path
-                          d="M114.456 110.792H125.632V99H142V115.104H130.824V126.896H142V143H125.544V131.208H114.368V143H98V126.896H109.176V115.104H98V99H114.456V110.792Z"
-                          fill="#F2B035"
-                        />
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_891_201">
-                          <rect width="129" height="133" rx="10" fill="white" />
-                        </clipPath>
-                      </defs>
-                    </svg>
-                  </div>
-                </div>
+                <Image
+                  src="/images/company_logo_new.svg"
+                  alt="Default Logo"
+                  fill
+                  className="object-cover"
+                />
               )}
               <button
                 onClick={() => fileInputRef.current?.click()}

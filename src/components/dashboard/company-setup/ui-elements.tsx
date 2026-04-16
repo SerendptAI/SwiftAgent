@@ -11,7 +11,7 @@ export const FormLabel = ({
   return (
     <Component
       className={cn(
-        "mb-2 block text-sm font-semibold text-gray-900",
+        "mb-2 block text-base font-normal text-gray-900",
         className,
       )}
       htmlFor={htmlFor}
