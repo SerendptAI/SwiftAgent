@@ -1,6 +1,6 @@
 "use client";
 
-import { Bot, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useState } from "react";
@@ -86,7 +86,7 @@ function QuestionnaireChat({
   return (
     <div className="fixed inset-0 z-50 bg-black/60">
       <div className="absolute inset-y-0 right-[350px] left-0 flex items-center justify-center p-6 lg:left-[105px]">
-        <div className="flex h-[80%] w-full max-w-md flex-col rounded-2xl bg-white shadow-xl">
+        <div className="absolute right-0 flex h-[70%] w-full max-w-md flex-col bg-white shadow-xl">
           {/* Header */}
           <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
             <div className="flex items-center gap-3">
@@ -106,17 +106,17 @@ function QuestionnaireChat({
 
           {/* Chat body */}
           <div className="flex-1 overflow-y-auto p-5">
-            <div className="mb-4 w-fit max-w-[80%] rounded-lg bg-blue-50 px-4 py-3">
+            <div className="mb-6 w-fit max-w-[80%] rounded-lg bg-blue-50 px-4 py-3">
               <p className="text-sm font-medium text-blue-600">
                 {question.text}
               </p>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               {question.options.map((option) => (
                 <button
                   key={option}
-                  className="font-dm-mono block w-full cursor-pointer rounded-lg border border-gray-200 px-4 py-3 text-left text-sm font-medium text-gray-900 transition-colors hover:border-blue-400 hover:bg-blue-50"
+                  className="font-dm-mono block w-full cursor-pointer px-4 py-2 text-left text-sm font-bold tracking-wide text-gray-900 uppercase transition-colors hover:text-blue-600"
                 >
                   {option}
                 </button>
@@ -124,18 +124,11 @@ function QuestionnaireChat({
             </div>
           </div>
 
-          {/* Bot icon */}
-          <div className="flex justify-center pb-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200">
-              <Bot className="h-5 w-5 text-gray-500" />
-            </div>
+          {/* Rive animation at bottom center of chat card */}
+          <div className="absolute right-0 -bottom-20 -translate-x-1/2">
+            <BriggsAnimation className="h-16 w-16" />
           </div>
         </div>
-      </div>
-
-      {/* Rive animation on the right */}
-      <div className="absolute top-1/2 right-[380px] -translate-y-1/2">
-        <BriggsAnimation className="h-24 w-24" />
       </div>
     </div>
   );
