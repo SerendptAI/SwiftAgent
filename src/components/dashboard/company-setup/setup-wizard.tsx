@@ -50,20 +50,18 @@ export function SetupWizard() {
       <StepIndicator currentStep={currentStep} steps={STEPS} />
 
       <div className="flex-1 overflow-y-auto px-4 md:px-8">
-        {!showCompletion && (
-          <div className="mb-12 max-w-4xl">
-            <ProgressBar
-              currentStep={currentStep}
-              totalSteps={STEPS.length}
-              label={STEPS[currentStep]}
-            />
-          </div>
-        )}
+        <div className="mb-12 max-w-4xl">
+          <ProgressBar
+            currentStep={currentStep}
+            totalSteps={STEPS.length}
+            label={STEPS[currentStep]}
+          />
+        </div>
 
-        {!showCompletion && currentStep === 0 && (
+        {currentStep === 0 && (
           <CompanyInfoStep onNext={handleNext} setCompanyId={setCompanyId} />
         )}
-        {!showCompletion && currentStep === 1 && (
+        {currentStep === 1 && (
           <CompanyIdentityStep companyId={companyId} onNext={handleNext} />
         )}
 

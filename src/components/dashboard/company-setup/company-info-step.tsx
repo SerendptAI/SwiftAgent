@@ -396,7 +396,7 @@ export function CompanyInfoStep({
         </div>
 
         <div className="col-span-1">
-          <FormLabel htmlFor="email">Primary Contact Email</FormLabel>
+          <FormLabel htmlFor="email">Primary business Email</FormLabel>
           <FormInput
             id="email"
             type="email"
@@ -412,7 +412,7 @@ export function CompanyInfoStep({
         </div>
 
         <div className="col-span-1">
-          <FormLabel htmlFor="phone">Primary phone number</FormLabel>
+          <FormLabel htmlFor="phone">Primary business number</FormLabel>
           <FormInput
             id="phone"
             type="tel"
@@ -428,22 +428,23 @@ export function CompanyInfoStep({
           onDismiss={() => setError(null)}
         />
         {footerAction ?? (
-          <NextButton
-            onClick={handleSubmit(onSubmit)}
-            disabled={isCreating || isUpdating || isUploading}
-          >
-            {isCreating || isUpdating || isUploading ? (
-              <span className="flex items-center justify-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Saving...
-              </span>
-            ) : isUpdateMode ? (
-              "UPDATE"
-            ) : (
-              "Next"
-            )}
-          </NextButton>
+          <NextButton onClick={() => onNext?.()}>Next</NextButton>
         )}
+        {/* <NextButton
+          onClick={handleSubmit(onSubmit)}
+          disabled={isCreating || isUpdating || isUploading}
+        >
+          {isCreating || isUpdating || isUploading ? (
+            <span className="flex items-center justify-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Saving...
+            </span>
+          ) : isUpdateMode ? (
+            "UPDATE"
+          ) : (
+            "Next"
+          )}
+        </NextButton> */}
       </div>
     </div>
   );
