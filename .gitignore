@@ -32,10 +32,6 @@ yarn-error.log*
 # vercel
 .vercel
 
-# widget-bundle
-widget-bundle/node_modules
-widget-bundle/dist
-public/widget-ui.js
 
 # typescript
 *.tsbuildinfo

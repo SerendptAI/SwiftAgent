@@ -1,26 +1,36 @@
 "use client";
 
+import { Bot, Check } from "lucide-react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 import { Icons } from "@/components/icons";
+import { useCompanyQuery } from "@/hooks/use-company";
+import { useOnboardingStore } from "@/store/onboarding-store";
 
 import { NextButton } from "./ui-elements";
 
-export function CompletionStep() {
-  const router = useRouter();
+const BriggsAnimation = dynamic(
+  () => import("@/components/briggs-face-animation"),
+  { ssr: false },
+);
 
-  /* TODO: restore when API submission is re-enabled
-  const queryClient = useQueryClient();
-  useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-  }, [queryClient]);
-  */
+interface Question {
+  id: number;
+  text: string;
+  options: string[];
+}
 
-  const handleContinue = () => {
-    router.push("/en/dashboard");
-  };
+const QUESTIONS: Question[] = [
+  {
+    id: 1,
+    text: "Are you a SAAS or crypto based company?",
+    options: ["WE ARE A SAAS COMPANY.", "WE ARE A CRYPTO COMPANY."],
+  },
+];
 
+function IntroModal({ onStart }: { onStart: () => void }) {
   return (
     <div className="fixed inset-0 z-50 bg-black/60">
       <div className="absolute inset-y-0 right-[350px] left-0 flex items-center justify-center p-6 lg:left-[105px]">
@@ -53,7 +63,7 @@ export function CompletionStep() {
           </p>
 
           <div className="w-full max-w-xs">
-            <NextButton onClick={handleContinue} className="shadow-none">
+            <NextButton onClick={onStart} className="shadow-none">
               START QUESTIONER
             </NextButton>
           </div>
@@ -61,4 +71,87 @@ export function CompletionStep() {
       </div>
     </div>
   );
+}
+
+function QuestionnaireChat({
+  companyName,
+  logoUrl,
+}: {
+  companyName: string;
+  logoUrl?: string;
+}) {
+  const [currentQuestion] = useState(0);
+  const question = QUESTIONS[currentQuestion];
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/60">
+      <div className="absolute inset-y-0 right-[350px] left-0 flex items-center justify-center p-6 lg:left-[105px]">
+        <div className="flex h-[80%] w-full max-w-md flex-col rounded-2xl bg-white shadow-xl">
+          {/* Header */}
+          <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
+            <div className="flex items-center gap-3">
+              <Image
+                src={logoUrl || "/images/company_logo_new.svg"}
+                alt={companyName}
+                width={24}
+                height={24}
+                className="rounded"
+              />
+              <span className="font-dm-mono text-sm font-bold tracking-wider uppercase">
+                {companyName}
+              </span>
+            </div>
+            <Check className="h-5 w-5 text-gray-400" />
+          </div>
+
+          {/* Chat body */}
+          <div className="flex-1 overflow-y-auto p-5">
+            <div className="mb-4 w-fit max-w-[80%] rounded-lg bg-blue-50 px-4 py-3">
+              <p className="text-sm font-medium text-blue-600">
+                {question.text}
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              {question.options.map((option) => (
+                <button
+                  key={option}
+                  className="font-dm-mono block w-full cursor-pointer rounded-lg border border-gray-200 px-4 py-3 text-left text-sm font-medium text-gray-900 transition-colors hover:border-blue-400 hover:bg-blue-50"
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Bot icon */}
+          <div className="flex justify-center pb-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200">
+              <Bot className="h-5 w-5 text-gray-500" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Rive animation on the right */}
+      <div className="absolute top-1/2 right-[380px] -translate-y-1/2">
+        <BriggsAnimation className="h-24 w-24" />
+      </div>
+    </div>
+  );
+}
+
+export function CompletionStep() {
+  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+  const { companyId, typedCompanyName } = useOnboardingStore();
+  const { data: companyData } = useCompanyQuery(companyId);
+
+  const companyName = typedCompanyName || companyData?.name || "Your Company";
+  const logoUrl = companyData?.logo_url;
+
+  if (showQuestionnaire) {
+    return <QuestionnaireChat companyName={companyName} logoUrl={logoUrl} />;
+  }
+
+  return <IntroModal onStart={() => setShowQuestionnaire(true)} />;
 }

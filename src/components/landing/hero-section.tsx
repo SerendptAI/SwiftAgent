@@ -157,7 +157,7 @@ export function HeroSection() {
       {/* Navigation */}
       <nav
         ref={navRef}
-        className="fixed top-[70px] right-0 left-0 z-50 mx-auto flex h-[70px] w-[92%] items-center justify-between border border-black bg-white px-4 md:top-[92px] md:grid md:h-[80px] md:w-[90%] md:grid-cols-[auto_1fr_auto] md:gap-4 md:px-8"
+        className="fixed top-[30px] right-0 left-0 z-50 mx-auto flex h-[70px] w-[92%] items-center justify-between border border-black bg-white px-4 md:top-[52px] md:grid md:h-[80px] md:w-[90%] md:grid-cols-[auto_1fr_auto] md:gap-4 md:px-8"
       >
         {/* Logo */}
         <Link href="/" className="flex shrink-0 items-center">
@@ -243,7 +243,7 @@ export function HeroSection() {
       </nav>
 
       {/* Hero Content — Two Column Layout */}
-      <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-col items-center px-6 pt-45 pb-12 md:flex-row md:items-center md:justify-between md:px-12 md:pt-52 md:pb-16 lg:px-16 lg:pt-56">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-col items-center px-6 pt-35 pb-12 md:flex-row md:items-center md:justify-between md:px-12 md:pt-42 md:pb-16 lg:px-16 lg:pt-56">
         {/* Left Column */}
         <div className="flex w-full flex-col md:w-[55%] lg:w-[50%]">
           {/* Pill Badge Headline — Desktop */}
