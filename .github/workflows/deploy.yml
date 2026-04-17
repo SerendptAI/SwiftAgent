@@ -1,9 +1,11 @@
-name: Deploy
+name: Deploy Landing
 
 on:
   push:
     branches:
       - main
+    tags:
+      - 'v2*'
 
 jobs:
   deploy-landing:
@@ -11,5 +13,10 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Deploy
-        run: ./deploy.sh landing
+        run: |
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            ./deploy.sh landing ${{ github.ref_name }}
+          else
+            ./deploy.sh landing
+          fi
         working-directory: /home/ghrunner/swift-agents-prod
