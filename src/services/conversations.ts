@@ -33,11 +33,10 @@ export const chatsApi = {
     limit: number = 50,
     skip: number = 0,
   ): Promise<ChatSession[]> => {
-    const { data } = await apiClient.get<ChatSession[]>(
-      `/api/v1/dashboard/${companyId}/chats`,
-      { params: { limit, skip } },
-    );
-    return data;
+    const { data } = await apiClient.get<
+      { items: ChatSession[] } | ChatSession[]
+    >(`/api/v1/dashboard/${companyId}/chats`, { params: { limit, skip } });
+    return Array.isArray(data) ? data : data.items;
   },
 
   /** Get the full history of a specific chat session. */

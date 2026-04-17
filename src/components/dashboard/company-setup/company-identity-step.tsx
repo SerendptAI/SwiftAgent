@@ -183,7 +183,7 @@ export function CompanyIdentityStep({
                   ) : isUpdateMode ? (
                     "UPDATE"
                   ) : (
-                    "Next"
+                    "FINISH"
                   )}
                 </NextButton>
               )}
