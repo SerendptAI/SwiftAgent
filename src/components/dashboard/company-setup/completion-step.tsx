@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+import { Icons } from "@/components/icons";
+
 import { NextButton } from "./ui-elements";
 
 export function CompletionStep() {
@@ -46,21 +48,14 @@ export function CompletionStep() {
           </div>
 
           <p className="font-dm-mono mb-8 flex items-center gap-1.5 text-[10px] tracking-wider text-gray-400 uppercase">
-            <svg
-              className="h-3.5 w-3.5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
-            </svg>
+            <Icons.TimeFlow />
             Usually takes 5 minutes
           </p>
 
           <div className="w-full max-w-xs">
-            <NextButton onClick={handleContinue}>START QUESTIONER</NextButton>
+            <NextButton onClick={handleContinue} className="shadow-none">
+              START QUESTIONER
+            </NextButton>
           </div>
         </div>
       </div>
