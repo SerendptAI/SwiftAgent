@@ -6,8 +6,7 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 
 import { useCompanyMutations } from "@/hooks/use-company";
-import { useIngestKnowledge, useUploadKnowledge } from "@/hooks/use-knowledge";
-import { useRunStroll, useUpdateStrollConfig } from "@/hooks/use-stroll";
+import { useQueryKnowledge, useUploadKnowledge } from "@/hooks/use-knowledge";
 
 const BriggsAnimation = dynamic(
   () => import("@/components/briggs-face-animation"),
@@ -36,22 +35,21 @@ const FILE_THUMBNAILS: Partial<Record<UploadKind, string>> = {
   word: "/images/word.svg",
 };
 
-type StepType = "select" | "upload" | "sandbox";
+type StepType = "select" | "upload";
 
-type SandboxStatus = "editing" | "configuring" | "running" | "done" | "error";
+type CompanyType = "saas" | "crypto";
 
-interface SandboxForm {
-  dashboard_url: string;
-  login_url: string;
-  username: string;
-  password: string;
-}
-
-interface SandboxState {
-  form: SandboxForm;
-  status: SandboxStatus;
-  errorMessage?: string;
-}
+type UploadCategory =
+  | "faq"
+  | "manuals"
+  | "whitepaper"
+  | "tokenomics"
+  | "links"
+  | "audit_reports"
+  | "governance"
+  | "risk_disclosures"
+  | "roadmap"
+  | "community_support";
 
 interface ChatEntry {
   question: string;
@@ -59,7 +57,6 @@ interface ChatEntry {
   selected?: string;
   type: StepType;
   uploads?: ChatUpload[];
-  sandbox?: SandboxState;
 }
 
 interface QuestionDef {
@@ -67,6 +64,7 @@ interface QuestionDef {
   question: string;
   options?: string[];
   type: StepType;
+  uploadCategory?: UploadCategory;
   apiMapping?: {
     section: "type" | "boundaries";
     field: string;
@@ -74,42 +72,98 @@ interface QuestionDef {
   };
 }
 
-const QUESTIONS: QuestionDef[] = [
-  {
-    id: "company_type",
-    question: "Are you a SAAS or crypto based company?",
-    options: ["WE ARE A SAAS COMPANY.", "WE ARE A CRYPTO COMPANY."],
-    type: "select",
-    apiMapping: {
-      section: "type",
-      field: "company_type",
-      transform: (v) => (v.includes("SAAS") ? "saas" : "crypto"),
-    },
+const INITIAL_QUESTION: QuestionDef = {
+  id: "company_type",
+  question: "Are you a SAAS or crypto based company?",
+  options: ["WE ARE A SAAS COMPANY.", "WE ARE A CRYPTO COMPANY."],
+  type: "select",
+  apiMapping: {
+    section: "type",
+    field: "company_type",
+    transform: (v) => (v.includes("SAAS") ? "saas" : "crypto"),
   },
+};
+
+const FAQ_QUESTION: QuestionDef = {
+  id: "faq_upload",
+  question:
+    "Do you have FAQs? Upload the document or type a few common questions and answers.",
+  type: "upload",
+  uploadCategory: "faq",
+  apiMapping: {
+    section: "boundaries",
+    field: "custom_info",
+  },
+};
+
+const SAAS_QUESTIONS: QuestionDef[] = [
+  FAQ_QUESTION,
   {
-    id: "faq_upload",
-    question:
-      "Do you have FAQs? Upload the document or type in the common questions and answers.",
+    id: "manuals_upload",
+    question: "Do you have any manuals? Upload the document or type it",
     type: "upload",
-    apiMapping: {
-      section: "boundaries",
-      field: "custom_info",
-    },
-  },
-  {
-    id: "sandbox_setup",
-    question:
-      "Last step — let's set up your first sandbox stroll. Share your dashboard URL and login so I can take a look around safely.",
-    type: "sandbox",
+    uploadCategory: "manuals",
   },
 ];
 
-const EMPTY_SANDBOX_FORM: SandboxForm = {
-  dashboard_url: "",
-  login_url: "",
-  username: "",
-  password: "",
-};
+const CRYPTO_QUESTIONS: QuestionDef[] = [
+  FAQ_QUESTION,
+  {
+    id: "whitepaper_upload",
+    question: "Do you have a Whitepaper? Upload the document or type it",
+    type: "upload",
+    uploadCategory: "whitepaper",
+  },
+  {
+    id: "tokenomics_upload",
+    question: "Do you have a Tokenomics Documentation? Upload the document",
+    type: "upload",
+    uploadCategory: "tokenomics",
+  },
+  {
+    id: "blockchain_links",
+    question:
+      "Do you have Blockchain Explorer Links? Type them please, separate them with commas",
+    type: "upload",
+    uploadCategory: "links",
+  },
+  {
+    id: "audit_reports_upload",
+    question: "Do you have Audit Reports? Upload the document",
+    type: "upload",
+    uploadCategory: "audit_reports",
+  },
+  {
+    id: "governance_upload",
+    question: "Do you have Governance Documentation? Upload the document",
+    type: "upload",
+    uploadCategory: "governance",
+  },
+  {
+    id: "risk_disclosures_upload",
+    question: "Do you have Risk Disclosures? Upload the document or type it",
+    type: "upload",
+    uploadCategory: "risk_disclosures",
+  },
+  {
+    id: "roadmap_upload",
+    question: "Do you have a Roadmap and Updates? Upload the document",
+    type: "upload",
+    uploadCategory: "roadmap",
+  },
+  {
+    id: "community_support_upload",
+    question: "Do you have Community and Support Docs? Upload the document",
+    type: "upload",
+    uploadCategory: "community_support",
+  },
+];
+
+function buildQuestions(type: CompanyType | null): QuestionDef[] {
+  if (type === "crypto") return [INITIAL_QUESTION, ...CRYPTO_QUESTIONS];
+  if (type === "saas") return [INITIAL_QUESTION, ...SAAS_QUESTIONS];
+  return [INITIAL_QUESTION];
+}
 
 // ── Component ────────────────────────────────────────────────────────────────
 
@@ -122,12 +176,15 @@ export function QuestionnaireChat({
   companyName: string;
   logoUrl?: string;
 }) {
+  const [questions, setQuestions] = useState<QuestionDef[]>(() =>
+    buildQuestions(null),
+  );
   const [currentStep, setCurrentStep] = useState(0);
   const [entries, setEntries] = useState<ChatEntry[]>([
     {
-      question: QUESTIONS[0].question,
-      options: QUESTIONS[0].options,
-      type: QUESTIONS[0].type,
+      question: INITIAL_QUESTION.question,
+      options: INITIAL_QUESTION.options,
+      type: INITIAL_QUESTION.type,
     },
   ]);
   const [textInput, setTextInput] = useState("");
@@ -136,9 +193,7 @@ export function QuestionnaireChat({
 
   const { updateCompany } = useCompanyMutations();
   const uploadKnowledge = useUploadKnowledge();
-  const ingestKnowledge = useIngestKnowledge();
-  const updateStrollConfig = useUpdateStrollConfig();
-  const runStroll = useRunStroll();
+  const queryKnowledge = useQueryKnowledge();
 
   const scrollToBottom = () => {
     setTimeout(
@@ -147,10 +202,11 @@ export function QuestionnaireChat({
     );
   };
 
-  const advanceToNextStep = () => {
+  const advanceToNextStep = (overrideQuestions?: QuestionDef[]) => {
+    const list = overrideQuestions ?? questions;
     const nextStep = currentStep + 1;
-    if (nextStep >= QUESTIONS.length) return;
-    const next = QUESTIONS[nextStep];
+    if (nextStep >= list.length) return;
+    const next = list[nextStep];
     setCurrentStep(nextStep);
     setEntries((prev) => [
       ...prev,
@@ -158,17 +214,13 @@ export function QuestionnaireChat({
         question: next.question,
         options: next.options,
         type: next.type,
-        sandbox:
-          next.type === "sandbox"
-            ? { form: { ...EMPTY_SANDBOX_FORM }, status: "editing" }
-            : undefined,
       },
     ]);
     scrollToBottom();
   };
 
-  const handleSelectOption = async (option: string) => {
-    const questionDef = QUESTIONS[currentStep];
+  const handleSelectOption = (option: string) => {
+    const questionDef = questions[currentStep];
 
     // Mark selection in current entry
     setEntries((prev) =>
@@ -177,24 +229,30 @@ export function QuestionnaireChat({
       ),
     );
 
-    // Submit to API immediately
+    // Determine branching for company_type
+    let nextQuestions = questions;
+    if (questionDef?.id === "company_type") {
+      const type: CompanyType = option.includes("SAAS") ? "saas" : "crypto";
+      nextQuestions = buildQuestions(type);
+      setQuestions(nextQuestions);
+    }
+
+    // Fire-and-forget: save answer in the background so the UI advances instantly.
     if (companyId && questionDef?.apiMapping) {
       const value = questionDef.apiMapping.transform
         ? questionDef.apiMapping.transform(option)
         : option;
 
-      try {
-        await updateCompany.mutateAsync({
+      updateCompany
+        .mutateAsync({
           companyId,
           section: questionDef.apiMapping.section,
           payload: { [questionDef.apiMapping.field]: value },
-        });
-      } catch (e) {
-        console.error("Failed to save answer:", e);
-      }
+        })
+        .catch((e) => console.error("Failed to save answer:", e));
     }
 
-    advanceToNextStep();
+    advanceToNextStep(nextQuestions);
   };
 
   const appendUpload = (label: string, kind: UploadKind) => {
@@ -237,13 +295,14 @@ export function QuestionnaireChat({
     e.target.value = "";
     if (!file || !companyId) return;
 
+    const category = questions[currentStep]?.uploadCategory ?? "faq";
     const uploadIndex = appendUpload(file.name, detectFileKind(file.name));
     scrollToBottom();
 
     try {
       await uploadKnowledge.mutateAsync({
         companyId,
-        category: "faq",
+        category,
         file,
       });
       setUploadStatus(uploadIndex, "done");
@@ -253,127 +312,35 @@ export function QuestionnaireChat({
     }
   };
 
-  const updateSandboxForm = (patch: Partial<SandboxForm>) => {
-    setEntries((prev) =>
-      prev.map((entry, i) => {
-        if (i !== currentStep || !entry.sandbox) return entry;
-        return {
-          ...entry,
-          sandbox: {
-            ...entry.sandbox,
-            form: { ...entry.sandbox.form, ...patch },
-            // Clear error state once the user edits again
-            status:
-              entry.sandbox.status === "error"
-                ? "editing"
-                : entry.sandbox.status,
-            errorMessage:
-              entry.sandbox.status === "error"
-                ? undefined
-                : entry.sandbox.errorMessage,
-          },
-        };
-      }),
-    );
-  };
-
-  const setSandboxStatus = (status: SandboxStatus, errorMessage?: string) => {
-    setEntries((prev) =>
-      prev.map((entry, i) => {
-        if (i !== currentStep || !entry.sandbox) return entry;
-        return {
-          ...entry,
-          sandbox: { ...entry.sandbox, status, errorMessage },
-        };
-      }),
-    );
-  };
-
-  const handleSandboxSubmit = async () => {
-    if (!companyId) return;
-    const entry = entries[currentStep];
-    const sandbox = entry?.sandbox;
-    if (
-      !sandbox ||
-      sandbox.status === "configuring" ||
-      sandbox.status === "running"
-    ) {
-      return;
-    }
-
-    const form = sandbox.form;
-    const dashboardUrl = form.dashboard_url.trim();
-    const username = form.username.trim();
-    const password = form.password;
-
-    if (!dashboardUrl || !username || !password) {
-      setSandboxStatus(
-        "error",
-        "Dashboard URL, username, and password are required.",
-      );
-      return;
-    }
-
-    setSandboxStatus("configuring");
-
-    try {
-      await updateStrollConfig.mutateAsync({
-        companyId,
-        payload: {
-          dashboard_url: dashboardUrl,
-          sandbox_mode: true,
-          max_pages: 10,
-          credentials: {
-            login_url: form.login_url.trim() || undefined,
-            username,
-            password,
-          },
-        },
-      });
-
-      setSandboxStatus("running");
-      await runStroll.mutateAsync({ companyId });
-      setSandboxStatus("done");
-      scrollToBottom();
-    } catch (err) {
-      console.error("Failed to set up sandbox:", err);
-      const message =
-        err instanceof Error
-          ? err.message
-          : "Couldn't start the sandbox stroll.";
-      setSandboxStatus("error", message);
-    }
-  };
-
   const handleTextSubmit = async () => {
     const value = textInput.trim();
-    if (!value || !companyId || ingestKnowledge.isPending) return;
+    if (!value || !companyId || queryKnowledge.isPending) return;
 
     const uploadIndex = appendUpload(value, "text");
     setTextInput("");
     scrollToBottom();
 
     try {
-      await ingestKnowledge.mutateAsync({
+      await queryKnowledge.mutateAsync({
+        query: value,
         company_id: companyId,
-        category: "faq",
-        title: value.slice(0, 80),
-        content: value,
       });
       setUploadStatus(uploadIndex, "done");
     } catch (err) {
-      console.error("Failed to save FAQ text:", err);
+      console.error("Failed to query knowledge:", err);
       setUploadStatus(uploadIndex, "error");
     }
   };
 
   const currentEntry = entries[currentStep];
   const showInputBar = currentEntry?.type === "upload";
-  const canAdvanceFromFaq =
+  const isLastStep = currentStep === questions.length - 1;
+  const canAdvanceFromUpload =
     currentEntry?.type === "upload" &&
+    !isLastStep &&
     !!currentEntry.uploads?.some((u) => u.status === "done") &&
     !uploadKnowledge.isPending &&
-    !ingestKnowledge.isPending;
+    !queryKnowledge.isPending;
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60">
@@ -498,16 +465,6 @@ export function QuestionnaireChat({
                     </div>
                   );
                 })}
-
-                {/* Sandbox setup form */}
-                {entry.type === "sandbox" && entry.sandbox && (
-                  <SandboxFormCard
-                    sandbox={entry.sandbox}
-                    isCurrent={entryIdx === currentStep}
-                    onChange={updateSandboxForm}
-                    onSubmit={handleSandboxSubmit}
-                  />
-                )}
               </div>
             ))}
 
@@ -517,9 +474,9 @@ export function QuestionnaireChat({
           {/* Input bar for upload/text questions */}
           {showInputBar && (
             <div className="space-y-3 border-t border-gray-100 px-4 py-3">
-              {canAdvanceFromFaq && (
+              {canAdvanceFromUpload && (
                 <button
-                  onClick={advanceToNextStep}
+                  onClick={() => advanceToNextStep()}
                   className="font-dm-mono w-full cursor-pointer rounded-md bg-[#E8613C] px-4 py-3 text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-[#d1552f]"
                 >
                   CONTINUE →
@@ -539,12 +496,12 @@ export function QuestionnaireChat({
                   onChange={(e) => setTextInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleTextSubmit()}
                   placeholder="Ask a question"
-                  disabled={ingestKnowledge.isPending}
+                  disabled={queryKnowledge.isPending}
                   className="font-dm-mono flex-1 text-sm outline-none placeholder:text-gray-400 disabled:opacity-50"
                 />
                 <button
                   onClick={handleTextSubmit}
-                  disabled={ingestKnowledge.isPending || !textInput.trim()}
+                  disabled={queryKnowledge.isPending || !textInput.trim()}
                   className="shrink-0 cursor-pointer text-gray-400 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <ChevronUp className="h-4 w-4" />
@@ -567,118 +524,5 @@ export function QuestionnaireChat({
         </div>
       </div>
     </div>
-  );
-}
-
-// ── Sandbox form ──────────────────────────────────────────────────────────────
-
-function SandboxFormCard({
-  sandbox,
-  isCurrent,
-  onChange,
-  onSubmit,
-}: {
-  sandbox: SandboxState;
-  isCurrent: boolean;
-  onChange: (patch: Partial<SandboxForm>) => void;
-  onSubmit: () => void;
-}) {
-  const { form, status, errorMessage } = sandbox;
-  const isBusy = status === "configuring" || status === "running";
-  const isDone = status === "done";
-  const locked = !isCurrent || isBusy || isDone;
-
-  if (isDone) {
-    return (
-      <div className="mt-3 w-fit max-w-[80%] rounded-lg bg-blue-600 px-4 py-3">
-        <p className="font-dm-mono text-xs font-bold tracking-wider text-white uppercase">
-          Sandbox stroll started · we&apos;ll share results soon
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="mt-3 space-y-3 rounded-lg border border-gray-200 bg-white p-4">
-      <SandboxField
-        label="Dashboard URL"
-        value={form.dashboard_url}
-        placeholder="https://app.example.com/dashboard"
-        disabled={locked}
-        onChange={(v) => onChange({ dashboard_url: v })}
-      />
-      <SandboxField
-        label="Login URL (optional)"
-        value={form.login_url}
-        placeholder="https://app.example.com/login"
-        disabled={locked}
-        onChange={(v) => onChange({ login_url: v })}
-      />
-      <SandboxField
-        label="Username"
-        value={form.username}
-        placeholder="admin@company.com"
-        disabled={locked}
-        onChange={(v) => onChange({ username: v })}
-      />
-      <SandboxField
-        label="Password"
-        value={form.password}
-        type="password"
-        placeholder="••••••••"
-        disabled={locked}
-        onChange={(v) => onChange({ password: v })}
-      />
-
-      {errorMessage && (
-        <p className="font-dm-mono text-xs font-bold tracking-wider text-red-500 uppercase">
-          {errorMessage}
-        </p>
-      )}
-
-      <button
-        onClick={onSubmit}
-        disabled={locked}
-        className="font-dm-mono w-full cursor-pointer rounded-md bg-[#E8613C] px-4 py-3 text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-[#d1552f] disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        {status === "configuring"
-          ? "SAVING CONFIG…"
-          : status === "running"
-            ? "STARTING STROLL…"
-            : "START SANDBOX STROLL"}
-      </button>
-    </div>
-  );
-}
-
-function SandboxField({
-  label,
-  value,
-  onChange,
-  placeholder,
-  disabled,
-  type = "text",
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  disabled?: boolean;
-  type?: "text" | "password";
-}) {
-  return (
-    <label className="block">
-      <span className="font-dm-mono mb-1 block text-[10px] font-bold tracking-wider text-gray-500 uppercase">
-        {label}
-      </span>
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        disabled={disabled}
-        className="font-dm-mono w-full rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-gray-400 disabled:opacity-60"
-      />
-    </label>
   );
 }
