@@ -1,10 +1,17 @@
 "use client";
 
-import { Check, ChevronDown, ChevronUp, Paperclip } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  ChevronUp,
+  CircleCheck,
+  CircleX,
+  Paperclip,
+} from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useCompanyMutations } from "@/hooks/use-company";
 import { useIngestKnowledge, useUploadKnowledge } from "@/hooks/use-knowledge";
@@ -203,7 +210,10 @@ export function QuestionnaireChat({
     },
   ]);
   const [textInput, setTextInput] = useState("");
-  const [isComplete, setIsComplete] = useState(false);
+  const [phase, setPhase] = useState<"chat" | "thanks" | "email" | "congrats">(
+    "chat",
+  );
+  const [emailHandle, setEmailHandle] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -223,7 +233,7 @@ export function QuestionnaireChat({
     const list = overrideQuestions ?? questions;
     const nextStep = currentStep + 1;
     if (nextStep >= list.length) {
-      setIsComplete(true);
+      setPhase("thanks");
       return;
     }
     const next = list[nextStep];
@@ -363,38 +373,77 @@ export function QuestionnaireChat({
   const currentEntry = entries[currentStep];
   const showInputBar = currentEntry?.type === "upload";
 
-  if (isComplete) {
+  if (phase === "thanks") {
     return (
-      <div className="fixed inset-0 z-50 bg-black/60">
-        <div className="absolute inset-y-0 right-[350px] left-0 flex items-center justify-center p-6 lg:left-[105px]">
-          <div className="relative flex h-[80%] w-full max-w-md flex-col items-center justify-center bg-white px-10 py-14 text-center shadow-xl">
-            <Image
-              src="/images/champion.svg"
-              alt="Completed"
-              width={120}
-              height={140}
-              className="mb-8"
-            />
-            <h2 className="font-greed-narrow mb-10 text-3xl leading-tight font-bold text-gray-900">
-              Thanks for helping
-              <br />
-              us learn about your
-              <br />
-              company.
-            </h2>
-            <button
-              onClick={() => router.push("/dashboard")}
-              className="font-dm-mono w-full cursor-pointer rounded-sm bg-[#006BE5] py-4 text-center text-sm font-bold tracking-wider text-white uppercase transition-colors hover:bg-[#0055B8]"
-            >
-              Pick an email address
-            </button>
+      <OverlayShell>
+        <Image
+          src="/images/champion.svg"
+          alt="Completed"
+          width={120}
+          height={140}
+          className="mb-8"
+        />
+        <h2 className="font-greed-narrow mb-10 text-3xl leading-tight font-bold text-gray-900">
+          Thanks for helping
+          <br />
+          us learn about your
+          <br />
+          company.
+        </h2>
+        <PrimaryActionButton onClick={() => setPhase("email")}>
+          Pick an email address
+        </PrimaryActionButton>
 
-            <div className="absolute right-0 -bottom-20 -translate-x-1/2">
-              <BriggsAnimation className="h-16 w-16" />
-            </div>
-          </div>
+        <div className="absolute right-0 -bottom-20 -translate-x-1/2">
+          <BriggsAnimation className="h-16 w-16" />
         </div>
-      </div>
+      </OverlayShell>
+    );
+  }
+
+  if (phase === "email") {
+    return (
+      <EmailPickerScreen
+        value={emailHandle}
+        onChange={setEmailHandle}
+        onSelect={(handle) => {
+          setEmailHandle(handle);
+          setPhase("congrats");
+        }}
+      />
+    );
+  }
+
+  if (phase === "congrats") {
+    return (
+      <OverlayShell>
+        <Image
+          src="/images/pixellife.svg"
+          alt="Congratulations"
+          width={120}
+          height={140}
+          className="mb-6"
+        />
+        <h2 className="font-greed-narrow mb-3 text-3xl font-bold text-gray-900">
+          Congratulations
+        </h2>
+        <p className="font-dm-mono mb-6 text-xs tracking-wider text-gray-500 uppercase">
+          All customer replies will be
+          <br />
+          made with this email
+        </p>
+        <div className="mb-8 w-full rounded-sm border border-gray-200 px-4 py-3 text-center">
+          <span className="font-dm-mono text-sm font-bold tracking-wider text-gray-900">
+            {emailHandle}
+          </span>
+          <span className="font-dm-mono text-sm tracking-wider text-gray-400">
+            @swifty.email
+          </span>
+        </div>
+        <PrimaryActionButton onClick={() => router.push("/dashboard")}>
+          Finish
+        </PrimaryActionButton>
+      </OverlayShell>
     );
   }
 
@@ -572,5 +621,146 @@ export function QuestionnaireChat({
         </div>
       </div>
     </div>
+  );
+}
+
+// ── Completion screens ────────────────────────────────────────────────────────
+
+function OverlayShell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="fixed inset-0 z-50 bg-black/60">
+      <div className="absolute inset-y-0 right-[350px] left-0 flex items-center justify-center p-6 lg:left-[105px]">
+        <div className="relative flex h-[80%] w-full max-w-md flex-col items-center justify-center bg-white px-10 py-14 text-center shadow-xl">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PrimaryActionButton({
+  onClick,
+  disabled,
+  children,
+}: {
+  onClick: () => void;
+  disabled?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className="font-dm-mono w-full cursor-pointer rounded-sm bg-[#006BE5] py-4 text-center text-sm font-bold tracking-wider text-white uppercase transition-colors hover:bg-[#0055B8] disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      {children}
+    </button>
+  );
+}
+
+const RESERVED_EMAIL_HANDLES = new Set([
+  "admin",
+  "info",
+  "support",
+  "help",
+  "contact",
+  "mail",
+  "test",
+  "root",
+  "hello",
+  "sales",
+  "noreply",
+]);
+
+const EMAIL_HANDLE_PATTERN = /^[a-z0-9][a-z0-9-]{1,30}[a-z0-9]$/;
+
+type EmailAvailability = "idle" | "checking" | "available" | "taken";
+
+function EmailPickerScreen({
+  value,
+  onChange,
+  onSelect,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  onSelect: (handle: string) => void;
+}) {
+  const [availability, setAvailability] = useState<EmailAvailability>(
+    value ? "checking" : "idle",
+  );
+
+  useEffect(() => {
+    const handle = value.trim().toLowerCase();
+    if (!handle) {
+      setAvailability("idle");
+      return;
+    }
+    if (!EMAIL_HANDLE_PATTERN.test(handle)) {
+      setAvailability("taken");
+      return;
+    }
+    setAvailability("checking");
+    const timer = setTimeout(() => {
+      setAvailability(
+        RESERVED_EMAIL_HANDLES.has(handle) ? "taken" : "available",
+      );
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [value]);
+
+  return (
+    <OverlayShell>
+      <Image
+        src="/images/emaildelivery.svg"
+        alt="Pick email"
+        width={90}
+        height={180}
+        className="mb-6"
+      />
+      <p className="font-dm-mono mb-6 text-xs tracking-wider text-gray-500 uppercase">
+        This is the email address that will be used
+        <br />
+        to communicate with customers via email, it
+        <br />
+        should correspond with your company name
+      </p>
+      <div className="mb-3 flex w-full items-center rounded-sm border border-gray-200 px-4 py-3">
+        <input
+          value={value}
+          onChange={(e) =>
+            onChange(e.target.value.toLowerCase().replace(/\s+/g, ""))
+          }
+          placeholder="companyname"
+          className="font-dm-mono flex-1 text-sm text-gray-900 outline-none placeholder:text-gray-400"
+        />
+        <span className="font-dm-mono text-sm tracking-wider text-gray-400">
+          @swifty.email
+        </span>
+      </div>
+      <div className="mb-6 flex h-4 items-center gap-1.5">
+        {availability === "available" && (
+          <>
+            <CircleCheck className="h-4 w-4 fill-green-500 text-white" />
+            <span className="font-dm-mono text-[10px] font-bold tracking-wider text-green-600 uppercase">
+              Name available
+            </span>
+          </>
+        )}
+        {availability === "taken" && (
+          <>
+            <CircleX className="h-4 w-4 fill-red-500 text-white" />
+            <span className="font-dm-mono text-[10px] font-bold tracking-wider text-red-500 uppercase">
+              Name taken, please try another one
+            </span>
+          </>
+        )}
+      </div>
+      <PrimaryActionButton
+        onClick={() => onSelect(value.trim().toLowerCase())}
+        disabled={availability !== "available"}
+      >
+        Select
+      </PrimaryActionButton>
+    </OverlayShell>
   );
 }
