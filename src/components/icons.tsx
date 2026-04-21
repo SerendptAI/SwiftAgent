@@ -1460,32 +1460,32 @@ export const Icons = {
       <path
         d="M10.0003 1.33331H6.66699"
         stroke="#666666"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M2.66667 8.99998C2.66667 5.87037 5.20372 3.33331 8.33333 3.33331C9.89813 3.33331 11.3148 3.96757 12.3403 4.99304M12.3403 4.99304C13.3657 6.01851 14 7.43518 14 8.99998C14 12.1296 11.4629 14.6666 8.33333 14.6666H2M12.3403 4.99304L13.3333 3.99998"
         stroke="#666666"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M5.33333 12.6667H2"
         stroke="#666666"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M4 10.6667H2"
         stroke="#666666"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M8.33301 9.00002L10.6663 6.66669"
         stroke="#666666"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   ),

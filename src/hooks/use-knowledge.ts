@@ -1,9 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import type {
-  IngestKnowledgePayload,
-  QueryKnowledgePayload,
-} from "@/services/knowledge";
+import type { IngestKnowledgePayload } from "@/services/knowledge";
 import { knowledgeApi } from "@/services/knowledge";
 
 export function useUploadKnowledge() {
@@ -34,12 +31,5 @@ export function useIngestKnowledge() {
     onSuccess: (_, { company_id }) => {
       queryClient.invalidateQueries({ queryKey: ["knowledge", company_id] });
     },
-  });
-}
-
-export function useQueryKnowledge() {
-  return useMutation({
-    mutationFn: (payload: QueryKnowledgePayload) =>
-      knowledgeApi.queryKnowledge(payload),
   });
 }

@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 
 import { useCompanyMutations } from "@/hooks/use-company";
-import { useQueryKnowledge, useUploadKnowledge } from "@/hooks/use-knowledge";
+import { useIngestKnowledge, useUploadKnowledge } from "@/hooks/use-knowledge";
 
 const BriggsAnimation = dynamic(
   () => import("@/components/briggs-face-animation"),
@@ -42,6 +42,8 @@ type CompanyType = "saas" | "crypto";
 type UploadCategory =
   | "faq"
   | "manuals"
+  | "policies"
+  | "sops"
   | "whitepaper"
   | "tokenomics"
   | "links"
@@ -103,6 +105,18 @@ const SAAS_QUESTIONS: QuestionDef[] = [
     question: "Do you have any manuals? Upload the document or type it",
     type: "upload",
     uploadCategory: "manuals",
+  },
+  {
+    id: "policies_upload",
+    question: "Do you have policies? Upload the document or type it",
+    type: "upload",
+    uploadCategory: "policies",
+  },
+  {
+    id: "sops_upload",
+    question: "Do you have internal SOPs? Upload the document or type it",
+    type: "upload",
+    uploadCategory: "sops",
   },
 ];
 
@@ -193,7 +207,7 @@ export function QuestionnaireChat({
 
   const { updateCompany } = useCompanyMutations();
   const uploadKnowledge = useUploadKnowledge();
-  const queryKnowledge = useQueryKnowledge();
+  const ingestKnowledge = useIngestKnowledge();
 
   const scrollToBottom = () => {
     setTimeout(
@@ -256,16 +270,19 @@ export function QuestionnaireChat({
   };
 
   const appendUpload = (label: string, kind: UploadKind) => {
-    let index = -1;
+    // Compute the index synchronously from current state — the setEntries
+    // updater runs later, so relying on its side-effect returns stale values.
+    const index = entries[currentStep]?.uploads?.length ?? 0;
     setEntries((prev) =>
       prev.map((entry, i) => {
         if (i !== currentStep) return entry;
-        const uploads = [
-          ...(entry.uploads || []),
-          { label, kind, status: "pending" as const },
-        ];
-        index = uploads.length - 1;
-        return { ...entry, uploads };
+        return {
+          ...entry,
+          uploads: [
+            ...(entry.uploads || []),
+            { label, kind, status: "pending" as const },
+          ],
+        };
       }),
     );
     return index;
@@ -306,6 +323,7 @@ export function QuestionnaireChat({
         file,
       });
       setUploadStatus(uploadIndex, "done");
+      advanceToNextStep();
     } catch (err) {
       console.error("Failed to upload:", err);
       setUploadStatus(uploadIndex, "error");
@@ -314,33 +332,30 @@ export function QuestionnaireChat({
 
   const handleTextSubmit = async () => {
     const value = textInput.trim();
-    if (!value || !companyId || queryKnowledge.isPending) return;
+    if (!value || !companyId || ingestKnowledge.isPending) return;
 
+    const category = questions[currentStep]?.uploadCategory ?? "faq";
     const uploadIndex = appendUpload(value, "text");
     setTextInput("");
     scrollToBottom();
 
     try {
-      await queryKnowledge.mutateAsync({
-        query: value,
+      await ingestKnowledge.mutateAsync({
         company_id: companyId,
+        category,
+        title: value.slice(0, 80),
+        content: value,
       });
       setUploadStatus(uploadIndex, "done");
+      advanceToNextStep();
     } catch (err) {
-      console.error("Failed to query knowledge:", err);
+      console.error("Failed to save knowledge text:", err);
       setUploadStatus(uploadIndex, "error");
     }
   };
 
   const currentEntry = entries[currentStep];
   const showInputBar = currentEntry?.type === "upload";
-  const isLastStep = currentStep === questions.length - 1;
-  const canAdvanceFromUpload =
-    currentEntry?.type === "upload" &&
-    !isLastStep &&
-    !!currentEntry.uploads?.some((u) => u.status === "done") &&
-    !uploadKnowledge.isPending &&
-    !queryKnowledge.isPending;
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60">
@@ -450,7 +465,7 @@ export function QuestionnaireChat({
                   return (
                     <div
                       key={idx}
-                      className={`mt-3 ml-auto w-fit rounded-md px-4 py-3 ${
+                      className={`max-4/5 mt-3 ml-auto w-fit rounded-md px-4 py-3 ${
                         item.status === "error"
                           ? "bg-red-500"
                           : item.status === "pending"
@@ -474,14 +489,6 @@ export function QuestionnaireChat({
           {/* Input bar for upload/text questions */}
           {showInputBar && (
             <div className="space-y-3 border-t border-gray-100 px-4 py-3">
-              {canAdvanceFromUpload && (
-                <button
-                  onClick={() => advanceToNextStep()}
-                  className="font-dm-mono w-full cursor-pointer rounded-md bg-[#E8613C] px-4 py-3 text-xs font-bold tracking-wider text-white uppercase transition-colors hover:bg-[#d1552f]"
-                >
-                  CONTINUE →
-                </button>
-              )}
               <div className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2">
                 <button
                   onClick={() => fileInputRef.current?.click()}
@@ -496,12 +503,12 @@ export function QuestionnaireChat({
                   onChange={(e) => setTextInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleTextSubmit()}
                   placeholder="Ask a question"
-                  disabled={queryKnowledge.isPending}
+                  disabled={ingestKnowledge.isPending}
                   className="font-dm-mono flex-1 text-sm outline-none placeholder:text-gray-400 disabled:opacity-50"
                 />
                 <button
                   onClick={handleTextSubmit}
-                  disabled={queryKnowledge.isPending || !textInput.trim()}
+                  disabled={ingestKnowledge.isPending || !textInput.trim()}
                   className="shrink-0 cursor-pointer text-gray-400 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <ChevronUp className="h-4 w-4" />

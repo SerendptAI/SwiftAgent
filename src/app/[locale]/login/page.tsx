@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useTheme } from "next-themes";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
@@ -13,9 +14,16 @@ const OTP_LENGTH = 6;
 export default function LoginPage() {
   const router = useRouter();
   const t = useTranslations("login");
+  const { setTheme } = useTheme();
   const googleLogin = useGoogleLogin();
   const sendOtp = useSendOtp();
   const verifyOtp = useVerifyOtp();
+
+  // Login is pre-auth — always render in light theme so a previously
+  // persisted dark preference doesn't blacken the page.
+  useEffect(() => {
+    setTheme("light");
+  }, [setTheme]);
 
   const [step, setStep] = useState<"email" | "otp">("email");
   const [email, setEmail] = useState("");

@@ -30,26 +30,6 @@ export interface IngestKnowledgePayload {
   metadata?: Record<string, unknown>;
 }
 
-export interface QueryKnowledgePayload {
-  query: string;
-  company_id: string;
-  limit?: number;
-  threshold?: number;
-}
-
-export interface QueryKnowledgeResult {
-  content: string;
-  title: string;
-  score: number;
-  metadata?: Record<string, unknown>;
-}
-
-export interface QueryKnowledgeResponse {
-  results: QueryKnowledgeResult[];
-  confidence: number;
-  escalate: boolean;
-}
-
 // Uploads can be much larger than JSON calls; give them a generous ceiling.
 const UPLOAD_TIMEOUT_MS = 120_000;
 
@@ -89,19 +69,6 @@ export const knowledgeApi = {
   ): Promise<KnowledgeEntry> => {
     const { data } = await apiClient.post<KnowledgeEntry>(
       "/api/v1/knowledge/",
-      payload,
-    );
-    return data;
-  },
-
-  /**
-   * Semantic search over the knowledge base.
-   */
-  queryKnowledge: async (
-    payload: QueryKnowledgePayload,
-  ): Promise<QueryKnowledgeResponse> => {
-    const { data } = await apiClient.post<QueryKnowledgeResponse>(
-      "/api/v1/knowledge/query",
       payload,
     );
     return data;
