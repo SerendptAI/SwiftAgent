@@ -3,6 +3,7 @@
 import { Check, ChevronDown, ChevronUp, Paperclip } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
 import { useCompanyMutations } from "@/hooks/use-company";
@@ -202,8 +203,10 @@ export function QuestionnaireChat({
     },
   ]);
   const [textInput, setTextInput] = useState("");
+  const [isComplete, setIsComplete] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   const { updateCompany } = useCompanyMutations();
   const uploadKnowledge = useUploadKnowledge();
@@ -219,7 +222,10 @@ export function QuestionnaireChat({
   const advanceToNextStep = (overrideQuestions?: QuestionDef[]) => {
     const list = overrideQuestions ?? questions;
     const nextStep = currentStep + 1;
-    if (nextStep >= list.length) return;
+    if (nextStep >= list.length) {
+      setIsComplete(true);
+      return;
+    }
     const next = list[nextStep];
     setCurrentStep(nextStep);
     setEntries((prev) => [
@@ -356,6 +362,41 @@ export function QuestionnaireChat({
 
   const currentEntry = entries[currentStep];
   const showInputBar = currentEntry?.type === "upload";
+
+  if (isComplete) {
+    return (
+      <div className="fixed inset-0 z-50 bg-black/60">
+        <div className="absolute inset-y-0 right-[350px] left-0 flex items-center justify-center p-6 lg:left-[105px]">
+          <div className="relative flex h-[80%] w-full max-w-md flex-col items-center justify-center bg-white px-10 py-14 text-center shadow-xl">
+            <Image
+              src="/images/champion.svg"
+              alt="Completed"
+              width={120}
+              height={140}
+              className="mb-8"
+            />
+            <h2 className="font-greed-narrow mb-10 text-3xl leading-tight font-bold text-gray-900">
+              Thanks for helping
+              <br />
+              us learn about your
+              <br />
+              company.
+            </h2>
+            <button
+              onClick={() => router.push("/dashboard")}
+              className="font-dm-mono w-full cursor-pointer rounded-sm bg-[#006BE5] py-4 text-center text-sm font-bold tracking-wider text-white uppercase transition-colors hover:bg-[#0055B8]"
+            >
+              Pick an email address
+            </button>
+
+            <div className="absolute right-0 -bottom-20 -translate-x-1/2">
+              <BriggsAnimation className="h-16 w-16" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 bg-black/60">
