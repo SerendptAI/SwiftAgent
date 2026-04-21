@@ -628,11 +628,9 @@ export function QuestionnaireChat({
 
 function OverlayShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="fixed inset-0 z-50 bg-black/60">
-      <div className="absolute inset-y-0 right-[350px] left-0 flex items-center justify-center p-6 lg:left-[105px]">
-        <div className="relative flex h-[80%] w-full max-w-md flex-col items-center justify-center bg-white px-10 py-14 text-center shadow-xl">
-          {children}
-        </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-6">
+      <div className="relative flex w-full max-w-md flex-col items-center justify-center bg-white px-10 py-14 text-center shadow-xl">
+        {children}
       </div>
     </div>
   );
@@ -717,21 +715,19 @@ function EmailPickerScreen({
         height={180}
         className="mb-6"
       />
-      <p className="font-dm-mono mb-6 text-xs tracking-wider text-gray-500 uppercase">
-        This is the email address that will be used
-        <br />
-        to communicate with customers via email, it
-        <br />
-        should correspond with your company name
+      <p className="font-dm-mono mb-6 text-sm tracking-wider text-gray-500 uppercase">
+        This is the email address that will be used to communicate with
+        customers via email, it should correspond with your company name
       </p>
-      <div className="mb-3 flex w-full items-center rounded-sm border border-gray-200 px-4 py-3">
+      <div className="mb-3 flex w-fit items-center rounded-sm border border-gray-200 px-4 py-3">
         <input
           value={value}
           onChange={(e) =>
             onChange(e.target.value.toLowerCase().replace(/\s+/g, ""))
           }
           placeholder="companyname"
-          className="font-dm-mono flex-1 text-sm text-gray-900 outline-none placeholder:text-gray-400"
+          size={12}
+          className="font-dm-mono min-w-0 text-sm text-gray-900 outline-none placeholder:text-gray-400"
         />
         <span className="font-dm-mono text-sm tracking-wider text-gray-400">
           @swifty.email

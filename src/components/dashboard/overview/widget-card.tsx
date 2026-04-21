@@ -1,17 +1,13 @@
 "use client";
 
-import { ArrowUp, ChevronDown, Copy } from "lucide-react";
+import { ChevronDown, Copy, Settings } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 
-import { Icons } from "@/components/icons";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { useCurrentUser } from "@/hooks/use-auth";
 
-type WidgetPosition = "top" | "floating";
-
 export function WidgetCard() {
   const [isOpen, setIsOpen] = useState(true);
-  const [position, setPosition] = useState<WidgetPosition>("top");
   const [isSticky, setIsSticky] = useState(true);
   const [copied, setCopied] = useState(false);
   const { data: user } = useCurrentUser();
@@ -21,12 +17,8 @@ export function WidgetCard() {
 
   const codeSnippet = useMemo(() => {
     if (!companyId) return "";
-    const scriptTag = `<script src="${origin}/widget-ui.js" data-company-id="${companyId}" defer></script>`;
-    if (position === "floating") {
-      return `${scriptTag} <div id="chat-widget"></div> <style>#chat-widget { position: fixed; bottom: 20px; right: 20px; width: 300px; height: 400px; border: 1px solid #ccc; background-color: #fff; z-index: 1000; }</style>`;
-    }
-    return scriptTag;
-  }, [companyId, origin, position]);
+    return `<script src="${origin}/widget-ui.js" data-company-id="${companyId}" defer></script>`;
+  }, [companyId, origin]);
 
   const handleCopy = useCallback(() => {
     if (!codeSnippet) return;
@@ -41,7 +33,7 @@ export function WidgetCard() {
         <div className="relative">
           <div className="relative">
             {/* Top bar with notch cutout */}
-            <div className="absolute top-0 right-0 left-0 z-1 flex h-[48px] items-center justify-between">
+            <div className="absolute top-0 right-0 left-0 z-1 flex h-[48px] items-center gap-4">
               <div className="bg-muted h-full rounded-br-md pr-4">
                 <button
                   onClick={() => setIsOpen(false)}
@@ -52,29 +44,10 @@ export function WidgetCard() {
                 </button>
               </div>
 
-              <div className="flex items-center gap-2 pr-6">
-                <button
-                  onClick={() => setPosition("top")}
-                  className={`font-greed-narrow flex cursor-pointer items-center gap-1.5 rounded-md px-4 py-2 text-xs font-bold tracking-wider uppercase transition-colors ${
-                    position === "top"
-                      ? "bg-[#006BE5] text-white"
-                      : "border border-gray-200 bg-white text-gray-600 hover:bg-gray-100"
-                  }`}
-                >
-                  <ArrowUp className="h-3.5 w-3.5" />
-                  TOP
-                </button>
-
-                <button
-                  onClick={() => setPosition("floating")}
-                  className={`font-greed-narrow flex cursor-pointer items-center gap-1.5 rounded-md px-4 py-1.5 text-xs font-bold tracking-wider uppercase transition-colors ${
-                    position === "floating"
-                      ? "bg-[#006BE5] text-white"
-                      : "border border-gray-200 bg-[#EDEDED] text-gray-600"
-                  }`}
-                >
-                  <Icons.floating />
-                  FLOATING
+              <div className="flex items-center pr-6">
+                <button className="font-greed-narrow flex cursor-pointer items-center gap-1.5 rounded-md border border-gray-200 bg-white px-4 py-2 text-xs font-bold tracking-wider text-gray-600 uppercase transition-colors hover:bg-gray-100">
+                  <Settings className="h-3.5 w-3.5" />
+                  SETTINGS
                 </button>
               </div>
             </div>
