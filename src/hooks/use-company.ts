@@ -43,7 +43,33 @@ export function useCompanyMutations() {
       companyApi.uploadLogo(companyId, file),
   });
 
-  return { createCompany, updateCompany, uploadLogo };
+  const updateEmailSlug = useMutation({
+    mutationFn: ({ companyId, slug }: { companyId: string; slug: string }) =>
+      companyApi.updateEmailSlug(companyId, slug),
+    onSuccess: (_, { companyId }) => {
+      queryClient.invalidateQueries({ queryKey: ["company", companyId] });
+      queryClient.invalidateQueries({ queryKey: ["company"] });
+    },
+  });
+
+  return { createCompany, updateCompany, uploadLogo, updateEmailSlug };
+}
+
+export function useCheckEmailSlug(
+  companyId: string | null | undefined,
+  slug: string,
+  { enabled = true }: { enabled?: boolean } = {},
+) {
+  return useQuery({
+    queryKey: ["email-slug-check", companyId, slug],
+    queryFn: () => {
+      if (!companyId || !slug) throw new Error("companyId and slug required");
+      return companyApi.checkEmailSlug(companyId, slug);
+    },
+    enabled: enabled && !!companyId && slug.length >= 3,
+    staleTime: 30_000,
+    retry: false,
+  });
 }
 
 export function useCompanyQuery(companyId: string | null | undefined) {

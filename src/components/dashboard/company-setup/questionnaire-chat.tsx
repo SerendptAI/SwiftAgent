@@ -13,7 +13,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-import { useCompanyMutations } from "@/hooks/use-company";
+import { useCheckEmailSlug, useCompanyMutations } from "@/hooks/use-company";
 import { useIngestKnowledge, useUploadKnowledge } from "@/hooks/use-knowledge";
 
 const BriggsAnimation = dynamic(
@@ -218,9 +218,10 @@ export function QuestionnaireChat({
   const chatEndRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  const { updateCompany } = useCompanyMutations();
+  const { updateCompany, updateEmailSlug } = useCompanyMutations();
   const uploadKnowledge = useUploadKnowledge();
   const ingestKnowledge = useIngestKnowledge();
+  const [emailError, setEmailError] = useState<string | null>(null);
 
   const scrollToBottom = () => {
     setTimeout(
@@ -404,11 +405,32 @@ export function QuestionnaireChat({
   if (phase === "email") {
     return (
       <EmailPickerScreen
+        companyId={companyId}
         value={emailHandle}
-        onChange={setEmailHandle}
-        onSelect={(handle) => {
-          setEmailHandle(handle);
-          setPhase("congrats");
+        onChange={(v) => {
+          setEmailHandle(v);
+          if (emailError) setEmailError(null);
+        }}
+        error={emailError}
+        isSaving={updateEmailSlug.isPending}
+        onSelect={async (handle) => {
+          if (!companyId) {
+            setEmailHandle(handle);
+            setPhase("congrats");
+            return;
+          }
+          try {
+            await updateEmailSlug.mutateAsync({ companyId, slug: handle });
+            setEmailHandle(handle);
+            setPhase("congrats");
+          } catch (err) {
+            console.error("Failed to save email slug:", err);
+            setEmailError(
+              err instanceof Error
+                ? err.message
+                : "Could not save this email. Please try another.",
+            );
+          }
         }}
       />
     );
@@ -656,55 +678,60 @@ function PrimaryActionButton({
   );
 }
 
-const RESERVED_EMAIL_HANDLES = new Set([
-  "admin",
-  "info",
-  "support",
-  "help",
-  "contact",
-  "mail",
-  "test",
-  "root",
-  "hello",
-  "sales",
-  "noreply",
-]);
+// Slug format: lowercase letters, digits, dashes. 3-30 chars per API.
+const EMAIL_HANDLE_PATTERN = /^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/;
 
-const EMAIL_HANDLE_PATTERN = /^[a-z0-9][a-z0-9-]{1,30}[a-z0-9]$/;
-
-type EmailAvailability = "idle" | "checking" | "available" | "taken";
+type EmailAvailability =
+  | "idle"
+  | "invalid"
+  | "checking"
+  | "available"
+  | "taken";
 
 function EmailPickerScreen({
+  companyId,
   value,
   onChange,
   onSelect,
+  error,
+  isSaving,
 }: {
+  companyId: string | null;
   value: string;
   onChange: (v: string) => void;
   onSelect: (handle: string) => void;
+  error?: string | null;
+  isSaving?: boolean;
 }) {
-  const [availability, setAvailability] = useState<EmailAvailability>(
-    value ? "checking" : "idle",
-  );
+  const handle = value.trim().toLowerCase();
+  const isValidFormat = EMAIL_HANDLE_PATTERN.test(handle);
 
+  // Debounce the slug we actually send to the API
+  const [debouncedHandle, setDebouncedHandle] = useState(handle);
   useEffect(() => {
-    const handle = value.trim().toLowerCase();
-    if (!handle) {
-      setAvailability("idle");
-      return;
-    }
-    if (!EMAIL_HANDLE_PATTERN.test(handle)) {
-      setAvailability("taken");
-      return;
-    }
-    setAvailability("checking");
-    const timer = setTimeout(() => {
-      setAvailability(
-        RESERVED_EMAIL_HANDLES.has(handle) ? "taken" : "available",
-      );
-    }, 400);
+    const timer = setTimeout(() => setDebouncedHandle(handle), 400);
     return () => clearTimeout(timer);
-  }, [value]);
+  }, [handle]);
+
+  const canCheck = !!companyId && isValidFormat && debouncedHandle === handle;
+  const checkQuery = useCheckEmailSlug(companyId, debouncedHandle, {
+    enabled: canCheck,
+  });
+
+  let availability: EmailAvailability = "idle";
+  let takenMessage = "Name taken, please try another one";
+  if (!handle) {
+    availability = "idle";
+  } else if (!isValidFormat) {
+    availability = "invalid";
+  } else if (debouncedHandle !== handle || checkQuery.isFetching) {
+    availability = "checking";
+  } else if (checkQuery.data) {
+    availability = checkQuery.data.available ? "available" : "taken";
+    if (!checkQuery.data.available && checkQuery.data.suggestion) {
+      takenMessage = `Name taken. Try "${checkQuery.data.suggestion}"`;
+    }
+  }
 
   return (
     <OverlayShell>
@@ -734,6 +761,19 @@ function EmailPickerScreen({
         </span>
       </div>
       <div className="mb-6 flex h-4 items-center gap-1.5">
+        {availability === "checking" && (
+          <span className="font-dm-mono text-[10px] font-bold tracking-wider text-gray-400 uppercase">
+            Checking availability…
+          </span>
+        )}
+        {availability === "invalid" && handle.length > 0 && (
+          <>
+            <CircleX className="h-4 w-4 fill-red-500 text-white" />
+            <span className="font-dm-mono text-[10px] font-bold tracking-wider text-red-500 uppercase">
+              3-30 chars, lowercase letters, digits or dashes
+            </span>
+          </>
+        )}
         {availability === "available" && (
           <>
             <CircleCheck className="h-4 w-4 fill-green-500 text-white" />
@@ -746,16 +786,21 @@ function EmailPickerScreen({
           <>
             <CircleX className="h-4 w-4 fill-red-500 text-white" />
             <span className="font-dm-mono text-[10px] font-bold tracking-wider text-red-500 uppercase">
-              Name taken, please try another one
+              {takenMessage}
             </span>
           </>
         )}
+        {error && availability !== "taken" && (
+          <span className="font-dm-mono text-[10px] font-bold tracking-wider text-red-500 uppercase">
+            {error}
+          </span>
+        )}
       </div>
       <PrimaryActionButton
-        onClick={() => onSelect(value.trim().toLowerCase())}
-        disabled={availability !== "available"}
+        onClick={() => onSelect(handle)}
+        disabled={availability !== "available" || !!isSaving}
       >
-        Select
+        {isSaving ? "Saving…" : "Select"}
       </PrimaryActionButton>
     </OverlayShell>
   );
