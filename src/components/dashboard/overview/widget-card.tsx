@@ -1,6 +1,13 @@
 "use client";
 
-import { ChevronDown, Copy, Info, Settings } from "lucide-react";
+import {
+  CheckCircle2,
+  ChevronDown,
+  Copy,
+  Info,
+  Settings,
+  XCircle,
+} from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { InfoTooltip } from "@/components/ui/info-tooltip";
@@ -13,7 +20,17 @@ export function WidgetCard() {
   const [isSticky, setIsSticky] = useState(true);
   const [copied, setCopied] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [toast, setToast] = useState<{
+    kind: "success" | "error";
+    message: string;
+  } | null>(null);
   const { data: user } = useCurrentUser();
+
+  useEffect(() => {
+    if (!toast) return;
+    const id = setTimeout(() => setToast(null), 3500);
+    return () => clearTimeout(id);
+  }, [toast]);
 
   const companyId = user?.company_id || "";
   const origin = typeof window !== "undefined" ? window.location.origin : "";
@@ -27,6 +44,7 @@ export function WidgetCard() {
     if (!codeSnippet) return;
     navigator.clipboard.writeText(codeSnippet);
     setCopied(true);
+    setIsSettingsOpen(true);
     setTimeout(() => setCopied(false), 2000);
   }, [codeSnippet]);
 
@@ -110,6 +128,18 @@ export function WidgetCard() {
         <ChatbotSettingsSidebar
           companyId={companyId}
           onClose={() => setIsSettingsOpen(false)}
+          onSaved={() =>
+            setToast({ kind: "success", message: "Settings saved." })
+          }
+          onError={(message) => setToast({ kind: "error", message })}
+        />
+      )}
+
+      {toast && (
+        <ToastNotification
+          kind={toast.kind}
+          message={toast.message}
+          onDismiss={() => setToast(null)}
         />
       )}
     </div>
@@ -160,9 +190,13 @@ const SIDEBAR_TRANSITION_MS = 300;
 function ChatbotSettingsSidebar({
   companyId,
   onClose,
+  onSaved,
+  onError,
 }: {
   companyId: string;
   onClose: () => void;
+  onSaved?: () => void;
+  onError?: (message: string) => void;
 }) {
   const { data: config } = useStrollConfig(companyId || null);
   const updateConfig = useUpdateStrollConfig();
@@ -239,8 +273,14 @@ function ChatbotSettingsSidebar({
       });
     } catch (err) {
       console.error("Failed to save sandbox credentials:", err);
+      onError?.(
+        err instanceof Error
+          ? err.message
+          : "Could not save settings. Please try again.",
+      );
       return;
     }
+    onSaved?.();
     closeWithAnimation();
   };
 
@@ -480,6 +520,48 @@ function FieldInput({
         placeholder={placeholder}
         className="font-dm-mono w-full rounded-sm border border-gray-200 px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#006BE5]"
       />
+    </div>
+  );
+}
+
+function ToastNotification({
+  kind,
+  message,
+  onDismiss,
+}: {
+  kind: "success" | "error";
+  message: string;
+  onDismiss: () => void;
+}) {
+  const isSuccess = kind === "success";
+  return (
+    <div
+      role="status"
+      className={`fixed top-6 right-6 z-[60] flex max-w-sm items-start gap-3 rounded-lg border px-4 py-3 shadow-lg ${
+        isSuccess
+          ? "border-green-200 bg-green-50 text-green-800"
+          : "border-red-200 bg-red-50 text-red-800"
+      }`}
+    >
+      {isSuccess ? (
+        <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-green-600" />
+      ) : (
+        <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
+      )}
+      <p className="font-dm-mono flex-1 text-sm">{message}</p>
+      <button
+        aria-label="Dismiss"
+        onClick={onDismiss}
+        className={`shrink-0 rounded-md p-0.5 transition-colors ${
+          isSuccess
+            ? "text-green-500 hover:bg-green-100"
+            : "text-red-500 hover:bg-red-100"
+        }`}
+      >
+        <span aria-hidden className="text-lg leading-none">
+          ×
+        </span>
+      </button>
     </div>
   );
 }
