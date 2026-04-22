@@ -88,7 +88,7 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
 
         {/* Dropdown Menu */}
         {isOpen && (
-          <div className="animate-in fade-in slide-in-from-top-2 font-dm-mono absolute left-0 z-50 mt-2 w-80 rounded-2xl bg-white p-3 shadow-xl duration-200">
+          <div className="animate-in fade-in slide-in-from-top-2 font-dm-mono absolute left-0 z-50 mt-2 w-80 rounded-2xl border border-gray-100 bg-white p-3 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] duration-200">
             {companies.map((company) => {
               const isSelected = selectedCompany?.id === company.id;
               return (
