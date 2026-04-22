@@ -1,9 +1,10 @@
 "use client";
 
-import { ChevronDown, ClipboardList, Plus } from "lucide-react";
+import { ChevronDown, Plus } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
+import { Icons } from "@/components/icons";
 import { useCompaniesQuery } from "@/hooks/use-company";
 
 interface Company {
@@ -114,7 +115,7 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
             })}
             <button className="mt-2 ml-5 flex w-[calc(100%-1.25rem)] items-center gap-3 rounded-xl border-2 border-dashed border-gray-300 px-3 py-2.5 text-sm text-gray-900 transition-colors hover:bg-gray-50">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100">
-                <ClipboardList className="h-5 w-5 text-gray-600" />
+                <Icons.addnewCompany className="h-5 w-5" />
               </div>
               <span className="text-sm font-bold tracking-wide uppercase">
                 Add New Company
