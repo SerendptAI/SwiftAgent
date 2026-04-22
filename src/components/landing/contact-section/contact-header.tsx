@@ -12,7 +12,7 @@ export function ContactHeader() {
       </div>
 
       <div className="max-w-md pb-4">
-        <p className="font-stolze text-xl leading-relaxed font-medium text-[#2C3E5D]">
+        <p className="font-stolzl text-xl leading-relaxed font-medium text-[#2C3E5D]">
           For business inquiries, check our links below.
         </p>
       </div>
