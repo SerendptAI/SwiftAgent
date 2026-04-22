@@ -40,14 +40,28 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const visitors: Array<{
+  type Visitor = {
     id: string;
     company_id: string;
     visitor_id: string;
     country_code: string;
     duration_seconds: number;
     timestamp: string;
-  }> = await upstream.json();
+  };
+
+  const payload: unknown = await upstream.json();
+
+  // Backend may return either a bare array or a paginated wrapper like
+  // { items: [...] } / { visitors: [...] } / { data: [...] }.
+  const visitors: Visitor[] = Array.isArray(payload)
+    ? (payload as Visitor[])
+    : Array.isArray((payload as { items?: unknown })?.items)
+      ? (payload as { items: Visitor[] }).items
+      : Array.isArray((payload as { visitors?: unknown })?.visitors)
+        ? (payload as { visitors: Visitor[] }).visitors
+        : Array.isArray((payload as { data?: unknown })?.data)
+          ? (payload as { data: Visitor[] }).data
+          : [];
 
   // Collect IPs that need geo lookup (visitor_id is the IP)
   const ipsToResolve = visitors
