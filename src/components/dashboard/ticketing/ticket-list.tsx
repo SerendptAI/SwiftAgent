@@ -147,9 +147,11 @@ export function TicketList({
               : "UNKNOWN";
 
             const avatarImages = [
-              "/images/chats/img1.svg",
-              "/images/chats/img2.svg",
-              "/images/chats/img3.svg",
+              "/images/chats/newimg.svg",
+              "/images/chats/newimg1.svg",
+              "/images/chats/newimg2.svg",
+              "/images/chats/newimg3.svg",
+              "/images/chats/newimg4.svg",
             ];
             const avatarSrc = avatarImages[index % avatarImages.length];
 

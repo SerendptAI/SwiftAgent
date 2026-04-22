@@ -8,9 +8,11 @@ import { useChat, useMarkChatSeen } from "@/hooks/use-conversations";
 import { cn } from "@/lib/utils";
 
 const AVATAR_IMAGES = [
-  "/images/chats/img1.svg",
-  "/images/chats/img2.svg",
-  "/images/chats/img3.svg",
+  "/images/chats/newimg.svg",
+  "/images/chats/newimg1.svg",
+  "/images/chats/newimg2.svg",
+  "/images/chats/newimg3.svg",
+  "/images/chats/newimg4.svg",
 ];
 
 interface ChatViewProps {
