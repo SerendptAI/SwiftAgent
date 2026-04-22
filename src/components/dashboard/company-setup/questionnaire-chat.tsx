@@ -440,7 +440,7 @@ export function QuestionnaireChat({
     return (
       <OverlayShell>
         <Image
-          src="/images/pixellife.svg"
+          src="/images/congratsemail.svg"
           alt="Congratulations"
           width={120}
           height={140}
