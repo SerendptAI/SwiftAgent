@@ -1,6 +1,7 @@
 import { format } from "date-fns";
+import { Maximize2, Paperclip, Send } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useCurrentUser } from "@/hooks/use-auth";
 import { useChat, useMarkChatSeen } from "@/hooks/use-conversations";
@@ -23,6 +24,7 @@ export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
   const { data: chat, isFetching } = useChat(ticketId);
   const { mutate: markSeen } = useMarkChatSeen();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [draft, setDraft] = useState("");
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -68,25 +70,28 @@ export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
       )}
 
       {/* Chat Header */}
-      <div className="flex items-center gap-3 border-b border-gray-100 px-6 py-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-50">
-          <Image
-            src={AVATAR_IMAGES[avatarIndex % AVATAR_IMAGES.length]}
-            alt="Chat avatar"
-            width={36}
-            height={31}
-          />
-        </div>
-        <div className="flex flex-col">
-          <span className="font-dm-mono text-sm font-bold text-gray-900">
+      <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-50">
+            <Image
+              src={AVATAR_IMAGES[avatarIndex % AVATAR_IMAGES.length]}
+              alt="Chat avatar"
+              width={36}
+              height={31}
+            />
+          </div>
+          <span className="font-dm-mono text-sm font-bold tracking-wider text-gray-900 uppercase">
             {chat?.session_id
-              ? `Session ${chat.session_id.slice(0, 8)}…`
+              ? chat.session_id.slice(0, 13).toUpperCase()
               : "Conversation"}
           </span>
-          <span className="font-stolzl text-xs text-gray-400">
-            {chat?.message_count ?? 0} messages
-          </span>
         </div>
+        <button
+          aria-label="Expand"
+          className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
+        >
+          <Maximize2 className="h-4 w-4" />
+        </button>
       </div>
 
       {/* Messages Area (read-only) */}
@@ -98,18 +103,31 @@ export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
         )}
 
         {messages.map((message, i) => {
-          const isUser = message.role === "user";
+          const isVisitor = message.role === "user";
           return (
             <div
               key={`${chat?.id}-${i}`}
-              className={cn("flex", isUser ? "justify-end" : "justify-start")}
+              className={cn(
+                "flex items-end gap-2",
+                isVisitor ? "justify-start" : "justify-end",
+              )}
             >
+              {isVisitor && (
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gray-50">
+                  <Image
+                    src={AVATAR_IMAGES[avatarIndex % AVATAR_IMAGES.length]}
+                    alt="Visitor"
+                    width={22}
+                    height={19}
+                  />
+                </div>
+              )}
               <div
                 className={cn(
-                  "max-w-[75%] rounded-2xl px-4 py-3 text-sm",
-                  isUser
-                    ? "bg-[#F2F8FF] text-[#006BE5]"
-                    : "bg-[#F2F8FF] text-gray-900",
+                  "max-w-[75%] px-4 py-3 text-sm",
+                  isVisitor
+                    ? "rounded-2xl rounded-bl-sm bg-[#F3F4F6] text-gray-900"
+                    : "rounded-full bg-[#006BE5] text-white",
                 )}
               >
                 {message.content}
@@ -120,11 +138,42 @@ export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Read-only footer */}
-      <div className="border-t border-gray-100 px-6 py-4">
-        <p className="font-stolzl text-center text-xs text-gray-400">
-          This is a read-only view of a widget conversation.
-        </p>
+      {/* Message input */}
+      <div className="border-t border-gray-100 px-4 py-3">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const message = draft.trim();
+            if (!message) return;
+            // TODO: wire up to send-message endpoint when available
+            console.log("Send message:", message);
+            setDraft("");
+          }}
+          className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2"
+        >
+          <input
+            type="text"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            placeholder="Type a message..."
+            className="font-dm-mono flex-1 bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400"
+          />
+          <button
+            type="button"
+            aria-label="Attach"
+            className="shrink-0 text-gray-400 transition-colors hover:text-gray-600"
+          >
+            <Paperclip className="h-4 w-4" />
+          </button>
+          <button
+            type="submit"
+            disabled={!draft.trim()}
+            aria-label="Send"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-gray-400 transition-colors hover:text-[#006BE5] disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <Send className="h-4 w-4 -translate-x-px" />
+          </button>
+        </form>
       </div>
     </div>
   );

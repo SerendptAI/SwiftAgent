@@ -4,6 +4,8 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { CompanyToolbar } from "@/components/dashboard/company-toolbar";
+import type { ChannelKey } from "@/components/dashboard/ticketing/channel-navigator";
+import { ChannelNavigator } from "@/components/dashboard/ticketing/channel-navigator";
 import { ChatView } from "@/components/dashboard/ticketing/chat-view";
 import { TicketList } from "@/components/dashboard/ticketing/ticket-list";
 import { Icons } from "@/components/icons";
@@ -13,6 +15,7 @@ export function TicketingClient() {
   const searchParams = useSearchParams();
   const [selectedTicketId, setSelectedTicketId] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [activeChannel, setActiveChannel] = useState<ChannelKey>("chats");
 
   const { data: chats } = useChats();
 
@@ -27,7 +30,6 @@ export function TicketingClient() {
       }
     }
   }, [searchParams, chats]);
-  const chatCount = chats?.filter((chat) => !chat.seen).length ?? 0;
 
   const handleSelectTicket = (id: string, index: number) => {
     setSelectedTicketId(id);
@@ -37,30 +39,27 @@ export function TicketingClient() {
   return (
     <div className="flex h-full w-full flex-col">
       <div className="flex items-center gap-8">
-        <div className="flex-1">
+        <div className="w-[70%]">
           <CompanyToolbar />
         </div>
-        <div className="mb-4 flex w-[350px] items-center">
-          <div className="flex items-center gap-4">
-            <button className="relative flex cursor-pointer items-center justify-center rounded-3xl bg-white p-2 text-gray-600 shadow-sm transition-colors hover:bg-gray-200">
-              <Icons.inbox className="h-12 w-12" />
-              {chatCount > 0 && (
-                <span className="absolute top-1.5 right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
-                  {chatCount}
-                </span>
-              )}
-            </button>
-
-            {/* Search button */}
-            <button className="flex cursor-pointer items-center justify-center rounded-3xl bg-[#2196F3] p-2 text-white transition-colors hover:bg-[#1E88E5]">
-              <Icons.SearchWhite className="h-12 w-12" />
-            </button>
-          </div>
+        <div className="mb-4 flex items-center">
+          <button className="flex cursor-pointer items-center justify-center rounded-3xl bg-[#2196F3] p-2 text-white transition-colors hover:bg-[#1E88E5]">
+            <Icons.SearchWhite className="h-12 w-12" />
+          </button>
         </div>
       </div>
 
       <div className="flex min-h-0 flex-1 gap-4">
-        {/* Left Panel - Chat List */}
+        {/* Channel navigator */}
+        <div className="shrink-0">
+          <ChannelNavigator
+            active={activeChannel}
+            onChange={setActiveChannel}
+            chatCount={chats?.length ?? 0}
+          />
+        </div>
+
+        {/* Ticket list */}
         <div className="w-[320px] shrink-0">
           <TicketList
             selectedTicketId={selectedTicketId}
@@ -68,7 +67,7 @@ export function TicketingClient() {
           />
         </div>
 
-        {/* Right Panel - Chat View */}
+        {/* Chat view */}
         <div className="min-w-0 flex-1">
           {selectedTicketId ? (
             <ChatView ticketId={selectedTicketId} avatarIndex={selectedIndex} />
