@@ -106,6 +106,8 @@ export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
 
         {messages.map((message, i) => {
           const isVisitor = message.role === "user";
+          const isLong =
+            message.content.length > 60 || message.content.includes("\n");
           return (
             <div
               key={`${chat?.id}-${i}`}
@@ -126,10 +128,12 @@ export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
               )}
               <div
                 className={cn(
-                  "max-w-[75%] px-4 py-3 text-sm",
+                  "max-w-[85%] px-4 py-3 text-sm leading-relaxed",
                   isVisitor
-                    ? "rounded-2xl rounded-bl-sm bg-[#F3F4F6] text-gray-900"
-                    : "rounded-full bg-[#006BE5] text-white",
+                    ? "rounded-2xl rounded-bl-sm bg-[#F2F4F5] text-[#303437]"
+                    : isLong
+                      ? "rounded-2xl rounded-br-sm bg-[#F2F8FF] text-[#006BE5]"
+                      : "rounded-full bg-[#F2F8FF] text-[#006BE5]",
                 )}
               >
                 {message.content}
