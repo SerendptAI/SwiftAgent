@@ -462,7 +462,9 @@ export function QuestionnaireChat({
             @swifty.email
           </span>
         </div>
-        <PrimaryActionButton onClick={() => router.push("/dashboard")}>
+        <PrimaryActionButton
+          onClick={() => router.push("/dashboard?settings=1")}
+        >
           Finish
         </PrimaryActionButton>
       </OverlayShell>

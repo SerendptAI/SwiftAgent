@@ -8,6 +8,7 @@ import {
   Settings,
   XCircle,
 } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { InfoTooltip } from "@/components/ui/info-tooltip";
@@ -31,6 +32,22 @@ export function WidgetCard() {
     const id = setTimeout(() => setToast(null), 3500);
     return () => clearTimeout(id);
   }, [toast]);
+
+  // Auto-open settings when arriving from onboarding (/dashboard?settings=1)
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+  useEffect(() => {
+    if (searchParams.get("settings") === "1") {
+      setIsSettingsOpen(true);
+      const next = new URLSearchParams(searchParams.toString());
+      next.delete("settings");
+      const query = next.toString();
+      router.replace(query ? `${pathname}?${query}` : pathname, {
+        scroll: false,
+      });
+    }
+  }, [searchParams, pathname, router]);
 
   const companyId = user?.company_id || "";
   const origin = typeof window !== "undefined" ? window.location.origin : "";
