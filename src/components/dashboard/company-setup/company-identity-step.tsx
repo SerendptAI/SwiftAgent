@@ -171,23 +171,22 @@ export function CompanyIdentityStep({
                 onDismiss={() => setError(null)}
               />
               {footerAction ?? (
-                <NextButton onClick={() => onNext?.()}>FINISH</NextButton>
+                <NextButton
+                  onClick={handleSubmit(onSubmit)}
+                  disabled={isPending}
+                >
+                  {isPending ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Saving...
+                    </span>
+                  ) : isUpdateMode ? (
+                    "UPDATE"
+                  ) : (
+                    "FINISH"
+                  )}
+                </NextButton>
               )}
-              {/* <NextButton
-                onClick={handleSubmit(onSubmit)}
-                disabled={isPending}
-              >
-                {isPending ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Saving...
-                  </span>
-                ) : isUpdateMode ? (
-                  "UPDATE"
-                ) : (
-                  "FINISH"
-                )}
-              </NextButton> */}
             </div>
           </div>
         </div>
