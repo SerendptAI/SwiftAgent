@@ -35,6 +35,12 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     if (!user.onboarding_completed && pathname.includes("/dashboard")) {
       return `/${locale}/onboarding`;
     }
+    if (user.onboarding_completed && pathname.includes("/onboarding")) {
+      const isNewCompany =
+        typeof window !== "undefined" &&
+        new URLSearchParams(window.location.search).has("new_company");
+      if (!isNewCompany) return `/${locale}/dashboard`;
+    }
     return null;
   })();
 

@@ -3,6 +3,8 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { ChevronDown, Plus } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
@@ -29,6 +31,8 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
   const activeCompanyId = useActiveCompanyId();
   const setActiveCompanyId = useSetActiveCompanyId();
   const queryClient = useQueryClient();
+  const router = useRouter();
+  const locale = useLocale();
 
   const companies: Company[] = (rawCompanies ?? []).map((c) => ({
     id: c.id,
@@ -86,6 +90,14 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
           )}
         </button>
 
+        {/* Backdrop overlay */}
+        {isOpen && (
+          <div
+            className="fixed inset-0 z-40 bg-black/30 backdrop-blur-[2px] transition-opacity duration-200"
+            onClick={() => setIsOpen(false)}
+          />
+        )}
+
         {/* Dropdown Menu */}
         {isOpen && (
           <div className="animate-in fade-in slide-in-from-top-2 font-dm-mono absolute left-0 z-50 mt-2 w-80 rounded-2xl border border-gray-100 bg-white p-3 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] duration-200">
@@ -123,7 +135,13 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
                 </button>
               );
             })}
-            <button className="mt-2 ml-5 flex w-[calc(100%-1.25rem)] items-center gap-3 rounded-xl border-2 border-dashed border-gray-300 px-3 py-2.5 text-sm text-gray-900 transition-colors hover:bg-gray-50">
+            <button
+              onClick={() => {
+                setIsOpen(false);
+                router.push(`/${locale}/onboarding?new_company=1`);
+              }}
+              className="mt-2 ml-5 flex w-[calc(100%-1.25rem)] items-center gap-3 rounded-xl border-2 border-dashed border-gray-300 px-3 py-2.5 text-sm text-gray-900 transition-colors hover:bg-gray-50"
+            >
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100">
                 <Icons.addnewCompany className="h-5 w-5" />
               </div>

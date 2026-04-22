@@ -479,14 +479,14 @@ export function QuestionnaireChat({
           <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
             <div className="flex items-center gap-3">
               <Image
-                src={logoUrl || "/images/company_logo_new.svg"}
+                src="/images/newlogo.svg"
                 alt={companyName}
-                width={24}
-                height={24}
-                className="rounded"
+                width={34}
+                height={34}
+
               />
               <span className="font-dm-mono text-sm font-bold tracking-wider uppercase">
-                {companyName}
+                SWIFT AGENTS
               </span>
             </div>
             <ChevronDown className="h-5 w-5 text-gray-400" />
@@ -513,13 +513,12 @@ export function QuestionnaireChat({
                           key={option}
                           disabled={!!entry.selected}
                           onClick={() => handleSelectOption(option)}
-                          className={`font-dm-mono flex w-fit items-center gap-2 rounded-md border px-4 py-3 text-left text-xs font-bold tracking-wider uppercase transition-colors ${
-                            isSelected
-                              ? "border-[#E8613C] bg-[#E8613C] text-white"
-                              : entry.selected
-                                ? "cursor-default border-gray-200 bg-white text-gray-900"
-                                : "cursor-pointer border-gray-200 bg-white text-gray-900 hover:border-gray-400"
-                          }`}
+                          className={`font-dm-mono flex w-fit items-center gap-2 rounded-md border px-4 py-3 text-left text-xs font-bold tracking-wider uppercase transition-colors ${isSelected
+                            ? "border-[#E8613C] bg-[#E8613C] text-white"
+                            : entry.selected
+                              ? "cursor-default border-gray-200 bg-white text-gray-900"
+                              : "cursor-pointer border-gray-200 bg-white text-gray-900 hover:border-gray-400"
+                            }`}
                         >
                           {isSelected && (
                             <span className="flex h-5 w-5 items-center justify-center rounded bg-black/20">
@@ -541,9 +540,8 @@ export function QuestionnaireChat({
                     return (
                       <div
                         key={idx}
-                        className={`mt-3 ml-auto flex w-fit flex-col items-end ${
-                          item.status === "pending" ? "opacity-60" : ""
-                        }`}
+                        className={`mt-3 ml-auto flex w-fit flex-col items-end ${item.status === "pending" ? "opacity-60" : ""
+                          }`}
                       >
                         <Image
                           src={thumbnail}
@@ -554,11 +552,10 @@ export function QuestionnaireChat({
                         />
                         {item.status !== "done" && (
                           <p
-                            className={`font-dm-mono mt-2 text-[10px] font-bold tracking-wider uppercase ${
-                              item.status === "error"
-                                ? "text-red-500"
-                                : "text-gray-400"
-                            }`}
+                            className={`font-dm-mono mt-2 text-[10px] font-bold tracking-wider uppercase ${item.status === "error"
+                              ? "text-red-500"
+                              : "text-gray-400"
+                              }`}
                           >
                             {item.status === "error"
                               ? "Upload failed"
@@ -579,13 +576,12 @@ export function QuestionnaireChat({
                   return (
                     <div
                       key={idx}
-                      className={`max-4/5 mt-3 ml-auto w-fit rounded-md px-4 py-3 ${
-                        item.status === "error"
-                          ? "bg-red-500"
-                          : item.status === "pending"
-                            ? "bg-blue-400"
-                            : "bg-blue-600"
-                      }`}
+                      className={`max-4/5 mt-3 ml-auto w-fit rounded-md px-4 py-3 ${item.status === "error"
+                        ? "bg-red-500"
+                        : item.status === "pending"
+                          ? "bg-blue-400"
+                          : "bg-blue-600"
+                        }`}
                     >
                       <p className="font-dm-mono text-xs font-bold tracking-wider text-white">
                         {item.label}
