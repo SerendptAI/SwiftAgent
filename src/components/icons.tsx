@@ -1447,6 +1447,34 @@ export const Icons = {
       />
     </svg>
   ),
+  addnewCompany: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      {...props}
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M14.0006 0H3.07227V14.0008H14.0006V0Z" fill="#BDAF9E" />
+      <path
+        d="M11.9533 3.07336H5.12305V4.4393H11.9533V3.07336Z"
+        fill="#574843"
+      />
+      <path
+        d="M11.9533 6.48813H5.12305V7.85406H11.9533V6.48813Z"
+        fill="#574843"
+      />
+      <path
+        d="M11.9533 9.90295H5.12305V11.2689H11.9533V9.90295Z"
+        fill="#574843"
+      />
+      <path
+        d="M3.07361 0H2.39058V4.43928H1.02454V8.53707H0V14.0008H0.683024H2.04907H3.07361V0Z"
+        fill="#574843"
+      />
+    </svg>
+  ),
   ticketChat: (props: React.SVGProps<SVGSVGElement>) => (
     <svg
       {...props}

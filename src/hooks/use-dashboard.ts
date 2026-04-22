@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { useCurrentUser } from "@/hooks/use-auth";
+import { useActiveCompanyId } from "@/hooks/use-active-company";
 import {
   dashboardApi,
   DashboardStats,
@@ -9,8 +9,7 @@ import {
 } from "@/services/dashboard";
 
 export function useDashboardStats(initialData?: DashboardStats | null) {
-  const { data: user } = useCurrentUser();
-  const companyId = user?.company_id;
+  const companyId = useActiveCompanyId();
 
   return useQuery({
     queryKey: ["dashboard", "stats", companyId],
@@ -24,8 +23,7 @@ export function useDashboardVisitors(
   limit: number = 20,
   initialData?: DashboardVisitor[],
 ) {
-  const { data: user } = useCurrentUser();
-  const companyId = user?.company_id;
+  const companyId = useActiveCompanyId();
 
   return useQuery({
     queryKey: ["dashboard", "visitors", companyId, limit],
@@ -37,8 +35,7 @@ export function useDashboardVisitors(
 }
 
 export function useDashboardWidget(initialData?: DashboardWidget | null) {
-  const { data: user } = useCurrentUser();
-  const companyId = user?.company_id;
+  const companyId = useActiveCompanyId();
 
   return useQuery({
     queryKey: ["dashboard", "widget", companyId],

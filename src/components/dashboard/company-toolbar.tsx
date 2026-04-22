@@ -1,10 +1,15 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { ChevronDown, Plus } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
+import {
+  useActiveCompanyId,
+  useSetActiveCompanyId,
+} from "@/hooks/use-active-company";
 import { useCompaniesQuery } from "@/hooks/use-company";
 
 interface Company {
@@ -21,6 +26,9 @@ interface CompanyToolbarProps {
 
 export function CompanyToolbar({ actions }: CompanyToolbarProps) {
   const { data: rawCompanies, isLoading } = useCompaniesQuery();
+  const activeCompanyId = useActiveCompanyId();
+  const setActiveCompanyId = useSetActiveCompanyId();
+  const queryClient = useQueryClient();
 
   const companies: Company[] = (rawCompanies ?? []).map((c) => ({
     id: c.id,
@@ -29,16 +37,21 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
     logoUrl: c.logo_url,
   }));
 
-  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+  const selectedCompany =
+    companies.find((c) => c.id === activeCompanyId) ?? companies[0] ?? null;
+
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Once companies load, default-select the first one
-  useEffect(() => {
-    if (companies.length > 0 && !selectedCompany) {
-      setSelectedCompany(companies[0]);
+  function handleSwitch(companyId: string) {
+    if (companyId !== activeCompanyId) {
+      setActiveCompanyId(companyId);
+      // Every company-scoped query bakes the id into its key, so refetching
+      // active queries pulls fresh data for the newly selected company.
+      queryClient.invalidateQueries();
     }
-  }, [companies, selectedCompany]);
+    setIsOpen(false);
+  }
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -81,10 +94,7 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
               return (
                 <button
                   key={company.id}
-                  onClick={() => {
-                    setSelectedCompany(company);
-                    setIsOpen(false);
-                  }}
+                  onClick={() => handleSwitch(company.id)}
                   className="flex w-full items-center gap-3 rounded-xl px-2 py-2 text-sm text-gray-900 transition-colors hover:bg-gray-50"
                 >
                   <span

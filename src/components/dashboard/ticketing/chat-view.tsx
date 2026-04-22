@@ -3,7 +3,7 @@ import { Maximize2, Paperclip, Send } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
-import { useCurrentUser } from "@/hooks/use-auth";
+import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useChat, useMarkChatSeen } from "@/hooks/use-conversations";
 import { cn } from "@/lib/utils";
 
@@ -21,8 +21,7 @@ interface ChatViewProps {
 }
 
 export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
-  const { data: user } = useCurrentUser();
-  const companyId = user?.company_id;
+  const companyId = useActiveCompanyId();
   const { data: chat, isFetching } = useChat(ticketId);
   const { mutate: markSeen } = useMarkChatSeen();
   const messagesEndRef = useRef<HTMLDivElement>(null);

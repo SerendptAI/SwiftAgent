@@ -8,7 +8,7 @@ import { CompanyInfoStep } from "@/components/dashboard/company-setup/company-in
 import { KnowledgeSourcesStep } from "@/components/dashboard/company-setup/knowledge-sources-step";
 import { VoiceConversationStep } from "@/components/dashboard/company-setup/voice-conversation-step";
 import { HelpBanner } from "@/components/dashboard/settings/help-banner";
-import { useCurrentUser } from "@/hooks/use-auth";
+import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { cn } from "@/lib/utils";
 
 const TABS = [
@@ -29,8 +29,7 @@ const TAB_COLORS = [
 
 export default function IntegrationsPage() {
   const [activeTab, setActiveTab] = useState(0);
-  const { data: user } = useCurrentUser();
-  const companyId = user?.company_id ?? null;
+  const companyId = useActiveCompanyId();
 
   return (
     <div className="scrollbar-none flex min-h-[450px] flex-col gap-6 overflow-y-auto rounded-xl bg-white p-4 shadow-sm">

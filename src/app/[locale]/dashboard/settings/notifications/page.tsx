@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { HelpBanner } from "@/components/dashboard/settings/help-banner";
-import { useCurrentUser } from "@/hooks/use-auth";
+import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
 
 const securitySchema = z.object({
@@ -29,8 +29,7 @@ export default function NotificationsPage() {
   const [isEditingCode, setIsEditingCode] = useState(false);
   const [savingField, setSavingField] = useState<"email" | "code" | null>(null);
 
-  const { data: user } = useCurrentUser();
-  const companyId = user?.company_id ?? null;
+  const companyId = useActiveCompanyId();
 
   const { data: companyData } = useCompanyQuery(companyId);
   const { updateCompany } = useCompanyMutations();

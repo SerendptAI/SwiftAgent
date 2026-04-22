@@ -12,7 +12,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { InfoTooltip } from "@/components/ui/info-tooltip";
-import { useCurrentUser } from "@/hooks/use-auth";
+import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useStrollConfig, useUpdateStrollConfig } from "@/hooks/use-stroll";
 import type { StrollConfigPayload } from "@/services/stroll";
 
@@ -25,7 +25,7 @@ export function WidgetCard() {
     kind: "success" | "error";
     message: string;
   } | null>(null);
-  const { data: user } = useCurrentUser();
+  const activeCompanyId = useActiveCompanyId();
 
   useEffect(() => {
     if (!toast) return;
@@ -49,7 +49,7 @@ export function WidgetCard() {
     }
   }, [searchParams, pathname, router]);
 
-  const companyId = user?.company_id || "";
+  const companyId = activeCompanyId || "";
   const origin = typeof window !== "undefined" ? window.location.origin : "";
 
   const codeSnippet = useMemo(() => {
