@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build:widget": "cd widget-bundle && npm run build && cp dist/widget-ui.js ../public/widget-ui.js",
-    "build": "npm run build:widget && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "preview": "next build && next start",

@@ -1,6 +1,8 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
 import { useEffect, useRef } from "react";
 
 import { Loader } from "@/components/loader";
@@ -9,44 +11,42 @@ import { getCurrentUser, processAuthCallback } from "@/services/auth";
 
 export default function AuthCallbackPage() {
   const router = useRouter();
+  const locale = useLocale();
+  const queryClient = useQueryClient();
   const hasProcessed = useRef(false);
 
   useEffect(() => {
-    // Prevent double-execution in React Strict Mode
     if (hasProcessed.current) return;
     hasProcessed.current = true;
 
     async function handleCallback() {
-      // 1. Extract tokens from URL and save to localStorage
-      const params = new URLSearchParams(window.location.search);
+      // Tokens may arrive in either the query string or the hash fragment,
+      // depending on the OAuth provider.
+      let params = new URLSearchParams(window.location.search);
+      if (!params.get("access_token") && window.location.hash) {
+        params = new URLSearchParams(window.location.hash.substring(1));
+      }
+
       const tokensFound = processAuthCallback(params);
 
       if (!tokensFound && !getAccessToken()) {
-        // No tokens in URL and no saved tokens — send to login
-        router.replace("/en/login");
+        router.replace(`/${locale}/login`);
         return;
       }
 
-      // 2. Fetch user profile to determine where to route
+      await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+
       try {
         const user = await getCurrentUser();
-
-        // 3. Route based on onboarding status
-        const needsOnboarding = !user.onboarding_completed;
-
-        if (needsOnboarding) {
-          router.replace("/en/onboarding");
-        } else {
-          router.replace("/en/dashboard");
-        }
+        const target = user.onboarding_completed ? "dashboard" : "onboarding";
+        router.replace(`/${locale}/${target}`);
       } catch {
-        // Token is invalid or expired — send to login
-        router.replace("/en/login");
+        router.replace(`/${locale}/login`);
       }
     }
 
     handleCallback();
-  }, [router]);
+  }, [router, queryClient, locale]);
 
   return (
     <div className="flex h-screen w-screen items-center justify-center">

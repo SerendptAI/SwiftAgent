@@ -11,30 +11,51 @@ import { useState } from "react";
 
 import { Loader } from "@/components/loader";
 import { useChats } from "@/hooks/use-conversations";
+import { useTickets } from "@/hooks/use-tickets";
 import { cn } from "@/lib/utils";
 
+export type TicketKind = "ticket" | "chat";
+
 interface TicketListProps {
-  selectedTicketId: string;
-  onSelectTicket: (id: string, index: number) => void;
+  selectedItemId: string;
+  onSelectItem: (id: string, index: number, kind: TicketKind) => void;
 }
 
-export function TicketList({
-  selectedTicketId,
-  onSelectTicket,
-}: TicketListProps) {
+const AVATAR_IMAGES = [
+  "/images/chats/newimg.svg",
+  "/images/chats/newimg1.svg",
+  "/images/chats/newimg2.svg",
+  "/images/chats/newimg3.svg",
+  "/images/chats/newimg4.svg",
+];
+
+function formatRelativeTime(iso?: string): string {
+  if (!iso) return "";
+  try {
+    const date = new Date(iso);
+    const timeStr = format(date, "h:mma").toLowerCase();
+    if (isToday(date)) return timeStr;
+    if (isYesterday(date)) return `Yesterday ${timeStr}`;
+    const daysAgo = differenceInCalendarDays(new Date(), date);
+    if (daysAgo < 7) return `${daysAgo} days ago ${timeStr}`;
+    return `${format(date, "MMM d")} ${timeStr}`;
+  } catch {
+    return "";
+  }
+}
+
+export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
   const [activeTab, setActiveTab] = useState<"pending" | "resolved">("pending");
-  const { data: chats, isLoading } = useChats();
+  const { data: tickets, isLoading: ticketsLoading } = useTickets();
+  const { data: chats, isLoading: chatsLoading } = useChats();
 
-  const pendingChats = chats?.filter((chat) => !chat.seen) ?? [];
-  const resolvedChats = chats?.filter((chat) => chat.seen) ?? [];
-
-  const displayedChats = activeTab === "pending" ? pendingChats : resolvedChats;
-  const pendingCount = pendingChats.length;
+  const pendingCount = tickets?.length ?? 0;
+  const isLoading = activeTab === "pending" ? ticketsLoading : chatsLoading;
 
   return (
     <div className="flex h-full flex-col rounded-3xl bg-white p-4 shadow-sm">
       {/* Pending / Resolved Tabs */}
-      <div className="mb-4 flex items-center justify-between gap-1 rounded-full p-1">
+      <div className="mb-4 flex items-center gap-4 rounded-full p-1">
         <button
           onClick={() => setActiveTab("pending")}
           className={cn(
@@ -106,65 +127,101 @@ export function TicketList({
         </button>
       </div>
 
-      {/* Chat Session Items */}
+      {/* Items */}
       <div className="scrollbar-none flex-1 space-y-1 overflow-y-auto">
         {isLoading ? (
           <div className="flex justify-center py-8">
             <Loader />
           </div>
-        ) : displayedChats.length === 0 ? (
+        ) : activeTab === "pending" ? (
+          !tickets || tickets.length === 0 ? (
+            <div className="p-4 text-center text-sm text-gray-500">
+              No pending tickets.
+            </div>
+          ) : (
+            tickets.map((ticket, index) => {
+              const unread = (ticket.unseen_count ?? 0) > 0;
+              const avatarSrc = AVATAR_IMAGES[index % AVATAR_IMAGES.length];
+              const title =
+                ticket.customer_name?.trim() ||
+                ticket.customer_email ||
+                "Unknown sender";
+              const subtitle =
+                ticket.subject?.trim() || ticket.chat_summary || "(no subject)";
+              return (
+                <button
+                  key={ticket.id}
+                  onClick={() => onSelectItem(ticket.id, index, "ticket")}
+                  className={cn(
+                    "flex w-full items-center gap-3 rounded-2xl p-3 text-left transition-colors",
+                    selectedItemId === ticket.id
+                      ? "bg-blue-50"
+                      : "hover:bg-gray-50",
+                  )}
+                >
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-50">
+                    <Image
+                      src={avatarSrc}
+                      alt="Ticket avatar"
+                      width={36}
+                      height={31}
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between">
+                      <span
+                        className={cn(
+                          "font-dm-mono truncate text-sm",
+                          unread
+                            ? "font-black text-gray-900"
+                            : "font-semibold text-gray-600",
+                        )}
+                      >
+                        {title}
+                      </span>
+                      {unread && (
+                        <span className="h-2 w-2 shrink-0 rounded-full bg-[#006BE5]"></span>
+                      )}
+                    </div>
+                    <div className="flex items-center justify-between gap-2">
+                      <span
+                        className={cn(
+                          "font-stolzl truncate text-xs",
+                          unread ? "font-bold text-gray-600" : "text-gray-400",
+                        )}
+                      >
+                        {subtitle}
+                      </span>
+                      <span className="font-stolzl shrink-0 text-xs text-[#2196F3]">
+                        {formatRelativeTime(ticket.updated_at)}
+                      </span>
+                    </div>
+                  </div>
+                </button>
+              );
+            })
+          )
+        ) : !chats || chats.length === 0 ? (
           <div className="p-4 text-center text-sm text-gray-500">
-            No conversations found.
+            No resolved conversations.
           </div>
         ) : (
-          displayedChats.map((chat, index) => {
-            let displayTime = "";
-            if (chat.updated_at) {
-              try {
-                const date = new Date(chat.updated_at);
-                const timeStr = format(date, "h:mma").toLowerCase();
-
-                if (isToday(date)) {
-                  displayTime = timeStr;
-                } else if (isYesterday(date)) {
-                  displayTime = `Yesterday ${timeStr}`;
-                } else {
-                  const daysAgo = differenceInCalendarDays(new Date(), date);
-                  if (daysAgo < 7) {
-                    displayTime = `${daysAgo} days ago ${timeStr}`;
-                  } else {
-                    displayTime = `${format(date, "MMM d")} ${timeStr}`;
-                  }
-                }
-              } catch {
-                displayTime = "";
-              }
-            }
-
-            // Format session_id as a short readable label
+          chats.map((chat, index) => {
+            const avatarSrc = AVATAR_IMAGES[index % AVATAR_IMAGES.length];
             const sessionLabel = chat.session_id
               ? chat.session_id.slice(0, 13).toUpperCase()
               : "UNKNOWN";
-
-            const avatarImages = [
-              "/images/chats/img1.svg",
-              "/images/chats/img2.svg",
-              "/images/chats/img3.svg",
-            ];
-            const avatarSrc = avatarImages[index % avatarImages.length];
-
             return (
               <button
                 key={chat.id}
-                onClick={() => onSelectTicket(chat.id, index)}
+                onClick={() => onSelectItem(chat.id, index, "chat")}
                 className={cn(
                   "flex w-full items-center gap-3 rounded-2xl p-3 text-left transition-colors",
-                  selectedTicketId === chat.id
-                    ? "bg-blue-50"
-                    : "hover:bg-gray-50",
+                  selectedItemId === chat.id
+                    ? "bg-[#ECECEC]"
+                    : "hover:bg-[#ECECEC]",
                 )}
               >
-                {/* Chat Avatar */}
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-50">
                   <Image
                     src={avatarSrc}
@@ -173,38 +230,19 @@ export function TicketList({
                     height={31}
                   />
                 </div>
-
-                {/* Chat Info */}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between">
-                    <span
-                      className={cn(
-                        "font-dm-mono truncate text-sm",
-                        !chat.seen
-                          ? "font-black text-gray-900"
-                          : "font-semibold text-gray-600",
-                      )}
-                    >
+                    <span className="font-dm-mono truncate text-sm font-semibold text-gray-600">
                       {sessionLabel}
                     </span>
-                    {!chat.seen && (
-                      <span className="h-2 w-2 shrink-0 rounded-full bg-[#006BE5]"></span>
-                    )}
                   </div>
                   <div className="flex items-center justify-between gap-2">
-                    <span
-                      className={cn(
-                        "font-stolzl truncate text-xs",
-                        !chat.seen
-                          ? "font-bold text-gray-600"
-                          : "text-gray-400",
-                      )}
-                    >
+                    <span className="font-stolzl truncate text-xs text-gray-400">
                       {chat.message_count}{" "}
                       {chat.message_count === 1 ? "message" : "messages"}
                     </span>
-                    <span className="font-stolzl shrink-0 text-xs text-[#2196F3]">
-                      {displayTime}
+                    <span className="font-stolzl shrink-0 text-xs text-[#6433CC]">
+                      {formatRelativeTime(chat.updated_at)}
                     </span>
                   </div>
                 </div>

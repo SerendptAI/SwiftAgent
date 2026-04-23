@@ -50,6 +50,65 @@ export async function updateProfile(payload: {
   return data;
 }
 
+// ── OTP Authentication ────────────────────────────────────────────────────────
+
+export interface OtpSendResponse {
+  message: string;
+  email: string;
+  otp_required: boolean;
+  is_new_user: boolean;
+  access_token: string | null;
+  refresh_token: string | null;
+}
+
+export interface OtpVerifyResponse {
+  message: string;
+  email: string;
+  otp_required: boolean;
+  is_new_user: boolean;
+  access_token: string;
+  refresh_token: string;
+  token_type: string;
+}
+
+export async function sendOtp(
+  email: string,
+  isSignup: boolean = false,
+  fullName?: string,
+): Promise<OtpSendResponse> {
+  const { data } = await apiClient.post<OtpSendResponse>(
+    "/api/v1/auth/otp/send",
+    {
+      email,
+      is_signup: isSignup,
+      ...(fullName ? { full_name: fullName } : {}),
+    },
+  );
+
+  // Handle grace period — tokens returned directly
+  if (!data.otp_required && data.access_token && data.refresh_token) {
+    setAuthTokens(data.access_token, data.refresh_token);
+  }
+
+  return data;
+}
+
+export async function verifyOtp(
+  email: string,
+  otpCode: string,
+): Promise<OtpVerifyResponse> {
+  const { data } = await apiClient.post<OtpVerifyResponse>(
+    "/api/v1/auth/otp/verify",
+    { email, otp_code: otpCode },
+  );
+
+  if (data.access_token && data.refresh_token) {
+    setAuthTokens(data.access_token, data.refresh_token);
+  }
+
+  return data;
+}
+
 // ── Token Refresh ──────────────────────────────────────────────────────────────
 
 interface TokenResponse {
@@ -80,6 +139,43 @@ export async function verifyReferral(code: string): Promise<string> {
   const { data } = await apiClient.post<string>(
     "/api/v1/auth/verify-referral",
     { code },
+  );
+  return data;
+}
+
+// ── Registration / Approval ───────────────────────────────────────────────────
+
+export interface RegisterInterestPayload {
+  company_name: string;
+  company_email: string;
+  company_description: string;
+  customer_size: string;
+}
+
+export interface RegisterInterestResponse {
+  status: string;
+  message: string;
+}
+
+export async function registerInterest(
+  payload: RegisterInterestPayload,
+): Promise<RegisterInterestResponse> {
+  const { data } = await apiClient.post<RegisterInterestResponse>(
+    "/api/v1/auth/register-interest",
+    payload,
+  );
+  return data;
+}
+
+export interface RegistrationDetails {
+  company_name: string;
+  company_description: string;
+  customer_size: string;
+}
+
+export async function getRegistrationDetails(): Promise<RegistrationDetails> {
+  const { data } = await apiClient.get<RegistrationDetails>(
+    "/api/v1/auth/registration-details",
   );
   return data;
 }

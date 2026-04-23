@@ -7,11 +7,14 @@ import { CompanyToolbar } from "@/components/dashboard/company-toolbar";
 import { AddCardModal } from "@/components/dashboard/settings/add-card-modal";
 import { Icons } from "@/components/icons";
 import { type Plan, PlanCard } from "@/components/pricing/plan-card";
+import { useActiveCompanyId } from "@/hooks/use-active-company";
+import { useBillingStatus, useCreateCheckout } from "@/hooks/use-billing";
 import { useCardStore } from "@/store/card-store";
 
 const PLANS: Plan[] = [
   {
     name: "YELLOW PILL",
+    tier: "basic",
     price: "$99",
     billing: "PER AGENT / MONTH",
     description: "BUILT FOR SMALL BUSINESSES\nWITH LOW SUPPORT VOLUME.",
@@ -31,6 +34,7 @@ const PLANS: Plan[] = [
   },
   {
     name: "PURPLE PILL",
+    tier: "pro",
     price: "$399",
     billing: "PER AGENT / MONTH",
     description:
@@ -50,6 +54,7 @@ const PLANS: Plan[] = [
   },
   {
     name: "ORANGE PILL",
+    tier: "enterprise",
     price: "$1,200",
     billing: "PER AGENT / MONTH",
     description:
@@ -74,6 +79,51 @@ const PLANS: Plan[] = [
 export default function BillingPage() {
   const { savedCards, addCard } = useCardStore();
   const [showAddCard, setShowAddCard] = useState(false);
+  const [pendingTier, setPendingTier] = useState<string | null>(null);
+  const [checkoutError, setCheckoutError] = useState("");
+
+  const companyId = useActiveCompanyId();
+  const { data: billingStatus } = useBillingStatus(companyId);
+  const createCheckout = useCreateCheckout();
+
+  const handleSubscribe = (plan: Plan) => {
+    if (!plan.tier || !companyId) return;
+    setCheckoutError("");
+    setPendingTier(plan.tier);
+
+    createCheckout.mutate(
+      { company_id: companyId, tier: plan.tier },
+      {
+        onSuccess: ({ checkout_url }) => {
+          if (checkout_url) {
+            window.location.href = checkout_url;
+          } else {
+            setPendingTier(null);
+          }
+        },
+        onError: (error: unknown) => {
+          setPendingTier(null);
+          const data =
+            error && typeof error === "object" && "response" in error
+              ? (
+                  error as {
+                    response?: {
+                      data?: { message?: string; detail?: string };
+                    };
+                  }
+                ).response?.data
+              : undefined;
+          setCheckoutError(
+            data?.message ||
+              data?.detail ||
+              "Unable to start checkout. Please try again.",
+          );
+        },
+      },
+    );
+  };
+
+  const activeTier = billingStatus?.tier ?? null;
 
   return (
     <div className="flex h-full flex-col">
@@ -109,10 +159,35 @@ export default function BillingPage() {
 
       {/* Plan Cards */}
       <div className="w-full max-w-7xl">
+        {checkoutError && (
+          <p className="font-stolzl mb-4 text-sm text-red-600">
+            {checkoutError}
+          </p>
+        )}
         <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
-          {PLANS.map((plan) => (
-            <PlanCard key={plan.name} plan={plan} showSubscribe />
-          ))}
+          {PLANS.map((plan) => {
+            const isActive =
+              !!plan.tier && !!activeTier && plan.tier === activeTier;
+            const isPending = pendingTier === plan.tier;
+            return (
+              <PlanCard
+                key={plan.name}
+                plan={plan}
+                showSubscribe
+                onSubscribe={handleSubscribe}
+                subscribeDisabled={
+                  !companyId || isActive || createCheckout.isPending
+                }
+                subscribeLabel={
+                  isActive
+                    ? "CURRENT PLAN"
+                    : isPending
+                      ? "REDIRECTING..."
+                      : undefined
+                }
+              />
+            );
+          })}
         </div>
       </div>
 

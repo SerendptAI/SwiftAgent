@@ -22,13 +22,21 @@ export interface Company {
   customer_value: string;
   brand_tone: string;
   primary_language: string;
+  support_emails: string;
   enabled_sources: string[];
   custom_info: string[];
   voice_style: string;
+  email_slug?: string;
+  email_address?: string;
   backup_email?: string;
   access_code?: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface EmailSlugCheckResult {
+  available: boolean;
+  suggestion?: string;
 }
 
 export type CompanyUpdateSection =
@@ -88,6 +96,28 @@ export const companyApi = {
       `/api/v1/companies/${companyId}/logo`,
       formData,
       { headers: { "Content-Type": "multipart/form-data" } },
+    );
+    return data;
+  },
+
+  checkEmailSlug: async (
+    companyId: string,
+    slug: string,
+  ): Promise<EmailSlugCheckResult> => {
+    const { data } = await apiClient.get<EmailSlugCheckResult>(
+      `/api/v1/companies/${companyId}/email-slug/check`,
+      { params: { slug } },
+    );
+    return data;
+  },
+
+  updateEmailSlug: async (
+    companyId: string,
+    slug: string,
+  ): Promise<Company> => {
+    const { data } = await apiClient.patch<Company>(
+      `/api/v1/companies/${companyId}/email-slug`,
+      { email_slug: slug },
     );
     return data;
   },

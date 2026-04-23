@@ -93,7 +93,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
         ref={containerRef}
-        className="absolute top-[130px] right-0 left-0 mx-auto w-[92%] overflow-hidden border-r border-b border-l border-black bg-white pt-8"
+        className="absolute top-[90px] right-0 left-0 mx-auto w-[92%] overflow-hidden border-r border-b border-l border-black bg-white pt-8"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
         role="document"

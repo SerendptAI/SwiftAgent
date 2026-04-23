@@ -1,44 +1,78 @@
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useState } from "react";
 
+import { Icons } from "@/components/icons";
+import { useCurrentUser } from "@/hooks/use-auth";
+import { useCompanyQuery } from "@/hooks/use-company";
+import { useOnboardingStore } from "@/store/onboarding-store";
+
+import { QuestionnaireChat } from "./questionnaire-chat";
 import { NextButton } from "./ui-elements";
 
-export function CompletionStep() {
-  const router = useRouter();
-  const queryClient = useQueryClient();
-
-  // Invalidate the cached user so AuthGuard reads fresh onboarding_completed: true
-  useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-  }, [queryClient]);
-
-  const handleContinue = () => {
-    router.push("/en/dashboard");
-  };
-
+function IntroModal({ onStart }: { onStart: () => void }) {
   return (
-    <div className="flex h-4/5 w-full flex-col items-center justify-center p-8 text-center">
-      <div className="mb-8">
-        <Image
-          src="/images/complete.svg"
-          alt="Setup Complete"
-          width={120}
-          height={120}
-          className="h-auto w-auto"
-        />
-      </div>
+    <div className="fixed inset-0 z-50 bg-black/60">
+      <div className="absolute inset-y-0 right-[350px] left-0 flex items-center justify-center p-6 lg:left-[105px]">
+        <div className="flex w-full max-w-2xl flex-col items-center bg-white px-14 py-16 text-center shadow-xl">
+          <h2 className="font-greed-narrow mb-4 text-4xl font-bold text-gray-900">
+            We&apos;d love to get to know your
+            <br />
+            organization better.
+          </h2>
 
-      <h2 className="mb-12 text-sm font-bold tracking-wide text-gray-900 uppercase">
-        COMPANY SETUP COMPLETE
-      </h2>
+          <p className="font-dm-mono mb-6 text-sm tracking-wider text-gray-500 uppercase">
+            Our AI agents have a few questions for you so we
+            <br />
+            can understand your organization better
+          </p>
 
-      <div className="mt-8 w-full max-w-2xl px-12">
-        <NextButton onClick={handleContinue}>Continue to Dashboard</NextButton>
+          <div className="mb-6">
+            <Image
+              src="/images/pixellife.svg"
+              alt="Questionnaire"
+              width={120}
+              height={120}
+              className="h-auto w-auto"
+            />
+          </div>
+
+          <p className="font-dm-mono mb-8 flex items-center gap-1.5 text-[10px] tracking-wider text-gray-400 uppercase">
+            <Icons.TimeFlow />
+            Usually takes 5 minutes
+          </p>
+
+          <div className="w-full max-w-xs">
+            <NextButton onClick={onStart} className="shadow-none">
+              START QUESTIONER
+            </NextButton>
+          </div>
+        </div>
       </div>
     </div>
   );
+}
+
+export function CompletionStep() {
+  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+  const { companyId: storeCompanyId, typedCompanyName } = useOnboardingStore();
+  const { data: user } = useCurrentUser();
+  const companyId = storeCompanyId || user?.company_id || null;
+  const { data: companyData } = useCompanyQuery(companyId);
+
+  const companyName = typedCompanyName || companyData?.name || "Your Company";
+  const logoUrl = companyData?.logo_url;
+
+  if (showQuestionnaire) {
+    return (
+      <QuestionnaireChat
+        companyId={companyId}
+        companyName={companyName}
+        logoUrl={logoUrl}
+      />
+    );
+  }
+
+  return <IntroModal onStart={() => setShowQuestionnaire(true)} />;
 }

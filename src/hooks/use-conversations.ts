@@ -6,13 +6,12 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 
-import { useCurrentUser } from "@/hooks/use-auth";
+import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { chatsApi } from "@/services/conversations";
 
 /** Fetch the list of chat sessions for the current company. */
 export function useChats() {
-  const { data: user } = useCurrentUser();
-  const companyId = user?.company_id;
+  const companyId = useActiveCompanyId();
 
   return useQuery({
     queryKey: ["chats", companyId],
@@ -23,8 +22,7 @@ export function useChats() {
 
 /** Fetch the full detail (with messages) for a single chat session. */
 export function useChat(chatId: string | null) {
-  const { data: user } = useCurrentUser();
-  const companyId = user?.company_id;
+  const companyId = useActiveCompanyId();
 
   return useQuery({
     queryKey: ["chats", companyId, chatId],
@@ -36,8 +34,7 @@ export function useChat(chatId: string | null) {
 
 /** Fetch all chat details (with messages) for search. */
 export function useAllChatDetails() {
-  const { data: user } = useCurrentUser();
-  const companyId = user?.company_id;
+  const companyId = useActiveCompanyId();
   const { data: chats } = useChats();
 
   return useQueries({

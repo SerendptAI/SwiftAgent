@@ -14,6 +14,7 @@ const companyIdentitySchema = z.object({
   customer_value: z.string().optional(),
   brand_tone: z.string().optional(),
   primary_language: z.string().optional(),
+  support_emails: z.string().optional(),
 });
 
 type CompanyIdentityValues = z.infer<typeof companyIdentitySchema>;
@@ -46,6 +47,7 @@ export function CompanyIdentityStep({
       customer_value: companyData?.customer_value || "",
       brand_tone: companyData?.brand_tone || "",
       primary_language: companyData?.primary_language || "en",
+      support_emails: companyData?.support_emails || "",
     },
   });
   useEffect(() => {
@@ -55,6 +57,7 @@ export function CompanyIdentityStep({
         customer_value: companyData.customer_value || "",
         brand_tone: companyData.brand_tone || "",
         primary_language: companyData.primary_language || "en",
+        support_emails: companyData.support_emails || "",
       });
     }
   }, [isUpdateMode, companyData, reset]);
@@ -147,6 +150,21 @@ export function CompanyIdentityStep({
               </div>
             </div>
 
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="col-span-1">
+                <FormLabel htmlFor="supportEmails">Support Emails</FormLabel>
+                <p className="mb-2 text-sm text-gray-400">
+                  Separate emails with a comma.
+                </p>
+                <FormTextarea
+                  id="supportEmails"
+                  className="min-h-[100px]"
+                  placeholder="noreply@email.com , soreply@email.com"
+                  {...register("support_emails")}
+                />
+              </div>
+            </div>
+
             <div className="mt-8">
               <OnboardingErrorToast
                 message={error}
@@ -165,7 +183,7 @@ export function CompanyIdentityStep({
                   ) : isUpdateMode ? (
                     "UPDATE"
                   ) : (
-                    "Next"
+                    "FINISH"
                   )}
                 </NextButton>
               )}

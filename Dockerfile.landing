@@ -12,9 +12,6 @@ RUN npm install
 # copy the rest of the source tree
 COPY . .
 
-# install widget-bundle dependencies (has its own package.json with vite)
-RUN cd widget-bundle && npm install
-
 # build the Next.js application
 RUN npm run build
 

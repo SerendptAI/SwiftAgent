@@ -8,6 +8,8 @@ export interface Plan {
   textColor: string;
   image: string;
   features: string[];
+  /** Backend tier slug used by the billing checkout endpoint */
+  tier?: string;
 }
 
 interface PlanCardProps {
@@ -16,12 +18,21 @@ interface PlanCardProps {
   showSubscribe?: boolean;
   /** Extra class applied to the root element (e.g. "pricing-card" for GSAP selectors) */
   className?: string;
+  /** Called when the Subscribe button is clicked */
+  onSubscribe?: (plan: Plan) => void;
+  /** Disables the Subscribe button (e.g. while a checkout request is pending) */
+  subscribeDisabled?: boolean;
+  /** Label override for the Subscribe button */
+  subscribeLabel?: string;
 }
 
 export function PlanCard({
   plan,
   showSubscribe = false,
   className = "",
+  onSubscribe,
+  subscribeDisabled = false,
+  subscribeLabel,
 }: PlanCardProps) {
   return (
     <div
@@ -68,8 +79,13 @@ export function PlanCard({
       {/* Subscribe Button — dashboard only */}
       {showSubscribe && (
         <div className="px-6 pb-6">
-          <button className="w-full rounded-md bg-[#2196F3] py-3 text-sm font-bold tracking-widest text-white uppercase transition-colors hover:bg-[#1E88E5]">
-            SUBSCRIBE
+          <button
+            type="button"
+            onClick={() => onSubscribe?.(plan)}
+            disabled={subscribeDisabled}
+            className="w-full rounded-md bg-[#2196F3] py-3 text-sm font-bold tracking-widest text-white uppercase transition-colors hover:bg-[#1E88E5] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {subscribeLabel || "SUBSCRIBE"}
           </button>
         </div>
       )}
