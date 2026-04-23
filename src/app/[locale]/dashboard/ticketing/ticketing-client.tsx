@@ -7,34 +7,41 @@ import { CompanyToolbar } from "@/components/dashboard/company-toolbar";
 import type { ChannelKey } from "@/components/dashboard/ticketing/channel-navigator";
 import { ChannelNavigator } from "@/components/dashboard/ticketing/channel-navigator";
 import { ChatView } from "@/components/dashboard/ticketing/chat-view";
+import type { TicketKind } from "@/components/dashboard/ticketing/ticket-list";
 import { TicketList } from "@/components/dashboard/ticketing/ticket-list";
+import { TicketView } from "@/components/dashboard/ticketing/ticket-view";
 import { Icons } from "@/components/icons";
 import { useChats } from "@/hooks/use-conversations";
+import { useTickets } from "@/hooks/use-tickets";
 
 export function TicketingClient() {
   const searchParams = useSearchParams();
-  const [selectedTicketId, setSelectedTicketId] = useState("");
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selection, setSelection] = useState<{
+    id: string;
+    index: number;
+    kind: TicketKind;
+  } | null>(null);
   const [activeChannel, setActiveChannel] = useState<ChannelKey>("chats");
 
   const { data: chats } = useChats();
+  const { data: tickets } = useTickets();
 
-  // Auto-select chat from URL query param (e.g. ?chat=abc123)
+  // Auto-select chat from URL query param (e.g. ?chat=abc123) — resolved side
   useEffect(() => {
     const chatId = searchParams.get("chat");
     if (chatId && chats) {
       const index = chats.findIndex((c) => c.id === chatId);
       if (index !== -1) {
-        setSelectedTicketId(chatId);
-        setSelectedIndex(index);
+        setSelection({ id: chatId, index, kind: "chat" });
       }
     }
   }, [searchParams, chats]);
 
-  const handleSelectTicket = (id: string, index: number) => {
-    setSelectedTicketId(id);
-    setSelectedIndex(index);
+  const handleSelectItem = (id: string, index: number, kind: TicketKind) => {
+    setSelection({ id, index, kind });
   };
+
+  const pendingCount = tickets?.length ?? 0;
 
   return (
     <div className="flex h-full w-full flex-col">
@@ -50,27 +57,31 @@ export function TicketingClient() {
       </div>
 
       <div className="flex min-h-0 flex-1 gap-4">
-        {/* Channel navigator */}
         <div className="shrink-0">
           <ChannelNavigator
             active={activeChannel}
             onChange={setActiveChannel}
-            chatCount={chats?.length ?? 0}
+            chatCount={pendingCount}
           />
         </div>
 
-        {/* Ticket list */}
         <div className="w-[320px] shrink-0">
           <TicketList
-            selectedTicketId={selectedTicketId}
-            onSelectTicket={handleSelectTicket}
+            selectedItemId={selection?.id ?? ""}
+            onSelectItem={handleSelectItem}
           />
         </div>
 
-        {/* Chat view */}
         <div className="min-w-0 flex-1">
-          {selectedTicketId ? (
-            <ChatView ticketId={selectedTicketId} avatarIndex={selectedIndex} />
+          {selection ? (
+            selection.kind === "ticket" ? (
+              <TicketView
+                ticketId={selection.id}
+                avatarIndex={selection.index}
+              />
+            ) : (
+              <ChatView ticketId={selection.id} avatarIndex={selection.index} />
+            )
           ) : (
             <div className="flex h-full items-center justify-center rounded-3xl bg-white text-gray-400 shadow-sm">
               Select a conversation to view

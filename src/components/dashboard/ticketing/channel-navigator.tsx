@@ -64,7 +64,7 @@ export function ChannelNavigator({
             className={`relative flex h-20 w-20 items-center justify-center rounded-2xl transition-colors ${
               isActive
                 ? `${ch.activeBg} shadow-sm`
-                : "bg-white hover:bg-gray-100"
+                : "bg-[#F6F6F6] hover:bg-gray-100"
             }`}
             aria-label={ch.key}
           >
@@ -73,13 +73,6 @@ export function ChannelNavigator({
                 isActive ? ch.activeIcon : "text-gray-500"
               }`}
             />
-            {count > 0 && (
-              <span
-                className={`absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold text-white ${ch.badgeBg}`}
-              >
-                {count}
-              </span>
-            )}
           </button>
         );
       })}
