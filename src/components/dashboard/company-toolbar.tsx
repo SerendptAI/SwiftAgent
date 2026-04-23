@@ -1,7 +1,7 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { ChevronDown, Plus } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
@@ -92,8 +92,10 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
 
         {/* Backdrop overlay */}
         {isOpen && (
-          <div
-            className="fixed inset-0 z-40 bg-black/30 backdrop-blur-[2px] transition-opacity duration-200"
+          <button
+            type="button"
+            aria-label="Close menu"
+            className="fixed inset-0 z-40 cursor-default bg-black/30 backdrop-blur-[2px] transition-opacity duration-200"
             onClick={() => setIsOpen(false)}
           />
         )}
@@ -154,12 +156,7 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
       </div>
 
       {/* Right-side actions */}
-      <div className="flex items-center gap-3">
-        <button className="flex h-12 w-12 items-center justify-center rounded-full bg-[#6433CC] text-white shadow-lg transition-colors hover:bg-purple-700">
-          <Plus className="h-6 w-6" />
-        </button>
-        {actions}
-      </div>
+      {actions && <div className="flex items-center gap-3">{actions}</div>}
     </div>
   );
 }

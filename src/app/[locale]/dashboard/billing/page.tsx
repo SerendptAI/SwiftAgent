@@ -14,7 +14,7 @@ import { useCardStore } from "@/store/card-store";
 const PLANS: Plan[] = [
   {
     name: "YELLOW PILL",
-    tier: "Basic",
+    tier: "basic",
     price: "$99",
     billing: "PER AGENT / MONTH",
     description: "BUILT FOR SMALL BUSINESSES\nWITH LOW SUPPORT VOLUME.",
@@ -34,7 +34,7 @@ const PLANS: Plan[] = [
   },
   {
     name: "PURPLE PILL",
-    tier: "Pro",
+    tier: "pro",
     price: "$399",
     billing: "PER AGENT / MONTH",
     description:
@@ -54,7 +54,7 @@ const PLANS: Plan[] = [
   },
   {
     name: "ORANGE PILL",
-    tier: "Enterprise",
+    tier: "enterprise",
     price: "$1,200",
     billing: "PER AGENT / MONTH",
     description:

@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, Plus } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 export function CompanyToolbar() {
   return (
@@ -10,10 +10,6 @@ export function CompanyToolbar() {
           <ChevronDown className="h-4 w-4 text-gray-500" />
         </div>
         Serendpt AI
-      </button>
-
-      <button className="flex h-12 w-12 items-center justify-center rounded-full bg-[#6433CC] text-white shadow-lg transition-colors hover:bg-purple-700">
-        <Plus className="h-6 w-6" />
       </button>
     </div>
   );
