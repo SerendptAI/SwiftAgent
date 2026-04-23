@@ -143,6 +143,43 @@ export async function verifyReferral(code: string): Promise<string> {
   return data;
 }
 
+// ── Registration / Approval ───────────────────────────────────────────────────
+
+export interface RegisterInterestPayload {
+  company_name: string;
+  company_email: string;
+  company_description: string;
+  customer_size: string;
+}
+
+export interface RegisterInterestResponse {
+  status: string;
+  message: string;
+}
+
+export async function registerInterest(
+  payload: RegisterInterestPayload,
+): Promise<RegisterInterestResponse> {
+  const { data } = await apiClient.post<RegisterInterestResponse>(
+    "/api/v1/auth/register-interest",
+    payload,
+  );
+  return data;
+}
+
+export interface RegistrationDetails {
+  company_name: string;
+  company_description: string;
+  customer_size: string;
+}
+
+export async function getRegistrationDetails(): Promise<RegistrationDetails> {
+  const { data } = await apiClient.get<RegistrationDetails>(
+    "/api/v1/auth/registration-details",
+  );
+  return data;
+}
+
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
 export function processAuthCallback(searchParams: URLSearchParams): boolean {

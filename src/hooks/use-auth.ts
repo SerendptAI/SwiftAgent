@@ -1,11 +1,20 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { getAccessToken } from "@/lib/api-client";
-import type { OtpSendResponse, OtpVerifyResponse, User } from "@/services/auth";
+import type {
+  OtpSendResponse,
+  OtpVerifyResponse,
+  RegisterInterestPayload,
+  RegisterInterestResponse,
+  RegistrationDetails,
+  User,
+} from "@/services/auth";
 import {
   getCurrentUser,
+  getRegistrationDetails,
   loginWithGoogle,
   logout,
+  registerInterest,
   sendOtp,
   updateProfile,
   verifyOtp,
@@ -66,6 +75,26 @@ export function useVerifyOtp() {
     { email: string; otpCode: string }
   >({
     mutationFn: ({ email, otpCode }) => verifyOtp(email, otpCode),
+  });
+}
+
+// ── Register Interest ─────────────────────────────────────────────────────────
+
+export function useRegisterInterest() {
+  return useMutation<RegisterInterestResponse, Error, RegisterInterestPayload>({
+    mutationFn: registerInterest,
+  });
+}
+
+// ── Registration Details (post-approval prefill) ──────────────────────────────
+
+export function useRegistrationDetails(enabled: boolean = true) {
+  return useQuery<RegistrationDetails>({
+    queryKey: ["registrationDetails"],
+    queryFn: getRegistrationDetails,
+    enabled: enabled && !!getAccessToken(),
+    retry: false,
+    staleTime: 5 * 60 * 1000,
   });
 }
 
