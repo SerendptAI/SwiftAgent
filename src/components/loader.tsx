@@ -23,7 +23,7 @@ export const Loader = () => {
       >
         <div className="relative h-20 w-20">
           <Image
-            src="/images/mask.svg"
+            src="/images/mask2.svg"
             alt="Loading..."
             fill
             className="object-contain"
