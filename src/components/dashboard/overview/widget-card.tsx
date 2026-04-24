@@ -1,16 +1,10 @@
 "use client";
 
-import {
-  CheckCircle2,
-  ChevronDown,
-  Copy,
-  Info,
-  Settings,
-  XCircle,
-} from "lucide-react";
+import { CheckCircle2, ChevronDown, Copy, Info, XCircle } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { Icons } from "@/components/icons";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useStrollConfig, useUpdateStrollConfig } from "@/hooks/use-stroll";
@@ -135,9 +129,9 @@ export function WidgetCard() {
               <div className="flex items-center pr-6">
                 <button
                   onClick={() => setIsSettingsOpen(true)}
-                  className="font-greed-narrow flex cursor-pointer items-center gap-1.5 rounded-md border border-gray-200 bg-white px-4 py-2 text-xs font-bold tracking-wider text-gray-600 uppercase transition-colors hover:bg-gray-100"
+                  className="font-greed-narrow flex cursor-pointer items-center gap-2 rounded-md bg-[#EDEDED] px-4 py-2 text-xs font-bold tracking-wider text-gray-600 uppercase transition-colors hover:bg-gray-100"
                 >
-                  <Settings className="h-3.5 w-3.5" />
+                  <Icons.Settings className="h-5 w-5" />
                   SETTINGS
                 </button>
               </div>
@@ -146,21 +140,31 @@ export function WidgetCard() {
             <div className="rounded-md border border-gray-100 bg-white px-5 pt-16 pb-5 shadow-sm">
               {/* Sticky toggle */}
               <div className="mb-4 flex items-center gap-2">
-                <figure className="flex w-fit items-center gap-2 rounded-md bg-[#EDEDED] p-1">
-                  <button
-                    onClick={() => setIsSticky(!isSticky)}
-                    className={`font-dm-mono rounded-md px-3 py-1 text-xs font-bold tracking-wider uppercase transition-colors ${
+                <button
+                  type="button"
+                  aria-pressed={isSticky}
+                  className="relative flex h-[32px] w-[125px] cursor-pointer items-center rounded-md bg-[#EDEDED] p-1"
+                  onClick={() => setIsSticky(!isSticky)}
+                >
+                  {/* Label — always visible on the side opposite the knob */}
+                  <span
+                    className={`font-dm-mono absolute z-[1] text-sm font-normal text-gray-400 transition-all duration-300 ease-in-out select-none ${
+                      isSticky ? "right-3" : "left-3"
+                    }`}
+                  >
+                    sticky?
+                  </span>
+                  {/* Sliding knob */}
+                  <span
+                    className={`font-dm-mono absolute top-1 bottom-1 z-[2] flex w-[44px] items-center justify-center rounded-md text-xs font-bold tracking-wider uppercase transition-all duration-300 ease-in-out ${
                       isSticky
-                        ? "bg-black text-white"
-                        : "bg-gray-200 text-gray-500"
+                        ? "left-1 bg-black text-white"
+                        : "left-[77px] bg-gray-300 text-gray-500"
                     }`}
                   >
                     {isSticky ? "ON" : "OFF"}
-                  </button>
-                  <span className="font-dm-mono text-sm font-normal text-gray-400">
-                    sticky?
                   </span>
-                </figure>
+                </button>
                 <InfoTooltip text="Toggle to enable/disable the widget on your website." />
               </div>
 
@@ -215,7 +219,7 @@ export function WidgetCard() {
 
 // ── Chatbot settings sidebar ─────────────────────────────────────────────────
 
-type AgentId = "047" | "007" | "029" | "005" | "001";
+type AgentId = "047" | "007" | "626" | "001";
 
 interface AgentOption {
   id: AgentId;
@@ -236,15 +240,11 @@ const AGENT_OPTIONS: AgentOption[] = [
       "Agent 007 can search a website's front-end content for custom info. If a website doesn't have the requested data, it responds gracefully.",
   },
   {
-    id: "029",
+    id: "626",
     description:
-      "Agent 029 can handle cryptocurrency transactions and crypto-swaps on potential wallets.",
+      "Agent 626 can analyze cryptocurrency transactions and inform users of potential issues.",
   },
-  {
-    id: "005",
-    description:
-      "Agent 005 provides bank reviews and updates customers on payments, including refunds and losses.",
-  },
+
   {
     id: "001",
     description:
