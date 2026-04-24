@@ -9,7 +9,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
@@ -21,6 +21,7 @@ export function WidgetCard() {
   const [isSticky, setIsSticky] = useState(true);
   const [copied, setCopied] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [modeDropdownOpen, setModeDropdownOpen] = useState(false);
   const [toast, setToast] = useState<{
     kind: "success" | "error";
     message: string;
@@ -49,6 +50,22 @@ export function WidgetCard() {
     }
   }, [searchParams, pathname, router]);
 
+  // Close mode dropdown on outside click
+  const modeDropdownRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!modeDropdownOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        modeDropdownRef.current &&
+        !modeDropdownRef.current.contains(e.target as Node)
+      ) {
+        setModeDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [modeDropdownOpen]);
+
   const companyId = activeCompanyId || "";
   const origin = typeof window !== "undefined" ? window.location.origin : "";
 
@@ -66,20 +83,53 @@ export function WidgetCard() {
   }, [codeSnippet]);
 
   return (
-    <div className="overflow-hidden rounded-xl">
+    <div className="rounded-xl">
       {isOpen ? (
         <div className="relative">
           <div className="relative">
             {/* Top bar with notch cutout */}
             <div className="absolute top-0 right-0 left-0 z-1 flex h-[48px] items-center gap-4">
-              <div className="bg-muted h-full rounded-br-md pr-4">
+              <div
+                className="bg-muted h-full rounded-br-md pr-4"
+                ref={modeDropdownRef}
+              >
                 <button
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => setModeDropdownOpen((v) => !v)}
                   className="font-dm-mono flex items-center gap-2 rounded-md bg-[#006BE5] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1E88E5]"
                 >
-                  <ChevronDown className="h-4 w-4" />
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform ${modeDropdownOpen ? "rotate-180" : ""}`}
+                  />
                   Widget
                 </button>
+
+                {modeDropdownOpen && (
+                  <div className="animate-in fade-in slide-in-from-top-1 absolute top-[48px] left-0 z-10 min-w-[180px] overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg">
+                    <button
+                      onClick={() => {
+                        setModeDropdownOpen(false);
+                      }}
+                      className="font-dm-mono flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+                    >
+                      <span className="flex h-5 w-5 items-center justify-center rounded bg-[#006BE5]/10 text-[#006BE5]">
+                        <ChevronDown className="h-3.5 w-3.5 rotate-180" />
+                      </span>
+                      Widget Mode
+                    </button>
+                    <div className="mx-3 border-t border-gray-100" />
+                    <button
+                      onClick={() => {
+                        setModeDropdownOpen(false);
+                      }}
+                      className="font-dm-mono flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+                    >
+                      <span className="flex h-5 w-5 items-center justify-center rounded bg-gray-100 text-gray-500">
+                        <ChevronDown className="h-3.5 w-3.5 -rotate-90" />
+                      </span>
+                      Button Mode
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center pr-6">
