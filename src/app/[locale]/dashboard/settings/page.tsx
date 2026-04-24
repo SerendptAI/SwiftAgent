@@ -51,7 +51,7 @@ function EditableField({
           type={type}
           value={localValue}
           onChange={(e) => setLocalValue(e.target.value)}
-          className="flex-1 bg-[#EDEDED] px-4 py-3 text-sm outline-none"
+          className="font-stolzl flex-1 bg-[#EDEDED] px-4 py-3 text-sm outline-none"
         />
         <button
           onClick={handleUpdate}
