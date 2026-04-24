@@ -78,7 +78,7 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
         <button
           onClick={() => setIsOpen(!isOpen)}
           disabled={isLoading || companies.length === 0}
-          className="font-dm-mono flex items-center gap-3 rounded-2xl bg-gray-50 px-4 py-3 text-sm font-bold text-gray-900 transition-colors hover:bg-gray-100 disabled:opacity-60"
+          className="font-dm-mono flex items-center gap-3 rounded-2xl bg-gray-50 px-4 py-3 text-sm font-normal text-gray-900 uppercase transition-colors hover:bg-gray-100 disabled:opacity-60"
         >
           <ChevronDown
             className={`h-4 w-4 text-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}

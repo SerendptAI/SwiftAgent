@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
+
 import BriggsAnimation from "@/components/briggs-face-animation";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -53,7 +54,7 @@ function AgentCard({ agent }: { agent: Agent }) {
   return (
     <div className="flex flex-col gap-4 max-md:mb-6">
       {/* Agent name */}
-      <h3 className="font-dm-mono text-4xl -mt-4.5 md:ml-10 font-normal tracking-[0.2em] text-[#666666] uppercase md:mb-3 md:text-3xl">
+      <h3 className="font-dm-mono -mt-4.5 text-[24px] font-normal tracking-[0.2em] text-[#666666] uppercase md:mb-3 md:ml-10 md:text-3xl">
         {agent.name}
       </h3>
 
@@ -227,9 +228,7 @@ export function FeaturesSection() {
               />
             </div>
             <div className="absolute top-15 right-10">
-              <BriggsAnimation
-                className="h-[124px] w-[150px]"
-              />
+              <BriggsAnimation className="h-[124px] w-[150px]" />
             </div>
           </div>
         </div>

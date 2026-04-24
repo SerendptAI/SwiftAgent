@@ -1,16 +1,10 @@
 "use client";
 
-import {
-  CheckCircle2,
-  ChevronDown,
-  Copy,
-  Info,
-  Settings,
-  XCircle,
-} from "lucide-react";
+import { CheckCircle2, ChevronDown, Copy, Info, XCircle } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { Icons } from "@/components/icons";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useStrollConfig, useUpdateStrollConfig } from "@/hooks/use-stroll";
@@ -21,6 +15,7 @@ export function WidgetCard() {
   const [isSticky, setIsSticky] = useState(true);
   const [copied, setCopied] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [modeDropdownOpen, setModeDropdownOpen] = useState(false);
   const [toast, setToast] = useState<{
     kind: "success" | "error";
     message: string;
@@ -49,6 +44,22 @@ export function WidgetCard() {
     }
   }, [searchParams, pathname, router]);
 
+  // Close mode dropdown on outside click
+  const modeDropdownRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!modeDropdownOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        modeDropdownRef.current &&
+        !modeDropdownRef.current.contains(e.target as Node)
+      ) {
+        setModeDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [modeDropdownOpen]);
+
   const companyId = activeCompanyId || "";
   const origin = typeof window !== "undefined" ? window.location.origin : "";
 
@@ -66,28 +77,61 @@ export function WidgetCard() {
   }, [codeSnippet]);
 
   return (
-    <div className="overflow-hidden rounded-xl">
+    <div className="rounded-xl">
       {isOpen ? (
         <div className="relative">
           <div className="relative">
             {/* Top bar with notch cutout */}
             <div className="absolute top-0 right-0 left-0 z-1 flex h-[48px] items-center gap-4">
-              <div className="bg-muted h-full rounded-br-md pr-4">
+              <div
+                className="bg-muted h-full rounded-br-md pr-4"
+                ref={modeDropdownRef}
+              >
                 <button
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => setModeDropdownOpen((v) => !v)}
                   className="font-dm-mono flex items-center gap-2 rounded-md bg-[#006BE5] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1E88E5]"
                 >
-                  <ChevronDown className="h-4 w-4" />
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform ${modeDropdownOpen ? "rotate-180" : ""}`}
+                  />
                   Widget
                 </button>
+
+                {modeDropdownOpen && (
+                  <div className="animate-in fade-in slide-in-from-top-1 absolute top-[48px] left-0 z-10 min-w-[180px] overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg">
+                    <button
+                      onClick={() => {
+                        setModeDropdownOpen(false);
+                      }}
+                      className="font-dm-mono flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+                    >
+                      <span className="flex h-5 w-5 items-center justify-center rounded bg-[#006BE5]/10 text-[#006BE5]">
+                        <ChevronDown className="h-3.5 w-3.5 rotate-180" />
+                      </span>
+                      Widget Mode
+                    </button>
+                    <div className="mx-3 border-t border-gray-100" />
+                    <button
+                      onClick={() => {
+                        setModeDropdownOpen(false);
+                      }}
+                      className="font-dm-mono flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+                    >
+                      <span className="flex h-5 w-5 items-center justify-center rounded bg-gray-100 text-gray-500">
+                        <ChevronDown className="h-3.5 w-3.5 -rotate-90" />
+                      </span>
+                      Button Mode
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center pr-6">
                 <button
                   onClick={() => setIsSettingsOpen(true)}
-                  className="font-greed-narrow flex cursor-pointer items-center gap-1.5 rounded-md border border-gray-200 bg-white px-4 py-2 text-xs font-bold tracking-wider text-gray-600 uppercase transition-colors hover:bg-gray-100"
+                  className="font-greed-narrow flex cursor-pointer items-center gap-2 rounded-md bg-[#EDEDED] px-4 py-2 text-xs font-bold tracking-wider text-gray-600 uppercase transition-colors hover:bg-gray-100"
                 >
-                  <Settings className="h-3.5 w-3.5" />
+                  <Icons.Settings className="h-5 w-5" />
                   SETTINGS
                 </button>
               </div>
@@ -96,21 +140,31 @@ export function WidgetCard() {
             <div className="rounded-md border border-gray-100 bg-white px-5 pt-16 pb-5 shadow-sm">
               {/* Sticky toggle */}
               <div className="mb-4 flex items-center gap-2">
-                <figure className="flex w-fit items-center gap-2 rounded-md bg-[#EDEDED] p-1">
-                  <button
-                    onClick={() => setIsSticky(!isSticky)}
-                    className={`font-dm-mono rounded-md px-3 py-1 text-xs font-bold tracking-wider uppercase transition-colors ${
+                <button
+                  type="button"
+                  aria-pressed={isSticky}
+                  className="relative flex h-[32px] w-[125px] cursor-pointer items-center rounded-md bg-[#EDEDED] p-1"
+                  onClick={() => setIsSticky(!isSticky)}
+                >
+                  {/* Label — always visible on the side opposite the knob */}
+                  <span
+                    className={`font-dm-mono absolute z-[1] text-sm font-normal text-gray-400 transition-all duration-300 ease-in-out select-none ${
+                      isSticky ? "right-3" : "left-3"
+                    }`}
+                  >
+                    sticky?
+                  </span>
+                  {/* Sliding knob */}
+                  <span
+                    className={`font-dm-mono absolute top-1 bottom-1 z-[2] flex w-[44px] items-center justify-center rounded-md text-xs font-bold tracking-wider uppercase transition-all duration-300 ease-in-out ${
                       isSticky
-                        ? "bg-black text-white"
-                        : "bg-gray-200 text-gray-500"
+                        ? "left-1 bg-black text-white"
+                        : "left-[77px] bg-gray-300 text-gray-500"
                     }`}
                   >
                     {isSticky ? "ON" : "OFF"}
-                  </button>
-                  <span className="font-dm-mono text-sm font-normal text-gray-400">
-                    sticky?
                   </span>
-                </figure>
+                </button>
                 <InfoTooltip text="Toggle to enable/disable the widget on your website." />
               </div>
 
@@ -165,7 +219,7 @@ export function WidgetCard() {
 
 // ── Chatbot settings sidebar ─────────────────────────────────────────────────
 
-type AgentId = "047" | "007" | "029" | "005" | "001";
+type AgentId = "047" | "007" | "626" | "001";
 
 interface AgentOption {
   id: AgentId;
@@ -186,15 +240,11 @@ const AGENT_OPTIONS: AgentOption[] = [
       "Agent 007 can search a website's front-end content for custom info. If a website doesn't have the requested data, it responds gracefully.",
   },
   {
-    id: "029",
+    id: "626",
     description:
-      "Agent 029 can handle cryptocurrency transactions and crypto-swaps on potential wallets.",
+      "Agent 626 can analyze cryptocurrency transactions and inform users of potential issues.",
   },
-  {
-    id: "005",
-    description:
-      "Agent 005 provides bank reviews and updates customers on payments, including refunds and losses.",
-  },
+
   {
     id: "001",
     description:

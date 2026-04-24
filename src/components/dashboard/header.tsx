@@ -22,13 +22,13 @@ export function Header() {
         <DashboardSearch />
         <div className="flex h-10 cursor-pointer items-center gap-2 rounded-full bg-[#EDEDED] px-1 py-1">
           <Icons.Questiondark className="mr-2 h-8 w-8 rounded-full bg-white p-2" />
-          <span className="font-stolzl pr-2 text-lg font-medium whitespace-nowrap">
+          <span className="font-dm-mono pr-2 text-lg font-normal whitespace-nowrap">
             How to use?
           </span>
         </div>
       </div>
       <div className="mt-6 flex items-center gap-4">
-        <div className="hover:bg-muted/50 flex h-12 w-12 items-center justify-center rounded-md bg-[#EDEDED]">
+        <div className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-md bg-[#EDEDED]">
           <Icons.bell className="h-10 w-10 p-2" />
         </div>
 
