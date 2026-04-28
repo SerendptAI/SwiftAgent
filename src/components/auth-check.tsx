@@ -12,13 +12,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const locale = useLocale();
-  const {
-    data: user,
-    isLoading,
-    isFetching,
-    isError,
-    status,
-  } = useCurrentUser();
+  const { data: user, isLoading, isError, status } = useCurrentUser();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -26,8 +20,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   }, []);
 
   const hasToken = typeof window !== "undefined" && !!getAccessToken();
-  const isResolving =
-    isLoading || isFetching || (hasToken && status === "pending");
+  const isResolving = isLoading || (hasToken && status === "pending" && !user);
 
   const redirectTo = (() => {
     if (isResolving) return null;
