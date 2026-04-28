@@ -64,15 +64,14 @@ export function WidgetCard() {
   }, [modeDropdownOpen]);
 
   const companyId = activeCompanyId || "";
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
 
   const codeSnippet = useMemo(() => {
     if (!companyId) return "";
     if (mode === "button") {
-      return `<script src="${origin}/widget-ui.js" data-company-id="${companyId}" data-trigger="button" defer></script>\n<button data-swift-agent-open>Chat with us</button>`;
+      return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" data-trigger="button" defer></script>\n<button data-swift-agent-open>Chat with us</button>`;
     }
-    return `<script src="${origin}/widget-ui.js" data-company-id="${companyId}" defer></script>`;
-  }, [companyId, origin, mode]);
+    return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" defer></script>`;
+  }, [companyId, mode]);
 
   const handleCopy = useCallback(() => {
     if (!codeSnippet) return;
