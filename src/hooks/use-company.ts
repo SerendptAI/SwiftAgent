@@ -20,12 +20,7 @@ export function useCompaniesQuery() {
 export function useCompanyMutations() {
   const queryClient = useQueryClient();
 
-  const createCompany = useMutation({
-    mutationFn: companyApi.create,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-    },
-  });
+  const createCompany = useMutation({ mutationFn: companyApi.create });
 
   const updateCompany = useMutation({
     mutationFn: ({
@@ -40,7 +35,6 @@ export function useCompanyMutations() {
     onSuccess: (_, { companyId }) => {
       queryClient.invalidateQueries({ queryKey: ["company", companyId] });
       queryClient.invalidateQueries({ queryKey: ["company"] });
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
     },
   });
 
@@ -55,7 +49,6 @@ export function useCompanyMutations() {
     onSuccess: (_, { companyId }) => {
       queryClient.invalidateQueries({ queryKey: ["company", companyId] });
       queryClient.invalidateQueries({ queryKey: ["company"] });
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
     },
   });
 
