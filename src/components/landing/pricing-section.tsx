@@ -5,73 +5,90 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef } from "react";
 
 import { type Plan, PlanCard } from "@/components/pricing/plan-card";
+import { useGeoCountry } from "@/hooks/use-geo-country";
+import { useRouter } from "@/i18n/navigation";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const plans: Plan[] = [
+const GEO_PRICING: Record<string, { price: string; billing: string }[]> = {
+  NG: [
+    { price: "NGN 25,000", billing: "PER MONTH" },
+    { price: "NGN 45,000", billing: "PER MONTH" },
+    { price: "NGN 80,000", billing: "PER MONTH" },
+  ],
+  default: [
+    { price: "200 USD", billing: "PER MONTH" },
+    { price: "700 USD", billing: "PER MONTH" },
+    { price: "1,700 USD", billing: "PER MONTH" },
+  ],
+};
+
+const BASE_PLANS: Omit<Plan, "price" | "billing">[] = [
   {
-    name: "YELLOW PILL",
-    price: "$99",
-    billing: "PER AGENT / MONTH",
-    description: "BUILT FOR SMALL BUSINESSES\nWITH LOW SUPPORT VOLUME.",
+    name: "BASIC PLAN",
+    description:
+      "DESIGNED FOR EARLY STARTUPS\nAND SMALL PROJECTS\nTESTING THE WATERS.",
     textColor: "text-[#F3B03D]",
     image: "/images/pricing/icon1.svg",
     features: [
       "1 DEPLOYED AI AGENT",
-      "DOCUMENT UPLOAD (UP TO\n10 DOCUMENTS)",
-      "VOICE SUPPORT",
-      "1 LANGUAGE",
+      "UP TO 10 DOCUMENT UPLOADS",
+      "1 SUPPORTED LANGUAGE",
       "BASIC ANSWER BOUNDARIES",
-      "BASIC ANALYTICS",
-      "ESCALATION TO EMAIL OR\nWHATSAPP",
+      "BASIC ANALYTICS REPORTING",
       "UP TO 800 VOICE MINUTES\nPER MONTH",
-      "STANDARD SHARED COMPUTE\nTIER",
+      "STANDARD SHARED COMPUTE TIER",
+      "MAXIMUM OF 1 COMPANY PER\nCORE USER ACCOUNT",
+      "UP TO 3 INVITED MEMBERS\nPER COMPANY",
     ],
   },
   {
-    name: "PURPLE PILL",
-    price: "$399",
-    billing: "PER AGENT / MONTH",
+    name: "PRO PLAN",
     description:
-      "BUILT FOR STARTUPS AND\nGROWING COMPANIES\nDEPLOYING AI FOR SUPPORT\nOR OPERATIONS.",
+      "GEARED TOWARDS GROWING\nOPERATIONS NEEDING SCALE\nAND HEAVIER WORKLOAD VOLUME.",
     textColor: "text-[#6433CC]",
     image: "/images/pricing/icon2.svg",
     features: [
-      "REAL-TIME VOICE SUPPORT",
-      "1 LANGUAGE",
-      "BASIC ANALYTICS\nDASHBOARD",
-      "ESCALATION ROUTING TO\nHUMAN SUPPORT",
-      "UP TO 3,000 VOICE\nMINUTES PER MONTH",
-      "STANDARD COMPUTE TIER",
-      "1 SUPPORTED BLOCKCHAIN\nNETWORK (IF CRYPTO)",
-      "EMAIL SUPPORT",
+      "UP TO 3 DEPLOYED AI AGENTS",
+      "UP TO 50 DOCUMENT UPLOADS",
+      "UP TO 3 SUPPORTED LANGUAGES",
+      "ADVANCED ANSWER BOUNDARIES\nFOR NUANCED AGENT RESPONSES",
+      "ADVANCED ANALYTICS REPORTING",
+      "UP TO 3,000 VOICE MINUTES\nPER MONTH",
+      "PRIORITY COMPUTE TIER\n(REDUCES GENERATION LATENCY)",
+      "MAXIMUM OF 3 COMPANIES PER\nCORE USER ACCOUNT",
+      "UP TO 10 INVITED MEMBERS\nPER COMPANY",
     ],
   },
   {
-    name: "ORANGE PILL",
-    price: "$1,200",
-    billing: "PER AGENT /\nMONTH",
+    name: "ENTERPRISE PLAN",
     description:
-      "BUILT FOR HIGH-VOLUME,\nCOMPLIANCE-HEAVY, OR\nMULTI-REGION COMPANIES.",
+      "UNCAPPED SCALING FOR\nESTABLISHED OPERATIONS\nAND INTENSIVE NEEDS.",
     textColor: "text-[#F25430]",
     image: "/images/pricing/icon3.svg",
     features: [
-      "ADVANCED DOCUMENT\nINGESTION AND PRIORITY\nWEIGHTING",
-      "REAL-TIME VOICE WITH\nHIGHER PERFORMANCE TIER",
-      "MULTI-LANGUAGE SUPPORT",
-      "ADVANCED ANALYTICS AND\nREPORTING",
-      "CUSTOM GUARDRAILS AND\nANSWER BOUNDARIES",
-      "SLA GUARANTEES",
-      "UP TO 10,000 VOICE\nMINUTES PER MONTH",
-      "PREMIUM COMPUTE TIER",
-      "MULTI-CHAIN SUPPORT (FOR\nCRYPTO)",
-      "CUSTOM ESCALATION\nWORKFLOWS",
-      "PRIORITY SUPPORT",
+      "UNLIMITED DEPLOYED AI AGENTS",
+      "UNLIMITED DOCUMENT UPLOADS",
+      "ALL SUPPORTED LANGUAGES\n(UNLIMITED)",
+      "CUSTOM ANSWER BOUNDARY\nCONTROLS",
+      "FULLY CUSTOMIZABLE ANALYTICS",
+      "UNLIMITED VOICE MINUTES\nPER MONTH",
+      "DEDICATED COMPUTE TIER FOR\nTHE FASTEST RESPONSE TIMES",
+      "UNLIMITED COMPANIES",
+      "UNLIMITED INVITED MEMBERS\nPER COMPANY",
     ],
   },
 ];
 
 export function PricingSection() {
+  const router = useRouter();
+  const country = useGeoCountry();
+  const pricing = GEO_PRICING[country ?? "default"] ?? GEO_PRICING.default;
+  const plans: Plan[] = BASE_PLANS.map((base, i) => ({
+    ...base,
+    ...pricing[i],
+  }));
+
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
@@ -119,12 +136,12 @@ export function PricingSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden bg-[#F6F4EF] px-8 py-10 md:px-12 md:py-24 lg:px-16"
+      className="relative overflow-hidden bg-[#F6F4EF] px-4 py-8 md:px-12 md:py-24 lg:px-16"
       id="pricing"
     >
       <div className="mx-auto max-w-6xl">
         {/* Title */}
-        <div ref={titleRef} className="mb-12">
+        <div ref={titleRef} className="mb-6 md:mb-12">
           <span className="mb-8 inline-block font-mono text-sm tracking-widest text-gray-500 uppercase">
             BILLING
           </span>
@@ -134,12 +151,17 @@ export function PricingSection() {
         </div>
 
         {/* Pricing Cards */}
-        <div ref={cardsRef} className="grid items-start gap-6 md:grid-cols-3">
+        <div
+          ref={cardsRef}
+          className="grid items-start gap-4 md:grid-cols-3 md:gap-6"
+        >
           {plans.map((plan) => (
             <PlanCard
               key={plan.name}
               plan={plan}
               className="pricing-card h-full"
+              showSubscribe
+              onSubscribe={() => router.push("/login")}
             />
           ))}
         </div>

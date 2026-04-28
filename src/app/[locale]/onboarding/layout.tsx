@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
+
 import { AuthGuard } from "@/components/auth-check";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 import { Header } from "@/components/dashboard/header";
 import { Sidebar } from "@/components/dashboard/sidebar";
 
