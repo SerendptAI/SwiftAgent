@@ -71,9 +71,6 @@ export function CompletionStep() {
         companyName={companyName}
         logoUrl={logoUrl}
         initialEmailSlug={companyData?.email_slug}
-        enabledSources={companyData?.enabled_sources}
-        customInfo={companyData?.custom_info}
-        voiceStyle={companyData?.voice_style}
       />
     );
   }
