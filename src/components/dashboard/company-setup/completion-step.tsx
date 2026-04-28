@@ -70,6 +70,7 @@ export function CompletionStep() {
         companyId={companyId}
         companyName={companyName}
         logoUrl={logoUrl}
+        initialEmailSlug={companyData?.email_slug}
       />
     );
   }

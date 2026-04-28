@@ -193,10 +193,12 @@ export function QuestionnaireChat({
   companyId,
   companyName,
   logoUrl,
+  initialEmailSlug,
 }: {
   companyId: string | null;
   companyName: string;
   logoUrl?: string;
+  initialEmailSlug?: string;
 }) {
   const [questions, setQuestions] = useState<QuestionDef[]>(() =>
     buildQuestions(null),
@@ -213,7 +215,11 @@ export function QuestionnaireChat({
   const [phase, setPhase] = useState<"chat" | "thanks" | "email" | "congrats">(
     "chat",
   );
-  const [emailHandle, setEmailHandle] = useState("");
+  const [emailHandle, setEmailHandle] = useState(initialEmailSlug ?? "");
+
+  useEffect(() => {
+    if (initialEmailSlug) setEmailHandle(initialEmailSlug);
+  }, [initialEmailSlug]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -483,7 +489,6 @@ export function QuestionnaireChat({
                 alt={companyName}
                 width={34}
                 height={34}
-
               />
               <span className="font-dm-mono text-sm font-bold tracking-wider uppercase">
                 SWIFT AGENTS
@@ -513,12 +518,13 @@ export function QuestionnaireChat({
                           key={option}
                           disabled={!!entry.selected}
                           onClick={() => handleSelectOption(option)}
-                          className={`font-dm-mono flex w-fit items-center gap-2 rounded-md border px-4 py-3 text-left text-xs font-bold tracking-wider uppercase transition-colors ${isSelected
-                            ? "border-[#E8613C] bg-[#E8613C] text-white"
-                            : entry.selected
-                              ? "cursor-default border-gray-200 bg-white text-gray-900"
-                              : "cursor-pointer border-gray-200 bg-white text-gray-900 hover:border-gray-400"
-                            }`}
+                          className={`font-dm-mono flex w-fit items-center gap-2 rounded-md border px-4 py-3 text-left text-xs font-bold tracking-wider uppercase transition-colors ${
+                            isSelected
+                              ? "border-[#E8613C] bg-[#E8613C] text-white"
+                              : entry.selected
+                                ? "cursor-default border-gray-200 bg-white text-gray-900"
+                                : "cursor-pointer border-gray-200 bg-white text-gray-900 hover:border-gray-400"
+                          }`}
                         >
                           {isSelected && (
                             <span className="flex h-5 w-5 items-center justify-center rounded bg-black/20">
@@ -540,8 +546,9 @@ export function QuestionnaireChat({
                     return (
                       <div
                         key={idx}
-                        className={`mt-3 ml-auto flex w-fit flex-col items-end ${item.status === "pending" ? "opacity-60" : ""
-                          }`}
+                        className={`mt-3 ml-auto flex w-fit flex-col items-end ${
+                          item.status === "pending" ? "opacity-60" : ""
+                        }`}
                       >
                         <Image
                           src={thumbnail}
@@ -552,10 +559,11 @@ export function QuestionnaireChat({
                         />
                         {item.status !== "done" && (
                           <p
-                            className={`font-dm-mono mt-2 text-[10px] font-bold tracking-wider uppercase ${item.status === "error"
-                              ? "text-red-500"
-                              : "text-gray-400"
-                              }`}
+                            className={`font-dm-mono mt-2 text-[10px] font-bold tracking-wider uppercase ${
+                              item.status === "error"
+                                ? "text-red-500"
+                                : "text-gray-400"
+                            }`}
                           >
                             {item.status === "error"
                               ? "Upload failed"
@@ -576,12 +584,13 @@ export function QuestionnaireChat({
                   return (
                     <div
                       key={idx}
-                      className={`max-4/5 mt-3 ml-auto w-fit rounded-md px-4 py-3 ${item.status === "error"
-                        ? "bg-red-500"
-                        : item.status === "pending"
-                          ? "bg-blue-400"
-                          : "bg-blue-600"
-                        }`}
+                      className={`max-4/5 mt-3 ml-auto w-fit rounded-md px-4 py-3 ${
+                        item.status === "error"
+                          ? "bg-red-500"
+                          : item.status === "pending"
+                            ? "bg-blue-400"
+                            : "bg-blue-600"
+                      }`}
                     >
                       <p className="font-dm-mono text-xs font-bold tracking-wider text-white">
                         {item.label}
