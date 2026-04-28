@@ -1,5 +1,6 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Check,
   ChevronDown,
@@ -223,8 +224,10 @@ export function QuestionnaireChat({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { updateCompany, updateEmailSlug } = useCompanyMutations();
+  const [isFinishing, setIsFinishing] = useState(false);
   const uploadKnowledge = useUploadKnowledge();
   const ingestKnowledge = useIngestKnowledge();
   const [emailError, setEmailError] = useState<string | null>(null);
@@ -469,7 +472,23 @@ export function QuestionnaireChat({
           </span>
         </div>
         <PrimaryActionButton
-          onClick={() => router.push("/dashboard?settings=1")}
+          disabled={isFinishing}
+          onClick={async () => {
+            setIsFinishing(true);
+            try {
+              await Promise.all([
+                queryClient.refetchQueries({ queryKey: ["currentUser"] }),
+                companyId
+                  ? queryClient.refetchQueries({
+                      queryKey: ["company", companyId],
+                    })
+                  : Promise.resolve(),
+              ]);
+            } catch (e) {
+              console.error("Failed to refresh user/company before finish:", e);
+            }
+            router.push("/dashboard?settings=1");
+          }}
         >
           Finish
         </PrimaryActionButton>

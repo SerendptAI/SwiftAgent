@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 import { Loader } from "@/components/loader";
 import { useCurrentUser } from "@/hooks/use-auth";
+import { useCompanyQuery } from "@/hooks/use-company";
 import { getAccessToken } from "@/lib/api-client";
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -14,6 +15,14 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const locale = useLocale();
   const { data: user, isLoading, isError, status } = useCurrentUser();
   const [isMounted, setIsMounted] = useState(false);
+
+  // Fall back to checking the active company's setup_complete when the
+  // user-level onboarding_completed flag hasn't propagated yet.
+  const { data: activeCompany } = useCompanyQuery(
+    user && !user.onboarding_completed && user.company_id
+      ? user.company_id
+      : null,
+  );
 
   useEffect(() => {
     setIsMounted(true);
@@ -25,7 +34,9 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const redirectTo = (() => {
     if (isResolving) return null;
     if (!hasToken || isError || !user) return `/${locale}/login`;
-    if (!user.onboarding_completed && pathname.includes("/dashboard")) {
+    const onboardingDone =
+      user.onboarding_completed || activeCompany?.setup_complete;
+    if (!onboardingDone && pathname.includes("/dashboard")) {
       return `/${locale}/onboarding`;
     }
     return null;
