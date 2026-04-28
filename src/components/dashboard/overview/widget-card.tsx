@@ -88,7 +88,7 @@ export function WidgetCard() {
         <div className="relative">
           <div className="relative">
             {/* Top bar with notch cutout */}
-            <div className="absolute top-0 right-0 left-0 z-1 flex h-[48px] items-center gap-4">
+            <div className="absolute top-0 right-0 left-0 z-50 flex h-[48px] items-center gap-4">
               <div
                 className="bg-muted h-full rounded-br-md pr-4"
                 ref={modeDropdownRef}
@@ -104,7 +104,7 @@ export function WidgetCard() {
                 </button>
 
                 {modeDropdownOpen && (
-                  <div className="animate-in fade-in slide-in-from-top-1 absolute top-[48px] left-0 z-10 min-w-[180px] overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg">
+                  <div className="animate-in fade-in slide-in-from-top-1 absolute top-[48px] left-0 z-1000 min-w-[180px] overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg">
                     <button
                       onClick={() => {
                         setMode("widget");
