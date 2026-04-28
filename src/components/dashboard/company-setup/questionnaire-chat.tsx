@@ -194,17 +194,11 @@ export function QuestionnaireChat({
   companyName,
   logoUrl,
   initialEmailSlug,
-  enabledSources,
-  customInfo,
-  voiceStyle,
 }: {
   companyId: string | null;
   companyName: string;
   logoUrl?: string;
   initialEmailSlug?: string;
-  enabledSources?: string[];
-  customInfo?: string[];
-  voiceStyle?: string;
 }) {
   const [questions, setQuestions] = useState<QuestionDef[]>(() =>
     buildQuestions(null),
@@ -246,19 +240,6 @@ export function QuestionnaireChat({
     const list = overrideQuestions ?? questions;
     const nextStep = currentStep + 1;
     if (nextStep >= list.length) {
-      // Step 4: PATCH /boundaries to advance onboarding_step from 3 → 4
-      if (companyId) {
-        updateCompany
-          .mutateAsync({
-            companyId,
-            section: "boundaries",
-            payload: {
-              enabled_sources: enabledSources ?? [],
-              custom_info: customInfo ?? [],
-            },
-          })
-          .catch((e) => console.error("Failed to save boundaries:", e));
-      }
       setPhase("thanks");
       return;
     }
@@ -488,22 +469,7 @@ export function QuestionnaireChat({
           </span>
         </div>
         <PrimaryActionButton
-          onClick={async () => {
-            // Step 5: PATCH /voice to advance onboarding_step → 5 and set setup_complete: true
-            if (companyId) {
-              try {
-                await updateCompany.mutateAsync({
-                  companyId,
-                  section: "voice",
-                  payload: { voice_style: voiceStyle ?? "professional" },
-                });
-              } catch (e) {
-                console.error("Failed to save voice settings:", e);
-              }
-            }
-            router.push("/dashboard?settings=1");
-          }}
-          disabled={updateCompany.isPending}
+          onClick={() => router.push("/dashboard?settings=1")}
         >
           Finish
         </PrimaryActionButton>
