@@ -11,6 +11,7 @@ import {
   useCompanyMutations,
   useCompanyQuery,
 } from "@/hooks/use-company";
+import { getApiErrorMessage } from "@/lib/api-error";
 import { cn } from "@/lib/utils";
 import { useOnboardingStore } from "@/store/onboarding-store";
 
@@ -162,9 +163,12 @@ export function CompanyInfoStep({
     } catch (error) {
       console.error(error);
       setError(
-        isUpdateMode
-          ? "Failed to update company info. Please try again."
-          : "Failed to create company. Please try again.",
+        getApiErrorMessage(
+          error,
+          isUpdateMode
+            ? "Failed to update company info. Please try again."
+            : "Failed to create company. Please try again.",
+        ),
       );
     }
   };

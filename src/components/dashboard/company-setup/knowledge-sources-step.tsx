@@ -7,6 +7,7 @@ import { z } from "zod";
 import { Icons } from "@/components/icons";
 import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
 import { useUploadKnowledge } from "@/hooks/use-knowledge";
+import { getApiErrorMessage } from "@/lib/api-error";
 import { cn } from "@/lib/utils";
 
 import { OnboardingErrorToast } from "./onboarding-error-toast";
@@ -81,7 +82,12 @@ export function KnowledgeSourcesStep({
       onNext?.();
     } catch (error) {
       console.error(error);
-      setError("Failed to update company type. Please try again.");
+      setError(
+        getApiErrorMessage(
+          error,
+          "Failed to update company type. Please try again.",
+        ),
+      );
     }
   };
 
@@ -316,7 +322,12 @@ function UploadSection({
       }
     } catch (error) {
       console.error(error);
-      setUploadError(`Failed to upload ${file.name}. Please try again.`);
+      setUploadError(
+        getApiErrorMessage(
+          error,
+          `Failed to upload ${file.name}. Please try again.`,
+        ),
+      );
     }
   };
 

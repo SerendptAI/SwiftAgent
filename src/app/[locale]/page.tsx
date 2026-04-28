@@ -90,9 +90,9 @@ export default function HomePage() {
         <ContactSection />
       </main>
       <Script
-        src="http://localhost:3002/dist/widget-ui.js"
+        src="https://widget.swiftagents.org/dist/widget-ui.js"
         data-company-id="01490b45-52bd-4317-b2f7-e93264210201"
-        data-base-url="http://localhost:3002"
+        data-base-url="https://widget.swiftagents.org"
         crossOrigin="anonymous"
         strategy="afterInteractive"
       />

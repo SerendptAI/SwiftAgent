@@ -5,6 +5,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
+import { getApiErrorMessage } from "@/lib/api-error";
 
 import { OnboardingErrorToast } from "./onboarding-error-toast";
 import { NextButton } from "./ui-elements";
@@ -129,7 +130,12 @@ export function AnswerBoundariesStep({
       onNext?.();
     } catch (error) {
       console.error(error);
-      setError("Failed to update answer boundaries. Please try again.");
+      setError(
+        getApiErrorMessage(
+          error,
+          "Failed to update answer boundaries. Please try again.",
+        ),
+      );
     }
   };
 

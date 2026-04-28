@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
+import { getApiErrorMessage } from "@/lib/api-error";
 
 import { OnboardingErrorToast } from "./onboarding-error-toast";
 import { FormLabel, FormSelect, FormTextarea, NextButton } from "./ui-elements";
@@ -78,7 +79,12 @@ export function CompanyIdentityStep({
       onNext?.();
     } catch (error) {
       console.error(error);
-      setError("Failed to update company identity. Please try again.");
+      setError(
+        getApiErrorMessage(
+          error,
+          "Failed to update company identity. Please try again.",
+        ),
+      );
     }
   };
   return (

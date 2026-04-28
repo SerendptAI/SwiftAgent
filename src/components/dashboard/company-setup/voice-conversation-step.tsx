@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
+import { getApiErrorMessage } from "@/lib/api-error";
 import { cn } from "@/lib/utils";
 
 import { OnboardingErrorToast } from "./onboarding-error-toast";
@@ -78,7 +79,12 @@ export function VoiceConversationStep({
       onNext?.();
     } catch (error) {
       console.error(error);
-      setError("Failed to save voice style. Please try again.");
+      setError(
+        getApiErrorMessage(
+          error,
+          "Failed to save voice style. Please try again.",
+        ),
+      );
     }
   };
 
