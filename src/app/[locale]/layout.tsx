@@ -5,7 +5,6 @@ import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 
 import { MobileGate } from "@/components/mobile-gate";
-import { OfflineScreen } from "@/components/offline-screen";
 // import { LangSwitcher } from "@/components/lang-switcher";
 import { QueryProvider } from "@/components/query-provider";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -79,7 +78,6 @@ const RootLayout = async ({
         suppressHydrationWarning
       >
         <MobileGate>
-          <OfflineScreen />
           <NextIntlClientProvider>
             <ThemeProvider
               attribute="class"
