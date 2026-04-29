@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 
-import { MobileGate } from "@/components/mobile-gate";
 // import { LangSwitcher } from "@/components/lang-switcher";
 import { QueryProvider } from "@/components/query-provider";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -77,19 +76,17 @@ const RootLayout = async ({
         className={cn("min-h-screen font-sans", fonts)}
         suppressHydrationWarning
       >
-        <MobileGate>
-          <NextIntlClientProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="light"
-              enableSystem={false}
-            >
-              <QueryProvider>{children}</QueryProvider>
-              {/* <LangSwitcher className="absolute right-5 bottom-16 z-10" />
-              <ThemeSwitcher className="absolute right-5 bottom-5 z-10" /> */}
-            </ThemeProvider>
-          </NextIntlClientProvider>
-        </MobileGate>
+        <NextIntlClientProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem={false}
+          >
+            <QueryProvider>{children}</QueryProvider>
+            {/* <LangSwitcher className="absolute right-5 bottom-16 z-10" />
+            <ThemeSwitcher className="absolute right-5 bottom-5 z-10" /> */}
+          </ThemeProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

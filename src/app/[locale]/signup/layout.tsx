@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { MobileGate } from "@/components/mobile-gate";
+
 export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
@@ -9,5 +11,5 @@ export default function SignupLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return <MobileGate>{children}</MobileGate>;
 }
