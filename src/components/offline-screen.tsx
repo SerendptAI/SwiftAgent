@@ -50,7 +50,7 @@ export function OfflineScreen() {
         <div className="relative h-14 w-14">
           <Image
             src="/images/newlogo.svg"
-            alt="SwiftAgent"
+            alt="Swift Agents"
             fill
             className="object-contain"
             priority

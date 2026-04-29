@@ -1,15 +1,15 @@
 export const siteConfig = {
-  name: "SwiftAgent",
-  title: "SwiftAgent - AI-Powered Customer Engagement",
+  name: "Swift Agents",
+  title: "Swift Agents - AI-Powered Customer Engagement",
   description:
-    "Transform your customer experience with intelligent AI agents. Automate support, sales, and engagement with SwiftAgent by Serendpt AI.",
+    "Transform your customer experience with intelligent AI agents. Automate support, sales, and engagement with Swift Agents by Serendpt AI.",
   keywords: [
     "AI Agents",
     "Customer Support",
     "Automation",
     "Chatbots",
     "Serendpt AI",
-    "SwiftAgent",
+    "Swift Agents",
     "Business Intelligence",
     "Live Chat",
     "Customer Engagement",

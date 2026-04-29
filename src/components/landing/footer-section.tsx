@@ -266,7 +266,7 @@ export function FooterSection() {
         {/* Bottom Bar */}
         <div className="footer-bottom flex flex-col items-center justify-between gap-4 border-t border-white/20 pt-8 md:flex-row">
           <div className="text-sm opacity-60">
-            © {new Date().getFullYear()} SwiftAgent by Serendpt AI. All rights
+            © {new Date().getFullYear()} Swift Agents by Serendpt AI. All rights
             reserved.
           </div>
           <div className="flex gap-6 text-sm opacity-60">
