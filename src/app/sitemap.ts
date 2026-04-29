@@ -1,12 +1,15 @@
 import { MetadataRoute } from "next";
 
+const BASE_URL = process.env.APP_URL || "https://swiftagents.org";
+const locales = ["en", "pl"];
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  return [
-    {
-      url: process.env.APP_URL || "http://localhost:3000",
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 1,
-    },
-  ];
+  const landingPages = locales.map((locale) => ({
+    url: `${BASE_URL}/${locale}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 1,
+  }));
+
+  return [...landingPages];
 }

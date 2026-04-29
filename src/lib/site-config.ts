@@ -1,4 +1,5 @@
 export const siteConfig = {
+  name: "SwiftAgent",
   title: "SwiftAgent - AI-Powered Customer Engagement",
   description:
     "Transform your customer experience with intelligent AI agents. Automate support, sales, and engagement with SwiftAgent by Serendpt AI.",
@@ -10,7 +11,15 @@ export const siteConfig = {
     "Serendpt AI",
     "SwiftAgent",
     "Business Intelligence",
+    "Live Chat",
+    "Customer Engagement",
+    "AI Customer Service",
+    "Embeddable Widget",
+    "Voice AI",
   ],
   url: process.env.APP_URL || "https://swiftagents.org",
+  locale: "en_US",
+  creator: "Serendpt AI",
+  authors: [{ name: "Serendpt AI", url: "https://swiftagents.org" }],
   googleSiteVerificationId: process.env.GOOGLE_SITE_VERIFICATION_ID || "",
 };

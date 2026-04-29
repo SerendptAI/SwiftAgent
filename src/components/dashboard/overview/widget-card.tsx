@@ -10,12 +10,15 @@ import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useStrollConfig, useUpdateStrollConfig } from "@/hooks/use-stroll";
 import type { StrollConfigPayload } from "@/services/stroll";
 
+type WidgetMode = "widget" | "button";
+
 export function WidgetCard() {
   const [isOpen, setIsOpen] = useState(true);
   const [isSticky, setIsSticky] = useState(true);
   const [copied, setCopied] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [modeDropdownOpen, setModeDropdownOpen] = useState(false);
+  const [mode, setMode] = useState<WidgetMode>("widget");
   const [toast, setToast] = useState<{
     kind: "success" | "error";
     message: string;
@@ -65,8 +68,11 @@ export function WidgetCard() {
 
   const codeSnippet = useMemo(() => {
     if (!companyId) return "";
+    if (mode === "button") {
+      return `<script src="${origin}/widget-ui.js" data-company-id="${companyId}" data-trigger="button" defer></script>\n<button data-swift-agent-open>Chat with us</button>`;
+    }
     return `<script src="${origin}/widget-ui.js" data-company-id="${companyId}" defer></script>`;
-  }, [companyId, origin]);
+  }, [companyId, origin, mode]);
 
   const handleCopy = useCallback(() => {
     if (!codeSnippet) return;
@@ -94,16 +100,17 @@ export function WidgetCard() {
                   <ChevronDown
                     className={`h-4 w-4 transition-transform ${modeDropdownOpen ? "rotate-180" : ""}`}
                   />
-                  Widget
+                  {mode === "button" ? "Button" : "Widget"}
                 </button>
 
                 {modeDropdownOpen && (
                   <div className="animate-in fade-in slide-in-from-top-1 absolute top-[48px] left-0 z-10 min-w-[180px] overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg">
                     <button
                       onClick={() => {
+                        setMode("widget");
                         setModeDropdownOpen(false);
                       }}
-                      className="font-dm-mono flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+                      className={`font-dm-mono flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm transition-colors hover:bg-gray-50 ${mode === "widget" ? "font-semibold text-[#006BE5]" : "text-gray-700"}`}
                     >
                       <span className="flex h-5 w-5 items-center justify-center rounded bg-[#006BE5]/10 text-[#006BE5]">
                         <ChevronDown className="h-3.5 w-3.5 rotate-180" />
@@ -113,11 +120,14 @@ export function WidgetCard() {
                     <div className="mx-3 border-t border-gray-100" />
                     <button
                       onClick={() => {
+                        setMode("button");
                         setModeDropdownOpen(false);
                       }}
-                      className="font-dm-mono flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
+                      className={`font-dm-mono flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm transition-colors hover:bg-gray-50 ${mode === "button" ? "font-semibold text-[#006BE5]" : "text-gray-700"}`}
                     >
-                      <span className="flex h-5 w-5 items-center justify-center rounded bg-gray-100 text-gray-500">
+                      <span
+                        className={`flex h-5 w-5 items-center justify-center rounded ${mode === "button" ? "bg-[#006BE5]/10 text-[#006BE5]" : "bg-gray-100 text-gray-500"}`}
+                      >
                         <ChevronDown className="h-3.5 w-3.5 -rotate-90" />
                       </span>
                       Button Mode
@@ -169,9 +179,18 @@ export function WidgetCard() {
               </div>
 
               {/* Code snippet */}
-              <pre className="font-stolzl rounded-lg p-4 text-[13px] leading-relaxed break-all whitespace-pre-wrap text-gray-700">
+              <pre className="font-stolzl rounded-lg bg-[#F6F6F6] p-4 text-[13px] leading-relaxed break-all whitespace-pre-wrap text-gray-700">
                 {codeSnippet || "No widget code found."}
               </pre>
+              {mode === "button" && (
+                <p className="font-dm-mono mt-2 text-[11px] text-gray-400">
+                  Add the{" "}
+                  <code className="rounded bg-gray-100 px-1 py-0.5 text-gray-600">
+                    data-swift-agent-open
+                  </code>{" "}
+                  attribute to any element to trigger the widget popup.
+                </p>
+              )}
 
               {/* Copy button */}
               <button

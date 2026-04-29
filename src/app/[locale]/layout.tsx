@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 
 import { MobileBlocker } from "@/components/mobile-blocker";
+import { OfflineScreen } from "@/components/offline-screen";
 // import { LangSwitcher } from "@/components/lang-switcher";
 import { QueryProvider } from "@/components/query-provider";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -18,10 +19,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
     default: siteConfig.title,
-    template: `%s | ${siteConfig.title}`,
+    template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
   keywords: siteConfig.keywords,
+  authors: siteConfig.authors,
+  creator: siteConfig.creator,
   robots: { index: true, follow: true },
   icons: {
     icon: "/favicon/favicon.svg",
@@ -35,8 +38,16 @@ export const metadata: Metadata = {
     url: siteConfig.url,
     title: siteConfig.title,
     description: siteConfig.description,
-    siteName: siteConfig.title,
-    images: "/opengraph-image.png",
+    siteName: siteConfig.name,
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: `${siteConfig.name} - AI-Powered Customer Engagement`,
+      },
+    ],
+    locale: siteConfig.locale,
     type: "website",
   },
   twitter: {
@@ -44,6 +55,7 @@ export const metadata: Metadata = {
     title: siteConfig.title,
     description: siteConfig.description,
     images: "/opengraph-image.png",
+    creator: "@serendptai",
   },
 };
 
@@ -64,6 +76,7 @@ const RootLayout = async ({
     <html lang={locale} suppressHydrationWarning>
       <body className={cn("min-h-screen font-sans", fonts)}>
         <MobileBlocker />
+        <OfflineScreen />
         <NextIntlClientProvider>
           <ThemeProvider
             attribute="class"

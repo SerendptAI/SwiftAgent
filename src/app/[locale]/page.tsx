@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Script from "next/script";
 
 import { AboutSection } from "@/components/landing/about-section";
@@ -8,10 +9,77 @@ import { HeroSection } from "@/components/landing/hero-section";
 import { MostUsedFeaturesSection } from "@/components/landing/most-used-features-section";
 import { PricingSection } from "@/components/landing/pricing-section";
 import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provider";
+import { siteConfig } from "@/lib/site-config";
+
+export const metadata: Metadata = {
+  title: "SwiftAgent - AI-Powered Customer Engagement Platform",
+  description:
+    "Embed an intelligent AI agent on your website in minutes. SwiftAgent handles customer support, sales, and voice conversations — 24/7, without lifting a finger.",
+  alternates: {
+    canonical: siteConfig.url,
+    languages: {
+      en: `${siteConfig.url}/en`,
+      pl: `${siteConfig.url}/pl`,
+    },
+  },
+};
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: siteConfig.name,
+  url: siteConfig.url,
+  logo: `${siteConfig.url}/images/newlogo.svg`,
+  description: siteConfig.description,
+  sameAs: [],
+};
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: siteConfig.name,
+  url: siteConfig.url,
+  description: siteConfig.description,
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: `${siteConfig.url}/en?q={search_term_string}`,
+    },
+    "query-input": "required name=search_term_string",
+  },
+};
+
+const softwareApplicationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: siteConfig.name,
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  description: siteConfig.description,
+  offers: {
+    "@type": "Offer",
+    url: `${siteConfig.url}/en#pricing`,
+  },
+};
 
 export default function HomePage() {
   return (
     <SmoothScrollProvider>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(softwareApplicationJsonLd),
+        }}
+      />
       <main>
         <HeroSection />
         <AboutSection />
