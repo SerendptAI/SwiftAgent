@@ -1,16 +1,6 @@
-"use client";
-
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 
 export function MobileBlocker() {
-  const pathname = usePathname();
-
-  // Only show the mobile blocker on dashboard routes
-  if (!pathname?.includes("/dashboard")) {
-    return null;
-  }
-
   return (
     <div className="fixed inset-0 z-9999 flex flex-col items-center bg-white md:hidden">
       {/* Top Logo Area */}

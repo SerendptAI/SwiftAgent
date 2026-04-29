@@ -11,5 +11,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 1,
   }));
 
-  return [...landingPages];
+  const signupPages = locales.map((locale) => ({
+    url: `${BASE_URL}/${locale}/signup`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
+
+  return [...landingPages, ...signupPages];
 }
