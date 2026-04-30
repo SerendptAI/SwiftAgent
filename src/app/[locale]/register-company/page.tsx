@@ -84,21 +84,24 @@ export default function RegisterCompanyPage() {
           {/* Right: form */}
           <div className="order-1 md:order-2">
             {submitted ? (
-              <div className="flex flex-col gap-6">
-                <h1 className="font-greed-narrow text-4xl leading-[1.05] tracking-tight text-gray-900 uppercase md:text-5xl lg:text-6xl">
-                  REGISTRATION
-                  <br />
-                  SUBMITTED
-                </h1>
-                <p className="font-stolzl text-base leading-relaxed text-gray-700">
-                  Thanks for registering your interest. Our team will review
-                  your submission and you&apos;ll receive an email once your
-                  account is approved.
-                </p>
-                <p className="font-stolzl text-sm text-gray-500">
-                  You can close this page — no further action is needed right
-                  now.
-                </p>
+              <div className="flex flex-col items-center gap-8">
+                <aside className="text-center">
+                  <h1 className="font-greed-narrow text-4xl leading-[1.05] tracking-tight text-gray-900 uppercase md:text-5xl lg:text-6xl">
+                    Thank you for
+                    <br />
+                    registering!
+                  </h1>
+                  <p className="font-stolzl mt-4 text-xs tracking-[0.2em] text-gray-900 uppercase">
+                    we’ll reach out soon!
+                  </p>
+                </aside>
+                <aside>
+                  <img
+                    src="/images/Thankyou.svg"
+                    alt=""
+                    className="h-auto w-[140px] md:w-[180px]"
+                  />
+                </aside>
               </div>
             ) : (
               <>
