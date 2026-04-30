@@ -5,13 +5,15 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 
+import { Link } from "@/i18n/navigation";
+
 gsap.registerPlugin(ScrollTrigger);
 
 export function DashboardSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
-  const btnRef = useRef<HTMLButtonElement>(null);
+  const btnRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -85,12 +87,13 @@ export function DashboardSection() {
           </div>
 
           {/* GET STARTED button */}
-          <button
+          <Link
             ref={btnRef}
+            href="/signup"
             className="font-dm-mono mt-10 inline-flex cursor-pointer items-center justify-center rounded-md bg-white px-10 py-2 text-sm font-bold tracking-[0.2em] text-black uppercase shadow-[-4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:bg-black hover:text-white md:w-3/5"
           >
             GET STARTED
-          </button>
+          </Link>
         </div>
 
         {/* ── Right: Pixel art characters ── */}

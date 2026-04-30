@@ -2,8 +2,9 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Link from "next/link";
 import { useEffect, useRef } from "react";
+
+import { Link } from "@/i18n/navigation";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -81,7 +82,7 @@ export function FooterSection() {
             <span className="text-gray-900">CUSTOMER EXPERIENCE?</span>
           </h2>
           <Link
-            href="/en/login"
+            href="/signup"
             className="group relative inline-flex items-center gap-3 overflow-hidden rounded-full bg-white px-10 py-4 text-sm font-bold tracking-[0.15em] text-gray-900 uppercase transition-all hover:bg-gray-900 hover:text-white"
           >
             <span>GET STARTED NOW</span>
@@ -266,7 +267,7 @@ export function FooterSection() {
         {/* Bottom Bar */}
         <div className="footer-bottom flex flex-col items-center justify-between gap-4 border-t border-white/20 pt-8 md:flex-row">
           <div className="text-sm opacity-60">
-            © {new Date().getFullYear()} SwiftAgent by Serendpt AI. All rights
+            © {new Date().getFullYear()} Swift Agents by Serendpt AI. All rights
             reserved.
           </div>
           <div className="flex gap-6 text-sm opacity-60">

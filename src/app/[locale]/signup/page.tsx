@@ -67,7 +67,7 @@ export default function RegisterCompanyPage() {
         <div className="grid grid-cols-1 gap-6 p-6 pt-[140px] md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:gap-10 md:p-10 md:pt-[180px] lg:gap-14">
           {/* Left: decorative SVG */}
           <div className="relative order-2 md:order-1">
-            <div className="relative aspect-[528/724] w-full overflow-hidden rounded-sm">
+            <div className="relative aspect-528/724 w-full overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={

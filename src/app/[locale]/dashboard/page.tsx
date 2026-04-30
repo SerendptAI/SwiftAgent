@@ -3,6 +3,7 @@ import { ResourcesCard } from "@/components/dashboard/overview/resources-card";
 import { StatsCards } from "@/components/dashboard/overview/stats-cards";
 import { VisitorsList } from "@/components/dashboard/overview/visitors-list";
 import { WidgetCard } from "@/components/dashboard/overview/widget-card";
+import { OfflineScreen } from "@/components/offline-screen";
 import { getServerApiClient } from "@/lib/api-server";
 import { DashboardStats, DashboardVisitor } from "@/services/dashboard";
 
@@ -36,10 +37,12 @@ export default async function DashboardPage() {
         {/* Left Column - Stats Grid */}
         <div className="flex-1">
           <CompanyToolbar />
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <StatsCards initialData={initialStats} />
-            <ResourcesCard />
-          </div>
+          <OfflineScreen>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+              <StatsCards initialData={initialStats} />
+              <ResourcesCard />
+            </div>
+          </OfflineScreen>
         </div>
 
         {/* Right Column - Widget & Visitors */}

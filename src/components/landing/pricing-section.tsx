@@ -161,7 +161,7 @@ export function PricingSection() {
               plan={plan}
               className="pricing-card h-full"
               showSubscribe
-              onSubscribe={() => router.push("/login")}
+              onSubscribe={() => router.push("/signup")}
             />
           ))}
         </div>
