@@ -12,9 +12,9 @@ import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provide
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
-  title: "SwiftAgent - AI-Powered Customer Engagement Platform",
+  title: "Swift Agents - AI-Powered Customer Engagement Platform",
   description:
-    "Embed an intelligent AI agent on your website in minutes. SwiftAgent handles customer support, sales, and voice conversations — 24/7, without lifting a finger.",
+    "Embed an intelligent AI agent on your website in minutes. Swift Agents handles customer support, sales, and voice conversations — 24/7, without lifting a finger.",
   alternates: {
     canonical: siteConfig.url,
     languages: {

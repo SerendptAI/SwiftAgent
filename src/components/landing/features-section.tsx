@@ -13,7 +13,7 @@ gsap.registerPlugin(ScrollTrigger);
 interface Agent {
   id: string;
   name: string;
-  image: string;
+  video: string;
   description: string;
 }
 
@@ -21,21 +21,21 @@ const AGENTS: Agent[] = [
   {
     id: "047",
     name: "AGENT 047",
-    image: "/images/Agents/agent47.svg",
+    video: "/videos/Agent 047.mp4",
     description:
       "AGENT 047 POSSESSES THE CAPABILITY TO LOCATE ANY FEATURE WITHIN A DASHBOARD FOR USERS, REGARDLESS OF THE DASHBOARD'S COMPLEXITY. THIS AGENT IS AWARE OF THE PRECISE LOCATION OF EACH FEATURE AND CAN PROVIDE DETAILED DIRECTIONS ALONG WITH SCREENSHOTS UPON REQUEST.",
   },
   {
     id: "007",
     name: "AGENT 007",
-    image: "/images/Agents/agent007.svg",
+    video: "/videos/Agent 007.mp4",
     description:
       "AGENT 007 HAS THE ABILITY TO THOROUGHLY SEARCH AN ENTIRE WEBSITE TO RETRIEVE INFORMATION FOR CUSTOMERS WHEN THE ANSWER IS NOT AVAILABLE IN ITS DATABASE.",
   },
   {
     id: "626",
     name: "AGENT 626",
-    image: "/images/Agents/agent626.svg",
+    video: "/videos/Agent 626.mp4",
     description:
       "AGENT 626 POSSESSES THE CAPABILITY TO ANALYZE CRYPTOCURRENCY TRANSACTIONS VIA HASHCODES AND INFORM USERS OF ANY POTENTIAL ISSUES THAT MAY ARISE DURING THE TRANSACTION PROCESS.",
   },
@@ -44,10 +44,48 @@ const AGENTS: Agent[] = [
 const AGENT_001: Agent = {
   id: "001",
   name: "AGENT 001",
-  image: "/images/Agents/agent001.svg",
+  video: "/videos/Agent 001.mp4",
   description:
     "AGENT 001 REVIEWS BANK RECORDS AND UPDATES CUSTOMERS ON PAYMENT STATUSES, INCLUDING REFUND PROCESSES, BANK ACKNOWLEDGMENTS, AND ANY PAYMENT ISSUES.",
 };
+
+// ─── Agent Video — loads only when scrolled into view ─────────
+function AgentVideo({ src }: { src: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            video.load();
+            video.play().catch(() => {});
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.25 },
+    );
+
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <video
+      ref={videoRef}
+      src={src}
+      loop
+      muted
+      playsInline
+      preload="none"
+      className="h-auto w-full object-cover"
+    />
+  );
+}
 
 // ─── Reusable Agent Card ──────────────────────────────────────
 function AgentCard({ agent }: { agent: Agent }) {
@@ -58,15 +96,9 @@ function AgentCard({ agent }: { agent: Agent }) {
         {agent.name}
       </h3>
 
-      {/* Agent image */}
+      {/* Agent video */}
       <div className="overflow-hidden">
-        <Image
-          src={agent.image}
-          alt={agent.name}
-          width={420}
-          height={494}
-          className="h-auto w-full object-cover"
-        />
+        <AgentVideo src={agent.video} />
       </div>
 
       {/* Agent description */}

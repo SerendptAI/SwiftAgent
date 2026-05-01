@@ -1,34 +1,19 @@
-"use client";
-
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 
 export function MobileBlocker() {
-  const pathname = usePathname();
-
-  // Only show the mobile blocker on dashboard routes
-  if (!pathname?.includes("/dashboard")) {
-    return null;
-  }
-
   return (
     <div className="fixed inset-0 z-9999 flex flex-col items-center bg-white md:hidden">
       {/* Top Logo Area */}
       <div className="mt-16 flex items-center gap-3">
-        <div className="flex h-12 w-12 items-center justify-center bg-black">
-          <div className="relative h-7 w-7">
-            <Image
-              src="/images/mask.svg"
-              alt="Swift Agents Logo"
-              fill
-              className="object-contain"
-              priority
-            />
-          </div>
+        <div className="relative h-12 w-12">
+          <Image
+            src="/images/newlogo.svg"
+            alt="Swift Agents Logo"
+            fill
+            className="object-contain"
+            priority
+          />
         </div>
-        <span className="font-stolzl text-lg font-bold text-gray-900">
-          Swift Agents
-        </span>
       </div>
 
       {/* Main Content */}

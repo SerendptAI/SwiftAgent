@@ -2,8 +2,9 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+
+import { Link } from "@/i18n/navigation";
 
 import { Navbar } from "./navbar";
 gsap.registerPlugin(ScrollTrigger);
@@ -350,7 +351,7 @@ export function HeroSection() {
           {/* CTA Button */}
           <div ref={ctaRef} className="mt-8 md:mt-12">
             <Link
-              href="/en/login"
+              href="/signup"
               className="font-dm-mono inline-flex w-full items-center justify-center rounded-xl border-1 border-white bg-black px-10 py-4 text-xs font-bold tracking-[0.2em] text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-800 sm:w-auto sm:min-w-[340px]"
             >
               GET STARTED
