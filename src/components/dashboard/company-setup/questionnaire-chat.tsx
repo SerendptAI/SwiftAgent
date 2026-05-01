@@ -391,18 +391,20 @@ export function QuestionnaireChat({
           alt="Completed"
           width={120}
           height={140}
-          className="mb-8"
+          className="mt-16 mb-10.5 aspect-107/126 w-full max-w-[107px] object-contain object-center"
         />
-        <h2 className="font-greed-narrow mb-10 text-3xl leading-tight font-bold text-gray-900">
+        <h2 className="font-greed-narrow mb-15.5 text-center text-[40px] leading-[1.1] font-semibold tracking-[-2%] text-black">
           Thanks for helping
           <br />
           us learn about your
           <br />
           company.
         </h2>
-        <PrimaryActionButton onClick={() => setPhase("email")}>
-          Pick an email address
-        </PrimaryActionButton>
+        <div className="mb-14 w-full">
+          <PrimaryActionButton onClick={() => setPhase("email")}>
+            Pick an email address
+          </PrimaryActionButton>
+        </div>
 
         <div className="absolute right-0 -bottom-20 -translate-x-1/2">
           <BriggsAnimation className="h-16 w-16" />
@@ -453,45 +455,47 @@ export function QuestionnaireChat({
           alt="Congratulations"
           width={120}
           height={140}
-          className="mb-6"
+          className="mb-4 aspect-98/163 max-w-24.5 object-contain object-center"
         />
-        <h2 className="font-greed-narrow mb-3 text-3xl font-bold text-gray-900">
+        <h2 className="font-greed-narrow mb-4 text-center text-[40px] leading-[1.1] font-semibold tracking-[-2%] text-black">
           Congratulations
         </h2>
-        <p className="font-dm-mono mb-6 text-xs tracking-wider text-gray-500 uppercase">
+        <p className="font-dm-mono text-muted-foreground mb-5 text-sm leading-[1.96] tracking-[14%] uppercase">
           All customer replies will be
           <br />
           made with this email
         </p>
-        <div className="mb-8 w-full rounded-sm border border-gray-200 px-4 py-3 text-center">
-          <span className="font-dm-mono text-sm font-bold tracking-wider text-gray-900">
-            {emailHandle}
-          </span>
-          <span className="font-dm-mono text-sm tracking-wider text-gray-400">
-            @swifty.email
-          </span>
+        <div className="font-greed-narrow mb-9 flex h-[62px] w-full max-w-[307px] items-center justify-center rounded-[10px] border border-black pr-2 pl-6 text-center text-2xl leading-[1.1] font-semibold tracking-[-1%]">
+          <span className="text-black">{emailHandle}</span>
+          <span className="text-black/50">@swifty.email</span>
         </div>
-        <PrimaryActionButton
-          disabled={isFinishing}
-          onClick={async () => {
-            setIsFinishing(true);
-            try {
-              await Promise.all([
-                queryClient.refetchQueries({ queryKey: ["currentUser"] }),
-                companyId
-                  ? queryClient.refetchQueries({
-                      queryKey: ["company", companyId],
-                    })
-                  : Promise.resolve(),
-              ]);
-            } catch (e) {
-              console.error("Failed to refresh user/company before finish:", e);
-            }
-            router.push("/dashboard?settings=1");
-          }}
-        >
-          Finish
-        </PrimaryActionButton>
+
+        <div className="w-full max-w-56">
+          <PrimaryActionButton
+            disabled={isFinishing}
+            onClick={async () => {
+              setIsFinishing(true);
+              try {
+                await Promise.all([
+                  queryClient.refetchQueries({ queryKey: ["currentUser"] }),
+                  companyId
+                    ? queryClient.refetchQueries({
+                        queryKey: ["company", companyId],
+                      })
+                    : Promise.resolve(),
+                ]);
+              } catch (e) {
+                console.error(
+                  "Failed to refresh user/company before finish:",
+                  e,
+                );
+              }
+              router.push("/dashboard?settings=1");
+            }}
+          >
+            Finish
+          </PrimaryActionButton>
+        </div>
       </OverlayShell>
     );
   }
@@ -509,11 +513,11 @@ export function QuestionnaireChat({
                 width={34}
                 height={34}
               />
-              <span className="font-dm-mono text-sm font-bold tracking-wider uppercase">
+              <span className="font-dm-mono text-base leading-none uppercase">
                 SWIFT AGENTS
               </span>
             </div>
-            <ChevronDown className="h-5 w-5 text-gray-400" />
+            <ChevronDown className="size-8.5 stroke-1 text-black" />
           </div>
 
           {/* Chat body */}
@@ -521,15 +525,15 @@ export function QuestionnaireChat({
             {entries.map((entry, entryIdx) => (
               <div key={entryIdx} className="mb-6">
                 {/* Bot question */}
-                <div className="mb-4 w-fit max-w-[80%] rounded-lg rounded-tl-none bg-blue-50 px-4 py-3">
-                  <p className="text-sm font-medium text-blue-600">
+                <div className="mb-4 w-fit max-w-[274px] rounded-3xl bg-blue-50 px-4 py-2.5">
+                  <p className="font-stolzl text-sm leading-6 text-[#006BE5]">
                     {entry.question}
                   </p>
                 </div>
 
                 {/* Options */}
                 {entry.options && (
-                  <div className="space-y-3">
+                  <div className="w-fit space-y-3">
                     {entry.options.map((option) => {
                       const isSelected = entry.selected === option;
                       return (
@@ -537,7 +541,7 @@ export function QuestionnaireChat({
                           key={option}
                           disabled={!!entry.selected}
                           onClick={() => handleSelectOption(option)}
-                          className={`font-dm-mono flex w-fit items-center gap-2 rounded-md border px-4 py-3 text-left text-xs font-bold tracking-wider uppercase transition-colors ${
+                          className={`font-dm-mono flex w-full items-center gap-2 border px-5 py-2.5 text-left text-sm leading-loose uppercase transition-colors ${
                             isSelected
                               ? "border-[#E8613C] bg-[#E8613C] text-white"
                               : entry.selected
@@ -677,7 +681,7 @@ export function QuestionnaireChat({
 function OverlayShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-6">
-      <div className="relative flex w-full max-w-md flex-col items-center justify-center bg-white px-10 py-14 text-center shadow-xl">
+      <div className="relative flex w-full max-w-138 flex-col items-center justify-center bg-white px-10 py-15 text-center shadow-xl">
         {children}
       </div>
     </div>
@@ -697,7 +701,7 @@ function PrimaryActionButton({
     <button
       onClick={onClick}
       disabled={disabled}
-      className="font-dm-mono w-full cursor-pointer rounded-sm bg-[#006BE5] py-4 text-center text-sm font-bold tracking-wider text-white uppercase transition-colors hover:bg-[#0055B8] disabled:cursor-not-allowed disabled:opacity-50"
+      className="font-dm-mono h-9 w-full cursor-pointer rounded-[13px] bg-[#006BE5] text-center text-sm leading-none text-white uppercase transition-colors hover:bg-[#0055B8] disabled:cursor-not-allowed disabled:opacity-50"
     >
       {children}
     </button>
@@ -766,36 +770,33 @@ function EmailPickerScreen({
         alt="Pick email"
         width={90}
         height={180}
-        className="mb-6"
+        className="mb-7.5 aspect-93/186 w-full max-w-[93px] object-contain object-center"
       />
-      <p className="font-dm-mono mb-6 text-sm tracking-wider text-gray-500 uppercase">
+      <p className="font-dm-mono text-muted-foreground mb-10 text-sm leading-[1.96] tracking-[14%] uppercase">
         This is the email address that will be used to communicate with
         customers via email, it should correspond with your company name
       </p>
-      <div className="mb-3 flex w-fit items-center rounded-sm border border-gray-200 px-4 py-3">
+      <div className="mb-3 flex h-[62px] w-full max-w-[307px] items-center justify-between rounded-sm border border-black py-3 pr-2 pl-6">
         <input
           value={value}
           onChange={(e) =>
             onChange(e.target.value.toLowerCase().replace(/\s+/g, ""))
           }
           placeholder="companyname"
-          size={12}
-          className="font-dm-mono min-w-0 text-sm text-gray-900 outline-none placeholder:text-gray-400"
+          className="font-greed-narrow mr-2 min-w-0 text-2xl leading-[1.1] font-semibold tracking-[-1%] text-black outline-none placeholder:text-black/20"
         />
-        <span className="font-dm-mono text-sm tracking-wider text-gray-400">
+        <span className="font-greed-narrow text-2xl leading-[1.1] font-semibold tracking-[-1%] text-black/50">
           @swifty.email
         </span>
       </div>
-      <div className="mb-6 flex h-4 items-center gap-1.5">
+      <div className="font-dm-mono mb-5.5 flex items-center gap-1.5 text-xs leading-[1.96] tracking-[10%] uppercase">
         {availability === "checking" && (
-          <span className="font-dm-mono text-[10px] font-bold tracking-wider text-gray-400 uppercase">
-            Checking availability…
-          </span>
+          <span className="text-gray-400">Checking availability…</span>
         )}
         {availability === "invalid" && handle.length > 0 && (
           <>
             <CircleX className="h-4 w-4 fill-red-500 text-white" />
-            <span className="font-dm-mono text-[10px] font-bold tracking-wider text-red-500 uppercase">
+            <span className="text-red-500">
               3-30 chars, lowercase letters, digits or dashes
             </span>
           </>
@@ -803,31 +804,27 @@ function EmailPickerScreen({
         {availability === "available" && (
           <>
             <CircleCheck className="h-4 w-4 fill-green-500 text-white" />
-            <span className="font-dm-mono text-[10px] font-bold tracking-wider text-green-600 uppercase">
-              Name available
-            </span>
+            <span className="text-green-600">Name available</span>
           </>
         )}
         {availability === "taken" && (
           <>
             <CircleX className="h-4 w-4 fill-red-500 text-white" />
-            <span className="font-dm-mono text-[10px] font-bold tracking-wider text-red-500 uppercase">
-              {takenMessage}
-            </span>
+            <span className="text-red-500">{takenMessage}</span>
           </>
         )}
         {error && availability !== "taken" && (
-          <span className="font-dm-mono text-[10px] font-bold tracking-wider text-red-500 uppercase">
-            {error}
-          </span>
+          <span className="text-red-500">{error}</span>
         )}
       </div>
-      <PrimaryActionButton
-        onClick={() => onSelect(handle)}
-        disabled={availability !== "available" || !!isSaving}
-      >
-        {isSaving ? "Saving…" : "Select"}
-      </PrimaryActionButton>
+      <div className="w-full max-w-94">
+        <PrimaryActionButton
+          onClick={() => onSelect(handle)}
+          disabled={availability !== "available" || !!isSaving}
+        >
+          {isSaving ? "Saving…" : "Select"}
+        </PrimaryActionButton>
+      </div>
     </OverlayShell>
   );
 }
