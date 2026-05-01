@@ -27,7 +27,7 @@ export const FormInput = forwardRef<HTMLInputElement, ComponentProps<"input">>(
       <input
         ref={ref}
         className={cn(
-          "h-12 w-full rounded-md border-0 bg-gray-100 px-4 py-2 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-purple-600 focus:outline-hidden",
+          "font-dm-mono h-12 w-full rounded-md border-0 bg-gray-100 px-4 py-2 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-purple-600 focus:outline-hidden",
           className,
         )}
         {...props}
@@ -46,7 +46,7 @@ export const FormSelect = forwardRef<
       <select
         ref={ref}
         className={cn(
-          "h-12 w-full appearance-none rounded-md border-0 bg-gray-100 px-4 py-2 pr-10 text-gray-900 focus:ring-2 focus:ring-purple-600 focus:outline-hidden",
+          "font-dm-mono h-12 w-full appearance-none rounded-md border-0 bg-gray-100 px-4 py-2 pr-10 text-gray-900 focus:ring-2 focus:ring-purple-600 focus:outline-hidden",
           props.value === "" && "text-gray-400",
           className,
         )}
@@ -70,7 +70,7 @@ export const FormTextarea = forwardRef<
     <textarea
       ref={ref}
       className={cn(
-        "min-h-[120px] w-full rounded-md border-0 bg-gray-100 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-purple-600 focus:outline-hidden",
+        "font-dm-mono min-h-[120px] w-full rounded-md border-0 bg-gray-100 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-purple-600 focus:outline-hidden",
         className,
       )}
       {...props}
