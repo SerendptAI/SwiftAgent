@@ -89,11 +89,16 @@ export default function HomePage() {
         <PricingSection />
         <ContactSection />
       </main>
+      {/* <script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="924573c0-3731-4a93-a4da-e6775c0c4516" data-trigger="button" defer></script> */}
+      {/* <button className="fixed bottom-4 right-4 bg-primary text-white px-4 py-2 rounded-md cursor-pointer" data-swift-agent-open>Chat with us</button> */}
+
       <Script
         src="https://widget.swiftagents.org/dist/widget-ui.js"
-        data-company-id="01490b45-52bd-4317-b2f7-e93264210201"
+        data-company-id="924573c0-3731-4a93-a4da-e6775c0c4516"
         data-base-url="https://widget.swiftagents.org"
         crossOrigin="anonymous"
+        data-mode="button"
+        data-trigger="[data-swift-agent-open]"
         strategy="afterInteractive"
       />
     </SmoothScrollProvider>

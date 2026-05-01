@@ -68,7 +68,7 @@ export function WidgetCard() {
   const codeSnippet = useMemo(() => {
     if (!companyId) return "";
     if (mode === "button") {
-      return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" data-trigger="button" defer></script>\n<button data-swift-agent-open>Chat with us</button>`;
+      return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" data-mode="button" data-trigger="[data-swift-agent-open]" defer></script>\n<button data-swift-agent-open>Chat with us</button>`;
     }
     return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" defer></script>`;
   }, [companyId, mode]);
