@@ -67,7 +67,7 @@ export default function RegisterCompanyPage() {
         <div className="grid grid-cols-1 gap-6 p-6 pt-[140px] md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:gap-10 md:p-10 md:pt-[180px] lg:gap-14">
           {/* Left: decorative SVG */}
           <div className="relative order-2 md:order-1">
-            <div className="relative aspect-528/724 w-full overflow-hidden">
+            <div className="relative aspect-[528/724] w-full overflow-hidden rounded-sm">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={
@@ -84,21 +84,24 @@ export default function RegisterCompanyPage() {
           {/* Right: form */}
           <div className="order-1 md:order-2">
             {submitted ? (
-              <div className="flex flex-col gap-6">
-                <h1 className="font-greed-narrow text-4xl leading-[1.05] tracking-tight text-gray-900 uppercase md:text-5xl lg:text-6xl">
-                  REGISTRATION
-                  <br />
-                  SUBMITTED
-                </h1>
-                <p className="font-stolzl text-base leading-relaxed text-gray-700">
-                  Thanks for registering your interest. Our team will review
-                  your submission and you&apos;ll receive an email once your
-                  account is approved.
-                </p>
-                <p className="font-stolzl text-sm text-gray-500">
-                  You can close this page — no further action is needed right
-                  now.
-                </p>
+              <div className="flex flex-col items-center gap-8">
+                <aside className="text-center">
+                  <h1 className="font-greed-narrow text-4xl leading-[1.05] tracking-tight text-gray-900 uppercase md:text-5xl lg:text-6xl">
+                    Thank you for
+                    <br />
+                    registering!
+                  </h1>
+                  <p className="font-stolzl mt-4 text-xs tracking-[0.2em] text-gray-900 uppercase">
+                    we’ll reach out soon!
+                  </p>
+                </aside>
+                <aside>
+                  <img
+                    src="/images/Thankyou.svg"
+                    alt=""
+                    className="h-auto w-[140px] md:w-[180px]"
+                  />
+                </aside>
               </div>
             ) : (
               <>
