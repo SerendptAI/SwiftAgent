@@ -21,11 +21,14 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 # only keep the artifacts needed at runtime
-# Next.js build output and public assets are enough; the config is bundled inside .next
+# next.config.ts must be present at runtime — Next reads images.remotePatterns
+# from it on every /_next/image request; without it the allowlist is empty.
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./
+COPY --from=builder /app/next.config.ts ./
+COPY --from=builder /app/tsconfig.json ./
 
 EXPOSE 3000
 
