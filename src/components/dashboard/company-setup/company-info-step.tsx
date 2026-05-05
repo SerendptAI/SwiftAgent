@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Icons } from "@/components/icons";
+import { useRegistrationDetails } from "@/hooks/use-auth";
 import {
   useCompaniesQuery,
   useCompanyMutations,
@@ -70,6 +71,8 @@ export function CompanyInfoStep({
     isUpdateMode ? companyId : null,
   );
 
+  const { data: registrationDetails } = useRegistrationDetails(!isUpdateMode);
+
   const isCreating = createCompany.isPending;
   const isUpdating = updateCompany.isPending;
   const isUploading = uploadLogo.isPending;
@@ -110,6 +113,17 @@ export function CompanyInfoStep({
       });
     }
   }, [isUpdateMode, companyData, reset]);
+
+  useEffect(() => {
+    if (!isUpdateMode && registrationDetails) {
+      reset((current) => ({
+        ...current,
+        name: current.name || registrationDetails.company_name || "",
+        company_size:
+          current.company_size || registrationDetails.customer_size || "",
+      }));
+    }
+  }, [isUpdateMode, registrationDetails, reset]);
 
   const typedName = watch("name");
 
