@@ -65,7 +65,7 @@ export function SetupWizard() {
           <CompanyIdentityStep companyId={companyId} onNext={handleNext} />
         )}
 
-        {!showCompletion && <CompletionStep />}
+        {showCompletion && <CompletionStep />}
       </div>
     </div>
   );
