@@ -155,48 +155,52 @@ export default function LoginPage() {
 
   return (
     <div className="font-dm-mono flex min-h-screen w-full items-center justify-center px-4">
-      <div className="flex w-full max-w-md flex-col items-center gap-8">
+      <div className="flex w-full max-w-md flex-col items-center gap-7">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/images/newlogo.svg" alt="Logo" className="h-14 w-14" />
+        <img
+          src="/images/newlogo.svg"
+          alt="Logo"
+          className="mb-11.5 h-14 w-14"
+        />
 
-        <div className="flex flex-col items-center gap-2 text-center">
-          <h3 className="text-muted-foreground font-stolzl text-[11px] font-normal tracking-[0.2em] uppercase">
+        <div className="flex flex-col items-center gap-2.5 text-center">
+          <h3 className="text-muted-foreground font-dm-mono text-sm font-normal tracking-[0.2em] uppercase">
             {t("welcomeBack")}
           </h3>
-          <h2 className="font-stolzl text-xl font-normal tracking-tight">
+          <h2 className="font-stolzl text-2xl font-normal tracking-tight">
             {t("logInToYourAccount")}
           </h2>
         </div>
 
-        <div className="flex w-full flex-col items-center gap-4">
-          <div className="flex w-full items-center justify-center gap-3">
+        <div className="flex w-full max-w-93 flex-col items-center gap-7">
+          <div className="flex w-full items-center justify-center gap-5">
             <Button
               variant="outline"
-              className="text-[#616161]font-dm-mono h-11 flex-1 text-[10px] font-normal tracking-[0.15em] uppercase shadow-[-3px_3px_0px_0px_#000000]"
               onClick={handleGoogleLogin}
+              className="font-dm-mono h-12 w-fit px-3 text-xs leading-[1.2] font-normal tracking-[10%] text-[#616161] uppercase shadow-[-4px_4px_0px_0px_#000000] md:text-sm"
               disabled={googleLogin.isPending}
             >
               {t("googleLogin")}
-              <Icons.google className="ml-2 h-4 w-4" />
+              <Icons.google className="size-5" />
             </Button>
             <Button
               variant="outline"
-              className="font-dm-mono h-11 flex-1 text-[10px] font-normal tracking-[0.15em] text-[#616161] uppercase shadow-[-3px_3px_0px_0px_#000000]"
+              className="font-dm-mono h-12 w-fit px-3 text-xs leading-[1.2] font-normal tracking-[10%] text-[#616161] uppercase shadow-[-4px_4px_0px_0px_#000000] md:text-sm"
               disabled={googleLogin.isPending}
             >
               {t("serendptLogin")}
-              <Icons.serendpt className="ml-2 h-4 w-4" />
+              <Icons.serendpt className="size-5" />
             </Button>
           </div>
 
-          <span className="text-muted-foreground text-[11px] tracking-[0.2em] uppercase">
+          <span className="text-muted-foreground font-dm-mono text-sm leading-[1.2] tracking-[10%] uppercase md:text-base">
             {t("or")}
           </span>
 
           {step === "email" ? (
             <div className="w-full">
               <div
-                className={`focus-within:ring-ring/50 relative flex h-11 w-full items-center rounded-md border bg-transparent pr-1 pl-4 focus-within:ring-2 ${
+                className={`focus-within:ring-ring/50 relative flex h-11 w-full items-center rounded-md border bg-transparent pr-1 pl-6 focus-within:ring-2 md:pl-10 ${
                   emailError ? "border-red-500" : "border-black/20"
                 }`}
               >
@@ -211,27 +215,27 @@ export default function LoginPage() {
                     if (e.key === "Enter") handleSendOtp();
                   }}
                   placeholder={t("companyEmailPlaceholder")}
-                  className="text-muted-foreground placeholder:text-muted-foreground h-full flex-1 bg-transparent text-[11px] tracking-[0.2em] uppercase outline-none"
+                  className="text-foreground placeholder:text-muted-foreground font-dm-mono h-full flex-1 bg-transparent text-xs leading-[1.2] tracking-[10%] uppercase outline-none md:text-sm"
                 />
                 {email.length > 0 && (
                   <button
                     type="button"
                     onClick={handleSendOtp}
                     disabled={!isValidEmail(email) || sendOtp.isPending}
-                    className="font-dm-mono h-9 shrink-0 rounded-md bg-black px-4 text-[10px] font-normal tracking-[0.15em] text-white uppercase transition-opacity disabled:opacity-40"
+                    className="font-dm-mono h-9 shrink-0 rounded-sm bg-black px-2.5 text-xs leading-[1.2] font-medium tracking-[10%] text-white uppercase transition-opacity disabled:opacity-40 md:text-sm"
                   >
                     {t("signIn")}
                   </button>
                 )}
               </div>
               {emailError && (
-                <p className="mt-2 text-center text-[10px] tracking-[0.1em] text-red-500 uppercase">
+                <p className="mt-2 text-center text-[10px] tracking-widest text-red-500 uppercase">
                   {emailError}
                 </p>
               )}
             </div>
           ) : (
-            <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center gap-14">
               {/* OTP Input Boxes */}
               <div className="flex items-center gap-2" onPaste={handleOtpPaste}>
                 {otp.map((digit, index) => (
@@ -247,7 +251,8 @@ export default function LoginPage() {
                     onChange={(e) => handleOtpChange(index, e.target.value)}
                     onKeyDown={(e) => handleOtpKeyDown(index, e)}
                     disabled={isVerifying}
-                    className={`font-dm-mono focus:ring-ring/50 h-10 w-10 rounded-md border bg-transparent text-center text-sm transition-colors outline-none focus:ring-2 ${
+                    placeholder="*"
+                    className={`font-dm-mono focus:ring-ring/50 h-12 w-7.5 rounded-lg border bg-transparent text-center text-sm text-[#7E7E7E] placeholder-[#7E7E7E] transition-colors outline-none focus:ring-1 ${
                       otpError ? "border-red-500" : "border-black/20"
                     } ${isVerifying ? "opacity-60" : ""}`}
                   />
@@ -256,29 +261,31 @@ export default function LoginPage() {
 
               {/* Status text */}
               {isVerifying && (
-                <p className="text-muted-foreground text-[10px] tracking-[0.2em] uppercase">
+                <p className="text-muted-foreground text-sm leading-[1.2] tracking-[10%] uppercase">
                   {t("signingIn")}
                 </p>
               )}
               {otpError && (
-                <p className="text-[10px] tracking-[0.2em] text-red-500 uppercase">
+                <p className="text-muted-foreground text-sm leading-[1.2] tracking-[10%] uppercase">
                   {otpError}
                 </p>
               )}
 
               {/* Back to email link */}
-              <button
-                type="button"
-                onClick={() => {
-                  setStep("email");
-                  setOtp(Array(OTP_LENGTH).fill(""));
-                  setOtpError("");
-                  setIsVerifying(false);
-                }}
-                className="text-muted-foreground text-[10px] tracking-[0.15em] uppercase underline underline-offset-2"
-              >
-                {t("backToEmail")}
-              </button>
+              {!isVerifying && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStep("email");
+                    setOtp(Array(OTP_LENGTH).fill(""));
+                    setOtpError("");
+                    setIsVerifying(false);
+                  }}
+                  className="text-muted-foreground text-sm leading-[1.2] tracking-[10%] uppercase underline underline-offset-2"
+                >
+                  {t("backToEmail")}
+                </button>
+              )}
             </div>
           )}
         </div>
