@@ -48,7 +48,7 @@ export function CompanyIdentityStep({
       customer_value: companyData?.customer_value || "",
       brand_tone: companyData?.brand_tone || "",
       primary_language: companyData?.primary_language || "en",
-      support_emails: companyData?.support_emails || "",
+      support_emails: companyData?.support_emails?.join(", ") || "",
     },
   });
   useEffect(() => {
@@ -58,7 +58,7 @@ export function CompanyIdentityStep({
         customer_value: companyData.customer_value || "",
         brand_tone: companyData.brand_tone || "",
         primary_language: companyData.primary_language || "en",
-        support_emails: companyData.support_emails || "",
+        support_emails: companyData.support_emails?.join(", ") || "",
       });
     }
   }, [isUpdateMode, companyData, reset]);
@@ -73,7 +73,15 @@ export function CompanyIdentityStep({
       await updateCompany.mutateAsync({
         companyId,
         section: "identity",
-        payload: data,
+        payload: {
+          ...data,
+          support_emails: data.support_emails
+            ? data.support_emails
+                .split(",")
+                .map((e) => e.trim())
+                .filter(Boolean)
+            : [],
+        },
       });
 
       onNext?.();

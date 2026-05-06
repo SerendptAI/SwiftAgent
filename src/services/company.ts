@@ -22,7 +22,7 @@ export interface Company {
   customer_value: string;
   brand_tone: string;
   primary_language: string;
-  support_emails: string;
+  support_emails: string[];
   enabled_sources: string[];
   custom_info: string[];
   voice_style: string;
