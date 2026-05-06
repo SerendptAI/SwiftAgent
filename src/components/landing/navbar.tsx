@@ -2,9 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { forwardRef, useState } from "react";
+import { usePathname } from "next/navigation";
+import { forwardRef, useEffect, useState } from "react";
+
+import { cn } from "@/lib/utils";
 
 import { Icons } from "../icons";
+import { isLandingNavLinkActive, LANDING_NAV_LINKS } from "./nav-links";
 import { NavigationMenu } from "./navigation-menu";
 
 interface NavbarProps {
@@ -14,6 +18,16 @@ interface NavbarProps {
 export const Navbar = forwardRef<HTMLElement, NavbarProps>(
   ({ className }, ref) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [hash, setHash] = useState("");
+    const pathname = usePathname();
+
+    useEffect(() => {
+      const updateHash = () => setHash(window.location.hash);
+
+      updateHash();
+      window.addEventListener("hashchange", updateHash);
+      return () => window.removeEventListener("hashchange", updateHash);
+    }, []);
 
     return (
       <>
@@ -41,30 +55,27 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
           <div className="flex h-full items-center justify-end gap-10 lg:gap-14">
             {/* Desktop nav links */}
             <div className="hidden items-center gap-8 md:flex lg:gap-10">
-              <Link
-                href="/"
-                className="font-dm-mono text-base tracking-[0.2em] text-gray-900 uppercase transition-opacity hover:opacity-60"
-              >
-                HOME
-              </Link>
-              <Link
-                href="/#how-it-works"
-                className="font-dm-mono text-base tracking-[0.2em] text-gray-900 uppercase transition-opacity hover:opacity-60"
-              >
-                ABOUT
-              </Link>
-              <Link
-                href="/#talk"
-                className="font-dm-mono text-base tracking-[0.2em] text-gray-900 uppercase transition-opacity hover:opacity-60"
-              >
-                TYPES OF AGENTS
-              </Link>
-              <Link
-                href="/#pricing"
-                className="font-dm-mono text-base tracking-[0.2em] text-gray-900 uppercase transition-opacity hover:opacity-60"
-              >
-                BILLING
-              </Link>
+              {LANDING_NAV_LINKS.map((link) => {
+                const isActive = isLandingNavLinkActive(
+                  link.href,
+                  pathname,
+                  hash,
+                );
+
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    aria-current={isActive ? "page" : undefined}
+                    className={cn(
+                      "font-dm-mono text-sm tracking-[0.2em] text-gray-900 uppercase transition-opacity hover:opacity-60",
+                      isActive ? "font-medium" : "font-normal",
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
             </div>
 
             {/* Mobile hamburger / close toggle */}
@@ -100,9 +111,9 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
             </button>
             <Link
               href="/en/login"
-              className="font-dm-mono hidden items-center justify-center rounded-lg border border-gray-900 bg-white px-8 py-3 text-xs font-bold tracking-[0.15em] text-gray-900 uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-900 hover:text-white md:flex"
+              className="font-dm-mono hidden w-full max-w-[220px] items-center justify-center rounded-lg border border-gray-900 bg-white px-8 py-3 text-base font-medium tracking-[0.15em] text-gray-900 uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-900 hover:text-white md:flex"
             >
-              LOGIN/SIGN UP
+              LOGIN
             </Link>
           </div>
         </nav>
