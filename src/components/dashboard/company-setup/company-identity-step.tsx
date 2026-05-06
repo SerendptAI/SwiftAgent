@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { useRegistrationDetails } from "@/hooks/use-auth";
 import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
 import { getApiErrorMessage } from "@/lib/api-error";
 
@@ -41,6 +42,8 @@ export function CompanyIdentityStep({
     isUpdateMode ? companyId : null,
   );
 
+  const { data: registrationDetails } = useRegistrationDetails(!isUpdateMode);
+
   const { register, handleSubmit, reset } = useForm<CompanyIdentityValues>({
     resolver: zodResolver(companyIdentitySchema),
     defaultValues: {
@@ -62,6 +65,16 @@ export function CompanyIdentityStep({
       });
     }
   }, [isUpdateMode, companyData, reset]);
+
+  useEffect(() => {
+    if (!isUpdateMode && registrationDetails) {
+      reset((current) => ({
+        ...current,
+        description:
+          current.description || registrationDetails.company_description || "",
+      }));
+    }
+  }, [isUpdateMode, registrationDetails, reset]);
 
   const onSubmit = async (data: CompanyIdentityValues) => {
     try {
