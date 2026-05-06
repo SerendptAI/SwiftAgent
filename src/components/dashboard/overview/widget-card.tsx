@@ -249,7 +249,7 @@ const AGENT_OPTIONS: AgentOption[] = [
   {
     id: "047",
     description:
-      "Agent 047 can locate any password, listing, or purchase on your site, no matter the complexity. It scans and provides instant answers for all account-related requirements.",
+      "Agent 047 can locate any dashboard feature for users, no matter the complexity. It knows each feature's location and can provide directions and screenshots.",
     requiresLogin: true,
   },
   {
@@ -266,7 +266,7 @@ const AGENT_OPTIONS: AgentOption[] = [
   {
     id: "001",
     description:
-      "Agent 001 handles general inquiries and light conversation for first-time visitors.",
+      "Agent 001 reviews bank records and updates customers on payments, including refunds and issues.",
   },
 ];
 
