@@ -1,14 +1,18 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Icons } from "@/components/icons";
 import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
-import { useUploadKnowledge } from "@/hooks/use-knowledge";
+import {
+  useKnowledgeDocuments,
+  useUploadKnowledge,
+} from "@/hooks/use-knowledge";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { cn } from "@/lib/utils";
+import type { KnowledgeDocument } from "@/services/knowledge";
 
 import { OnboardingErrorToast } from "./onboarding-error-toast";
 import { NextButton } from "./ui-elements";
@@ -41,6 +45,13 @@ export function KnowledgeSourcesStep({
   const { data: companyData } = useCompanyQuery(
     isUpdateMode ? companyId : null,
   );
+
+  const { data: existingDocs } = useKnowledgeDocuments(
+    isUpdateMode ? companyId : null,
+  );
+
+  const docFor = (category: string) =>
+    existingDocs?.find((d) => d.category === category);
 
   const { watch, setValue, handleSubmit, reset } =
     useForm<KnowledgeSourcesValues>({
@@ -131,26 +142,30 @@ export function KnowledgeSourcesStep({
             <UploadSection
               companyId={companyId}
               category="faq"
-              color="bg-[#6433CC]" // Purple
+              color="bg-[#6433CC]"
               label="Upload FAQ documents"
+              existingDoc={docFor("faq")}
             />
             <UploadSection
               companyId={companyId}
               category="manuals"
-              color="bg-[#FF7043]" // Orange
+              color="bg-[#FF7043]"
               label="Upload Manuals"
+              existingDoc={docFor("manuals")}
             />
             <UploadSection
               companyId={companyId}
               category="policies"
-              color="bg-[#FFB74D]" // Yellow
+              color="bg-[#FFB74D]"
               label="Upload policies"
+              existingDoc={docFor("policies")}
             />
             <UploadSection
               companyId={companyId}
               category="sops"
-              color="bg-[#64B5F6]" // Blue
+              color="bg-[#64B5F6]"
               label="Upload internal SOPs"
+              existingDoc={docFor("sops")}
             />
           </>
         ) : cryptoPage === 1 ? (
@@ -160,24 +175,28 @@ export function KnowledgeSourcesStep({
               category="faq"
               color="bg-[#6433CC]"
               label="Upload FAQ documents"
+              existingDoc={docFor("faq")}
             />
             <UploadSection
               companyId={companyId}
               category="whitepaper"
               color="bg-[#FF7043]"
               label="Upload Whitepaper"
+              existingDoc={docFor("whitepaper")}
             />
             <UploadSection
               companyId={companyId}
               category="tokenomics"
               color="bg-[#FFB74D]"
               label="Tokenomics Documentation"
+              existingDoc={docFor("tokenomics")}
             />
             <UploadSection
               companyId={companyId}
               category="links"
               color="bg-[#6433CC]"
               label="Blockchain Explorer Links"
+              existingDoc={docFor("links")}
             />
           </>
         ) : (
@@ -187,30 +206,35 @@ export function KnowledgeSourcesStep({
               category="audit_reports"
               color="bg-[#6433CC]"
               label="Audit Reports"
+              existingDoc={docFor("audit_reports")}
             />
             <UploadSection
               companyId={companyId}
               category="governance"
               color="bg-[#FF7043]"
               label="Governance Documentation"
+              existingDoc={docFor("governance")}
             />
             <UploadSection
               companyId={companyId}
               category="roadmap"
               color="bg-[#FFB74D]"
               label="Roadmap and Updates"
+              existingDoc={docFor("roadmap")}
             />
             <UploadSection
               companyId={companyId}
               category="risk_disclosures"
               color="bg-[#64B5F6]"
               label="Risk Disclosures"
+              existingDoc={docFor("risk_disclosures")}
             />
             <UploadSection
               companyId={companyId}
               category="community_support"
               color="bg-[#6433CC]"
               label="Community and Support Docs"
+              existingDoc={docFor("community_support")}
             />
           </>
         )}
@@ -286,6 +310,7 @@ interface UploadSectionProps {
   category: string;
   color: string;
   label: string;
+  existingDoc?: KnowledgeDocument;
 }
 
 function UploadSection({
@@ -293,12 +318,20 @@ function UploadSection({
   category,
   color,
   label,
+  existingDoc,
 }: UploadSectionProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(
+    existingDoc?.filename ?? null,
+  );
   const [uploadError, setUploadError] = useState<string | null>(null);
   const { mutateAsync: uploadKnowledge, isPending } = useUploadKnowledge();
+
+  useEffect(() => {
+    if (existingDoc?.filename && !uploadedFileName) {
+      setUploadedFileName(existingDoc.filename);
+    }
+  }, [existingDoc?.filename]);
 
   const handleUploadClick = () => {
     if (!companyId) {
@@ -314,9 +347,7 @@ function UploadSection({
 
     try {
       await uploadKnowledge({ companyId, category, file });
-      setIsSuccess(true);
       setUploadedFileName(file.name);
-      // Reset input to allow selecting the same file again if needed
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
@@ -358,10 +389,10 @@ function UploadSection({
         </div>
         <button
           onClick={handleUploadClick}
-          disabled={isPending || isSuccess}
+          disabled={isPending}
           className={cn(
             "group flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/30 disabled:opacity-50",
-            isSuccess && "bg-green-500/20 text-white hover:bg-green-500/30",
+            uploadedFileName && "bg-green-500/20 hover:bg-green-500/30",
           )}
         >
           {isPending ? (
@@ -369,10 +400,10 @@ function UploadSection({
               Uploading...
               <Loader2 className="h-4 w-4 animate-spin" />
             </>
-          ) : isSuccess ? (
+          ) : uploadedFileName ? (
             <>
-              Uploaded
-              <Check className="h-5 w-5" />
+              Replace
+              <Icons.upload className="h-5 w-5" />
             </>
           ) : (
             <>

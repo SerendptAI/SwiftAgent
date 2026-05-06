@@ -62,6 +62,17 @@ export const knowledgeApi = {
   },
 
   /**
+   * Lists all uploaded knowledge documents for a company.
+   */
+  listDocuments: async (companyId: string): Promise<KnowledgeDocument[]> => {
+    const { data } = await apiClient.get<KnowledgeDocument[]>(
+      "/api/v1/knowledge/",
+      { params: { company_id: companyId } },
+    );
+    return data;
+  },
+
+  /**
    * Ingests a text-based knowledge document (e.g. typed FAQ).
    */
   ingestDocument: async (
