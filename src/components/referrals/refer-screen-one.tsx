@@ -24,7 +24,7 @@ export function ReferScreenOne({ onNext }: ReferScreenOneProps) {
         height={534}
         priority
         aria-hidden="true"
-        className="pointer-events-none absolute top-[52px] -left-20 z-0 aspect-260/540 w-[160px] opacity-35 select-none sm:-left-14 sm:w-[200px] md:top-[60px] md:left-0 md:w-[260px] md:opacity-100"
+        className="pointer-events-none absolute top-[52px] -left-20 z-0 aspect-260/540 w-[160px] select-none sm:-left-14 sm:w-[200px] md:top-[60px] md:left-0 md:w-[260px] md:opacity-100"
       />
       <Image
         src="/images/Referrals/screen-1/coins-right-screen-1.svg"
@@ -33,7 +33,7 @@ export function ReferScreenOne({ onNext }: ReferScreenOneProps) {
         height={422}
         priority
         aria-hidden="true"
-        className="pointer-events-none absolute top-[66px] -right-24 z-0 aspect-300/420 w-[190px] opacity-35 select-none sm:-right-16 sm:w-[230px] md:top-[94px] md:right-0 md:w-[300px] md:opacity-100"
+        className="pointer-events-none absolute top-[66px] -right-24 z-0 aspect-300/420 w-[190px] select-none sm:-right-16 sm:w-[230px] md:top-[94px] md:right-0 md:w-[300px] md:opacity-100"
       />
       <Image
         src="/images/Referrals/screen-1/refer_screen_1.svg"
