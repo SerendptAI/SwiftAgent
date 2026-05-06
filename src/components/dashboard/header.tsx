@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 
+import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { useCurrentUser } from "@/hooks/use-auth";
 import { getProfileImage } from "@/lib/utils";
 
@@ -28,9 +29,11 @@ export function Header() {
         </div>
       </div>
       <div className="mt-6 flex items-center gap-4">
-        <div className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-md bg-[#EDEDED]">
-          <Icons.bell className="h-10 w-10 p-2" />
-        </div>
+        <InfoTooltip text="Notifications">
+          <div className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-md bg-[#EDEDED]">
+            <Icons.bell className="h-10 w-10 p-2" />
+          </div>
+        </InfoTooltip>
 
         <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full">
           <Image

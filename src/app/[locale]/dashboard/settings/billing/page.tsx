@@ -10,7 +10,7 @@ import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useBillingStatus } from "@/hooks/use-billing";
 import { useCardStore } from "@/store/card-store";
 
-export default function BillingsPage() {
+export default function BillingPage() {
   const [showAddCard, setShowAddCard] = useState(false);
   const { savedCards, addCard } = useCardStore();
   const companyId = useActiveCompanyId();
