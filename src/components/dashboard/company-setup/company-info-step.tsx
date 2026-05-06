@@ -380,10 +380,11 @@ export function CompanyInfoStep({
             <option value="" disabled>
               Select a company size
             </option>
-            <option value="1-10">1-10 employees</option>
-            <option value="11-50">11-50 employees</option>
-            <option value="51-200">51-200 employees</option>
-            <option value="201+">201+ employees</option>
+            <option value="1-100">1 – 100</option>
+            <option value="101-1000">101 – 1,000</option>
+            <option value="1001-10000">1,001 – 10,000</option>
+            <option value="10001-100000">10,001 – 100,000</option>
+            <option value="100000+">100,000+</option>
           </FormSelect>
         </div>
 
