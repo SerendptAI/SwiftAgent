@@ -3,25 +3,31 @@
 import gsap from "gsap";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import { cn } from "@/lib/utils";
+
+import { isLandingNavLinkActive, LANDING_NAV_LINKS } from "./nav-links";
 
 interface NavigationMenuProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const MENU_LINKS = [
-  { label: "HOME", href: "/" },
-  { label: "ABOUT", href: "/#how-it-works" },
-  { label: "TYPES OF AGENTS", href: "/#talk" },
-  { label: "BILLING", href: "/#pricing" },
-];
-
 export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const linksRef = useRef<HTMLDivElement>(null);
+  const [hash, setHash] = useState("");
   const pathname = usePathname();
+
+  useEffect(() => {
+    const updateHash = () => setHash(window.location.hash);
+
+    updateHash();
+    window.addEventListener("hashchange", updateHash);
+    return () => window.removeEventListener("hashchange", updateHash);
+  }, []);
 
   useEffect(() => {
     if (!overlayRef.current || !containerRef.current || !linksRef.current)
@@ -99,24 +105,19 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
         role="document"
       >
         <div ref={linksRef} className="flex flex-col">
-          {MENU_LINKS.map((link, i) => {
-            const isActive =
-              link.href === "/"
-                ? pathname === "/" || pathname === "/en"
-                : pathname +
-                    (typeof window !== "undefined"
-                      ? window.location.hash
-                      : "") ===
-                  link.href;
+          {LANDING_NAV_LINKS.map((link) => {
+            const isActive = isLandingNavLinkActive(link.href, pathname, hash);
 
             return (
               <Link
-                key={i}
+                key={link.href}
                 href={link.href}
                 onClick={onClose}
-                className={`font-dm-mono m-4 px-6 py-3 text-base font-normal tracking-[0.2em] text-gray-900 uppercase transition-colors hover:bg-gray-50 ${
-                  isActive ? "border border-black bg-gray-50" : ""
-                }`}
+                aria-current={isActive ? "page" : undefined}
+                className={cn(
+                  "font-dm-mono m-4 px-6 py-3 text-base font-normal tracking-[0.2em] text-gray-900 uppercase transition-colors hover:bg-gray-50",
+                  isActive && "border border-black bg-gray-50 font-medium",
+                )}
               >
                 {link.label}
               </Link>
@@ -130,7 +131,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
               onClick={onClose}
               className="font-dm-mono flex w-full items-center justify-center rounded-lg border bg-[#F2B035] px-8 py-3 text-base font-normal tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-800"
             >
-              LOGIN/SIGN UP
+              LOGIN
             </Link>
           </div>
         </div>

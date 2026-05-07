@@ -27,7 +27,7 @@ const TAB_COLORS = [
   "bg-yellow-100", // Yellow
 ];
 
-export default function IntegrationsPage() {
+export default function CompanyPage() {
   const [activeTab, setActiveTab] = useState(0);
   const companyId = useActiveCompanyId();
 

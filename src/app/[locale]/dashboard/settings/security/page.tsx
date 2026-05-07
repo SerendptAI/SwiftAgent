@@ -24,7 +24,7 @@ function maskEmail(email: string | undefined | null) {
   return `${local.slice(0, 3)}***@${domain}`;
 }
 
-export default function NotificationsPage() {
+export default function SecurityPage() {
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [isEditingCode, setIsEditingCode] = useState(false);
   const [savingField, setSavingField] = useState<"email" | "code" | null>(null);

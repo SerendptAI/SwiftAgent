@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, ChevronDown, Copy, Info, XCircle } from "lucide-react";
+import { CheckCircle2, ChevronDown, Copy, XCircle } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -553,7 +553,10 @@ function ScheduleSelect({
         >
           How often should we scan?
         </label>
-        <Info className="h-3.5 w-3.5 text-gray-400" />
+        <InfoTooltip
+          text="Choose how often Agent 047 should scan the sandbox account for updates."
+          className="h-3.5 w-3.5"
+        />
       </div>
       <select
         id="sandbox-schedule"
@@ -589,13 +592,15 @@ function FieldInput({
   placeholder?: string;
   type?: "text" | "password" | "number";
 }) {
+  const tooltipText = getSandboxFieldTooltip(label);
+
   return (
     <div>
       <div className="mb-1.5 flex items-center justify-between">
         <label htmlFor={id} className="font-dm-mono text-xs text-gray-700">
           {label}
         </label>
-        <Info className="h-3.5 w-3.5 text-gray-400" />
+        <InfoTooltip text={tooltipText} className="h-3.5 w-3.5" />
       </div>
       <input
         id={id}
@@ -607,6 +612,25 @@ function FieldInput({
       />
     </div>
   );
+}
+
+function getSandboxFieldTooltip(label: string) {
+  switch (label) {
+    case "Dashboard URL":
+      return "The logged-in page Agent 047 should inspect after signing into the sandbox account.";
+    case "Login URL":
+      return "The page where Agent 047 should enter the sandbox account credentials.";
+    case "Username":
+      return "The sandbox account username Agent 047 should use to sign in.";
+    case "Password":
+      return "The sandbox account password Agent 047 should use to sign in.";
+    case "Max pages":
+      return "The maximum number of pages Agent 047 should scan in one run.";
+    case "Pre-auth URL":
+      return "An optional URL that prepares the sandbox session before the scan starts.";
+    default:
+      return `More information about ${label.toLowerCase()}.`;
+  }
 }
 
 function ToastNotification({

@@ -12,7 +12,6 @@ import { TicketList } from "@/components/dashboard/ticketing/ticket-list";
 import { TicketView } from "@/components/dashboard/ticketing/ticket-view";
 import { Icons } from "@/components/icons";
 import { useChats } from "@/hooks/use-conversations";
-import { useTickets } from "@/hooks/use-tickets";
 
 export function TicketingClient() {
   const searchParams = useSearchParams();
@@ -24,7 +23,6 @@ export function TicketingClient() {
   const [activeChannel, setActiveChannel] = useState<ChannelKey>("chats");
 
   const { data: chats } = useChats();
-  const { data: tickets } = useTickets();
 
   // Auto-select chat from URL query param (e.g. ?chat=abc123) — resolved side
   useEffect(() => {
@@ -40,8 +38,6 @@ export function TicketingClient() {
   const handleSelectItem = (id: string, index: number, kind: TicketKind) => {
     setSelection({ id, index, kind });
   };
-
-  const pendingCount = tickets?.length ?? 0;
 
   return (
     <div className="flex h-full w-full flex-col">
@@ -61,7 +57,6 @@ export function TicketingClient() {
           <ChannelNavigator
             active={activeChannel}
             onChange={setActiveChannel}
-            chatCount={pendingCount}
           />
         </div>
 
