@@ -8,7 +8,11 @@ import { z } from "zod";
 
 import { HelpBanner } from "@/components/dashboard/settings/help-banner";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
-import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
+import {
+  useCompanyMutations,
+  useCompanyQuery,
+  useInviteMember,
+} from "@/hooks/use-company";
 
 const securitySchema = z.object({
   backup_email: z.string().email("Invalid email").optional().or(z.literal("")),
@@ -28,11 +32,14 @@ export default function SecurityPage() {
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [isEditingCode, setIsEditingCode] = useState(false);
   const [savingField, setSavingField] = useState<"email" | "code" | null>(null);
+  const [isInviting, setIsInviting] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState("");
 
   const companyId = useActiveCompanyId();
 
   const { data: companyData } = useCompanyQuery(companyId);
   const { updateCompany } = useCompanyMutations();
+  const inviteMember = useInviteMember();
 
   const {
     register,
@@ -55,6 +62,18 @@ export default function SecurityPage() {
       });
     }
   }, [companyData, reset]);
+
+  const handleInvite = async () => {
+    if (!companyId || !inviteEmail) return;
+    try {
+      await inviteMember.mutateAsync({ companyId, email: inviteEmail });
+      setInviteEmail("");
+      setIsInviting(false);
+      alert("Invite sent successfully.");
+    } catch {
+      alert("Failed to send invite.");
+    }
+  };
 
   const onSubmit = async (data: SecurityValues, field: "email" | "code") => {
     if (!companyId) return;
@@ -181,9 +200,44 @@ export default function SecurityPage() {
           <span className="font-dm-mono text-sm font-semibold tracking-[0.15em] text-gray-500 uppercase">
             Add Member
           </span>
-          <button className="rounded-2xl bg-[#006BE5] px-6 py-2.5 text-sm font-bold tracking-wide text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#0058C0]">
-            Add Email
-          </button>
+          {isInviting ? (
+            <div className="flex items-center gap-2">
+              <input
+                type="email"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm outline-none focus:border-[#006BE5]"
+                placeholder="member@example.com"
+              />
+              <button
+                onClick={handleInvite}
+                disabled={inviteMember.isPending || !inviteEmail}
+                className="flex items-center gap-2 rounded-lg bg-[#006BE5] px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#0058C0] disabled:opacity-50"
+              >
+                {inviteMember.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  "Send"
+                )}
+              </button>
+              <button
+                onClick={() => {
+                  setIsInviting(false);
+                  setInviteEmail("");
+                }}
+                className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-500 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setIsInviting(true)}
+              className="rounded-2xl bg-[#006BE5] px-6 py-2.5 text-sm font-bold tracking-wide text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#0058C0]"
+            >
+              Add Email
+            </button>
+          )}
         </div>
       </div>
     </div>
