@@ -12,7 +12,9 @@ export interface User {
   email: string;
   name: string;
   picture?: string;
+  auth_provider?: string;
   company_id?: string;
+  login_method?: string;
   onboarding_completed?: boolean;
   personal_email?: string;
   personal_phone?: string;

@@ -24,7 +24,7 @@ export function ReferScreenOne({ onNext }: ReferScreenOneProps) {
         height={534}
         priority
         aria-hidden="true"
-        className="pointer-events-none absolute top-[52px] -left-20 z-0 aspect-260/540 w-[160px] select-none sm:-left-14 sm:w-[200px] md:top-[60px] md:left-0 md:w-[260px] md:opacity-100"
+        className="pointer-events-none absolute top-8 -left-20 z-0 aspect-260/540 w-[160px] select-none sm:-left-14 sm:w-[200px] md:top-[60px] md:left-0 md:w-[260px] md:opacity-100"
       />
       <Image
         src="/images/Referrals/screen-1/coins-right-screen-1.svg"
@@ -33,7 +33,7 @@ export function ReferScreenOne({ onNext }: ReferScreenOneProps) {
         height={422}
         priority
         aria-hidden="true"
-        className="pointer-events-none absolute top-[66px] -right-24 z-0 aspect-300/420 w-[190px] select-none sm:-right-16 sm:w-[230px] md:top-[94px] md:right-0 md:w-[300px] md:opacity-100"
+        className="pointer-events-none absolute top-10 -right-24 z-0 aspect-300/420 w-[190px] select-none sm:-right-16 sm:w-[230px] md:top-[94px] md:right-0 md:w-[300px] md:opacity-100"
       />
       <Image
         src="/images/Referrals/screen-1/refer_screen_1.svg"
@@ -77,7 +77,7 @@ export function ReferScreenOne({ onNext }: ReferScreenOneProps) {
           <button
             type="button"
             onClick={onNext}
-            className="font-dm-mono mx-auto mt-9 flex h-11 w-full max-w-[540px] shrink-0 cursor-pointer items-center justify-center rounded-md bg-[#F2B035] text-sm leading-none font-medium text-black uppercase shadow-[-3px_4px_0_#000] md:h-9"
+            className="font-dm-mono mx-auto mt-9 flex h-11 w-full max-w-[440px] shrink-0 cursor-pointer items-center justify-center gap-4 rounded-md bg-[#F2B035] text-base leading-none font-medium text-black uppercase shadow-[-3px_4px_0_#000] md:gap-5"
           >
             Continue
           </button>

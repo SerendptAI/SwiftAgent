@@ -16,9 +16,9 @@ interface ProfileCardProps {
 }
 
 export function ProfileCard({
-  name: propName = "Otonte Briggs",
+  name: propName,
   avatarSrc: propAvatarSrc,
-  loginMethod = "Google",
+  loginMethod: propLoginMethod,
   ip: propIp = "196.201.52.68",
   onLogout: propOnLogout,
 }: ProfileCardProps) {
@@ -39,9 +39,16 @@ export function ProfileCard({
       .catch((error) => console.error("Error fetching IP:", error));
   }, []);
 
-  const name = user?.name || propName;
+  const name = user?.name?.trim() || propName?.trim() || user?.email || "User";
   const avatarSrc = user?.picture || propAvatarSrc;
   const displayIp = currentIp || propIp;
+  const loginMethod =
+    user?.login_method?.trim() ||
+    user?.auth_provider?.trim() ||
+    propLoginMethod;
+  const normalizedLoginMethod = loginMethod?.toLowerCase();
+  const loginMethodLabel =
+    normalizedLoginMethod === "google" ? "Google" : "Email";
 
   const handleLogout = useCallback(() => {
     if (propOnLogout) {
@@ -64,14 +71,21 @@ export function ProfileCard({
       </div>
 
       {/* Name */}
-      <p className="font-400 font-stolzl text-center text-xl text-gray-900">
+      <p
+        className="font-400 font-stolzl w-full truncate text-center text-xl text-gray-900"
+        title={name}
+      >
         {name}
       </p>
 
       {/* Login Method */}
-      <div className="font-dm-mono mt-6 flex w-full items-center justify-center gap-2 rounded-md border border-gray-100 px-3 py-2 text-sm font-medium text-gray-600 shadow-[-6px_6px_0px_0px_#000000]">
+      <div className="font-dm-mono mt-6 flex w-full items-center justify-center gap-2 rounded-md border border-gray-100 px-3 py-2 text-sm font-medium text-gray-600 uppercase shadow-[-6px_6px_0px_0px_#000000]">
         <span>LOGGED IN VIA</span>
-        {loginMethod === "Google" && <Icons.google className="h-4 w-4" />}
+        {loginMethodLabel === "Google" ? (
+          <Icons.google className="h-4 w-4" />
+        ) : (
+          <span>{loginMethodLabel}</span>
+        )}
       </div>
 
       {/* IP Address */}

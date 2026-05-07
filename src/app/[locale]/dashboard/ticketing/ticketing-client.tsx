@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -12,6 +13,29 @@ import { TicketList } from "@/components/dashboard/ticketing/ticket-list";
 import { TicketView } from "@/components/dashboard/ticketing/ticket-view";
 import { Icons } from "@/components/icons";
 import { useChats } from "@/hooks/use-conversations";
+
+function MessageEmptyState() {
+  return (
+    <div className="flex h-full w-full items-center justify-center rounded-3xl bg-white shadow-sm">
+      <div className="flex flex-col items-center gap-8 text-center">
+        <Image
+          src="/images/email-mailbox-open.svg"
+          alt=""
+          width={66}
+          height={66}
+          className="aspect-[66/66] w-full max-w-[66px]"
+        />
+        <p className="font-dm-mono text-center text-sm leading-[1.39] font-normal tracking-[0.1em] text-black/60 uppercase">
+          NOTHING HERE FOR NOW,
+          <br />
+          WHEN YOU GET MESSAGES THEY’LL
+          <br />
+          APPEAR HERE
+        </p>
+      </div>
+    </div>
+  );
+}
 
 export function TicketingClient() {
   const searchParams = useSearchParams();
@@ -78,9 +102,7 @@ export function TicketingClient() {
               <ChatView ticketId={selection.id} avatarIndex={selection.index} />
             )
           ) : (
-            <div className="flex h-full items-center justify-center rounded-3xl bg-white text-gray-400 shadow-sm">
-              Select a conversation to view
-            </div>
+            <MessageEmptyState />
           )}
         </div>
       </div>

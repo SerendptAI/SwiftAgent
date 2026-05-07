@@ -29,6 +29,27 @@ const AVATAR_IMAGES = [
   "/images/chats/newimg4.svg",
 ];
 
+function TicketListEmptyState() {
+  return (
+    <div className="flex h-full w-full items-center justify-center">
+      <div className="flex flex-col items-center gap-8 text-center">
+        <Image
+          src="/images/email-mailbox-open.svg"
+          alt=""
+          width={66}
+          height={66}
+          className="aspect-66/66 w-full max-w-[66px]"
+        />
+        <p className="font-dm-mono text-center text-sm leading-[1.39] font-normal tracking-[0.1em] text-black/60 uppercase">
+          NOTHING HERE FOR
+          <br />
+          NOW
+        </p>
+      </div>
+    </div>
+  );
+}
+
 function formatRelativeTime(iso?: string): string {
   if (!iso) return "";
   try {
@@ -130,14 +151,12 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
       {/* Items */}
       <div className="scrollbar-none flex-1 space-y-1 overflow-y-auto">
         {isLoading ? (
-          <div className="flex justify-center py-8">
+          <div className="flex h-full items-center justify-center">
             <Loader />
           </div>
         ) : activeTab === "pending" ? (
           !tickets || tickets.length === 0 ? (
-            <div className="p-4 text-center text-sm text-gray-500">
-              No pending tickets.
-            </div>
+            <TicketListEmptyState />
           ) : (
             tickets.map((ticket, index) => {
               const unread = (ticket.unseen_count ?? 0) > 0;
@@ -202,9 +221,7 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
             })
           )
         ) : !chats || chats.length === 0 ? (
-          <div className="p-4 text-center text-sm text-gray-500">
-            No resolved conversations.
-          </div>
+          <TicketListEmptyState />
         ) : (
           chats.map((chat, index) => {
             const avatarSrc = AVATAR_IMAGES[index % AVATAR_IMAGES.length];
