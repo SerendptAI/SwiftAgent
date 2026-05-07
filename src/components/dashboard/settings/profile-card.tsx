@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { useCurrentUser, useLogout } from "@/hooks/use-auth";
+import { getAuthProvider } from "@/lib/api-client";
 import { getProfileImage } from "@/lib/utils";
 
 interface ProfileCardProps {
@@ -18,7 +19,7 @@ interface ProfileCardProps {
 export function ProfileCard({
   name: propName = "Otonte Briggs",
   avatarSrc: propAvatarSrc,
-  loginMethod = "Google",
+  loginMethod: propLoginMethod,
   ip: propIp = "196.201.52.68",
   onLogout: propOnLogout,
 }: ProfileCardProps) {
@@ -42,6 +43,15 @@ export function ProfileCard({
   const name = user?.name || propName;
   const avatarSrc = user?.picture || propAvatarSrc;
   const displayIp = currentIp || propIp;
+  const storedProvider = getAuthProvider();
+  const isGooglePicture =
+    user?.picture?.includes("googleusercontent.com") ||
+    user?.picture?.includes("ggpht.com");
+  const loginMethod =
+    propLoginMethod ??
+    (storedProvider === "google" || (!storedProvider && isGooglePicture)
+      ? "Google"
+      : "Email");
 
   const handleLogout = useCallback(() => {
     if (propOnLogout) {
@@ -71,7 +81,13 @@ export function ProfileCard({
       {/* Login Method */}
       <div className="font-dm-mono mt-6 flex w-full items-center justify-center gap-2 rounded-md border border-gray-100 px-3 py-2 text-sm font-medium text-gray-600 shadow-[-6px_6px_0px_0px_#000000]">
         <span>LOGGED IN VIA</span>
-        {loginMethod === "Google" && <Icons.google className="h-4 w-4" />}
+        {loginMethod === "Google" ? (
+          <Icons.google className="h-4 w-4" />
+        ) : (
+          <span className="font-dm-mono text-sm font-semibold uppercase">
+            Email
+          </span>
+        )}
       </div>
 
       {/* IP Address */}

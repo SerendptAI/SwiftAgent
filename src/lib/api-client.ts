@@ -6,6 +6,7 @@ export const API_BASE_URL = (
 
 const AUTH_TOKEN_KEY = "access_token";
 const REFRESH_TOKEN_KEY = "refresh_token";
+const AUTH_PROVIDER_KEY = "auth_provider";
 
 // ── Token helpers ──────────────────────────────────────────────────────────────
 
@@ -29,6 +30,17 @@ export function clearAuthTokens() {
   if (typeof window === "undefined") return;
   localStorage.removeItem(AUTH_TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
+  localStorage.removeItem(AUTH_PROVIDER_KEY);
+}
+
+export function getAuthProvider(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem(AUTH_PROVIDER_KEY);
+}
+
+export function setAuthProvider(provider: "google" | "email") {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(AUTH_PROVIDER_KEY, provider);
 }
 
 // ── Axios instance ─────────────────────────────────────────────────────────────
