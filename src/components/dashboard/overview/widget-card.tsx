@@ -14,7 +14,6 @@ type WidgetMode = "widget" | "button";
 
 export function WidgetCard() {
   const [isOpen, setIsOpen] = useState(true);
-  const [isSticky, setIsSticky] = useState(true);
   const [copied, setCopied] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [modeDropdownOpen, setModeDropdownOpen] = useState(false);
@@ -147,36 +146,6 @@ export function WidgetCard() {
             </div>
 
             <div className="rounded-md border border-gray-100 bg-white px-5 pt-16 pb-5 shadow-sm">
-              {/* Sticky toggle */}
-              <div className="mb-4 flex items-center gap-2">
-                <button
-                  type="button"
-                  aria-pressed={isSticky}
-                  className="relative flex h-[32px] w-[125px] cursor-pointer items-center rounded-md bg-[#EDEDED] p-1"
-                  onClick={() => setIsSticky(!isSticky)}
-                >
-                  {/* Label — always visible on the side opposite the knob */}
-                  <span
-                    className={`font-dm-mono absolute z-[1] text-sm font-normal text-gray-400 transition-all duration-300 ease-in-out select-none ${
-                      isSticky ? "right-3" : "left-3"
-                    }`}
-                  >
-                    sticky?
-                  </span>
-                  {/* Sliding knob */}
-                  <span
-                    className={`font-dm-mono absolute top-1 bottom-1 z-[2] flex w-[44px] items-center justify-center rounded-md text-xs font-bold tracking-wider uppercase transition-all duration-300 ease-in-out ${
-                      isSticky
-                        ? "left-1 bg-black text-white"
-                        : "left-[77px] bg-gray-300 text-gray-500"
-                    }`}
-                  >
-                    {isSticky ? "ON" : "OFF"}
-                  </span>
-                </button>
-                <InfoTooltip text="Toggle to enable/disable the widget on your website." />
-              </div>
-
               {/* Code snippet */}
               <pre className="font-stolzl rounded-lg bg-[#F6F6F6] p-4 text-[13px] leading-relaxed break-all whitespace-pre-wrap text-gray-700">
                 {codeSnippet || "No widget code found."}
