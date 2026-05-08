@@ -56,6 +56,9 @@ bun.lock
 # local task checklist
 TODO.md
 
-# claude code
+AGENTS.md
 CLAUDE.md
+.codex
 .claude/
+.codex/
+.agents/

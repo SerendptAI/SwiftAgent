@@ -21,6 +21,29 @@ const AVATAR_IMAGES = [
   "/images/chats/newimg4.svg",
 ];
 
+function MessageEmptyState() {
+  return (
+    <div className="flex h-full w-full items-center justify-center rounded-3xl bg-white shadow-sm">
+      <div className="flex flex-col items-center gap-8 text-center">
+        <Image
+          src="/images/email-mailbox-open.svg"
+          alt=""
+          width={66}
+          height={66}
+          className="aspect-[66/66] w-full max-w-[66px]"
+        />
+        <p className="font-dm-mono text-center text-sm leading-[1.39] font-normal tracking-[0.1em] text-black/60 uppercase">
+          NOTHING HERE FOR NOW,
+          <br />
+          WHEN YOU GET MESSAGES THEY’LL
+          <br />
+          APPEAR HERE
+        </p>
+      </div>
+    </div>
+  );
+}
+
 interface TicketViewProps {
   ticketId: string;
   avatarIndex?: number;
@@ -46,11 +69,7 @@ export function TicketView({ ticketId, avatarIndex = 0 }: TicketViewProps) {
   }, [ticket, companyId, markSeen]);
 
   if (!ticket && !isFetching) {
-    return (
-      <div className="flex h-full flex-col items-center justify-center rounded-3xl bg-white text-gray-500 shadow-sm">
-        Select a ticket to view messages.
-      </div>
-    );
+    return <MessageEmptyState />;
   }
 
   const messages = ticket?.messages ?? [];

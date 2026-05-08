@@ -1,13 +1,43 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 
 interface ReferScreenTwoProps {
   onBack: () => void;
   onNext: () => void;
 }
 
+const SERVICE_COMPANIES = [
+  { name: "PARTYVERSE", logo: "partyverse.png" },
+  { name: "KUDA BANK", logo: "kuda.png" },
+  { name: "WEMA BANK", logo: "wema.png" },
+  { name: "FLUTTERWAVE", logo: "flutterwave.png" },
+  { name: "GREY", logo: "grey.png" },
+  { name: "BAYSE.MARKETS", logo: "bayse.png" },
+  { name: "PAGA", logo: "paga.png" },
+  { name: "COWRYWISE", logo: "cowrywise.png" },
+  { name: "RISEVEST", logo: "rise.png" },
+  { name: "SELAR", logo: "selar.png" },
+  { name: "CHOWDECK", logo: "chowdeck.png" },
+  { name: "PROVIDUS BANK", logo: "providus.png" },
+  { name: "RAENEST", logo: "raenest.png" },
+  { name: "PAYSTACK", logo: "paystack.png" },
+  { name: "MONIEPOINT", logo: "moniepoint.png" },
+  { name: "CARBON", logo: "carbon.png" },
+  { name: "LADDA", logo: "ladda.png" },
+  { name: "MONO", logo: "mono.png" },
+  { name: "REMITA", logo: "remita.png" },
+  { name: "BUMPA", logo: "bumpa.png" },
+  { name: "PAIDHR", logo: "paidhr.png" },
+  { name: "BRASS", logo: "brass.png" },
+  { name: "SEAMLESSHR", logo: "seamlesshr.png" },
+  { name: "MAINSTACK", logo: "mainstack.png" },
+];
+
 export function ReferScreenTwo({ onBack, onNext }: ReferScreenTwoProps) {
+  const [activeTab, setActiveTab] = useState<"service" | "crypto">("service");
+
   return (
     <>
       <Image
@@ -16,7 +46,7 @@ export function ReferScreenTwo({ onBack, onNext }: ReferScreenTwoProps) {
         width={305}
         height={460}
         aria-hidden="true"
-        className="pointer-events-none absolute top-16 -left-24 z-0 w-[190px] opacity-35 sm:w-[230px] md:top-24 md:left-0 md:w-[305px] md:opacity-100"
+        className="pointer-events-none absolute top-8 -left-16 z-0 w-[190px] sm:w-[230px] md:top-21 md:left-0 md:w-[305px]"
       />
       <Image
         src="/images/Referrals/screen-2/coins-right-screen-2.svg"
@@ -24,29 +54,113 @@ export function ReferScreenTwo({ onBack, onNext }: ReferScreenTwoProps) {
         width={327}
         height={450}
         aria-hidden="true"
-        className="pointer-events-none absolute top-20 -right-28 z-0 w-[210px] opacity-35 sm:w-[250px] md:top-28 md:right-0 md:w-[327px] md:opacity-100"
+        className="pointer-events-none absolute top-6 -right-24 z-0 w-[210px] sm:w-[250px] md:top-20 md:right-0 md:w-[327px]"
       />
 
-      <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-[900px] flex-col items-center justify-center px-5 text-center">
-        <h1 className="font-greed-narrow text-[48px] leading-none font-medium text-black uppercase md:text-[64px]">
-          Referral details
+      <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1180px] flex-col items-center px-4 pt-[128px] pb-16 text-center sm:px-5 md:pt-[160px] md:pb-24">
+        <h1 className="font-greed-narrow w-full max-w-[700px] text-center text-[42px] leading-[1.08] font-medium tracking-[-0.02em] text-black uppercase sm:text-[52px] md:text-[60px] md:leading-[1.34]">
+          List of commpanies we&apos;d love to work with
         </h1>
-        <div className="mt-8 flex gap-4">
+
+        <p className="font-dm-mono mt-[30px] max-w-[790px] text-center text-base leading-[1.45] tracking-[0.08em] text-black/60 uppercase sm:text-lg sm:leading-[1.39] sm:tracking-widest">
+          Share the contact details of any founder from the listed companies,
+          and you will receive 10,000 NGN once we verify their identity.
+        </p>
+
+        <div className="mt-10.5 grid w-fit grid-cols-1 gap-2 sm:grid-cols-2 md:mt-14 md:gap-8">
           <button
             type="button"
-            onClick={onBack}
-            className="font-dm-mono rounded-lg border border-black bg-white px-8 py-3 text-sm font-bold tracking-[0.15em] uppercase shadow-[-3px_3px_0_#000]"
+            onClick={() => setActiveTab("service")}
+            aria-pressed={activeTab === "service"}
+            className={`font-dm-mono flex h-12 w-full cursor-pointer items-center justify-center gap-4 rounded-[10px] px-5 py-2.5 text-lg leading-[22px] font-medium uppercase ${
+              activeTab === "service"
+                ? "bg-[#F2B035] text-black"
+                : "bg-[#F2F1EE] opacity-60"
+            }`}
           >
-            Back
+            <Image
+              src="/images/Referrals/icons/chess-rook.svg"
+              alt=""
+              width={32}
+              height={32}
+              aria-hidden="true"
+              className="size-7 shrink-0"
+            />
+            Service companies
           </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("crypto")}
+            aria-pressed={activeTab === "crypto"}
+            className={`font-dm-mono flex h-12 w-full cursor-pointer items-center justify-center gap-4 rounded-[10px] px-5 py-2.5 text-lg leading-[22px] font-medium uppercase ${
+              activeTab === "crypto"
+                ? "bg-[#F2B035] text-black"
+                : "bg-[#F2F1EE] text-black opacity-60"
+            }`}
+          >
+            <Image
+              src="/images/Referrals/icons/chess-knight.svg"
+              alt=""
+              width={32}
+              height={32}
+              aria-hidden="true"
+              className={`size-7 shrink-0 ${
+                activeTab === "crypto" ? "" : "opacity-60"
+              }`}
+            />
+            Crypto companies
+          </button>
+        </div>
+
+        {activeTab === "service" ? (
+          <div className="mt-16 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 md:mt-22 md:gap-6 lg:grid-cols-4 lg:gap-8">
+            {SERVICE_COMPANIES.map((company) => (
+              <div
+                key={company.name}
+                className="flex h-14 w-full items-center gap-5 rounded-xl bg-[#F2F1EE] px-5 shadow-[-3px_4px_0_#000]"
+              >
+                <Image
+                  src={`/images/Referrals/logos/${company.logo}`}
+                  alt=""
+                  width={44}
+                  height={44}
+                  className="aspect-square w-full max-w-8.5 shrink-0 object-contain object-center"
+                />
+                <span className="font-dm-mono min-w-0 truncate text-left text-base leading-none font-medium tracking-[0.04em] text-black uppercase sm:text-lg">
+                  {company.name}
+                </span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-20 min-h-[620px] w-full" aria-hidden="true" />
+        )}
+
+        <div className="mt-16 w-full md:mt-22">
           <button
             type="button"
             onClick={onNext}
-            className="font-dm-mono rounded-lg bg-[#F2B035] px-8 py-3 text-sm font-bold tracking-[0.15em] uppercase shadow-[-3px_3px_0_#000]"
+            className="font-dm-mono mx-auto flex h-11 w-full max-w-[440px] shrink-0 cursor-pointer items-center justify-center gap-4 rounded-md bg-[#F2B035] text-base leading-none font-medium text-black uppercase shadow-[-3px_4px_0_#000] md:gap-5"
           >
-            Next
+            <Image
+              src="/images/Referrals/icons/hand-holding-coin.svg"
+              alt=""
+              width={32}
+              height={32}
+              aria-hidden="true"
+              className="size-5.5 shrink-0"
+            />
+            Refer a founder
           </button>
         </div>
+
+        <button
+          type="button"
+          onClick={onBack}
+          className="font-dm-mono mt-8 cursor-pointer text-sm tracking-[0.08em] text-black/50 uppercase underline underline-offset-4 md:text-base"
+        >
+          Back
+        </button>
       </section>
     </>
   );
