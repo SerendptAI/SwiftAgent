@@ -121,6 +121,17 @@ export const companyApi = {
     );
     return data;
   },
+
+  inviteMember: async (
+    companyId: string,
+    email: string,
+  ): Promise<Record<string, unknown>> => {
+    const { data } = await apiClient.post<Record<string, unknown>>(
+      `/api/v1/companies/${companyId}/invites`,
+      { email },
+    );
+    return data;
+  },
 };
 
 export const publicCompanyApi = {

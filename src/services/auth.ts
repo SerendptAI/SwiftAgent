@@ -2,6 +2,7 @@ import {
   API_BASE_URL,
   apiClient,
   clearAuthTokens,
+  setAuthProvider,
   setAuthTokens,
 } from "@/lib/api-client";
 
@@ -90,6 +91,7 @@ export async function sendOtp(
   // Handle grace period — tokens returned directly
   if (!data.otp_required && data.access_token && data.refresh_token) {
     setAuthTokens(data.access_token, data.refresh_token);
+    setAuthProvider("email");
   }
 
   return data;
@@ -106,6 +108,7 @@ export async function verifyOtp(
 
   if (data.access_token && data.refresh_token) {
     setAuthTokens(data.access_token, data.refresh_token);
+    setAuthProvider("email");
   }
 
   return data;
@@ -190,6 +193,7 @@ export function processAuthCallback(searchParams: URLSearchParams): boolean {
 
   if (accessToken && refreshToken) {
     setAuthTokens(accessToken, refreshToken);
+    setAuthProvider("google");
     return true;
   }
   return false;

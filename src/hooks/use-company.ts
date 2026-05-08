@@ -55,6 +55,13 @@ export function useCompanyMutations() {
   return { createCompany, updateCompany, uploadLogo, updateEmailSlug };
 }
 
+export function useInviteMember() {
+  return useMutation({
+    mutationFn: ({ companyId, email }: { companyId: string; email: string }) =>
+      companyApi.inviteMember(companyId, email),
+  });
+}
+
 export function useCheckEmailSlug(
   companyId: string | null | undefined,
   slug: string,
