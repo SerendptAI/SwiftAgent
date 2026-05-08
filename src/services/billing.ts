@@ -15,14 +15,21 @@ export interface BillingPlan {
 
 export type BillingPlansResponse = BillingPlan[] | Record<string, BillingPlan>;
 
-export interface BillingStatus {
-  company_id: string;
-  tier?: string;
-  status?: string;
-  current_period_end?: string | null;
-  usage?: Record<string, number | string | null>;
-  limits?: Record<string, number | string | null>;
-  [key: string]: unknown;
+export type SubscriptionTier = "basic" | "pro" | "enterprise" | null;
+export type SubscriptionStatus = "active" | "inactive";
+export type BillingProvider = "polar" | "palmpay" | null;
+
+export interface SavedCard {
+  brand: string;
+  last4: string;
+}
+
+export interface BillingDetails {
+  subscription_tier: SubscriptionTier;
+  subscription_status: SubscriptionStatus;
+  billing_provider: BillingProvider;
+  subscription_started_at: string | null;
+  saved_cards: SavedCard[];
 }
 
 export interface CheckoutPayload {
@@ -43,11 +50,11 @@ export async function getBillingPlans(): Promise<BillingPlansResponse> {
   return data;
 }
 
-export async function getBillingStatus(
+export async function getBillingDetails(
   companyId: string,
-): Promise<BillingStatus> {
-  const { data } = await apiClient.get<BillingStatus>(
-    `/api/v1/billing/billing/${encodeURIComponent(companyId)}/status`,
+): Promise<BillingDetails> {
+  const { data } = await apiClient.get<BillingDetails>(
+    `/api/v1/billing/${encodeURIComponent(companyId)}/details`,
   );
   return data;
 }

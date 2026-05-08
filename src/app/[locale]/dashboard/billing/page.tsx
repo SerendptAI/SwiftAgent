@@ -1,16 +1,15 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { ChevronDown, CreditCard } from "lucide-react";
+import { useRef, useState } from "react";
 
 import { CompanyToolbar } from "@/components/dashboard/company-toolbar";
-import { AddCardModal } from "@/components/dashboard/settings/add-card-modal";
 import { Icons } from "@/components/icons";
 import { type Plan, PlanCard } from "@/components/pricing/plan-card";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
-import { useBillingStatus, useCreateCheckout } from "@/hooks/use-billing";
+import { useBillingDetails, useCreateCheckout } from "@/hooks/use-billing";
 import { useGeoCountry } from "@/hooks/use-geo-country";
-import { useCardStore } from "@/store/card-store";
+import type { SavedCard } from "@/services/billing";
 
 const GEO_PRICING: Record<string, { price: string; billing: string }[]> = {
   NG: [
@@ -85,14 +84,20 @@ const BASE_PLANS: Omit<Plan, "price" | "billing">[] = [
   },
 ];
 
+function CardBrandIcon({ brand }: { brand: string }) {
+  if (brand.toLowerCase() === "mastercard") {
+    return <Icons.mastercard />;
+  }
+  return <CreditCard className="h-4 w-4 text-gray-500" />;
+}
+
 export default function BillingPage() {
-  const { savedCards, addCard } = useCardStore();
-  const [showAddCard, setShowAddCard] = useState(false);
   const [pendingTier, setPendingTier] = useState<string | null>(null);
   const [checkoutError, setCheckoutError] = useState("");
+  const plansRef = useRef<HTMLDivElement>(null);
 
   const companyId = useActiveCompanyId();
-  const { data: billingStatus } = useBillingStatus(companyId);
+  const { data: details } = useBillingDetails(companyId);
   const createCheckout = useCreateCheckout();
   const country = useGeoCountry();
   const pricing = GEO_PRICING[country ?? "default"] ?? GEO_PRICING.default;
@@ -100,6 +105,9 @@ export default function BillingPage() {
     ...base,
     ...pricing[i],
   }));
+
+  const savedCards: SavedCard[] = details?.saved_cards ?? [];
+  const activeTier = details?.subscription_tier ?? null;
 
   const handleSubscribe = (plan: Plan) => {
     if (!plan.tier || !companyId) return;
@@ -138,8 +146,6 @@ export default function BillingPage() {
     );
   };
 
-  const activeTier = billingStatus?.tier ?? null;
-
   return (
     <div className="flex h-full flex-col">
       <div className="flex max-w-7xl items-center gap-8">
@@ -152,13 +158,15 @@ export default function BillingPage() {
               <span className="tracking-widest uppercase">SAVED CARDS</span>
               {savedCards.length > 0 ? (
                 <aside className="flex items-center gap-2 rounded-2xl border border-gray-100 px-4 py-3">
-                  <Icons.mastercard />
+                  <CardBrandIcon brand={savedCards[0].brand} />
                   <span>{savedCards[0].last4}</span>
                   <ChevronDown className="h-4 w-4 text-gray-400" />
                 </aside>
               ) : (
                 <button
-                  onClick={() => setShowAddCard(true)}
+                  onClick={() =>
+                    plansRef.current?.scrollIntoView({ behavior: "smooth" })
+                  }
                   className="flex items-center gap-2 rounded-2xl border border-gray-100 px-4 py-3 transition-colors hover:bg-gray-50"
                 >
                   <span className="text-sm font-semibold tracking-widest text-gray-600 uppercase">
@@ -173,7 +181,7 @@ export default function BillingPage() {
       </div>
 
       {/* Plan Cards */}
-      <div className="w-full max-w-7xl">
+      <div ref={plansRef} className="w-full max-w-7xl">
         {checkoutError && (
           <p className="font-stolzl mb-4 text-sm text-red-600">
             {checkoutError}
@@ -205,17 +213,6 @@ export default function BillingPage() {
           })}
         </div>
       </div>
-
-      {showAddCard && (
-        <AddCardModal
-          onClose={() => setShowAddCard(false)}
-          onSubmit={(card) => {
-            const last4 = card.cardNumber.slice(-4) || "****";
-            addCard({ last4, nameOnCard: card.nameOnCard });
-            setShowAddCard(false);
-          }}
-        />
-      )}
     </div>
   );
 }

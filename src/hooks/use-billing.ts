@@ -2,15 +2,15 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { getAccessToken } from "@/lib/api-client";
 import type {
+  BillingDetails,
   BillingPlansResponse,
-  BillingStatus,
   CheckoutPayload,
   CheckoutResponse,
 } from "@/services/billing";
 import {
   createCheckoutSession,
+  getBillingDetails,
   getBillingPlans,
-  getBillingStatus,
 } from "@/services/billing";
 
 // ── Billing Plans ─────────────────────────────────────────────────────────────
@@ -23,12 +23,12 @@ export function useBillingPlans() {
   });
 }
 
-// ── Billing Status (per company) ──────────────────────────────────────────────
+// ── Billing Details (per company) ─────────────────────────────────────────────
 
-export function useBillingStatus(companyId: string | null | undefined) {
-  return useQuery<BillingStatus>({
-    queryKey: ["billingStatus", companyId],
-    queryFn: () => getBillingStatus(companyId as string),
+export function useBillingDetails(companyId: string | null | undefined) {
+  return useQuery<BillingDetails>({
+    queryKey: ["billingDetails", companyId],
+    queryFn: () => getBillingDetails(companyId as string),
     enabled: !!companyId && !!getAccessToken(),
     staleTime: 60 * 1000,
   });

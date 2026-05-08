@@ -1,23 +1,29 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { ChevronDown, CreditCard } from "lucide-react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 
-import { AddCardModal } from "@/components/dashboard/settings/add-card-modal";
 import { HelpBanner } from "@/components/dashboard/settings/help-banner";
 import { Icons } from "@/components/icons";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
-import { useBillingStatus } from "@/hooks/use-billing";
-import { useCardStore } from "@/store/card-store";
+import { useBillingDetails } from "@/hooks/use-billing";
+
+function CardBrandIcon({ brand }: { brand: string }) {
+  if (brand.toLowerCase() === "mastercard") {
+    return <Icons.mastercard />;
+  }
+  return <CreditCard className="h-4 w-4 text-gray-500" />;
+}
 
 export default function BillingPage() {
-  const [showAddCard, setShowAddCard] = useState(false);
-  const { savedCards, addCard } = useCardStore();
+  const { locale } = useParams<{ locale: string }>();
   const companyId = useActiveCompanyId();
-  const { data: billingStatus } = useBillingStatus(companyId);
+  const { data: details } = useBillingDetails(companyId);
 
-  const presentPlanName = billingStatus?.tier
-    ? String(billingStatus.tier).toUpperCase()
+  const savedCards = details?.saved_cards ?? [];
+  const presentPlanName = details?.subscription_tier
+    ? String(details.subscription_tier).toUpperCase()
     : "FREE";
 
   return (
@@ -37,22 +43,22 @@ export default function BillingPage() {
           </span>
           {savedCards.length > 0 ? (
             <button className="flex items-center gap-2 rounded-2xl border border-gray-100 px-4 py-2.5">
-              <Icons.mastercard />
+              <CardBrandIcon brand={savedCards[0].brand} />
               <span className="font-dm-mono text-sm font-medium text-gray-700">
                 {savedCards[0].last4}
               </span>
               <ChevronDown className="h-4 w-4 text-gray-400" />
             </button>
           ) : (
-            <button
-              onClick={() => setShowAddCard(true)}
+            <Link
+              href={`/${locale}/dashboard/billing`}
               className="flex items-center gap-2 rounded-2xl border border-gray-100 px-4 py-2.5 transition-colors hover:bg-gray-50"
             >
               <span className="font-dm-mono text-sm font-semibold tracking-[0.15em] text-gray-600 uppercase">
                 ADD NEW CARD
               </span>
               <ChevronDown className="h-4 w-4 text-gray-400" />
-            </button>
+            </Link>
           )}
         </div>
 
@@ -70,17 +76,6 @@ export default function BillingPage() {
           </button>
         </div>
       </div>
-
-      {showAddCard && (
-        <AddCardModal
-          onClose={() => setShowAddCard(false)}
-          onSubmit={(card) => {
-            const last4 = card.cardNumber.slice(-4) || "****";
-            addCard({ last4, nameOnCard: card.nameOnCard });
-            setShowAddCard(false);
-          }}
-        />
-      )}
     </div>
   );
 }
