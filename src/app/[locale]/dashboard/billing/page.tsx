@@ -1,15 +1,17 @@
 "use client";
 
 import { ChevronDown, CreditCard } from "lucide-react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import { CompanyToolbar } from "@/components/dashboard/company-toolbar";
+import { AddCardModal } from "@/components/dashboard/settings/add-card-modal";
 import { Icons } from "@/components/icons";
 import { type Plan, PlanCard } from "@/components/pricing/plan-card";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useBillingDetails, useCreateCheckout } from "@/hooks/use-billing";
 import { useGeoCountry } from "@/hooks/use-geo-country";
 import type { SavedCard } from "@/services/billing";
+import { useCardStore } from "@/store/card-store";
 
 const GEO_PRICING: Record<string, { price: string; billing: string }[]> = {
   NG: [
@@ -92,21 +94,27 @@ function CardBrandIcon({ brand }: { brand: string }) {
 }
 
 export default function BillingPage() {
+  const [showAddCard, setShowAddCard] = useState(false);
   const [pendingTier, setPendingTier] = useState<string | null>(null);
   const [checkoutError, setCheckoutError] = useState("");
-  const plansRef = useRef<HTMLDivElement>(null);
 
   const companyId = useActiveCompanyId();
   const { data: details } = useBillingDetails(companyId);
   const createCheckout = useCreateCheckout();
   const country = useGeoCountry();
+  const { savedCards: localCards, addCard } = useCardStore();
   const pricing = GEO_PRICING[country ?? "default"] ?? GEO_PRICING.default;
   const plans: Plan[] = BASE_PLANS.map((base, i) => ({
     ...base,
     ...pricing[i],
   }));
 
-  const savedCards: SavedCard[] = details?.saved_cards ?? [];
+  const backendCards: SavedCard[] = details?.saved_cards ?? [];
+  const localAsSaved: SavedCard[] = localCards.map((c) => ({
+    brand: "mastercard",
+    last4: c.last4,
+  }));
+  const savedCards: SavedCard[] = [...backendCards, ...localAsSaved];
   const activeTier = details?.subscription_tier ?? null;
 
   const handleSubscribe = (plan: Plan) => {
@@ -164,9 +172,7 @@ export default function BillingPage() {
                 </aside>
               ) : (
                 <button
-                  onClick={() =>
-                    plansRef.current?.scrollIntoView({ behavior: "smooth" })
-                  }
+                  onClick={() => setShowAddCard(true)}
                   className="flex items-center gap-2 rounded-2xl border border-gray-100 px-4 py-3 transition-colors hover:bg-gray-50"
                 >
                   <span className="text-sm font-semibold tracking-widest text-gray-600 uppercase">
@@ -181,7 +187,7 @@ export default function BillingPage() {
       </div>
 
       {/* Plan Cards */}
-      <div ref={plansRef} className="w-full max-w-7xl">
+      <div className="w-full max-w-7xl">
         {checkoutError && (
           <p className="font-stolzl mb-4 text-sm text-red-600">
             {checkoutError}
@@ -213,6 +219,17 @@ export default function BillingPage() {
           })}
         </div>
       </div>
+
+      {showAddCard && (
+        <AddCardModal
+          onClose={() => setShowAddCard(false)}
+          onSubmit={(card) => {
+            const last4 = card.cardNumber.slice(-4) || "****";
+            addCard({ last4, nameOnCard: card.nameOnCard });
+            setShowAddCard(false);
+          }}
+        />
+      )}
     </div>
   );
 }

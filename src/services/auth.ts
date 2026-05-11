@@ -19,6 +19,8 @@ export interface User {
   onboarding_completed?: boolean;
   personal_email?: string;
   personal_phone?: string;
+  backup_email?: string;
+  access_code?: string;
   status?: string;
   created_at?: string;
   updated_at?: string;
@@ -50,6 +52,17 @@ export async function updateProfile(payload: {
   personal_phone?: string;
 }): Promise<User> {
   const { data } = await apiClient.patch<User>("/api/v1/auth/me", payload);
+  return data;
+}
+
+export async function updateUserSecurity(payload: {
+  backup_email?: string | null;
+  access_code?: string | null;
+}): Promise<User> {
+  const { data } = await apiClient.patch<User>(
+    "/api/v1/auth/me/security",
+    payload,
+  );
   return data;
 }
 

@@ -63,7 +63,7 @@ export async function createCheckoutSession(
   payload: CheckoutPayload,
 ): Promise<CheckoutResponse> {
   const { data } = await apiClient.post<CheckoutResponse>(
-    "/api/v1/billing/billing/checkout",
+    "/api/v1/billing/checkout",
     payload,
   );
   return data;

@@ -91,11 +91,11 @@ export default function HomePage() {
       </main>
       <Script
         src="https://widget.swiftagents.org/dist/widget-ui.js"
-        data-company-id="924573c0-3731-4a93-a4da-e6775c0c4516"
+        data-company-id="1e1bccc0-40a5-4700-a5e2-0dd55cddb75c"
         data-base-url="https://widget.swiftagents.org"
         crossOrigin="anonymous"
-        data-mode="button"
-        data-trigger="[data-swift-agent-open]"
+        // data-mode="button"
+        // data-trigger="[data-swift-agent-open]"
         strategy="afterInteractive"
       />
     </SmoothScrollProvider>

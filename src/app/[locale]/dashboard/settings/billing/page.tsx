@@ -1,13 +1,15 @@
 "use client";
 
 import { ChevronDown, CreditCard } from "lucide-react";
-import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useState } from "react";
 
+import { AddCardModal } from "@/components/dashboard/settings/add-card-modal";
 import { HelpBanner } from "@/components/dashboard/settings/help-banner";
 import { Icons } from "@/components/icons";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useBillingDetails } from "@/hooks/use-billing";
+import type { SavedCard } from "@/services/billing";
+import { useCardStore } from "@/store/card-store";
 
 function CardBrandIcon({ brand }: { brand: string }) {
   if (brand.toLowerCase() === "mastercard") {
@@ -17,11 +19,18 @@ function CardBrandIcon({ brand }: { brand: string }) {
 }
 
 export default function BillingPage() {
-  const { locale } = useParams<{ locale: string }>();
+  const [showAddCard, setShowAddCard] = useState(false);
   const companyId = useActiveCompanyId();
   const { data: details } = useBillingDetails(companyId);
+  const { savedCards: localCards, addCard } = useCardStore();
 
-  const savedCards = details?.saved_cards ?? [];
+  const backendCards: SavedCard[] = details?.saved_cards ?? [];
+  const localAsSaved: SavedCard[] = localCards.map((c) => ({
+    brand: "mastercard",
+    last4: c.last4,
+  }));
+  const savedCards: SavedCard[] = [...backendCards, ...localAsSaved];
+
   const presentPlanName = details?.subscription_tier
     ? String(details.subscription_tier).toUpperCase()
     : "FREE";
@@ -50,15 +59,15 @@ export default function BillingPage() {
               <ChevronDown className="h-4 w-4 text-gray-400" />
             </button>
           ) : (
-            <Link
-              href={`/${locale}/dashboard/billing`}
+            <button
+              onClick={() => setShowAddCard(true)}
               className="flex items-center gap-2 rounded-2xl border border-gray-100 px-4 py-2.5 transition-colors hover:bg-gray-50"
             >
               <span className="font-dm-mono text-sm font-semibold tracking-[0.15em] text-gray-600 uppercase">
                 ADD NEW CARD
               </span>
               <ChevronDown className="h-4 w-4 text-gray-400" />
-            </Link>
+            </button>
           )}
         </div>
 
@@ -76,6 +85,17 @@ export default function BillingPage() {
           </button>
         </div>
       </div>
+
+      {showAddCard && (
+        <AddCardModal
+          onClose={() => setShowAddCard(false)}
+          onSubmit={(card) => {
+            const last4 = card.cardNumber.slice(-4) || "****";
+            addCard({ last4, nameOnCard: card.nameOnCard });
+            setShowAddCard(false);
+          }}
+        />
+      )}
     </div>
   );
 }

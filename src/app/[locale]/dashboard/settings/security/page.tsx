@@ -8,11 +8,8 @@ import { z } from "zod";
 
 import { HelpBanner } from "@/components/dashboard/settings/help-banner";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
-import {
-  useCompanyMutations,
-  useCompanyQuery,
-  useInviteMember,
-} from "@/hooks/use-company";
+import { useCurrentUser, useUpdateUserSecurity } from "@/hooks/use-auth";
+import { useInviteMember } from "@/hooks/use-company";
 
 const securitySchema = z.object({
   backup_email: z.string().email("Invalid email").optional().or(z.literal("")),
@@ -37,8 +34,8 @@ export default function SecurityPage() {
 
   const companyId = useActiveCompanyId();
 
-  const { data: companyData } = useCompanyQuery(companyId);
-  const { updateCompany } = useCompanyMutations();
+  const { data: user } = useCurrentUser();
+  const updateSecurity = useUpdateUserSecurity();
   const inviteMember = useInviteMember();
 
   const {
@@ -49,19 +46,19 @@ export default function SecurityPage() {
   } = useForm<SecurityValues>({
     resolver: zodResolver(securitySchema),
     defaultValues: {
-      backup_email: companyData?.backup_email || "",
-      access_code: companyData?.access_code || "",
+      backup_email: user?.backup_email || "",
+      access_code: user?.access_code || "",
     },
   });
 
   useEffect(() => {
-    if (companyData) {
+    if (user) {
       reset({
-        backup_email: companyData.backup_email || "",
-        access_code: companyData.access_code || "",
+        backup_email: user.backup_email || "",
+        access_code: user.access_code || "",
       });
     }
-  }, [companyData, reset]);
+  }, [user, reset]);
 
   const handleInvite = async () => {
     if (!companyId || !inviteEmail) return;
@@ -76,16 +73,11 @@ export default function SecurityPage() {
   };
 
   const onSubmit = async (data: SecurityValues, field: "email" | "code") => {
-    if (!companyId) return;
     setSavingField(field);
     try {
-      await updateCompany.mutateAsync({
-        companyId,
-        section: "security",
-        payload: {
-          backup_email: data.backup_email || null,
-          access_code: data.access_code || null,
-        },
+      await updateSecurity.mutateAsync({
+        backup_email: data.backup_email || null,
+        access_code: data.access_code || null,
       });
       if (field === "email") setIsEditingEmail(false);
       if (field === "code") setIsEditingCode(false);
@@ -145,8 +137,8 @@ export default function SecurityPage() {
               className="flex items-center gap-2 rounded-2xl border border-gray-100 px-4 py-2.5 hover:bg-gray-50"
             >
               <span className="font-dm-mono text-sm font-medium tracking-wide text-gray-700 uppercase">
-                {companyData?.backup_email
-                  ? maskEmail(companyData.backup_email)
+                {user?.backup_email
+                  ? maskEmail(user.backup_email)
                   : "Add New Email"}
               </span>
               <ChevronDown className="h-4 w-4 text-gray-400" />
@@ -183,7 +175,7 @@ export default function SecurityPage() {
               className="rounded-2xl border border-gray-100 px-4 py-2.5 hover:bg-gray-50"
             >
               <span className="font-dm-mono text-sm font-medium tracking-wider text-gray-700">
-                {companyData?.access_code ? "••••••••••••" : "Add Access Code"}
+                {user?.access_code ? "••••••••••••" : "Add Access Code"}
               </span>
             </button>
           )}

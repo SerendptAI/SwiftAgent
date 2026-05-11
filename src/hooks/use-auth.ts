@@ -17,6 +17,7 @@ import {
   registerInterest,
   sendOtp,
   updateProfile,
+  updateUserSecurity,
   verifyOtp,
 } from "@/services/auth";
 
@@ -47,6 +48,19 @@ export function useUpdateProfile() {
 
   return useMutation({
     mutationFn: updateProfile,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+    },
+  });
+}
+
+// ── Update User Security (backup email + access code) ─────────────────────────
+
+export function useUpdateUserSecurity() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateUserSecurity,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
     },
