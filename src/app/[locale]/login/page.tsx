@@ -173,30 +173,6 @@ export default function LoginPage() {
         </div>
 
         <div className="flex w-full max-w-93 flex-col items-center gap-7">
-          <div className="flex w-full items-center justify-center gap-5">
-            <Button
-              variant="outline"
-              onClick={handleGoogleLogin}
-              className="font-dm-mono h-12 w-fit px-3 text-xs leading-[1.2] font-normal tracking-[10%] text-[#616161] uppercase shadow-[-4px_4px_0px_0px_#000000] md:text-sm"
-              disabled={googleLogin.isPending}
-            >
-              {t("googleLogin")}
-              <Icons.google className="size-5" />
-            </Button>
-            <Button
-              variant="outline"
-              className="font-dm-mono h-12 w-fit px-3 text-xs leading-[1.2] font-normal tracking-[10%] text-[#616161] uppercase shadow-[-4px_4px_0px_0px_#000000] md:text-sm"
-              disabled={googleLogin.isPending}
-            >
-              {t("serendptLogin")}
-              <Icons.serendpt className="size-5" />
-            </Button>
-          </div>
-
-          <span className="text-muted-foreground font-dm-mono text-sm leading-[1.2] tracking-[10%] uppercase md:text-base">
-            {t("or")}
-          </span>
-
           {step === "email" ? (
             <div className="w-full">
               <div
