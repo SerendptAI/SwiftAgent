@@ -10,7 +10,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 import { Loader } from "@/components/loader";
-import { useChats } from "@/hooks/use-conversations";
+import { useResolvedChats } from "@/hooks/use-conversations";
 import { useTickets } from "@/hooks/use-tickets";
 import { cn } from "@/lib/utils";
 
@@ -68,7 +68,7 @@ function formatRelativeTime(iso?: string): string {
 export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
   const [activeTab, setActiveTab] = useState<"pending" | "resolved">("pending");
   const { data: tickets, isLoading: ticketsLoading } = useTickets();
-  const { data: chats, isLoading: chatsLoading } = useChats();
+  const { data: resolvedChats, isLoading: chatsLoading } = useResolvedChats();
 
   const pendingCount = tickets?.length ?? 0;
   const isLoading = activeTab === "pending" ? ticketsLoading : chatsLoading;
@@ -220,10 +220,10 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
               );
             })
           )
-        ) : !chats || chats.length === 0 ? (
+        ) : !resolvedChats || resolvedChats.length === 0 ? (
           <TicketListEmptyState />
         ) : (
-          chats.map((chat, index) => {
+          resolvedChats.map((chat, index) => {
             const avatarSrc = AVATAR_IMAGES[index % AVATAR_IMAGES.length];
             const sessionLabel = chat.session_id
               ? chat.session_id.slice(0, 13).toUpperCase()

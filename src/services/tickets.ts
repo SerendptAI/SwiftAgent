@@ -1,10 +1,21 @@
 import { apiClient } from "@/lib/api-client";
 
-import type { ChatMessage } from "./conversations";
+import type { ChatSessionDetail } from "./conversations";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
 export type TicketStatus = "pending" | "resolved" | string;
+
+/** Email-style message as returned in a ticket's `messages` array. */
+export interface EmailMessage {
+  direction: "inbound" | "outbound" | "system" | string;
+  body_text: string | null;
+  body_html?: string | null;
+  sender_email?: string | null;
+  message_id?: string | null;
+  timestamp?: string;
+  seen?: boolean;
+}
 
 /** Ticket as returned by the detail endpoint. */
 export interface Ticket {
@@ -14,12 +25,14 @@ export interface Ticket {
   customer_name: string;
   subject: string;
   status: TicketStatus;
-  messages: ChatMessage[];
+  messages: EmailMessage[];
   unseen_count: number;
-  chat_session_id: string;
+  chat_session_id: string | null;
   chat_summary: string;
   created_at: string;
   updated_at: string;
+  /** Originating chat conversation, when the ticket was escalated from a chat. */
+  attributed_chat?: ChatSessionDetail;
 }
 
 /** The list endpoint may return the same shape or a lighter summary. */

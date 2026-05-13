@@ -12,7 +12,7 @@ import type { TicketKind } from "@/components/dashboard/ticketing/ticket-list";
 import { TicketList } from "@/components/dashboard/ticketing/ticket-list";
 import { TicketView } from "@/components/dashboard/ticketing/ticket-view";
 import { Icons } from "@/components/icons";
-import { useChats } from "@/hooks/use-conversations";
+import { useResolvedChats } from "@/hooks/use-conversations";
 
 function MessageEmptyState() {
   return (
@@ -46,7 +46,7 @@ export function TicketingClient() {
   } | null>(null);
   const [activeChannel, setActiveChannel] = useState<ChannelKey>("chats");
 
-  const { data: chats } = useChats();
+  const { data: chats } = useResolvedChats();
 
   // Auto-select chat from URL query param (e.g. ?chat=abc123) — resolved side
   useEffect(() => {

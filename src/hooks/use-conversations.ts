@@ -20,6 +20,19 @@ export function useChats() {
   });
 }
 
+/**
+ * Chat sessions that are still standalone (not escalated to a ticket).
+ * Escalated chats are surfaced via the Tickets list instead.
+ */
+export function useResolvedChats() {
+  const query = useChats();
+
+  return {
+    ...query,
+    data: query.data?.filter((c) => !c.escalated),
+  };
+}
+
 /** Fetch the full detail (with messages) for a single chat session. */
 export function useChat(chatId: string | null) {
   const companyId = useActiveCompanyId();

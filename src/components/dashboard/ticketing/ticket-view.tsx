@@ -1,7 +1,15 @@
 "use client";
 
 import { format } from "date-fns";
-import { Loader2, Maximize2, Paperclip, Send } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  Loader2,
+  Maximize2,
+  MessageSquare,
+  Paperclip,
+  Send,
+} from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
@@ -57,6 +65,7 @@ export function TicketView({ ticketId, avatarIndex = 0 }: TicketViewProps) {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [draft, setDraft] = useState("");
+  const [showOriginalChat, setShowOriginalChat] = useState(false);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -132,6 +141,57 @@ export function TicketView({ ticketId, avatarIndex = 0 }: TicketViewProps) {
         </button>
       </div>
 
+      {/* Originating chat (collapsible) */}
+      {ticket?.attributed_chat && (
+        <div className="border-b border-gray-100 px-6 py-3">
+          <button
+            type="button"
+            onClick={() => setShowOriginalChat((v) => !v)}
+            className="flex w-full items-center gap-2 text-left text-xs font-semibold tracking-wide text-gray-500 uppercase transition-colors hover:text-gray-700"
+            aria-expanded={showOriginalChat}
+          >
+            {showOriginalChat ? (
+              <ChevronDown className="h-3.5 w-3.5" />
+            ) : (
+              <ChevronRight className="h-3.5 w-3.5" />
+            )}
+            <MessageSquare className="h-3.5 w-3.5" />
+            Original chat ({ticket.attributed_chat.messages.length}{" "}
+            {ticket.attributed_chat.messages.length === 1
+              ? "message"
+              : "messages"}
+            )
+          </button>
+          {showOriginalChat && (
+            <div className="mt-3 max-h-72 space-y-3 overflow-y-auto rounded-2xl bg-gray-50 px-4 py-3">
+              {ticket.attributed_chat.messages.map((message, i) => {
+                const isVisitor = message.role === "user";
+                return (
+                  <div
+                    key={`chat-${i}`}
+                    className={cn(
+                      "flex",
+                      isVisitor ? "justify-start" : "justify-end",
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "max-w-[85%] rounded-2xl px-3 py-2 text-xs leading-relaxed whitespace-pre-wrap",
+                        isVisitor
+                          ? "rounded-bl-sm bg-white text-[#303437]"
+                          : "rounded-br-sm bg-[#F2F8FF] text-[#006BE5]",
+                      )}
+                    >
+                      {message.content}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Messages */}
       <div className="scrollbar-none flex-1 space-y-4 overflow-y-auto px-6 py-4">
         {headerTime && (
@@ -141,9 +201,9 @@ export function TicketView({ ticketId, avatarIndex = 0 }: TicketViewProps) {
         )}
 
         {messages.map((message, i) => {
-          const isCustomer = message.role === "user";
-          const isLong =
-            message.content.length > 60 || message.content.includes("\n");
+          const isCustomer = message.direction === "inbound";
+          const body = message.body_text ?? "";
+          const isLong = body.length > 60 || body.includes("\n");
           return (
             <div
               key={`${ticket?.id}-${i}`}
@@ -167,7 +227,7 @@ export function TicketView({ ticketId, avatarIndex = 0 }: TicketViewProps) {
                       : "rounded-full bg-[#F2F8FF] text-[#006BE5]",
                 )}
               >
-                {message.content}
+                {body}
               </div>
             </div>
           );
