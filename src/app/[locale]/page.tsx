@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 
 import { AboutSection } from "@/components/landing/about-section";
 import { ContactSection } from "@/components/landing/contact-section";
 import { DashboardSection } from "@/components/landing/dashboard-section";
 import { FeaturesSection } from "@/components/landing/features-section";
 import { HeroSection } from "@/components/landing/hero-section";
+import { HomepageChatbot } from "@/components/landing/homepage-chatbot";
 import { MostUsedFeaturesSection } from "@/components/landing/most-used-features-section";
 import { PricingSection } from "@/components/landing/pricing-section";
 import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provider";
@@ -89,15 +89,7 @@ export default function HomePage() {
         <PricingSection />
         <ContactSection />
       </main>
-      <Script
-        src="https://widget.swiftagents.org/dist/widget-ui.js"
-        data-company-id="1e1bccc0-40a5-4700-a5e2-0dd55cddb75c"
-        data-base-url="https://widget.swiftagents.org"
-        crossOrigin="anonymous"
-        // data-mode="button"
-        // data-trigger="[data-swift-agent-open]"
-        strategy="afterInteractive"
-      />
+      <HomepageChatbot />
     </SmoothScrollProvider>
   );
 }
