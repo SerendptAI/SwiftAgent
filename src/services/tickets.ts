@@ -37,7 +37,7 @@ export interface Ticket {
 
 /** The list endpoint may return the same shape or a lighter summary. */
 export type TicketListItem = Omit<Ticket, "messages"> & {
-  messages?: ChatMessage[];
+  messages?: EmailMessage[];
 };
 
 export interface ReplyPayload {

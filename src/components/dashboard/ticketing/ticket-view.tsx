@@ -12,6 +12,35 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+
+const ORIGINAL_CHAT_MARKDOWN = {
+  p: ({ children }: { children?: React.ReactNode }) => (
+    <p className="mb-1 last:mb-0">{children}</p>
+  ),
+  strong: ({ children }: { children?: React.ReactNode }) => (
+    <strong className="font-semibold">{children}</strong>
+  ),
+  ol: ({ children }: { children?: React.ReactNode }) => (
+    <ol className="mb-1 list-decimal pl-4 last:mb-0">{children}</ol>
+  ),
+  ul: ({ children }: { children?: React.ReactNode }) => (
+    <ul className="mb-1 list-disc pl-4 last:mb-0">{children}</ul>
+  ),
+  li: ({ children }: { children?: React.ReactNode }) => (
+    <li className="mb-0.5">{children}</li>
+  ),
+  a: ({ href, children }: { href?: string; children?: React.ReactNode }) => (
+    <a
+      href={href}
+      className="underline"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {children}
+    </a>
+  ),
+};
 
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import {
@@ -176,13 +205,15 @@ export function TicketView({ ticketId, avatarIndex = 0 }: TicketViewProps) {
                   >
                     <div
                       className={cn(
-                        "max-w-[85%] rounded-2xl px-3 py-2 text-xs leading-relaxed whitespace-pre-wrap",
+                        "max-w-[85%] rounded-2xl px-3 py-2 text-xs leading-relaxed [overflow-wrap:anywhere]",
                         isVisitor
                           ? "rounded-bl-sm bg-white text-[#303437]"
                           : "rounded-br-sm bg-[#F2F8FF] text-[#006BE5]",
                       )}
                     >
-                      {message.content}
+                      <ReactMarkdown components={ORIGINAL_CHAT_MARKDOWN}>
+                        {message.content}
+                      </ReactMarkdown>
                     </div>
                   </div>
                 );
