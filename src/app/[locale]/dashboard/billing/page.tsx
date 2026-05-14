@@ -160,7 +160,7 @@ export default function BillingPage() {
         <div className="flex-1">
           <CompanyToolbar />
         </div>
-        <div className="mb-4 h-16 w-[400px] rounded-3xl bg-white p-4 py-2 shadow-sm">
+        <div className="mb-4 h-16 w-[400px] rounded-3xl bg-white py-2 pr-2 pl-6 shadow-sm">
           <div className="gap-4">
             <div className="flex w-full items-center justify-between gap-3 text-sm font-semibold text-gray-600">
               <span className="tracking-widest uppercase">SAVED CARDS</span>

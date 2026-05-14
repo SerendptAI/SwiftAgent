@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Icons } from "@/components/icons";
+import { useSetActiveCompanyId } from "@/hooks/use-active-company";
 import { useRegistrationDetails } from "@/hooks/use-auth";
 import {
   useCompaniesQuery,
@@ -57,6 +58,7 @@ export function CompanyInfoStep({
 }: CompanyInfoStepProps) {
   const { createCompany, updateCompany, uploadLogo } = useCompanyMutations();
   const { data: rawCompanies } = useCompaniesQuery();
+  const setActiveCompanyId = useSetActiveCompanyId();
   const setTypedCompanyName = useOnboardingStore(
     (state) => state.setTypedCompanyName,
   );
@@ -164,6 +166,7 @@ export function CompanyInfoStep({
         });
         resolvedCompanyId = company.id;
         setCompanyId?.(company.id);
+        setActiveCompanyId(company.id);
       }
 
       if (logoFile && resolvedCompanyId) {

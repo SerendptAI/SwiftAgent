@@ -24,9 +24,9 @@ function MessageEmptyState() {
           alt=""
           width={66}
           height={66}
-          className="aspect-[66/66] w-full max-w-[66px]"
+          className="aspect-66/66 w-full max-w-[66px]"
         />
-        <p className="font-dm-mono text-center text-sm leading-[1.39] font-normal tracking-[0.1em] text-black/60 uppercase">
+        <p className="font-dm-mono text-center text-sm leading-[1.39] font-normal tracking-widest text-black/60 uppercase">
           NOTHING HERE FOR NOW,
           <br />
           WHEN YOU GET MESSAGES THEY’LL
