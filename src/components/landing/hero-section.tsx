@@ -190,7 +190,7 @@ export function HeroSection() {
                   return (
                     <span
                       key={i}
-                      className="hero-badge font-greed-narrow relative inline-flex items-center justify-center overflow-hidden rounded-2xl px-6 py-3 text-3xl leading-none tracking-tight uppercase transition-all duration-1000 ease-in-out select-none md:rounded-[2rem] md:px-8 md:py-4 md:text-4xl lg:text-5xl"
+                      className="hero-badge font-greed-narrow relative inline-flex items-center justify-center overflow-hidden rounded-2xl px-6 py-3 text-3xl leading-none tracking-tight uppercase transition-all duration-1000 ease-in-out select-none md:rounded-4xl md:px-8 md:py-4 md:text-4xl lg:text-5xl"
                       style={{
                         backgroundColor: b.bg,
                         color: b.text,
@@ -352,7 +352,7 @@ export function HeroSection() {
           <div ref={ctaRef} className="mt-8 md:mt-12">
             <Link
               href="/signup"
-              className="font-dm-mono inline-flex w-full items-center justify-center rounded-xl border-1 border-white bg-black px-10 py-4 text-xs font-bold tracking-[0.2em] text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-800 sm:w-auto sm:min-w-[340px]"
+              className="font-dm-mono inline-flex w-full items-center justify-center rounded-xl border border-white bg-black px-10 py-4 text-sm font-bold tracking-[0.2em] text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-800 sm:w-auto sm:min-w-[340px]"
             >
               GET STARTED
             </Link>

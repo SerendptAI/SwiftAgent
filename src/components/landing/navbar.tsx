@@ -111,7 +111,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
             </button>
             <Link
               href="/en/login"
-              className="font-dm-mono hidden w-full max-w-[220px] items-center justify-center rounded-lg border border-gray-900 bg-white px-8 py-3 text-base font-medium tracking-[0.15em] text-gray-900 uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-900 hover:text-white md:flex"
+              className="font-dm-mono hidden w-full max-w-[220px] items-center justify-center rounded-lg border border-black bg-white px-8 py-3 text-base font-medium tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-black hover:text-white md:flex"
             >
               LOGIN
             </Link>
