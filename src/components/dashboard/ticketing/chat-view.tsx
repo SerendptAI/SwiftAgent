@@ -7,6 +7,8 @@ import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useChat, useMarkChatSeen } from "@/hooks/use-conversations";
 import { cn } from "@/lib/utils";
 
+import { MessageMarkdown } from "./message-markdown";
+
 const AVATAR_IMAGES = [
   "/images/chats/newimg.svg",
   "/images/chats/newimg1.svg",
@@ -146,7 +148,7 @@ export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
               )}
               <div
                 className={cn(
-                  "max-w-[85%] px-4 py-3 text-sm leading-relaxed",
+                  "max-w-[85%] px-4 py-3 text-sm leading-relaxed [overflow-wrap:anywhere]",
                   isVisitor
                     ? "rounded-2xl rounded-bl-sm bg-[#F2F4F5] text-[#303437]"
                     : isLong
@@ -154,7 +156,7 @@ export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
                       : "rounded-full bg-[#F2F8FF] text-[#006BE5]",
                 )}
               >
-                {message.content}
+                <MessageMarkdown text={message.content} />
               </div>
             </div>
           );

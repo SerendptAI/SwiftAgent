@@ -12,35 +12,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import ReactMarkdown from "react-markdown";
-
-const ORIGINAL_CHAT_MARKDOWN = {
-  p: ({ children }: { children?: React.ReactNode }) => (
-    <p className="mb-1 last:mb-0">{children}</p>
-  ),
-  strong: ({ children }: { children?: React.ReactNode }) => (
-    <strong className="font-semibold">{children}</strong>
-  ),
-  ol: ({ children }: { children?: React.ReactNode }) => (
-    <ol className="mb-1 list-decimal pl-4 last:mb-0">{children}</ol>
-  ),
-  ul: ({ children }: { children?: React.ReactNode }) => (
-    <ul className="mb-1 list-disc pl-4 last:mb-0">{children}</ul>
-  ),
-  li: ({ children }: { children?: React.ReactNode }) => (
-    <li className="mb-0.5">{children}</li>
-  ),
-  a: ({ href, children }: { href?: string; children?: React.ReactNode }) => (
-    <a
-      href={href}
-      className="underline"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      {children}
-    </a>
-  ),
-};
 
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import {
@@ -49,6 +20,8 @@ import {
   useTicket,
 } from "@/hooks/use-tickets";
 import { cn } from "@/lib/utils";
+
+import { MessageMarkdown } from "./message-markdown";
 
 const AVATAR_IMAGES = [
   "/images/chats/newimg.svg",
@@ -211,9 +184,7 @@ export function TicketView({ ticketId, avatarIndex = 0 }: TicketViewProps) {
                           : "rounded-br-sm bg-[#F2F8FF] text-[#006BE5]",
                       )}
                     >
-                      <ReactMarkdown components={ORIGINAL_CHAT_MARKDOWN}>
-                        {message.content}
-                      </ReactMarkdown>
+                      <MessageMarkdown text={message.content} compact />
                     </div>
                   </div>
                 );
@@ -250,7 +221,7 @@ export function TicketView({ ticketId, avatarIndex = 0 }: TicketViewProps) {
               )}
               <div
                 className={cn(
-                  "max-w-[85%] px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap",
+                  "max-w-[85%] px-4 py-3 text-sm leading-relaxed [overflow-wrap:anywhere]",
                   isCustomer
                     ? "rounded-2xl rounded-bl-sm bg-[#F2F4F5] text-[#303437]"
                     : isLong
@@ -258,7 +229,7 @@ export function TicketView({ ticketId, avatarIndex = 0 }: TicketViewProps) {
                       : "rounded-full bg-[#F2F8FF] text-[#006BE5]",
                 )}
               >
-                {body}
+                <MessageMarkdown text={body} />
               </div>
             </div>
           );
