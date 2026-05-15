@@ -9,7 +9,7 @@ import { ReferScreenThree } from "@/components/referrals/refer-screen-three";
 import { ReferScreenTwo } from "@/components/referrals/refer-screen-two";
 
 export default function ReferPage() {
-  const [screen, setScreen] = useState<number>(3);
+  const [screen, setScreen] = useState<number>(0);
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-white">
