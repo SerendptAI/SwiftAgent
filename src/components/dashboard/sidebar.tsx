@@ -29,7 +29,7 @@ export function Sidebar() {
       icon: (props: { className?: string }) => (
         <HugeiconsIcon icon={Invoice01Icon} {...props} />
       ),
-      label: "Knowledge Sources",
+      label: "Billing",
     },
 
     {
