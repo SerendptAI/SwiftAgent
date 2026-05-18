@@ -7,7 +7,7 @@ export default function SettingsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-full min-h-0 max-w-7xl gap-12">
+    <div className="flex h-full min-h-0 max-w-[1536px] gap-12">
       {/* Secondary Settings Sidebar */}
       <SettingsNav />
 

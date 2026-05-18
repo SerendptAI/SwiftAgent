@@ -287,3 +287,7 @@ body {
     animation: none !important;
   }
 }
+
+.debug {
+  border: 1px solid red !important;
+}

@@ -156,7 +156,7 @@ export default function BillingPage() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex max-w-7xl items-center gap-8">
+      <div className="flex max-w-[1536px] items-center gap-8">
         <div className="flex-1">
           <CompanyToolbar />
         </div>
@@ -187,7 +187,7 @@ export default function BillingPage() {
       </div>
 
       {/* Plan Cards */}
-      <div className="w-full max-w-7xl">
+      <div className="w-full max-w-[1536px]">
         {checkoutError && (
           <p className="font-stolzl mb-4 text-sm text-red-600">
             {checkoutError}

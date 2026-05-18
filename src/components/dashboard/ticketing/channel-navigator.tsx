@@ -3,7 +3,7 @@
 import { Icons } from "@/components/icons";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 
-type ChannelKey = "chats" | "tickets" | "mail";
+type ChannelKey = "tickets" | "forms" | "mail";
 
 interface Channel {
   key: ChannelKey;
@@ -17,7 +17,7 @@ interface Channel {
 
 const CHANNELS: Channel[] = [
   {
-    key: "chats",
+    key: "tickets",
     label: "Tickets",
     icon: Icons.ticketChat,
     count: 0,
@@ -26,12 +26,12 @@ const CHANNELS: Channel[] = [
     badgeBg: "bg-red-500",
   },
   {
-    key: "tickets",
+    key: "forms",
     label: "Forms",
     icon: Icons.ticketForm,
     count: 6,
-    activeBg: "bg-white",
-    activeIcon: "text-gray-700",
+    activeBg: "bg-[#F25430]",
+    activeIcon: "text-white",
     badgeBg: "bg-[#6433CC]",
   },
   {
@@ -39,8 +39,8 @@ const CHANNELS: Channel[] = [
     label: "Business Emails",
     icon: Icons.ticketEmail,
     count: 6,
-    activeBg: "bg-white",
-    activeIcon: "text-gray-700",
+    activeBg: "bg-[#F25430]",
+    activeIcon: "text-white",
     badgeBg: "bg-[#6433CC]",
   },
 ];
@@ -59,13 +59,15 @@ export function ChannelNavigator({ active, onChange }: ChannelNavigatorProps) {
         return (
           <InfoTooltip key={ch.key} text={ch.label} side="right">
             <button
+              type="button"
               onClick={() => onChange(ch.key)}
-              className={`relative flex h-20 w-20 items-center justify-center rounded-2xl transition-colors ${
+              className={`relative flex h-20 w-20 cursor-pointer items-center justify-center rounded-2xl transition-colors ${
                 isActive
                   ? `${ch.activeBg} shadow-sm`
                   : "bg-[#F6F6F6] hover:bg-gray-100"
               }`}
               aria-label={ch.label}
+              aria-pressed={isActive}
             >
               <Icon
                 className={`h-10 w-10 ${
