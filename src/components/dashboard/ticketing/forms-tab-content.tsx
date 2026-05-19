@@ -12,6 +12,10 @@ import {
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
+import { FormCreationSuccessModal } from "@/components/dashboard/ticketing/form-creation-success-modal";
+import { OnlineFormDrawer } from "@/components/dashboard/ticketing/online-form-drawer";
+import { WebsiteFormDrawer } from "@/components/dashboard/ticketing/website-form-drawer";
+
 interface FormsEmptyStateProps {
   lines: string[];
   variant: "list" | "detail";
@@ -35,7 +39,10 @@ interface FormSubmission {
 interface MockForm {
   name: string;
   type: FormType;
-  pages: string[];
+  pages?: {
+    path: string;
+    submissions: FormSubmission[];
+  }[];
   submissions: FormSubmission[];
 }
 
@@ -59,7 +66,6 @@ const MOCK_FORMS: MockForm[] = [
   {
     name: "NG Ballerz Form",
     type: "online",
-    pages: ["/tryouts", "/sponsorship", "/contact"],
     submissions: [
       {
         name: "John Doe",
@@ -99,29 +105,77 @@ const MOCK_FORMS: MockForm[] = [
   {
     name: "https://serendptai.com",
     type: "website",
-    pages: ["/contact-us", "/submission", "/volunteer"],
-    submissions: [
+    submissions: [],
+    pages: [
       {
-        name: "Ayo Martins",
-        preview: "Hello, I want pricing...",
-        time: "3:25pm",
-        avatar: "/images/chats/newimg2.svg",
-        email: "ayo@serendptai.com",
-        interest: "Pricing",
-        message: "Hello, I want pricing details for a website form setup",
-        receivedAt: "3:25pm 02/05/2026",
-        status: "unread",
+        path: "/contact-us",
+        submissions: [
+          {
+            name: "Ayo Martins",
+            preview: "Hello, I want pricing...",
+            time: "3:25pm",
+            avatar: "/images/chats/newimg2.svg",
+            email: "ayo@serendptai.com",
+            interest: "Pricing",
+            message: "Hello, I want pricing details for a website form setup",
+            receivedAt: "3:25pm 02/05/2026",
+            status: "unread",
+          },
+          {
+            name: "Kemi Rhodes",
+            preview: "I need help with setup...",
+            time: "2:55pm",
+            avatar: "/images/chats/newimg.svg",
+            email: "kemi@serendptai.com",
+            interest: "Setup",
+            message: "I need help with setup for our contact workflow",
+            receivedAt: "2:55pm 02/05/2026",
+            status: "read",
+          },
+        ],
       },
       {
-        name: "Mina Cole",
-        preview: "Can I book a demo...",
-        time: "3:12pm",
-        avatar: "/images/chats/newimg3.svg",
-        email: "mina@serendptai.com",
-        interest: "Demo",
-        message: "Can I book a demo for the web assistant this week?",
-        receivedAt: "3:12pm 02/05/2026",
-        status: "read",
+        path: "/submission",
+        submissions: [
+          {
+            name: "Mina Cole",
+            preview: "Can I book a demo...",
+            time: "3:12pm",
+            avatar: "/images/chats/newimg3.svg",
+            email: "mina@serendptai.com",
+            interest: "Demo",
+            message: "Can I book a demo for the web assistant this week?",
+            receivedAt: "3:12pm 02/05/2026",
+            status: "unread",
+          },
+          {
+            name: "Tobi Green",
+            preview: "The submitted form...",
+            time: "1:48pm",
+            avatar: "/images/chats/newimg3.svg",
+            email: "tobi@serendptai.com",
+            interest: "Submission",
+            message: "The submitted form needs a confirmation email",
+            receivedAt: "1:48pm 02/05/2026",
+            status: "read",
+          },
+        ],
+      },
+      {
+        path: "/volunteer",
+        submissions: [
+          {
+            name: "Lara Stone",
+            preview: "I would like to help...",
+            time: "12:10pm",
+            avatar: "/images/chats/newimg4.svg",
+            email: "lara@serendptai.com",
+            interest: "Volunteer",
+            message: "I would like to help with volunteer coordination",
+            receivedAt: "12:10pm 02/05/2026",
+            status: "unread",
+          },
+        ],
       },
     ],
   },
@@ -283,9 +337,9 @@ function FormsEmptyState({ lines, variant }: FormsEmptyStateProps) {
   );
 }
 
-function CreateFormMenu({ onSelect }: { onSelect: () => void }) {
+function CreateFormMenu({ onSelect }: { onSelect: (type: FormType) => void }) {
   return (
-    <div className="font-dm-mono rounded-xl bg-white px-3 py-2 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)]">
+    <div className="font-dm-mono w-[430px] max-w-[calc(100vw-3rem)] rounded-xl bg-white px-3 py-2 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)]">
       {(["website", "online"] as FormType[]).map((type, index) => {
         const meta = FORM_TYPE_META[type];
         return (
@@ -295,7 +349,7 @@ function CreateFormMenu({ onSelect }: { onSelect: () => void }) {
             className={`flex h-12 w-full cursor-pointer items-center gap-3 px-3 text-left transition-colors hover:bg-gray-50 ${
               index === 0 ? "border-b border-[#808080]" : ""
             }`}
-            onClick={onSelect}
+            onClick={() => onSelect(type)}
           >
             <Image
               src={meta.icon}
@@ -305,7 +359,7 @@ function CreateFormMenu({ onSelect }: { onSelect: () => void }) {
               className="h-[23px] w-[23px] shrink-0"
             />
             <span
-              className={`min-w-0 flex-1 truncate text-base font-normal tracking-[0.18em] uppercase ${meta.textColor}`}
+              className={`min-w-0 flex-1 text-base font-normal tracking-[0.18em] whitespace-nowrap uppercase ${meta.textColor}`}
             >
               {meta.label}
             </span>
@@ -320,15 +374,31 @@ function CreateFormMenu({ onSelect }: { onSelect: () => void }) {
 function FormsToolbar({
   selectedFormIndex,
   onSelectForm,
+  onCreateWebsiteForm,
+  onCreateOnlineForm,
 }: {
   selectedFormIndex: number;
   onSelectForm: (index: number) => void;
+  onCreateWebsiteForm: () => void;
+  onCreateOnlineForm: () => void;
 }) {
   const [isFormMenuOpen, setIsFormMenuOpen] = useState(false);
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
   const formDropdownRef = useRef<HTMLDivElement>(null);
   const createDropdownRef = useRef<HTMLDivElement>(null);
   const selectedForm = MOCK_FORMS[selectedFormIndex] ?? null;
+
+  const handleCreateForm = (type: FormType) => {
+    setIsCreateMenuOpen(false);
+    setIsFormMenuOpen(false);
+
+    if (type === "website") {
+      onCreateWebsiteForm();
+      return;
+    }
+
+    onCreateOnlineForm();
+  };
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -382,8 +452,8 @@ function FormsToolbar({
             <span className="truncate">Create</span>
           </button>
           {isCreateMenuOpen && (
-            <div className="animate-in fade-in slide-in-from-top-2 absolute top-[calc(100%+1rem)] right-[-1.25rem] z-[70] w-[340px] duration-200">
-              <CreateFormMenu onSelect={() => setIsCreateMenuOpen(false)} />
+            <div className="animate-in fade-in slide-in-from-top-2 absolute top-[calc(100%+1rem)] right-[-1.25rem] z-[70] duration-200">
+              <CreateFormMenu onSelect={handleCreateForm} />
             </div>
           )}
         </div>
@@ -433,7 +503,7 @@ function FormsToolbar({
         {isFormMenuOpen && (
           <div className="animate-in fade-in slide-in-from-top-2 absolute right-4 z-[70] mt-3 w-[calc(100%-7.5rem)] min-w-[300px] duration-200">
             {MOCK_FORMS.length === 0 ? (
-              <CreateFormMenu onSelect={() => setIsFormMenuOpen(false)} />
+              <CreateFormMenu onSelect={handleCreateForm} />
             ) : (
               <div className="font-dm-mono rounded-xl bg-white px-3 py-2 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)]">
                 {MOCK_FORMS.map((form, index) => (
@@ -467,20 +537,29 @@ function FormsToolbar({
   );
 }
 
-function FormPageTabs({ pages }: { pages: string[] }) {
+function FormPageTabs({
+  pages,
+  activePageIndex,
+  onSelectPage,
+}: {
+  pages: NonNullable<MockForm["pages"]>;
+  activePageIndex: number;
+  onSelectPage: (index: number) => void;
+}) {
   return (
     <div className="flex h-11 min-w-0 items-center gap-3 overflow-hidden">
       {pages.map((page, index) => (
         <button
-          key={page}
+          key={page.path}
           type="button"
+          onClick={() => onSelectPage(index)}
           className={`font-dm-mono h-11 min-w-0 cursor-pointer rounded-lg px-4 text-base font-normal tracking-[0.12em] uppercase shadow-sm ${
-            index === 0
+            index === activePageIndex
               ? "bg-[#006BE5] text-white"
               : "border border-[#EDEDED] bg-white text-black"
           }`}
         >
-          <span className="block truncate">{page}</span>
+          <span className="block truncate">{page.path}</span>
         </button>
       ))}
     </div>
@@ -488,19 +567,20 @@ function FormPageTabs({ pages }: { pages: string[] }) {
 }
 
 function SubmissionNameDropdown({
-  submissions,
+  allSubmissions,
   selectedIndex,
   onSelect,
   formType,
 }: {
-  submissions: FormSubmission[];
-  selectedIndex: number;
+  allSubmissions: FormSubmission[];
+  selectedIndex: number | null;
   onSelect: (index: number) => void;
   formType: FormType;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const selected = submissions[selectedIndex];
+  const selected =
+    selectedIndex === null ? null : allSubmissions[selectedIndex] || null;
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -515,6 +595,8 @@ function SubmissionNameDropdown({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  if (!selected) return null;
 
   return (
     <div ref={dropdownRef} className="relative w-fit">
@@ -541,7 +623,7 @@ function SubmissionNameDropdown({
 
       {isOpen && (
         <div className="animate-in fade-in slide-in-from-top-1 absolute left-0 z-30 mt-2 w-56 rounded-xl border border-[#EDEDED] bg-white p-2 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] duration-200">
-          {submissions.map((submission, index) => (
+          {allSubmissions.map((submission, index) => (
             <button
               key={submission.name}
               type="button"
@@ -561,17 +643,18 @@ function SubmissionNameDropdown({
 }
 
 function FormSubmissionDetail({
-  submissions,
+  allSubmissions,
   selectedIndex,
   onSelect,
   formType,
 }: {
-  submissions: FormSubmission[];
-  selectedIndex: number;
+  allSubmissions: FormSubmission[];
+  selectedIndex: number | null;
   onSelect: (index: number) => void;
   formType: FormType;
 }) {
-  const selected = submissions[selectedIndex];
+  const selected =
+    selectedIndex === null ? null : allSubmissions[selectedIndex] || null;
 
   if (!selected) {
     return (
@@ -590,7 +673,7 @@ function FormSubmissionDetail({
 
       <div className="mt-6">
         <SubmissionNameDropdown
-          submissions={submissions}
+          allSubmissions={allSubmissions}
           selectedIndex={selectedIndex}
           onSelect={onSelect}
           formType={formType}
@@ -627,7 +710,7 @@ function FormSubmissionList({
   onStatusChange,
 }: {
   submissions: FormSubmission[];
-  selectedIndex: number;
+  selectedIndex: number | null;
   onSelect: (index: number) => void;
   activeStatus: FormSubmissionStatus;
   onStatusChange: (status: FormSubmissionStatus) => void;
@@ -699,34 +782,42 @@ function FormSubmissionList({
 }
 
 export function FormsTabContent() {
-  const [selectedSubmissionIndex, setSelectedSubmissionIndex] = useState(0);
+  const [selectedSubmissionIndex, setSelectedSubmissionIndex] = useState<
+    number | null
+  >(null);
   const [selectedFormIndex, setSelectedFormIndex] = useState(0);
+  const [selectedPageIndex, setSelectedPageIndex] = useState(0);
   const [activeStatus, setActiveStatus] =
     useState<FormSubmissionStatus>("unread");
+  const [isWebsiteFormDrawerOpen, setIsWebsiteFormDrawerOpen] = useState(false);
+  const [isOnlineFormDrawerOpen, setIsOnlineFormDrawerOpen] = useState(false);
+  const [successForm, setSuccessForm] = useState<{
+    type: FormType;
+    name: string;
+  } | null>(null);
   const selectedForm = MOCK_FORMS[selectedFormIndex] ?? null;
   const selectedFormType = selectedForm?.type ?? "website";
   const selectedFormPages = selectedForm?.pages ?? [];
-  const selectedFormSubmissions = selectedForm?.submissions ?? [];
-
-  const selectFirstSubmissionForStatus = (
-    submissions: FormSubmission[],
-    status: FormSubmissionStatus,
-  ) => {
-    const nextIndex = submissions.findIndex(
-      (submission) => submission.status === status,
-    );
-    setSelectedSubmissionIndex(nextIndex === -1 ? 0 : nextIndex);
-  };
+  const isWebsiteForm = selectedFormType === "website";
+  const selectedFormSubmissions =
+    isWebsiteForm && selectedFormPages.length > 0
+      ? (selectedFormPages[selectedPageIndex]?.submissions ?? [])
+      : (selectedForm?.submissions ?? []);
 
   const handleSelectForm = (index: number) => {
     setSelectedFormIndex(index);
-    const nextForm = MOCK_FORMS[index];
-    selectFirstSubmissionForStatus(nextForm?.submissions ?? [], activeStatus);
+    setSelectedPageIndex(0);
+    setSelectedSubmissionIndex(null);
+  };
+
+  const handleSelectPage = (index: number) => {
+    setSelectedPageIndex(index);
+    setSelectedSubmissionIndex(null);
   };
 
   const handleStatusChange = (status: FormSubmissionStatus) => {
     setActiveStatus(status);
-    selectFirstSubmissionForStatus(selectedFormSubmissions, status);
+    setSelectedSubmissionIndex(null);
   };
 
   return (
@@ -734,18 +825,26 @@ export function FormsTabContent() {
       <FormsToolbar
         selectedFormIndex={selectedFormIndex}
         onSelectForm={handleSelectForm}
+        onCreateWebsiteForm={() => setIsWebsiteFormDrawerOpen(true)}
+        onCreateOnlineForm={() => setIsOnlineFormDrawerOpen(true)}
       />
       <div className="grid min-h-0 flex-1 grid-cols-12 gap-8">
         <div className="col-span-7 min-w-0">
           <FormSubmissionDetail
-            submissions={selectedFormSubmissions}
+            allSubmissions={selectedFormSubmissions}
             selectedIndex={selectedSubmissionIndex}
             onSelect={setSelectedSubmissionIndex}
             formType={selectedFormType}
           />
         </div>
         <div className="col-span-5 flex min-w-0 flex-col gap-8">
-          <FormPageTabs pages={selectedFormPages} />
+          {isWebsiteForm && selectedFormPages.length > 0 && (
+            <FormPageTabs
+              pages={selectedFormPages}
+              activePageIndex={selectedPageIndex}
+              onSelectPage={handleSelectPage}
+            />
+          )}
           <div className="min-h-0 flex-1">
             <FormSubmissionList
               submissions={selectedFormSubmissions}
@@ -757,6 +856,32 @@ export function FormsTabContent() {
           </div>
         </div>
       </div>
+      <WebsiteFormDrawer
+        open={isWebsiteFormDrawerOpen}
+        onClose={() => setIsWebsiteFormDrawerOpen(false)}
+        onSuccess={() =>
+          setSuccessForm({
+            type: "website",
+            name: "https://serendptai.com",
+          })
+        }
+      />
+      <OnlineFormDrawer
+        open={isOnlineFormDrawerOpen}
+        onClose={() => setIsOnlineFormDrawerOpen(false)}
+        onSuccess={() =>
+          setSuccessForm({
+            type: "online",
+            name: "NG Ballerz Form",
+          })
+        }
+      />
+      <FormCreationSuccessModal
+        open={successForm !== null}
+        formIcon={FORM_TYPE_META[successForm?.type ?? "website"].icon}
+        formName={successForm?.name ?? ""}
+        onClose={() => setSuccessForm(null)}
+      />
     </div>
   );
 }
