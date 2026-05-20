@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feat/forms
     tags:
       - 'v2*'
 
@@ -11,12 +12,22 @@ jobs:
   deploy-landing:
     name: Deploy Landing
     runs-on: self-hosted
+
     steps:
-      - name: Deploy
+      - name: Deploy Production Landing
+        if: github.ref == 'refs/heads/main'
         run: |
-          if [ "${{ github.ref_type }}" = "tag" ]; then
-            ./deploy.sh landing ${{ github.ref_name }}
-          else
-            ./deploy.sh landing
-          fi
+          ./deploy.sh landing
+        working-directory: /home/ghrunner/swift-agents-prod
+
+      - name: Deploy Feature Forms Environment
+        if: github.ref == 'refs/heads/feat/forms'
+        run: |
+          ./deploy.sh feat-forms
+        working-directory: /home/ghrunner/swift-agents-prod
+
+      - name: Deploy Tagged Release
+        if: github.ref_type == 'tag'
+        run: |
+          ./deploy.sh landing ${{ github.ref_name }}
         working-directory: /home/ghrunner/swift-agents-prod
