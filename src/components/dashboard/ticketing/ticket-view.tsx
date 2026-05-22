@@ -137,7 +137,7 @@ export function TicketView({ ticketId, avatarIndex = 0 }: TicketViewProps) {
         </div>
         <button
           aria-label="Expand"
-          className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
+          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
         >
           <Maximize2 className="h-4 w-4" />
         </button>
@@ -149,7 +149,7 @@ export function TicketView({ ticketId, avatarIndex = 0 }: TicketViewProps) {
           <button
             type="button"
             onClick={() => setShowOriginalChat((v) => !v)}
-            className="flex w-full items-center gap-2 text-left text-xs font-semibold tracking-wide text-gray-500 uppercase transition-colors hover:text-gray-700"
+            className="flex w-full cursor-pointer items-center gap-2 text-left text-xs font-semibold tracking-wide text-gray-500 uppercase transition-colors hover:text-gray-700"
             aria-expanded={showOriginalChat}
           >
             {showOriginalChat ? (
@@ -254,7 +254,7 @@ export function TicketView({ ticketId, avatarIndex = 0 }: TicketViewProps) {
           <button
             type="button"
             aria-label="Attach"
-            className="shrink-0 text-gray-400 transition-colors hover:text-gray-600"
+            className="shrink-0 cursor-pointer text-gray-400 transition-colors hover:text-gray-600"
           >
             <Paperclip className="h-4 w-4" />
           </button>
@@ -262,7 +262,7 @@ export function TicketView({ ticketId, avatarIndex = 0 }: TicketViewProps) {
             type="submit"
             disabled={!draft.trim() || isSending}
             aria-label="Send"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-gray-400 transition-colors hover:text-[#006BE5] disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:text-[#006BE5] disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isSending ? (
               <Loader2 className="h-4 w-4 animate-spin" />

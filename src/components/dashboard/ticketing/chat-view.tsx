@@ -110,7 +110,7 @@ export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
         </div>
         <button
           aria-label="Expand"
-          className="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
+          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
         >
           <Maximize2 className="h-4 w-4" />
         </button>
@@ -187,7 +187,7 @@ export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
           <button
             type="button"
             aria-label="Attach"
-            className="shrink-0 text-gray-400 transition-colors hover:text-gray-600"
+            className="shrink-0 cursor-pointer text-gray-400 transition-colors hover:text-gray-600"
           >
             <Paperclip className="h-4 w-4" />
           </button>
@@ -195,7 +195,7 @@ export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
             type="submit"
             disabled={!draft.trim()}
             aria-label="Send"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-gray-400 transition-colors hover:text-[#006BE5] disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:text-[#006BE5] disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Send className="h-4 w-4 -translate-x-px" />
           </button>

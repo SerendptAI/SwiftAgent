@@ -80,7 +80,7 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
         <button
           onClick={() => setActiveTab("pending")}
           className={cn(
-            "relative flex items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold transition-colors",
+            "relative flex cursor-pointer items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold transition-colors",
             activeTab === "pending"
               ? "bg-[#2196F3] text-white"
               : "bg-[#F6F6F6] text-gray-500 hover:text-gray-700",
@@ -114,7 +114,7 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
         <button
           onClick={() => setActiveTab("resolved")}
           className={cn(
-            "flex items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold transition-colors",
+            "flex cursor-pointer items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold transition-colors",
             activeTab === "resolved"
               ? "bg-[#2196F3] text-white"
               : "bg-[#F6F6F6] text-gray-500 hover:text-gray-700",
@@ -172,7 +172,7 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
                   key={ticket.id}
                   onClick={() => onSelectItem(ticket.id, index, "ticket")}
                   className={cn(
-                    "flex w-full items-center gap-3 rounded-2xl p-3 text-left transition-colors",
+                    "flex w-full cursor-pointer items-center gap-3 rounded-2xl p-3 text-left transition-colors",
                     selectedItemId === ticket.id
                       ? "bg-blue-50"
                       : "hover:bg-gray-50",
@@ -233,7 +233,7 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
                 key={chat.id}
                 onClick={() => onSelectItem(chat.id, index, "chat")}
                 className={cn(
-                  "flex w-full items-center gap-3 rounded-2xl p-3 text-left transition-colors",
+                  "flex w-full cursor-pointer items-center gap-3 rounded-2xl p-3 text-left transition-colors",
                   selectedItemId === chat.id
                     ? "bg-[#ECECEC]"
                     : "hover:bg-[#ECECEC]",

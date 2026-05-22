@@ -142,7 +142,7 @@ export function DevelopmentResourcesDrawer({
 
                 closeDrawer();
               }}
-              className="font-dm-mono pointer-events-auto flex w-fit cursor-pointer items-center gap-3 text-xs leading-none tracking-[0.08em] text-black/50 uppercase transition-colors hover:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black md:text-sm"
+              className="font-dm-mono pointer-events-auto flex w-fit cursor-pointer items-center gap-3 rounded-full bg-white px-3 py-1 text-xs leading-none tracking-[0.08em] text-black/50 uppercase transition-colors hover:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black md:text-sm"
             >
               <Icons.leftArrow className="h-auto w-6 stroke-2 text-black" />
               {selectedVideo ? "Back to Development Resources" : "Back"}

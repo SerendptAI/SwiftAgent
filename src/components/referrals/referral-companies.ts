@@ -1,0 +1,30 @@
+export const SERVICE_COMPANIES = [
+  { name: "PARTYVERSE", logo: "partyverse.png" },
+  { name: "KUDA BANK", logo: "kuda.png" },
+  { name: "WEMA BANK", logo: "wema.png" },
+  { name: "FLUTTERWAVE", logo: "flutterwave.png" },
+  { name: "GREY", logo: "grey.png" },
+  { name: "BAYSE.MARKETS", logo: "bayse.png" },
+  { name: "PAGA", logo: "paga.png" },
+  { name: "COWRYWISE", logo: "cowrywise.png" },
+  { name: "RISEVEST", logo: "rise.png" },
+  { name: "SELAR", logo: "selar.png" },
+  { name: "CHOWDECK", logo: "chowdeck.png" },
+  { name: "PROVIDUS BANK", logo: "providus.png" },
+  { name: "RAENEST", logo: "raenest.png" },
+  { name: "PAYSTACK", logo: "paystack.png" },
+  { name: "MONIEPOINT", logo: "moniepoint.png" },
+  { name: "CARBON", logo: "carbon.png" },
+  { name: "LADDA", logo: "ladda.png" },
+  { name: "MONO", logo: "mono.png" },
+  { name: "REMITA", logo: "remita.png" },
+  { name: "BUMPA", logo: "bumpa.png" },
+  { name: "PAIDHR", logo: "paidhr.png" },
+  { name: "BRASS", logo: "brass.png" },
+  { name: "SEAMLESSHR", logo: "seamlesshr.png" },
+  { name: "MAINSTACK", logo: "mainstack.png" },
+] as const;
+
+export const SERVICE_COMPANY_NAMES = SERVICE_COMPANIES.map(
+  (company) => company.name,
+);

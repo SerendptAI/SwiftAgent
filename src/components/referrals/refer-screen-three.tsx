@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
+import { SERVICE_COMPANY_NAMES } from "./referral-companies";
+
 interface ReferScreenThreeProps {
   onBack: () => void;
   onNext: () => void;
@@ -64,7 +66,6 @@ const initialValues: FormValues = {
 const founderFields: FieldName[] = [
   "founderName",
   "companyName",
-  "companyOther",
   "founderPosition",
   "founderPhone",
   "founderEmail",
@@ -456,18 +457,9 @@ export function ReferScreenThree({ onBack, onNext }: ReferScreenThreeProps) {
                   label="Company name"
                   name="companyName"
                   placeholder="SELECT COMPANY"
-                  options={["Partyverse", "Kuda Bank", "Wema Bank", "Other"]}
+                  options={SERVICE_COMPANY_NAMES}
                   value={values.companyName}
                   error={errors.companyName}
-                  onBlur={validateOnBlur}
-                  onChange={setFieldValue}
-                />
-                <Field
-                  label="Company name (if you selected Other)"
-                  name="companyOther"
-                  placeholder="FGM"
-                  value={values.companyOther}
-                  error={errors.companyOther}
                   onBlur={validateOnBlur}
                   onChange={setFieldValue}
                 />
