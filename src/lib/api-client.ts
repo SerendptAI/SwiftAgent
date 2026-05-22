@@ -63,6 +63,30 @@ apiClient.interceptors.request.use((config) => {
 
 // ── Response interceptor — silent token refresh on 401 ────────────────────────
 
+const REFRESH_URL = "/api/v1/auth/refresh";
+
+// Dedicated client for the refresh call so the request/response interceptors
+// above never run against it — using `apiClient` here would attach the (stale)
+// access token and could re-enter this same interceptor in an infinite loop.
+const refreshClient = axios.create({
+  baseURL: API_BASE_URL,
+  headers: { "Content-Type": "application/json" },
+  timeout: 15_000,
+});
+
+function getLocaleFromPath(): string {
+  if (typeof window === "undefined") return "en";
+  const segment = window.location.pathname.split("/")[1];
+  return segment === "pl" || segment === "en" ? segment : "en";
+}
+
+function forceLogout() {
+  clearAuthTokens();
+  if (typeof window !== "undefined") {
+    window.location.href = `/${getLocaleFromPath()}/login`;
+  }
+}
+
 let isRefreshing = false;
 let failedQueue: Array<{
   resolve: (token: string) => void;
@@ -80,21 +104,58 @@ function processQueue(error: unknown, token: string | null = null) {
   failedQueue = [];
 }
 
+// Exchange the refresh token for a new access token. Retries once on transient
+// failures (network errors, timeouts, 5xx) so a momentary blip doesn't tear
+// down a perfectly valid session. A 401/403 means the refresh token itself is
+// rejected, so we fail fast in that case.
+async function requestNewTokens(
+  refreshToken: string,
+): Promise<{ access_token: string; refresh_token?: string }> {
+  let lastError: unknown;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const { data } = await refreshClient.post(REFRESH_URL, {
+        refresh_token: refreshToken,
+      });
+      return data;
+    } catch (err) {
+      lastError = err;
+      const status = axios.isAxiosError(err) ? err.response?.status : undefined;
+      if (status === 401 || status === 403) throw err;
+    }
+  }
+  throw lastError;
+}
+
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+    const status = error.response?.status;
 
-    // Only attempt refresh on 401 and if we haven't already retried
-    if (error.response?.status !== 401 || originalRequest._retry) {
+    // Bail out unless this is a 401 on a real request we haven't already retried
+    // — and never try to refresh the refresh call itself.
+    if (
+      !originalRequest ||
+      status !== 401 ||
+      originalRequest._retry ||
+      originalRequest.url?.includes(REFRESH_URL)
+    ) {
       return Promise.reject(error);
     }
 
-    // If we're already refreshing, queue this request
+    const refreshToken = getRefreshToken();
+    if (!refreshToken) {
+      forceLogout();
+      return Promise.reject(error);
+    }
+
+    // A refresh is already in flight — queue this request until it resolves.
     if (isRefreshing) {
       return new Promise((resolve, reject) => {
         failedQueue.push({
           resolve: (token: string) => {
+            originalRequest._retry = true;
             originalRequest.headers.Authorization = `Bearer ${token}`;
             resolve(apiClient(originalRequest));
           },
@@ -106,21 +167,8 @@ apiClient.interceptors.response.use(
     originalRequest._retry = true;
     isRefreshing = true;
 
-    const refreshToken = getRefreshToken();
-
-    if (!refreshToken) {
-      clearAuthTokens();
-      if (typeof window !== "undefined") {
-        window.location.href = "/en/login";
-      }
-      return Promise.reject(error);
-    }
-
     try {
-      // Use a raw axios call so the interceptor doesn't infinitely loop
-      const { data } = await axios.post(`${API_BASE_URL}/api/v1/auth/refresh`, {
-        refresh_token: refreshToken,
-      });
+      const data = await requestNewTokens(refreshToken);
 
       const newAccessToken = data.access_token;
       const newRefreshToken = data.refresh_token ?? refreshToken;
@@ -134,10 +182,18 @@ apiClient.interceptors.response.use(
       return apiClient(originalRequest);
     } catch (refreshError) {
       processQueue(refreshError, null);
-      clearAuthTokens();
-      if (typeof window !== "undefined") {
-        window.location.href = "/en/login";
+
+      // Only end the session when the server explicitly rejects the refresh
+      // token (401/403). Transient failures (network errors, timeouts, 5xx)
+      // keep the tokens in place so a later request can recover instead of
+      // bouncing the user to the login screen.
+      const refreshStatus = axios.isAxiosError(refreshError)
+        ? refreshError.response?.status
+        : undefined;
+      if (refreshStatus === 401 || refreshStatus === 403) {
+        forceLogout();
       }
+
       return Promise.reject(refreshError);
     } finally {
       isRefreshing = false;

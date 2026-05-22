@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
 import { getAccessToken } from "@/lib/api-client";
 import type {
@@ -28,7 +29,16 @@ export function useCurrentUser() {
     queryKey: ["currentUser"],
     queryFn: getCurrentUser,
     enabled: !!getAccessToken(),
-    retry: false,
+    // Retry transient failures, but not auth errors: a 401/403 means the
+    // interceptor already attempted (and exhausted) a token refresh, so retrying
+    // is pointless. This keeps a momentary network blip from logging the user out.
+    retry: (failureCount, error) => {
+      const status = axios.isAxiosError(error)
+        ? error.response?.status
+        : undefined;
+      if (status === 401 || status === 403) return false;
+      return failureCount < 2;
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
