@@ -29,9 +29,8 @@ export function useCurrentUser() {
     queryKey: ["currentUser"],
     queryFn: getCurrentUser,
     enabled: !!getAccessToken(),
-    // Retry transient failures, but not auth errors: a 401/403 means the
-    // interceptor already attempted (and exhausted) a token refresh, so retrying
-    // is pointless. This keeps a momentary network blip from logging the user out.
+    // Retry transient failures, but not auth errors (the interceptor already
+    // tried to refresh) — keeps a network blip from logging the user out.
     retry: (failureCount, error) => {
       const status = axios.isAxiosError(error)
         ? error.response?.status

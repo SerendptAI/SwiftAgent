@@ -65,9 +65,7 @@ apiClient.interceptors.request.use((config) => {
 
 const REFRESH_URL = "/api/v1/auth/refresh";
 
-// Dedicated client for the refresh call so the request/response interceptors
-// above never run against it — using `apiClient` here would attach the (stale)
-// access token and could re-enter this same interceptor in an infinite loop.
+// Separate client so the refresh call skips the interceptors and can't loop.
 const refreshClient = axios.create({
   baseURL: API_BASE_URL,
   headers: { "Content-Type": "application/json" },
@@ -104,10 +102,7 @@ function processQueue(error: unknown, token: string | null = null) {
   failedQueue = [];
 }
 
-// Exchange the refresh token for a new access token. Retries once on transient
-// failures (network errors, timeouts, 5xx) so a momentary blip doesn't tear
-// down a perfectly valid session. A 401/403 means the refresh token itself is
-// rejected, so we fail fast in that case.
+// Retries once on transient failures; a 401/403 means the token is rejected.
 async function requestNewTokens(
   refreshToken: string,
 ): Promise<{ access_token: string; refresh_token?: string }> {
@@ -133,8 +128,6 @@ apiClient.interceptors.response.use(
     const originalRequest = error.config;
     const status = error.response?.status;
 
-    // Bail out unless this is a 401 on a real request we haven't already retried
-    // — and never try to refresh the refresh call itself.
     if (
       !originalRequest ||
       status !== 401 ||
@@ -175,7 +168,6 @@ apiClient.interceptors.response.use(
 
       setAuthTokens(newAccessToken, newRefreshToken);
 
-      // Retry the original request with the new token
       originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
       processQueue(null, newAccessToken);
 
@@ -183,10 +175,8 @@ apiClient.interceptors.response.use(
     } catch (refreshError) {
       processQueue(refreshError, null);
 
-      // Only end the session when the server explicitly rejects the refresh
-      // token (401/403). Transient failures (network errors, timeouts, 5xx)
-      // keep the tokens in place so a later request can recover instead of
-      // bouncing the user to the login screen.
+      // Log out only when the refresh token is explicitly rejected; transient
+      // failures keep the session so a later request can recover.
       const refreshStatus = axios.isAxiosError(refreshError)
         ? refreshError.response?.status
         : undefined;
