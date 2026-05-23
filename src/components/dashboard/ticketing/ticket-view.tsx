@@ -71,7 +71,7 @@ export function TicketView({ ticketId, avatarIndex = 0 }: TicketViewProps) {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [ticket?.messages]);
+  }, [ticket?.messages?.length]);
 
   useEffect(() => {
     if (ticket && ticket.unseen_count > 0 && companyId) {
