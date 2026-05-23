@@ -16,6 +16,7 @@ export function useTickets() {
     queryKey: ["tickets", companyId],
     queryFn: () => ticketsApi.list(companyId!),
     enabled: !!companyId,
+    refetchInterval: 15000,
   });
 }
 
@@ -28,8 +29,6 @@ export function useTicket(ticketId: string | null) {
     queryFn: () => ticketsApi.getById(companyId!, ticketId!),
     enabled: !!companyId && !!ticketId,
     placeholderData: keepPreviousData,
-    // Poll the open thread so new replies appear without a full reload.
-    // Pauses automatically while the tab is in the background.
     refetchInterval: 15000,
   });
 }
