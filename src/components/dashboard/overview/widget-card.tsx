@@ -402,13 +402,6 @@ function ChatbotSettingsSidebar({
             </p>
             <div className="space-y-4">
               <FieldInput
-                id="sandbox-dashboard-url"
-                label="Dashboard URL"
-                value={dashboardUrl}
-                onChange={setDashboardUrl}
-                placeholder="https://app.example.com/dashboard"
-              />
-              <FieldInput
                 id="sandbox-login-url"
                 label="Login URL"
                 value={loginUrl}
@@ -416,11 +409,18 @@ function ChatbotSettingsSidebar({
                 placeholder="https://app.example.com/login"
               />
               <FieldInput
+                id="sandbox-dashboard-url"
+                label="Dashboard URL"
+                value={dashboardUrl}
+                onChange={setDashboardUrl}
+                placeholder="https://app.example.com/dashboard"
+              />
+              <FieldInput
                 id="sandbox-username"
-                label="Username"
+                label="Email/Username"
                 value={username}
                 onChange={setUsername}
-                placeholder="Username"
+                placeholder="Email/Username"
               />
               <FieldInput
                 id="sandbox-password"

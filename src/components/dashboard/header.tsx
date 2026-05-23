@@ -12,11 +12,6 @@ import { DashboardSearch } from "./dashboard-search";
 export function Header() {
   const { data: user } = useCurrentUser();
 
-  // Temporary fallback for testing API endpoints
-  const testCompanyId =
-    user?.company_id || "123e4567-e89b-12d3-a456-426614174000";
-  console.log("TESTING company_id:", testCompanyId);
-
   return (
     <header className="flex h-20 items-center justify-between gap-4 px-6 lg:h-[90px]">
       <div className="mt-6 flex w-[60%] items-center gap-6">
