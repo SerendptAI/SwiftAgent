@@ -1,6 +1,12 @@
 "use client";
 
-import { CheckCircle2, ChevronDown, Copy, XCircle } from "lucide-react";
+import {
+  CheckCircle2,
+  ChevronDown,
+  ChevronLeft,
+  Copy,
+  XCircle,
+} from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -9,6 +15,12 @@ import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useStrollConfig, useUpdateStrollConfig } from "@/hooks/use-stroll";
 import type { StrollConfigPayload } from "@/services/stroll";
+
+import {
+  ApiKeysSection,
+  PaymentSandboxSection,
+  SuggestedQuestionsSection,
+} from "./chatbot-settings-sections";
 
 type WidgetMode = "widget" | "button";
 
@@ -352,12 +364,20 @@ function ChatbotSettingsSidebar({
           isShown ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex-1 space-y-8 overflow-y-auto px-6 py-6">
+        <div className="flex-1 space-y-10 overflow-y-auto px-[36px] py-6">
+          <button
+            type="button"
+            onClick={closeWithAnimation}
+            className="font-dm-mono flex items-center gap-1.5 text-xs tracking-wider text-black/50 uppercase hover:text-black"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            Back
+          </button>
           <section>
-            <h3 className="font-greed-narrow mb-3 text-base font-bold tracking-wider text-gray-900 uppercase">
+            <h3 className="font-greed-narrow mb-3 text-[34px] leading-[0.95] font-medium tracking-[-0.68px] text-black uppercase">
               Select Agents
             </h3>
-            <p className="font-dm-mono mb-5 text-xs tracking-wider text-gray-500 uppercase">
+            <p className="font-dm-mono mb-5 text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase">
               Which agents are allowed to work in this chatbot
             </p>
             <ul className="space-y-4">
@@ -393,11 +413,11 @@ function ChatbotSettingsSidebar({
           </section>
 
           <section>
-            <h3 className="font-greed-narrow mb-3 text-base font-bold tracking-wider text-gray-900 uppercase">
+            <h3 className="font-greed-narrow mb-3 text-[34px] leading-[0.95] font-medium tracking-[-0.68px] text-black uppercase">
               Sandbox
             </h3>
-            <p className="font-dm-mono mb-5 text-xs tracking-wider text-gray-500 uppercase">
-              Please create a sandbox account and enter the login details for
+            <p className="font-dm-mono mb-5 text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase">
+              Please create a sandbox account and share the login details for
               Agent 047
             </p>
             <div className="space-y-4">
@@ -478,13 +498,17 @@ function ChatbotSettingsSidebar({
               )}
             </div>
           </section>
+
+          <PaymentSandboxSection />
+          <ApiKeysSection />
+          <SuggestedQuestionsSection />
         </div>
 
-        <div className="border-t border-gray-100 px-6 py-4">
+        <div className="px-[36px] py-4">
           <button
             onClick={handleSave}
             disabled={updateConfig.isPending}
-            className="font-dm-mono w-full cursor-pointer rounded-sm bg-[#006BE5] py-3 text-center text-sm font-bold tracking-wider text-white uppercase transition-colors hover:bg-[#0055B8] disabled:cursor-not-allowed disabled:opacity-50"
+            className="font-dm-mono w-full cursor-pointer rounded-[8px] bg-[#006BE5] py-3 text-center text-sm tracking-wider text-white uppercase shadow-[-3px_4px_0px_0px_#000000] transition-all hover:bg-[#0055B8] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-1px_2px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-50"
           >
             {updateConfig.isPending ? "Saving…" : "Save & Close"}
           </button>
