@@ -16,7 +16,7 @@ interface ProfileCardProps {
 }
 
 export function ProfileCard({
-  name: propName,
+  name: propName = "John Doe",
   loginMethod: propLoginMethod,
   ip: propIp,
   onLogout: propOnLogout,
