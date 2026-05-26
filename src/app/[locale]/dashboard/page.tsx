@@ -3,7 +3,6 @@ import { ResourcesCard } from "@/components/dashboard/overview/resources-card";
 import { StatsCards } from "@/components/dashboard/overview/stats-cards";
 import { VisitorsList } from "@/components/dashboard/overview/visitors-list";
 import { WidgetCard } from "@/components/dashboard/overview/widget-card";
-import { UpgradeModalTrigger } from "@/components/dashboard/upgrade-modal-trigger";
 import { OfflineScreen } from "@/components/offline-screen";
 import { getServerApiClient } from "@/lib/api-server";
 import { DashboardStats, DashboardVisitor } from "@/services/dashboard";
@@ -52,8 +51,6 @@ export default async function DashboardPage() {
           <VisitorsList initialData={initialVisitors} />
         </div>
       </div>
-
-      <UpgradeModalTrigger />
     </div>
   );
 }

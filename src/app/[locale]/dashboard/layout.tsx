@@ -1,6 +1,7 @@
 import { AuthGuard } from "@/components/auth-check";
 import { Header } from "@/components/dashboard/header";
 import { Sidebar } from "@/components/dashboard/sidebar";
+import { UpgradeModalTrigger } from "@/components/dashboard/upgrade-modal-trigger";
 import { MobileGate } from "@/components/mobile-gate";
 
 export default function DashboardLayout({
@@ -23,6 +24,7 @@ export default function DashboardLayout({
               </main>
             </div>
           </div>
+          <UpgradeModalTrigger />
         </div>
       </AuthGuard>
     </MobileGate>

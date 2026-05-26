@@ -190,3 +190,20 @@ apiClient.interceptors.response.use(
     }
   },
 );
+
+// Detect plan-limit errors anywhere in the app and pop the upgrade modal.
+apiClient.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (axios.isAxiosError(error)) {
+      const detail = (error.response?.data as { detail?: unknown } | undefined)
+        ?.detail;
+      const { isPlanLimitError, useUpgradeModalStore } =
+        await import("@/store/upgrade-modal-store");
+      if (isPlanLimitError(detail) || error.response?.status === 402) {
+        useUpgradeModalStore.getState().show();
+      }
+    }
+    return Promise.reject(error);
+  },
+);
