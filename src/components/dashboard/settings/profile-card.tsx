@@ -17,7 +17,7 @@ interface ProfileCardProps {
 }
 
 export function ProfileCard({
-  name: propName = "Otonte Briggs",
+  name: propName,
   avatarSrc: propAvatarSrc,
   loginMethod: propLoginMethod,
   ip: propIp = "196.201.52.68",
