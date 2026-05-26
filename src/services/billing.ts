@@ -45,7 +45,7 @@ export interface CheckoutResponse {
 
 export async function getBillingPlans(): Promise<BillingPlansResponse> {
   const { data } = await apiClient.get<BillingPlansResponse>(
-    "/api/v1/billing/billing/plans",
+    "/api/v1/billing/plans",
   );
   return data;
 }
@@ -54,7 +54,7 @@ export async function getBillingDetails(
   companyId: string,
 ): Promise<BillingDetails> {
   const { data } = await apiClient.get<BillingDetails>(
-    `/api/v1/billing/${encodeURIComponent(companyId)}/details`,
+    `/api/v1/billing/${encodeURIComponent(companyId)}/status`,
   );
   return data;
 }
