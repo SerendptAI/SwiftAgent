@@ -10,7 +10,6 @@ import { getProfileImage } from "@/lib/utils";
 
 interface ProfileCardProps {
   name?: string;
-  avatarSrc?: string;
   loginMethod?: string;
   ip?: string;
   onLogout?: () => void;
@@ -18,9 +17,8 @@ interface ProfileCardProps {
 
 export function ProfileCard({
   name: propName,
-  avatarSrc: propAvatarSrc,
   loginMethod: propLoginMethod,
-  ip: propIp = "196.201.52.68",
+  ip: propIp,
   onLogout: propOnLogout,
 }: ProfileCardProps) {
   const { data: user } = useCurrentUser();
@@ -41,7 +39,6 @@ export function ProfileCard({
   }, []);
 
   const name = user?.name || propName;
-  const avatarSrc = user?.picture || propAvatarSrc;
   const displayIp = currentIp || propIp;
   const storedProvider = getAuthProvider();
   const isGooglePicture =
