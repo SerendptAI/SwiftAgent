@@ -31,9 +31,9 @@ export default function BillingPage() {
   }));
   const savedCards: SavedCard[] = [...backendCards, ...localAsSaved];
 
-  const presentPlanName = details?.subscription_tier
-    ? String(details.subscription_tier).toUpperCase()
-    : "FREE";
+  const presentPlanName =
+    details?.display_name?.toUpperCase() ||
+    (details?.tier ? String(details.tier).toUpperCase() : "FREE");
 
   return (
     <div className="flex min-h-[450px] flex-col gap-6 rounded-xl bg-white p-4 shadow-sm">

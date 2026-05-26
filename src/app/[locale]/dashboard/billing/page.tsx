@@ -39,7 +39,7 @@ export default function BillingPage() {
     last4: c.last4,
   }));
   const savedCards: SavedCard[] = [...backendCards, ...localAsSaved];
-  const activeTier = details?.subscription_tier ?? null;
+  const activeTier = details?.tier ?? null;
 
   const handleSubscribe = (plan: Plan) => {
     if (!plan.tier || !companyId) return;

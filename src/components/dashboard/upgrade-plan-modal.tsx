@@ -29,7 +29,7 @@ export function UpgradePlanModal({
   const createCheckout = useCreateCheckout();
 
   const [pendingTier, setPendingTier] = useState<string | null>(null);
-  const activeTier: SubscriptionTier = details?.subscription_tier ?? null;
+  const activeTier: SubscriptionTier = details?.tier ?? null;
   const plans = buildPlans(country);
 
   useEffect(() => {

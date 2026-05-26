@@ -24,12 +24,27 @@ export interface SavedCard {
   last4: string;
 }
 
+export interface BillingUsageQuota {
+  used: number;
+  limit: number;
+}
+
 export interface BillingDetails {
-  subscription_tier: SubscriptionTier;
+  tier: SubscriptionTier;
+  display_name?: string;
   subscription_status: SubscriptionStatus;
-  billing_provider: BillingProvider;
   subscription_started_at: string | null;
-  saved_cards: SavedCard[];
+  subscription_expires_at?: string | null;
+  usage?: {
+    agents?: BillingUsageQuota;
+    documents?: BillingUsageQuota;
+    members?: BillingUsageQuota;
+    voice_minutes?: BillingUsageQuota;
+  };
+  features?: Record<string, string>;
+  /** Optional — not returned by /status today; kept for the saved-cards UI when the endpoint adds it. */
+  billing_provider?: BillingProvider;
+  saved_cards?: SavedCard[];
 }
 
 export interface CheckoutPayload {
