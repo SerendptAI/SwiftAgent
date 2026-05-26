@@ -68,21 +68,32 @@ export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
   const createCheckout = useCreateCheckout();
 
   const [pendingTier, setPendingTier] = useState<string | null>(null);
+  const [visible, setVisible] = useState(open);
   const activeTier: SubscriptionTier = details?.tier ?? null;
   const plans = buildPlans(country);
 
   useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    setVisible(open);
+  }, [open]);
+
+  const handleClose = () => {
+    setVisible(false);
+    onClose();
+  };
+
+  useEffect(() => {
+    if (!visible) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && handleClose();
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [open, onClose]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible]);
 
-  if (!open) return null;
+  if (!visible) return null;
 
   const handleSubscribe = (plan: Plan) => {
     if (!plan.tier || !companyId) return;
@@ -109,15 +120,15 @@ export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
       <button
         type="button"
         aria-label="Close upgrade dialog"
-        onClick={onClose}
+        onClick={handleClose}
         className="absolute inset-0 cursor-default bg-black/65"
       />
       <div className="relative flex max-h-[92vh] w-[810px] max-w-full flex-col overflow-y-auto bg-white">
         <button
           type="button"
           aria-label="Close"
-          onClick={onClose}
-          className="absolute top-3 right-3 text-black/70 transition-colors hover:text-black"
+          onClick={handleClose}
+          className="absolute top-3 right-3 z-10 text-black/70 transition-colors hover:text-black"
         >
           <X className="size-[30px]" strokeWidth={1.5} />
         </button>
