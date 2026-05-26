@@ -4,10 +4,13 @@ import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import type { Plan } from "@/components/pricing/plan-card";
-import { buildPlans } from "@/components/pricing/plans";
+import { plansFromBackend } from "@/components/pricing/plans";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
-import { useBillingDetails, useCreateCheckout } from "@/hooks/use-billing";
-import { useGeoCountry } from "@/hooks/use-geo-country";
+import {
+  useBillingDetails,
+  useBillingPlans,
+  useCreateCheckout,
+} from "@/hooks/use-billing";
 import type { SubscriptionTier } from "@/services/billing";
 
 import { Icons } from "../icons";
@@ -63,14 +66,14 @@ interface UpgradePlanModalProps {
 
 export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
   const companyId = useActiveCompanyId();
-  const country = useGeoCountry();
   const { data: details } = useBillingDetails(companyId);
+  const { data: backendPlans } = useBillingPlans();
   const createCheckout = useCreateCheckout();
 
   const [pendingTier, setPendingTier] = useState<string | null>(null);
   const [visible, setVisible] = useState(open);
   const activeTier: SubscriptionTier = details?.tier ?? null;
-  const plans = buildPlans(country);
+  const plans = plansFromBackend(backendPlans);
 
   useEffect(() => {
     setVisible(open);

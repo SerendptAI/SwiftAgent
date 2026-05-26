@@ -2,65 +2,80 @@ import { apiClient } from "@/lib/api-client";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
-export interface BillingPlan {
-  tier: string;
-  name?: string;
-  price?: number | string;
-  currency?: string;
-  interval?: string;
-  limits?: Record<string, number | string | null>;
-  features?: string[];
-  [key: string]: unknown;
-}
-
-export type BillingPlansResponse = BillingPlan[] | Record<string, BillingPlan>;
-
 export type SubscriptionTier = "basic" | "pro" | "enterprise" | null;
 export type SubscriptionStatus = "active" | "inactive";
 export type BillingProvider = "polar" | "palmpay" | null;
+export type PlanRegion = "african" | "international";
+
+export interface BillingPlan {
+  price_usd: number;
+  /** Original USD price shown struck-through when a discount is active. */
+  price_usd_original?: number;
+  display_name: string;
+  agents_limit?: number;
+  documents_limit?: number;
+  region?: PlanRegion;
+  trial_months?: number;
+  [key: string]: unknown;
+}
+
+/** Backend keys plans by tier slug. */
+export type BillingPlansResponse = Record<string, BillingPlan>;
 
 export interface SavedCard {
   brand: string;
   last4: string;
 }
 
-export interface BillingUsageQuota {
-  used: number;
-  limit: number;
-}
-
 export interface BillingDetails {
+  company_id?: string;
   tier: SubscriptionTier;
-  display_name?: string;
-  subscription_status: SubscriptionStatus;
-  subscription_started_at: string | null;
-  subscription_expires_at?: string | null;
-  usage?: {
-    agents?: BillingUsageQuota;
-    documents?: BillingUsageQuota;
-    members?: BillingUsageQuota;
-    voice_minutes?: BillingUsageQuota;
-  };
-  features?: Record<string, string>;
-  /** Optional — not returned by /status today; kept for the saved-cards UI when the endpoint adds it. */
+  status: SubscriptionStatus;
+  agents_used?: number;
+  agents_limit?: number;
+  documents_used?: number;
+  documents_limit?: number;
+  members_used?: number;
+  members_limit?: number;
+  voice_minutes_used?: number;
+  voice_minutes_limit?: number;
   billing_provider?: BillingProvider;
+  display_name?: string;
+  /** Not in the /status response today; kept optional for the saved-cards UI when it lands. */
   saved_cards?: SavedCard[];
 }
 
 export interface CheckoutPayload {
   company_id: string;
   tier: string;
+  user_timezone?: string;
 }
 
 export interface CheckoutResponse {
   checkout_url: string;
 }
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+/** Browser timezone via Intl; safe for SSR (returns undefined server-side). */
+export function getUserTimezone(): string | undefined {
+  if (typeof window === "undefined") return undefined;
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 // ── Endpoints ─────────────────────────────────────────────────────────────────
 
-export async function getBillingPlans(): Promise<BillingPlansResponse> {
+export async function getBillingPlans(
+  timezone?: string,
+): Promise<BillingPlansResponse> {
+  const tz = timezone ?? getUserTimezone();
   const { data } = await apiClient.get<BillingPlansResponse>(
     "/api/v1/billing/plans",
+    { params: tz ? { timezone: tz } : undefined },
   );
   return data;
 }
@@ -77,9 +92,13 @@ export async function getBillingDetails(
 export async function createCheckoutSession(
   payload: CheckoutPayload,
 ): Promise<CheckoutResponse> {
+  const body: CheckoutPayload = {
+    ...payload,
+    user_timezone: payload.user_timezone ?? getUserTimezone(),
+  };
   const { data } = await apiClient.post<CheckoutResponse>(
     "/api/v1/billing/checkout",
-    payload,
+    body,
   );
   return data;
 }

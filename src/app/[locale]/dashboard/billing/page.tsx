@@ -7,10 +7,13 @@ import { CompanyToolbar } from "@/components/dashboard/company-toolbar";
 import { AddCardModal } from "@/components/dashboard/settings/add-card-modal";
 import { Icons } from "@/components/icons";
 import { type Plan, PlanCard } from "@/components/pricing/plan-card";
-import { buildPlans } from "@/components/pricing/plans";
+import { plansFromBackend } from "@/components/pricing/plans";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
-import { useBillingDetails, useCreateCheckout } from "@/hooks/use-billing";
-import { useGeoCountry } from "@/hooks/use-geo-country";
+import {
+  useBillingDetails,
+  useBillingPlans,
+  useCreateCheckout,
+} from "@/hooks/use-billing";
 import type { SavedCard } from "@/services/billing";
 import { useCardStore } from "@/store/card-store";
 
@@ -28,10 +31,10 @@ export default function BillingPage() {
 
   const companyId = useActiveCompanyId();
   const { data: details } = useBillingDetails(companyId);
+  const { data: backendPlans } = useBillingPlans();
   const createCheckout = useCreateCheckout();
-  const country = useGeoCountry();
   const { savedCards: localCards, addCard } = useCardStore();
-  const plans: Plan[] = buildPlans(country);
+  const plans: Plan[] = plansFromBackend(backendPlans);
 
   const backendCards: SavedCard[] = details?.saved_cards ?? [];
   const localAsSaved: SavedCard[] = localCards.map((c) => ({

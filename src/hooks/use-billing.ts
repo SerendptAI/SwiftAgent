@@ -11,14 +11,17 @@ import {
   createCheckoutSession,
   getBillingDetails,
   getBillingPlans,
+  getUserTimezone,
 } from "@/services/billing";
 
 // ── Billing Plans ─────────────────────────────────────────────────────────────
 
-export function useBillingPlans() {
+/** Region-aware plan list. Pass an explicit timezone to override the browser's. */
+export function useBillingPlans(timezone?: string) {
+  const tz = timezone ?? getUserTimezone();
   return useQuery<BillingPlansResponse>({
-    queryKey: ["billingPlans"],
-    queryFn: getBillingPlans,
+    queryKey: ["billingPlans", tz ?? "default"],
+    queryFn: () => getBillingPlans(tz),
     staleTime: 10 * 60 * 1000,
   });
 }

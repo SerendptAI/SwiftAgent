@@ -3,6 +3,8 @@ import Image from "next/image";
 export interface Plan {
   name: string;
   price: string;
+  /** Optional original price shown struck through (e.g. discounted from $200 → $100). */
+  priceOriginal?: string;
   billing: string;
   description: string;
   textColor: string;
@@ -10,6 +12,8 @@ export interface Plan {
   features: string[];
   /** Backend tier slug used by the billing checkout endpoint */
   tier?: string;
+  /** Number of free trial months — when present, renders an "X Months Free!" badge. */
+  trialMonths?: number;
 }
 
 interface PlanCardProps {
@@ -49,14 +53,28 @@ export function PlanCard({
 
       {/* Card Body */}
       <div className="font-dm-mono flex flex-1 flex-col px-4 pt-4 md:px-6 md:pt-6">
-        <h3
-          className={`mb-3.5 text-base leading-none tracking-widest uppercase ${plan.textColor}`}
-        >
-          {plan.name}
-        </h3>
+        <div className="mb-3.5 flex items-center gap-2">
+          <h3
+            className={`text-base leading-none tracking-widest uppercase ${plan.textColor}`}
+          >
+            {plan.name}
+          </h3>
+          {plan.trialMonths ? (
+            <span className="rounded-full bg-[#F2B035] px-2 py-0.5 text-[10px] leading-none font-bold tracking-wider text-black uppercase">
+              {plan.trialMonths} Months Free!
+            </span>
+          ) : null}
+        </div>
 
-        <p className="mb-3.5 text-base leading-none text-gray-900">
-          {plan.price} {plan.billing}
+        <p className="mb-3.5 flex items-baseline gap-2 text-base leading-none text-gray-900">
+          {plan.priceOriginal ? (
+            <span className="text-sm text-gray-400 line-through">
+              {plan.priceOriginal}
+            </span>
+          ) : null}
+          <span>
+            {plan.price} {plan.billing}
+          </span>
         </p>
 
         <p className="mb-5 text-sm leading-relaxed tracking-wider whitespace-pre-line text-gray-500 uppercase">

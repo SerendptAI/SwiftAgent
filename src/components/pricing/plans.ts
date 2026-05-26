@@ -1,23 +1,22 @@
+import type { BillingPlan, BillingPlansResponse } from "@/services/billing";
+
 import type { Plan } from "./plan-card";
 
-export const GEO_PRICING: Record<string, { price: string; billing: string }[]> =
-  {
-    NG: [
-      { price: "NGN 25,000", billing: "PER MONTH" },
-      { price: "NGN 45,000", billing: "PER MONTH" },
-      { price: "NGN 80,000", billing: "PER MONTH" },
-    ],
-    default: [
-      { price: "200 USD", billing: "PER MONTH" },
-      { price: "700 USD", billing: "PER MONTH" },
-      { price: "1,700 USD", billing: "PER MONTH" },
-    ],
-  };
+/**
+ * Tier-level metadata that the backend doesn't return (icons, theme colors,
+ * description copy, feature bullets). Keyed by tier slug.
+ */
+interface PlanMeta {
+  name: string;
+  description: string;
+  textColor: string;
+  image: string;
+  features: string[];
+}
 
-export const BASE_PLANS: Omit<Plan, "price" | "billing">[] = [
-  {
+const PLAN_META: Record<string, PlanMeta> = {
+  basic: {
     name: "BASIC PLAN",
-    tier: "basic",
     description:
       "DESIGNED FOR EARLY STARTUPS\nAND SMALL PROJECTS\nTESTING THE WATERS.",
     textColor: "text-[#F3B03D]",
@@ -34,9 +33,8 @@ export const BASE_PLANS: Omit<Plan, "price" | "billing">[] = [
       "UP TO 3 INVITED MEMBERS\nPER COMPANY",
     ],
   },
-  {
+  pro: {
     name: "PRO PLAN",
-    tier: "pro",
     description:
       "GEARED TOWARDS GROWING\nOPERATIONS NEEDING SCALE\nAND HEAVIER WORKLOAD VOLUME.",
     textColor: "text-[#6433CC]",
@@ -53,9 +51,8 @@ export const BASE_PLANS: Omit<Plan, "price" | "billing">[] = [
       "UP TO 10 INVITED MEMBERS\nPER COMPANY",
     ],
   },
-  {
+  enterprise: {
     name: "ENTERPRISE PLAN",
-    tier: "enterprise",
     description:
       "UNCAPPED SCALING FOR\nESTABLISHED OPERATIONS\nAND INTENSIVE NEEDS.",
     textColor: "text-[#F25430]",
@@ -72,9 +69,43 @@ export const BASE_PLANS: Omit<Plan, "price" | "billing">[] = [
       "UNLIMITED INVITED MEMBERS\nPER COMPANY",
     ],
   },
-];
+};
 
-export function buildPlans(country: string | null | undefined): Plan[] {
-  const pricing = GEO_PRICING[country ?? "default"] ?? GEO_PRICING.default;
-  return BASE_PLANS.map((base, i) => ({ ...base, ...pricing[i] }));
+const TIER_ORDER = ["basic", "pro", "enterprise"];
+
+function formatPrice(usd: number | undefined): string {
+  if (typeof usd !== "number") return "";
+  return `${usd.toLocaleString("en-US")} USD`;
+}
+
+/** Merge a backend BillingPlan with the local meta into the UI Plan shape. */
+function toPlan(tier: string, billing: BillingPlan): Plan | null {
+  const meta = PLAN_META[tier];
+  if (!meta) return null;
+  return {
+    name: meta.name,
+    tier,
+    price: formatPrice(billing.price_usd),
+    priceOriginal:
+      typeof billing.price_usd_original === "number"
+        ? formatPrice(billing.price_usd_original)
+        : undefined,
+    billing: "PER MONTH",
+    trialMonths: billing.trial_months,
+    description: meta.description,
+    textColor: meta.textColor,
+    image: meta.image,
+    features: meta.features,
+  };
+}
+
+/** Build the displayable Plan list from the backend response, in canonical order. */
+export function plansFromBackend(
+  response: BillingPlansResponse | undefined,
+): Plan[] {
+  if (!response) return [];
+  return TIER_ORDER.map((tier) => {
+    const billing = response[tier];
+    return billing ? toPlan(tier, billing) : null;
+  }).filter((p): p is Plan => p !== null);
 }
