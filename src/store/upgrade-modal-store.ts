@@ -13,5 +13,8 @@ export const useUpgradeModalStore = create<UpgradeModalState>((set) => ({
 }));
 
 export function isPlanLimitError(detail: unknown): boolean {
-  return typeof detail === "string" && /\bplan\s+limit\b/i.test(detail);
+  if (typeof detail !== "string") return false;
+  return /\bplan\s+limit\b|\bupgrade\s+to\s+(pro|enterprise|basic|premium)\b|limit\s+(for|has been|reached)/i.test(
+    detail,
+  );
 }
