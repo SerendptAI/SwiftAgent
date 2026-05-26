@@ -3,7 +3,9 @@ import "@/styles/globals.css";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
+import { Suspense } from "react";
 
+import { UpgradeModalTrigger } from "@/components/dashboard/upgrade-modal-trigger";
 // import { LangSwitcher } from "@/components/lang-switcher";
 import { ChatbotRouteGuard } from "@/components/landing/chatbot-route-guard";
 import { QueryProvider } from "@/components/query-provider";
@@ -83,7 +85,12 @@ const RootLayout = async ({
             defaultTheme="light"
             enableSystem={false}
           >
-            <QueryProvider>{children}</QueryProvider>
+            <QueryProvider>
+              {children}
+              <Suspense fallback={null}>
+                <UpgradeModalTrigger />
+              </Suspense>
+            </QueryProvider>
             <ChatbotRouteGuard />
             {/* <LangSwitcher className="absolute right-5 bottom-16 z-10" />
             <ThemeSwitcher className="absolute right-5 bottom-5 z-10" /> */}
