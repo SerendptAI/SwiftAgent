@@ -1,7 +1,6 @@
 "use client";
 
 import { CheckCircle, X } from "lucide-react";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import type { Plan } from "@/components/pricing/plan-card";
@@ -10,6 +9,50 @@ import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useBillingDetails, useCreateCheckout } from "@/hooks/use-billing";
 import { useGeoCountry } from "@/hooks/use-geo-country";
 import type { SubscriptionTier } from "@/services/billing";
+
+const PLAN_S_PATH =
+  "M144.601 78.7329H177.928V145.447H144.601V178.773H111.214V145.385H144.54V112.121H78.1044V78.7329H111.214V45.8403H144.601V78.7329ZM277.472 78.7329H310.798V145.447H277.472V178.773H244.084V145.385H277.41V112.121H210.974V78.7329H244.084V45.8403H277.472V78.7329Z";
+
+const PLAN_ENTERPRISE_PATHS = [
+  "M172.714 217.428H121.143V269H18V217.428H69.5716V165.857H172.714V217.428Z",
+  "M327.428 269H275.857V217.428H327.428V269Z",
+  "M224.286 114.286H275.857V217.428H224.286V165.857H172.714V114.286H121.143V62.7144H224.286V114.286Z",
+  "M379 217.428H327.428V165.857H379V217.428Z",
+  "M327.428 114.286H275.857V62.7144H327.428V114.286Z",
+  "M379 62.7144H327.428V11.4865H275.857V-40.0847H327.428V-92H379V62.7144Z",
+];
+
+const TIER_ICON_STYLE: Record<
+  string,
+  { bg: string; viewBox: string; paths: string[] }
+> = {
+  basic: { bg: "#F2B035", viewBox: "60 37 136 150", paths: [PLAN_S_PATH] },
+  pro: { bg: "#6433CC", viewBox: "60 37 136 150", paths: [PLAN_S_PATH] },
+  enterprise: {
+    bg: "#F25430",
+    viewBox: "207 25 136 150",
+    paths: PLAN_ENTERPRISE_PATHS,
+  },
+};
+
+function PlanIcon({ tier }: { tier?: string }) {
+  const style = TIER_ICON_STYLE[tier ?? "basic"] ?? TIER_ICON_STYLE.basic;
+  return (
+    <svg
+      width="136"
+      height="150"
+      viewBox={style.viewBox}
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+      className="block"
+    >
+      <rect x="0" y="0" width="398" height="269" fill={style.bg} />
+      {style.paths.map((d, i) => (
+        <path key={i} d={d} fill="#F6F4EF" />
+      ))}
+    </svg>
+  );
+}
 
 interface UpgradePlanModalProps {
   open: boolean;
@@ -83,19 +126,19 @@ export function UpgradePlanModal({
           <X className="size-[30px]" strokeWidth={1.5} />
         </button>
 
-        <div className="px-[60px] pt-[126px] pb-[60px]">
+        <div className="px-[60px] pt-[60px] pb-[40px]">
           <h2
             id="upgrade-plan-title"
-            className="font-greed-narrow mx-auto w-[447px] max-w-full text-center text-[40px] leading-[1.1] font-semibold tracking-[-0.8px] text-black"
+            className="font-greed-narrow mx-auto w-[447px] max-w-full text-center text-[32px] leading-[1.1] font-semibold tracking-[-0.64px] text-black"
           >
             Upgrade your plan to have access to that
           </h2>
-          <p className="font-dm-mono mx-auto mt-[14px] w-[492px] max-w-full text-center text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase">
+          <p className="font-dm-mono mx-auto mt-[10px] w-[492px] max-w-full text-center text-[12px] leading-[1.8] tracking-[1.2px] text-black/60 uppercase">
             Your plan currently supports {feature} — to use {feature} you have
             to upgrade
           </p>
 
-          <ul className="mt-[42px] space-y-[29px]">
+          <ul className="mt-[32px] space-y-[20px]">
             {plans.map((plan) => {
               const isActive = !!plan.tier && plan.tier === activeTier;
               const isPending = pendingTier === plan.tier;
@@ -134,14 +177,8 @@ function UpgradePlanCard({
   const isLargeTitle = plan.tier !== "basic";
   return (
     <div className="flex h-[150px] w-[685px] max-w-full overflow-hidden border border-black bg-white">
-      <div className="relative h-[150px] w-[136px] shrink-0">
-        <Image
-          src={plan.image}
-          alt={plan.name}
-          fill
-          sizes="136px"
-          className="object-cover"
-        />
+      <div className="h-[150px] w-[136px] shrink-0">
+        <PlanIcon tier={plan.tier} />
       </div>
 
       <div className="relative flex-1 px-[18px] py-[12px]">
