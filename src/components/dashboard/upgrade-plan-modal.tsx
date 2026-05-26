@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import type { Plan } from "@/components/pricing/plan-card";
@@ -9,6 +9,8 @@ import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useBillingDetails, useCreateCheckout } from "@/hooks/use-billing";
 import { useGeoCountry } from "@/hooks/use-geo-country";
 import type { SubscriptionTier } from "@/services/billing";
+
+import { Icons } from "../icons";
 
 const PLAN_S_PATH =
   "M144.601 78.7329H177.928V145.447H144.601V178.773H111.214V145.385H144.54V112.121H78.1044V78.7329H111.214V45.8403H144.601V78.7329ZM277.472 78.7329H310.798V145.447H277.472V178.773H244.084V145.385H277.41V112.121H210.974V78.7329H244.084V45.8403H277.472V78.7329Z";
@@ -57,15 +59,9 @@ function PlanIcon({ tier }: { tier?: string }) {
 interface UpgradePlanModalProps {
   open: boolean;
   onClose: () => void;
-  /** Feature name interpolated into the subtitle (e.g. "Advanced analytics") */
-  feature?: string;
 }
 
-export function UpgradePlanModal({
-  open,
-  onClose,
-  feature = "this feature",
-}: UpgradePlanModalProps) {
+export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
   const companyId = useActiveCompanyId();
   const country = useGeoCountry();
   const { data: details } = useBillingDetails(companyId);
@@ -133,9 +129,9 @@ export function UpgradePlanModal({
           >
             Upgrade your plan to have access to that
           </h2>
-          <p className="font-dm-mono mx-auto mt-[10px] w-[492px] max-w-full text-center text-[12px] leading-[1.8] tracking-[1.2px] text-black/60 uppercase">
-            Your plan currently supports {feature} — to use {feature} you have
-            to upgrade
+          <p className="font-dm-mono mx-auto mt-[10px] w-[492px] max-w-full text-center text-lg leading-[1.8] tracking-[1.2px] text-black/60 uppercase">
+            Your plan currently supports {`{feature}"`} to use {`{feature}`} you
+            have to upgrade
           </p>
 
           <ul className="mt-[32px] space-y-[20px]">
@@ -202,7 +198,7 @@ function UpgradePlanCard({
 
         {isActive && (
           <span className="font-dm-mono absolute top-[44px] right-[18px] flex items-center gap-2 text-[16px] leading-[1.2] tracking-[1.6px] text-black/60 uppercase">
-            <CheckCircle className="h-5 w-5" />
+            <Icons.CheckCircle className="h-8 w-8" />
             Subscribed
           </span>
         )}

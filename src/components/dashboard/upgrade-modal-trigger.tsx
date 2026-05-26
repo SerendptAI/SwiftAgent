@@ -10,17 +10,15 @@ export function UpgradeModalTrigger() {
   const pathname = usePathname();
 
   const open = params.get("upgrade") === "1";
-  const feature = params.get("feature") || "this feature";
 
   const close = () => {
     const next = new URLSearchParams(params.toString());
     next.delete("upgrade");
-    next.delete("feature");
     const query = next.toString();
     router.replace(query ? `${pathname}?${query}` : pathname, {
       scroll: false,
     });
   };
 
-  return <UpgradePlanModal open={open} onClose={close} feature={feature} />;
+  return <UpgradePlanModal open={open} onClose={close} />;
 }
