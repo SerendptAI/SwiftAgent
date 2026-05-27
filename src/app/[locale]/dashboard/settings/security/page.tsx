@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronDown, Loader2 } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -9,7 +10,9 @@ import { z } from "zod";
 import { HelpBanner } from "@/components/dashboard/settings/help-banner";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useCurrentUser, useUpdateUserSecurity } from "@/hooks/use-auth";
-import { useInviteMember } from "@/hooks/use-company";
+import { useCompanyMembers, useInviteMember } from "@/hooks/use-company";
+import { cn } from "@/lib/utils";
+import type { CompanyMember, CompanyMemberStatus } from "@/services/company";
 
 const securitySchema = z.object({
   backup_email: z.string().email("Invalid email").optional().or(z.literal("")),
@@ -37,6 +40,8 @@ export default function SecurityPage() {
   const { data: user } = useCurrentUser();
   const updateSecurity = useUpdateUserSecurity();
   const inviteMember = useInviteMember();
+  const { data: members, isLoading: isLoadingMembers } =
+    useCompanyMembers(companyId);
 
   const {
     register,
@@ -231,7 +236,76 @@ export default function SecurityPage() {
             </button>
           )}
         </div>
+
+        {/* Members list */}
+        <div className="rounded-xl border border-gray-100">
+          {isLoadingMembers ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
+            </div>
+          ) : !members || members.length === 0 ? (
+            <p className="font-stolzl px-6 py-6 text-center text-sm text-gray-400">
+              No members yet.
+            </p>
+          ) : (
+            <ul className="divide-y divide-gray-100">
+              {members.map((member) => (
+                <MemberRow key={member.email} member={member} />
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </div>
+  );
+}
+
+const STATUS_STYLES: Record<CompanyMemberStatus, string> = {
+  Active: "bg-green-50 text-green-700",
+  Pending: "bg-amber-50 text-amber-700",
+  Expired: "bg-gray-100 text-gray-500",
+};
+
+function MemberRow({ member }: { member: CompanyMember }) {
+  const displayName = member.name || member.email.split("@")[0];
+  const statusClass =
+    STATUS_STYLES[member.status] ?? "bg-gray-100 text-gray-500";
+
+  return (
+    <li className="flex items-center gap-4 px-6 py-3">
+      <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full bg-gray-100">
+        {member.picture ? (
+          <Image
+            src={member.picture}
+            alt={displayName}
+            fill
+            className="object-cover"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center text-sm font-semibold text-gray-500">
+            {displayName.charAt(0).toUpperCase()}
+          </div>
+        )}
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="font-stolzl truncate text-sm font-semibold text-gray-900">
+          {displayName}
+        </p>
+        <p className="font-stolzl truncate text-xs text-gray-400">
+          {member.email}
+        </p>
+      </div>
+      <span className="font-dm-mono shrink-0 text-xs tracking-wider text-gray-500 uppercase">
+        {member.role}
+      </span>
+      <span
+        className={cn(
+          "font-dm-mono shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase",
+          statusClass,
+        )}
+      >
+        {member.status}
+      </span>
+    </li>
   );
 }

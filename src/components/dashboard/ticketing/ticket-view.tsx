@@ -14,6 +14,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import { useActiveCompanyId } from "@/hooks/use-active-company";
+import { useCurrentUser } from "@/hooks/use-auth";
 import {
   useMarkTicketSeen,
   useReplyToTicket,
@@ -54,6 +55,7 @@ interface TicketViewProps {
 export function TicketView({ ticketId }: TicketViewProps) {
   const companyId = useActiveCompanyId();
   const { data: ticket, isFetching } = useTicket(ticketId);
+  const { data: currentUser } = useCurrentUser();
   const { mutate: markSeen } = useMarkTicketSeen();
   const { mutate: reply, isPending: isSending } = useReplyToTicket();
 
@@ -94,7 +96,15 @@ export function TicketView({ ticketId }: TicketViewProps) {
     const body_text = draft.trim();
     if (!body_text || !companyId || !ticket) return;
     reply(
-      { companyId, ticketId: ticket.id, payload: { body_text } },
+      {
+        companyId,
+        ticketId: ticket.id,
+        payload: {
+          body_text,
+          replier_name: currentUser?.name || currentUser?.email,
+          replier_picture: currentUser?.picture ?? null,
+        },
+      },
       { onSuccess: () => setDraft("") },
     );
   };

@@ -45,6 +45,8 @@ export type TicketListItem = Omit<Ticket, "messages"> & {
 export interface ReplyPayload {
   body_text: string;
   body_html?: string;
+  replier_name?: string;
+  replier_picture?: string | null;
 }
 
 // ── API Service ────────────────────────────────────────────────────────────────

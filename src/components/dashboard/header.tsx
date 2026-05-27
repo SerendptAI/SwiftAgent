@@ -11,6 +11,7 @@ import { DashboardSearch } from "./dashboard-search";
 
 export function Header() {
   const { data: user } = useCurrentUser();
+  const avatarSrc = user?.picture || getProfileImage(user?.id);
 
   return (
     <header className="flex h-20 items-center justify-between gap-4 px-6 lg:h-[90px]">
@@ -32,7 +33,7 @@ export function Header() {
 
         <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full">
           <Image
-            src={getProfileImage(user?.id)}
+            src={avatarSrc}
             alt={user?.name || "User avatar"}
             width={40}
             height={40}

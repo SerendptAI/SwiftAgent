@@ -63,7 +63,7 @@ export function ProfileCard({
       {/* Avatar */}
       <div className="relative h-30 w-30 overflow-hidden rounded-full border-2 border-gray-100">
         <Image
-          src={getProfileImage(user?.id)}
+          src={user?.picture || getProfileImage(user?.id)}
           alt={name || "User Avatar"}
           fill
           className="object-cover"
