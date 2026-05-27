@@ -9,13 +9,12 @@ import { TicketView } from "@/components/dashboard/ticketing/ticket-view";
 
 interface TicketSelection {
   id: string;
-  index: number;
   kind: TicketKind;
 }
 
 interface TicketsTabContentProps {
   selection: TicketSelection | null;
-  onSelectItem: (id: string, index: number, kind: TicketKind) => void;
+  onSelectItem: (id: string, kind: TicketKind) => void;
 }
 
 function MessageEmptyState() {
@@ -57,9 +56,9 @@ export function TicketsTabContent({
       <div className="min-w-0 flex-1">
         {selection ? (
           selection.kind === "ticket" ? (
-            <TicketView ticketId={selection.id} avatarIndex={selection.index} />
+            <TicketView ticketId={selection.id} />
           ) : (
-            <ChatView ticketId={selection.id} avatarIndex={selection.index} />
+            <ChatView ticketId={selection.id} />
           )
         ) : (
           <MessageEmptyState />

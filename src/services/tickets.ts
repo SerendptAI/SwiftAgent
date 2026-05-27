@@ -33,6 +33,8 @@ export interface Ticket {
   updated_at: string;
   /** Originating chat conversation, when the ticket was escalated from a chat. */
   attributed_chat?: ChatSessionDetail;
+  /** Relative path served by the API (e.g. "/chat-avatars/newimg.svg"). */
+  avatar?: string | null;
 }
 
 /** The list endpoint may return the same shape or a lighter summary. */

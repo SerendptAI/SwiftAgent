@@ -24,7 +24,6 @@ export function TicketingClient() {
   const searchParams = useSearchParams();
   const [selection, setSelection] = useState<{
     id: string;
-    index: number;
     kind: TicketKind;
   } | null>(null);
   const [activeChannel, setActiveChannel] = useState<ChannelKey>(
@@ -36,12 +35,9 @@ export function TicketingClient() {
   // Auto-select chat from URL query param (e.g. ?chat=abc123) — resolved side
   useEffect(() => {
     const chatId = searchParams.get("chat");
-    if (chatId && chats) {
-      const index = chats.findIndex((c) => c.id === chatId);
-      if (index !== -1) {
-        setActiveChannel("tickets");
-        setSelection({ id: chatId, index, kind: "chat" });
-      }
+    if (chatId && chats?.some((c) => c.id === chatId)) {
+      setActiveChannel("tickets");
+      setSelection({ id: chatId, kind: "chat" });
     }
   }, [searchParams, chats]);
 
@@ -60,8 +56,8 @@ export function TicketingClient() {
     router.replace(`${pathname}?${next.toString()}`, { scroll: false });
   };
 
-  const handleSelectItem = (id: string, index: number, kind: TicketKind) => {
-    setSelection({ id, index, kind });
+  const handleSelectItem = (id: string, kind: TicketKind) => {
+    setSelection({ id, kind });
   };
 
   return (
