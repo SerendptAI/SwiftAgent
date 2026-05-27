@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { useState } from "react";
 
 import { InfoTooltip } from "@/components/ui/info-tooltip";
@@ -125,20 +125,30 @@ export function ApiKeysSection() {
 
 // ── SUGGESTED QUESTIONS ────────────────────────────────────────────────────
 
-const SUGGESTION_MAX_LENGTH = 23;
+const SUGGESTION_MAX_LENGTH = 80;
 
-export function SuggestedQuestionsSection() {
-  const [suggestions, setSuggestions] = useState<string[]>(["", ""]);
+interface SuggestedQuestionsSectionProps {
+  value: string[];
+  onChange: (next: string[]) => void;
+}
 
-  const updateSuggestion = (index: number, value: string) => {
-    setSuggestions((prev) => {
-      const next = [...prev];
-      next[index] = value.slice(0, SUGGESTION_MAX_LENGTH);
-      return next;
-    });
+export function SuggestedQuestionsSection({
+  value,
+  onChange,
+}: SuggestedQuestionsSectionProps) {
+  const suggestions = value.length > 0 ? value : ["", ""];
+
+  const updateSuggestion = (index: number, next: string) => {
+    const copy = [...suggestions];
+    copy[index] = next.slice(0, SUGGESTION_MAX_LENGTH);
+    onChange(copy);
   };
 
-  const addSuggestion = () => setSuggestions((prev) => [...prev, ""]);
+  const addSuggestion = () => onChange([...suggestions, ""]);
+
+  const removeSuggestion = (index: number) => {
+    onChange(suggestions.filter((_, i) => i !== index));
+  };
 
   return (
     <section>
@@ -149,12 +159,15 @@ export function SuggestedQuestionsSection() {
       </p>
 
       <div className="space-y-[18px]">
-        {suggestions.map((value, index) => (
+        {suggestions.map((suggestion, index) => (
           <SuggestionField
             key={index}
             index={index + 1}
-            value={value}
+            value={suggestion}
             onChange={(v) => updateSuggestion(index, v)}
+            onRemove={
+              suggestions.length > 1 ? () => removeSuggestion(index) : undefined
+            }
           />
         ))}
 
@@ -175,10 +188,12 @@ function SuggestionField({
   index,
   value,
   onChange,
+  onRemove,
 }: {
   index: number;
   value: string;
   onChange: (v: string) => void;
+  onRemove?: () => void;
 }) {
   const id = `suggestion-${index}`;
   return (
@@ -187,10 +202,22 @@ function SuggestionField({
         <label htmlFor={id} className={FIELD_LABEL}>
           Suggestion {index}
         </label>
-        <InfoTooltip
-          text="A short suggested question the bot will recommend to customers."
-          className="h-4 w-4"
-        />
+        <div className="flex items-center gap-2">
+          <InfoTooltip
+            text="A short suggested question the bot will recommend to customers."
+            className="h-4 w-4"
+          />
+          {onRemove && (
+            <button
+              type="button"
+              onClick={onRemove}
+              aria-label={`Remove suggestion ${index}`}
+              className="flex h-4 w-4 items-center justify-center rounded-full text-black/50 transition-colors hover:bg-black/5 hover:text-black"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
       </div>
       <div className="relative">
         <textarea

@@ -13,6 +13,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Icons } from "@/components/icons";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
+import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
 import { useStrollConfig, useUpdateStrollConfig } from "@/hooks/use-stroll";
 import type { StrollConfigPayload } from "@/services/stroll";
 
@@ -266,6 +267,8 @@ function ChatbotSettingsSidebar({
 }) {
   const { data: config } = useStrollConfig(companyId || null);
   const updateConfig = useUpdateStrollConfig();
+  const { data: company } = useCompanyQuery(companyId || null);
+  const { updateCompany } = useCompanyMutations();
 
   const [selected, setSelected] = useState<Set<AgentId>>(
     () => new Set(["047", "007"]),
@@ -280,6 +283,7 @@ function ChatbotSettingsSidebar({
   const [sandboxMode, setSandboxMode] = useState(true);
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [isShown, setIsShown] = useState(false);
+  const [suggestedPrompts, setSuggestedPrompts] = useState<string[]>([]);
 
   useEffect(() => {
     if (!config) return;
@@ -294,6 +298,11 @@ function ChatbotSettingsSidebar({
       setPreAuthUrl(config.credentials.pre_auth_url || "");
     }
   }, [config]);
+
+  useEffect(() => {
+    if (!company) return;
+    setSuggestedPrompts(company.suggested_ai_prompts ?? []);
+  }, [company]);
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => setIsShown(true));
@@ -326,17 +335,28 @@ function ChatbotSettingsSidebar({
     if (loginUrl.trim()) credentials.login_url = loginUrl.trim();
     if (preAuthUrl.trim()) credentials.pre_auth_url = preAuthUrl.trim();
 
+    const cleanedPrompts = suggestedPrompts
+      .map((p) => p.trim())
+      .filter(Boolean);
+
     try {
-      await updateConfig.mutateAsync({
-        companyId,
-        payload: {
-          dashboard_url: dashboardUrl.trim(),
-          schedule: schedule.trim() || "0 2 * * *",
-          credentials,
-          sandbox_mode: sandboxMode,
-          max_pages: maxPages,
-        },
-      });
+      await Promise.all([
+        updateConfig.mutateAsync({
+          companyId,
+          payload: {
+            dashboard_url: dashboardUrl.trim(),
+            schedule: schedule.trim() || "0 2 * * *",
+            credentials,
+            sandbox_mode: sandboxMode,
+            max_pages: maxPages,
+          },
+        }),
+        updateCompany.mutateAsync({
+          companyId,
+          section: "identity",
+          payload: { suggested_ai_prompts: cleanedPrompts },
+        }),
+      ]);
     } catch (err) {
       console.error("Failed to save sandbox credentials:", err);
       onError?.(
@@ -501,16 +521,21 @@ function ChatbotSettingsSidebar({
 
           <PaymentSandboxSection />
           <ApiKeysSection />
-          <SuggestedQuestionsSection />
+          <SuggestedQuestionsSection
+            value={suggestedPrompts}
+            onChange={setSuggestedPrompts}
+          />
         </div>
 
         <div className="px-[36px] py-4">
           <button
             onClick={handleSave}
-            disabled={updateConfig.isPending}
+            disabled={updateConfig.isPending || updateCompany.isPending}
             className="font-dm-mono w-full cursor-pointer rounded-[8px] bg-[#006BE5] py-3 text-center text-sm tracking-wider text-white uppercase shadow-[-3px_4px_0px_0px_#000000] transition-all hover:bg-[#0055B8] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-1px_2px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {updateConfig.isPending ? "Saving…" : "Save & Close"}
+            {updateConfig.isPending || updateCompany.isPending
+              ? "Saving…"
+              : "Save & Close"}
           </button>
         </div>
       </aside>

@@ -23,6 +23,7 @@ export interface Company {
   brand_tone: string;
   primary_language: string;
   support_emails: string[];
+  suggested_ai_prompts: string[];
   enabled_sources: string[];
   custom_info: string[];
   voice_style: string;
