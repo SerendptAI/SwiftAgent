@@ -180,7 +180,7 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
                       height={31}
                     />
                   </div>
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-0 flex-1 space-y-1.5">
                     <div className="flex items-center justify-between">
                       <span
                         className={cn(
@@ -242,7 +242,7 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
                     height={31}
                   />
                 </div>
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 space-y-1.5">
                   <div className="flex items-center justify-between">
                     <span className="font-dm-mono truncate text-sm font-semibold text-gray-600">
                       {sessionLabel}

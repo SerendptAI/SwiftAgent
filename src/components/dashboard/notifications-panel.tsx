@@ -92,7 +92,7 @@ export function NotificationsPanel({
       ref={panelRef}
       role="dialog"
       aria-label="Notifications"
-      className="absolute top-full right-0 z-50 mt-3 flex max-h-[min(560px,calc(100vh-120px))] w-[340px] flex-col overflow-hidden rounded-[10px] border border-black bg-white"
+      className="absolute top-full right-0 z-1050 mt-3 flex max-h-[min(560px,calc(100vh-120px))] w-[340px] flex-col overflow-hidden rounded-[10px] border border-black bg-white"
     >
       <div className="flex flex-col gap-4 overflow-y-auto px-4 pt-4 pb-4">
         <h2 className="font-greed-narrow text-[24px] leading-none font-medium text-black">
