@@ -1,13 +1,15 @@
 "use client";
 
-import { ChevronDown, CreditCard } from "lucide-react";
+import { ChevronDown, CreditCard, Loader2 } from "lucide-react";
 import { useState } from "react";
 
 import { AddCardModal } from "@/components/dashboard/settings/add-card-modal";
+import { CanceledSubscriptionBanner } from "@/components/dashboard/settings/canceled-subscription-banner";
 import { HelpBanner } from "@/components/dashboard/settings/help-banner";
 import { Icons } from "@/components/icons";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
-import { useBillingDetails } from "@/hooks/use-billing";
+import { useBillingDetails, useCreatePortalSession } from "@/hooks/use-billing";
+import { getApiErrorMessage } from "@/lib/api-error";
 import type { SavedCard } from "@/services/billing";
 import { useCardStore } from "@/store/card-store";
 
@@ -20,8 +22,10 @@ function CardBrandIcon({ brand }: { brand: string }) {
 
 export default function BillingPage() {
   const [showAddCard, setShowAddCard] = useState(false);
+  const [portalError, setPortalError] = useState<string | null>(null);
   const companyId = useActiveCompanyId();
   const { data: details } = useBillingDetails(companyId);
+  const portalSession = useCreatePortalSession();
   const { savedCards: localCards, addCard } = useCardStore();
 
   const backendCards: SavedCard[] = details?.saved_cards ?? [];
@@ -35,9 +39,32 @@ export default function BillingPage() {
     details?.display_name?.toUpperCase() ||
     (details?.tier ? String(details.tier).toUpperCase() : "FREE");
 
+  const subscriptionStatus =
+    details?.subscription_status ?? details?.status ?? null;
+  const canManageSubscription =
+    !!companyId &&
+    (subscriptionStatus === "active" || subscriptionStatus === "canceled");
+
+  const handleManageSubscription = async () => {
+    if (!companyId) return;
+    setPortalError(null);
+    try {
+      const { portal_url } = await portalSession.mutateAsync(companyId);
+      if (portal_url) {
+        window.location.href = portal_url;
+      }
+    } catch (err) {
+      setPortalError(
+        getApiErrorMessage(err, "Failed to load subscription portal."),
+      );
+    }
+  };
+
   return (
     <div className="flex min-h-[450px] flex-col gap-6 rounded-xl bg-white p-4 shadow-sm">
       <HelpBanner bgColor="bg-[#F2B035]" textColor="text-white" />
+
+      <CanceledSubscriptionBanner details={details} />
 
       {/* Billing Details */}
       <div className="space-y-4">
@@ -84,6 +111,35 @@ export default function BillingPage() {
             <ChevronDown className="h-4 w-4 text-gray-400" />
           </button>
         </div>
+
+        {canManageSubscription && (
+          <div className="flex flex-col gap-2 rounded-xl border border-gray-100 px-6 py-4">
+            <div className="flex items-center justify-between">
+              <span className="font-dm-mono text-sm font-semibold tracking-[0.15em] text-gray-500 uppercase">
+                Manage Subscription
+              </span>
+              <button
+                onClick={handleManageSubscription}
+                disabled={portalSession.isPending}
+                className="font-dm-mono flex items-center gap-2 rounded-2xl bg-[#006BE5] px-6 py-2.5 text-sm font-bold tracking-wide text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#0058C0] disabled:opacity-50"
+              >
+                {portalSession.isPending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Opening…
+                  </>
+                ) : subscriptionStatus === "canceled" ? (
+                  "Reactivate or Manage"
+                ) : (
+                  "Manage Subscription"
+                )}
+              </button>
+            </div>
+            {portalError && (
+              <p className="font-stolzl text-xs text-red-500">{portalError}</p>
+            )}
+          </div>
+        )}
       </div>
 
       {showAddCard && (

@@ -6,9 +6,11 @@ import type {
   BillingPlansResponse,
   CheckoutPayload,
   CheckoutResponse,
+  PortalSessionResponse,
 } from "@/services/billing";
 import {
   createCheckoutSession,
+  createPortalSession,
   getBillingDetails,
   getBillingPlans,
   getUserTimezone,
@@ -42,5 +44,13 @@ export function useBillingDetails(companyId: string | null | undefined) {
 export function useCreateCheckout() {
   return useMutation<CheckoutResponse, Error, CheckoutPayload>({
     mutationFn: createCheckoutSession,
+  });
+}
+
+// ── Create Polar Customer Portal Session ──────────────────────────────────────
+
+export function useCreatePortalSession() {
+  return useMutation<PortalSessionResponse, Error, string>({
+    mutationFn: createPortalSession,
   });
 }

@@ -3,7 +3,7 @@ import { apiClient } from "@/lib/api-client";
 // ── Types ──────────────────────────────────────────────────────────────────────
 
 export type SubscriptionTier = "basic" | "pro" | "enterprise" | null;
-export type SubscriptionStatus = "active" | "inactive";
+export type SubscriptionStatus = "active" | "inactive" | "canceled";
 export type BillingProvider = "polar" | "palmpay" | null;
 export type PlanRegion = "african" | "international";
 
@@ -31,6 +31,12 @@ export interface BillingDetails {
   company_id?: string;
   tier: SubscriptionTier;
   status: SubscriptionStatus;
+  /** Backend may also expose the subscription lifecycle directly; matches `status` today. */
+  subscription_status?: SubscriptionStatus;
+  /** ISO timestamp the current subscription period started. */
+  subscription_started_at?: string;
+  /** ISO timestamp the user retains access until (start + 30 days). */
+  subscription_expires_at?: string;
   agents_used?: number;
   agents_limit?: number;
   documents_used?: number;
@@ -53,6 +59,10 @@ export interface CheckoutPayload {
 
 export interface CheckoutResponse {
   checkout_url: string;
+}
+
+export interface PortalSessionResponse {
+  portal_url: string;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -99,6 +109,15 @@ export async function createCheckoutSession(
   const { data } = await apiClient.post<CheckoutResponse>(
     "/api/v1/billing/checkout",
     body,
+  );
+  return data;
+}
+
+export async function createPortalSession(
+  companyId: string,
+): Promise<PortalSessionResponse> {
+  const { data } = await apiClient.post<PortalSessionResponse>(
+    `/api/v1/billing/${encodeURIComponent(companyId)}/portal`,
   );
   return data;
 }

@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import { CompanyToolbar } from "@/components/dashboard/company-toolbar";
 import { AddCardModal } from "@/components/dashboard/settings/add-card-modal";
+import { CanceledSubscriptionBanner } from "@/components/dashboard/settings/canceled-subscription-banner";
 import { Icons } from "@/components/icons";
 import { type Plan, PlanCard } from "@/components/pricing/plan-card";
 import { plansFromBackend } from "@/components/pricing/plans";
@@ -115,6 +116,9 @@ export default function BillingPage() {
 
       {/* Plan Cards */}
       <div className="w-full max-w-[1536px]">
+        <div className="mb-4">
+          <CanceledSubscriptionBanner details={details} />
+        </div>
         {checkoutError && (
           <p className="font-stolzl mb-4 text-sm text-red-600">
             {checkoutError}
