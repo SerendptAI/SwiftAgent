@@ -413,7 +413,7 @@ export function DashboardSearch() {
                               {section.name === "Ticketing" && (
                                 // eslint-disable-next-line @next/next/no-img-element
                                 <img
-                                  src={`/images/chats/img${(i % 3) + 1}.svg`}
+                                  src={`/images/profiles/profile${(i % 12) + 1}.svg`}
                                   alt=""
                                   className="h-8 w-8 shrink-0 rounded"
                                 />

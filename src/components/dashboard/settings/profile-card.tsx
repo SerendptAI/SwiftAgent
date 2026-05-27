@@ -1,34 +1,48 @@
 "use client";
 
+import { Check, Loader2, X } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
-import { useCurrentUser, useLogout } from "@/hooks/use-auth";
+import {
+  useCurrentUser,
+  useLogout,
+  useUpdateUserName,
+  useUploadUserPfp,
+} from "@/hooks/use-auth";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import { getAuthProvider } from "@/lib/api-client";
 import { getProfileImage } from "@/lib/utils";
 
+const ACCEPTED_PFP_TYPES = "image/jpeg,image/png,image/webp,image/gif";
+const MAX_PFP_BYTES = 5 * 1024 * 1024;
+
 interface ProfileCardProps {
   name?: string;
-  avatarSrc?: string;
   loginMethod?: string;
   ip?: string;
   onLogout?: () => void;
 }
 
 export function ProfileCard({
-  name: propName = "Otonte Briggs",
-  avatarSrc: propAvatarSrc,
+  name: propName = "John Doe",
   loginMethod: propLoginMethod,
-  ip: propIp = "196.201.52.68",
+  ip: propIp,
   onLogout: propOnLogout,
 }: ProfileCardProps) {
   const { data: user } = useCurrentUser();
   const logoutMutation = useLogout();
+  const { mutateAsync: uploadUserPfp, isPending: isUploadingPfp } =
+    useUploadUserPfp();
+  const { mutateAsync: updateUserName, isPending: isSavingName } =
+    useUpdateUserName();
 
   const [currentIp, setCurrentIp] = useState<string>("");
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [nameDraft, setNameDraft] = useState("");
+  const pfpInputRef = useRef<HTMLInputElement>(null);
   useScrollLock(showLogoutModal);
 
   useEffect(() => {
@@ -43,7 +57,6 @@ export function ProfileCard({
   }, []);
 
   const name = user?.name || propName;
-  const avatarSrc = user?.picture || propAvatarSrc;
   const displayIp = currentIp || propIp;
   const storedProvider = getAuthProvider();
   const isGooglePicture =
@@ -63,22 +76,133 @@ export function ProfileCard({
     }
   }, [propOnLogout, logoutMutation]);
 
+  const handlePfpChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (file.size > MAX_PFP_BYTES) {
+      alert("Image must be under 5 MB.");
+      if (pfpInputRef.current) pfpInputRef.current.value = "";
+      return;
+    }
+    try {
+      await uploadUserPfp(file);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to upload picture.");
+    } finally {
+      if (pfpInputRef.current) pfpInputRef.current.value = "";
+    }
+  };
+
+  const startEditingName = () => {
+    setNameDraft(user?.name || "");
+    setIsEditingName(true);
+  };
+
+  const cancelEditingName = () => {
+    setIsEditingName(false);
+    setNameDraft("");
+  };
+
+  const saveName = async () => {
+    const trimmed = nameDraft.trim();
+    if (!trimmed) return;
+    try {
+      await updateUserName(trimmed);
+      setIsEditingName(false);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update name.");
+    }
+  };
+
   return (
     <aside className="flex w-full shrink-0 flex-col items-center gap-4 rounded-[20px] bg-white p-4 shadow-sm lg:h-[450px] lg:w-[320px] lg:rounded-3xl lg:p-6">
       {/* Avatar */}
-      <div className="relative h-24 w-24 overflow-hidden rounded-full border-2 border-gray-100 lg:h-30 lg:w-30">
-        <Image
-          src={getProfileImage(user?.id)}
-          alt={name || "User Avatar"}
-          fill
-          className="object-cover"
+      <div className="relative h-24 w-24 lg:h-30 lg:w-30">
+        <div className="relative h-full w-full overflow-hidden rounded-full border-2 border-gray-100">
+          <Image
+            src={user?.picture || getProfileImage(user?.id)}
+            alt={name || "User Avatar"}
+            fill
+            className="object-cover"
+          />
+        </div>
+        <button
+          type="button"
+          onClick={() => pfpInputRef.current?.click()}
+          disabled={isUploadingPfp}
+          aria-label="Change profile picture"
+          className="absolute right-0 bottom-1 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-2 border-white bg-[#2196F3] text-white shadow-sm transition-colors hover:bg-[#1E88E5] disabled:opacity-60"
+        >
+          {isUploadingPfp ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <Icons.EditProfile className="h-3.5 w-3.5" />
+          )}
+        </button>
+        <input
+          ref={pfpInputRef}
+          type="file"
+          accept={ACCEPTED_PFP_TYPES}
+          onChange={handlePfpChange}
+          className="hidden"
         />
       </div>
 
       {/* Name */}
-      <p className="font-400 font-stolzl text-center text-lg text-gray-900 lg:text-xl">
-        {name}
-      </p>
+      {isEditingName ? (
+        <div className="flex w-full items-center justify-center gap-2">
+          <input
+            ref={(el) => {
+              el?.focus();
+            }}
+            value={nameDraft}
+            onChange={(e) => setNameDraft(e.target.value)}
+            placeholder="Display name"
+            disabled={isSavingName}
+            className="font-stolzl min-w-0 flex-1 rounded-md border border-gray-200 bg-white px-3 py-1.5 text-center text-base text-gray-900 outline-none focus:border-[#2196F3]"
+          />
+          <button
+            type="button"
+            onClick={saveName}
+            disabled={isSavingName || !nameDraft.trim()}
+            aria-label="Save name"
+            className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md bg-[#2196F3] text-white transition-colors hover:bg-[#1E88E5] disabled:opacity-50"
+          >
+            {isSavingName ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Check className="h-3.5 w-3.5" />
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={cancelEditingName}
+            disabled={isSavingName}
+            aria-label="Cancel"
+            className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-gray-100"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      ) : (
+        <div className="flex items-center justify-center gap-2">
+          <p className="font-400 font-stolzl text-center text-xl text-gray-900">
+            {name}
+          </p>
+          <button
+            type="button"
+            onClick={startEditingName}
+            aria-label="Edit display name"
+            className="flex h-5 w-5 cursor-pointer items-center justify-center rounded text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
+          >
+            <Icons.pencil className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      )}
 
       {/* Login Method */}
       <div className="font-dm-mono mt-2 flex w-full items-center justify-center gap-2 rounded-md border border-gray-100 px-3 py-2 text-xs font-medium text-gray-600 shadow-[-4px_4px_0px_0px_#000000] lg:mt-6 lg:text-sm lg:shadow-[-6px_6px_0px_0px_#000000]">

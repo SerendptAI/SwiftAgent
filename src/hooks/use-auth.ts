@@ -18,7 +18,9 @@ import {
   registerInterest,
   sendOtp,
   updateProfile,
+  updateUserName,
   updateUserSecurity,
+  uploadUserPfp,
   verifyOtp,
 } from "@/services/auth";
 
@@ -59,6 +61,48 @@ export function useUpdateProfile() {
     mutationFn: updateProfile,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+    },
+  });
+}
+
+// ── Update display name (PATCH /me/name) ─────────────────────────────────────
+
+export function useUpdateUserName() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateUserName,
+    onSuccess: (data) => {
+      queryClient.setQueryData<User | undefined>(["currentUser"], (prev) =>
+        prev
+          ? {
+              ...prev,
+              name: data.name,
+              picture: data.picture ?? prev.picture,
+            }
+          : prev,
+      );
+    },
+  });
+}
+
+// ── Upload profile picture (PATCH /me/pfp) ───────────────────────────────────
+
+export function useUploadUserPfp() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: uploadUserPfp,
+    onSuccess: (data) => {
+      queryClient.setQueryData<User | undefined>(["currentUser"], (prev) =>
+        prev
+          ? {
+              ...prev,
+              name: data.name ?? prev.name,
+              picture: data.picture ?? prev.picture,
+            }
+          : prev,
+      );
     },
   });
 }

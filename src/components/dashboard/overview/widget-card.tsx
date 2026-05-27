@@ -1,14 +1,39 @@
 "use client";
 
-import { CheckCircle2, ChevronDown, Copy, XCircle } from "lucide-react";
+import {
+  CheckCircle2,
+  ChevronDown,
+  ChevronLeft,
+  Copy,
+  XCircle,
+} from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
+import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
+import {
+  useCreateIntegration,
+  useIntegrations,
+  useUpdateIntegration,
+} from "@/hooks/use-integrations";
 import { useStrollConfig, useUpdateStrollConfig } from "@/hooks/use-stroll";
+import type {
+  IntegrationCreatePayload,
+  IntegrationUpdatePayload,
+} from "@/services/integrations";
 import type { StrollConfigPayload } from "@/services/stroll";
+
+import {
+  API_KEY_FIELDS,
+  type ApiKeyRowValue,
+  ApiKeysSection,
+  emptyApiKeyRow,
+  PaymentSandboxSection,
+  SuggestedQuestionsSection,
+} from "./chatbot-settings-sections";
 
 type WidgetMode = "widget" | "button";
 
@@ -254,6 +279,11 @@ function ChatbotSettingsSidebar({
 }) {
   const { data: config } = useStrollConfig(companyId || null);
   const updateConfig = useUpdateStrollConfig();
+  const { data: company } = useCompanyQuery(companyId || null);
+  const { updateCompany } = useCompanyMutations();
+  const { data: integrations } = useIntegrations(companyId || null);
+  const createIntegration = useCreateIntegration(companyId || null);
+  const updateIntegration = useUpdateIntegration(companyId || null);
 
   const [selected, setSelected] = useState<Set<AgentId>>(
     () => new Set(["047", "007"]),
@@ -268,6 +298,17 @@ function ChatbotSettingsSidebar({
   const [sandboxMode, setSandboxMode] = useState(true);
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [isShown, setIsShown] = useState(false);
+  const [suggestedPrompts, setSuggestedPrompts] = useState<string[]>([]);
+  const [apiKeyRows, setApiKeyRows] = useState<Record<string, ApiKeyRowValue>>(
+    () =>
+      Object.fromEntries(API_KEY_FIELDS.map((f) => [f.id, emptyApiKeyRow()])),
+  );
+
+  const updateApiKeyRow = useCallback(
+    (presetId: string, next: ApiKeyRowValue) =>
+      setApiKeyRows((prev) => ({ ...prev, [presetId]: next })),
+    [],
+  );
 
   useEffect(() => {
     if (!config) return;
@@ -282,6 +323,31 @@ function ChatbotSettingsSidebar({
       setPreAuthUrl(config.credentials.pre_auth_url || "");
     }
   }, [config]);
+
+  useEffect(() => {
+    if (!company) return;
+    setSuggestedPrompts(company.suggested_ai_prompts ?? []);
+  }, [company]);
+
+  useEffect(() => {
+    if (!integrations) return;
+    setApiKeyRows((prev) => {
+      const next = { ...prev };
+      for (const field of API_KEY_FIELDS) {
+        const existing = integrations.find((i) => i.name === field.label);
+        if (!existing) continue;
+        const endpoint = existing.endpoints[0];
+        next[field.id] = {
+          integrationId: existing.id,
+          apiKey: "",
+          baseUrl: existing.base_url ?? "",
+          endpointPath: endpoint?.path ?? "",
+          endpointDescription: endpoint?.description ?? "",
+        };
+      }
+      return next;
+    });
+  }, [integrations]);
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => setIsShown(true));
@@ -314,17 +380,87 @@ function ChatbotSettingsSidebar({
     if (loginUrl.trim()) credentials.login_url = loginUrl.trim();
     if (preAuthUrl.trim()) credentials.pre_auth_url = preAuthUrl.trim();
 
+    const cleanedPrompts = suggestedPrompts
+      .map((p) => p.trim())
+      .filter(Boolean);
+
+    const integrationMutations: Promise<unknown>[] = [];
+    for (const field of API_KEY_FIELDS) {
+      const row = apiKeyRows[field.id];
+      if (!row) continue;
+      const apiKey = row.apiKey.trim();
+      const baseUrl = row.baseUrl.trim();
+      const endpointPath = row.endpointPath.trim();
+      const endpointDescription =
+        row.endpointDescription.trim() || field.tooltip;
+
+      if (row.integrationId) {
+        const dirty =
+          apiKey.length > 0 || baseUrl.length > 0 || endpointPath.length > 0;
+        if (!dirty) continue;
+        const payload: IntegrationUpdatePayload = {};
+        if (apiKey) payload.api_key = apiKey;
+        if (baseUrl) payload.base_url = baseUrl;
+        if (endpointPath) {
+          payload.endpoints = [
+            {
+              name: field.id,
+              path: endpointPath,
+              description: endpointDescription,
+            },
+          ];
+        }
+        integrationMutations.push(
+          updateIntegration.mutateAsync({
+            integrationId: row.integrationId,
+            payload,
+          }),
+        );
+        continue;
+      }
+
+      if (!apiKey) continue;
+      if (!baseUrl || !endpointPath) {
+        onError?.(
+          `${field.label} needs a Base URL and Endpoint path before it can be saved.`,
+        );
+        return;
+      }
+      const createPayload: IntegrationCreatePayload = {
+        name: field.label,
+        base_url: baseUrl,
+        api_key: apiKey,
+        documentation: field.tooltip,
+        endpoints: [
+          {
+            name: field.id,
+            path: endpointPath,
+            description: endpointDescription,
+          },
+        ],
+      };
+      integrationMutations.push(createIntegration.mutateAsync(createPayload));
+    }
+
     try {
-      await updateConfig.mutateAsync({
-        companyId,
-        payload: {
-          dashboard_url: dashboardUrl.trim(),
-          schedule: schedule.trim() || "0 2 * * *",
-          credentials,
-          sandbox_mode: sandboxMode,
-          max_pages: maxPages,
-        },
-      });
+      await Promise.all([
+        updateConfig.mutateAsync({
+          companyId,
+          payload: {
+            dashboard_url: dashboardUrl.trim(),
+            schedule: schedule.trim() || "0 2 * * *",
+            credentials,
+            sandbox_mode: sandboxMode,
+            max_pages: maxPages,
+          },
+        }),
+        updateCompany.mutateAsync({
+          companyId,
+          section: "identity",
+          payload: { suggested_ai_prompts: cleanedPrompts },
+        }),
+        ...integrationMutations,
+      ]);
     } catch (err) {
       console.error("Failed to save sandbox credentials:", err);
       onError?.(
@@ -352,12 +488,20 @@ function ChatbotSettingsSidebar({
           isShown ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex-1 space-y-8 overflow-y-auto px-4 py-5 sm:px-6 sm:py-6">
+        <div className="flex-1 space-y-8 overflow-y-auto px-4 py-5 sm:space-y-10 sm:px-6 sm:py-6">
+          <button
+            type="button"
+            onClick={closeWithAnimation}
+            className="font-dm-mono flex items-center gap-1.5 text-xs tracking-wider text-black/50 uppercase hover:text-black"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            Back
+          </button>
           <section>
-            <h3 className="font-greed-narrow mb-3 text-base font-bold tracking-wider text-gray-900 uppercase">
+            <h3 className="font-greed-narrow mb-3 text-[34px] leading-[0.95] font-medium tracking-[-0.68px] text-black uppercase">
               Select Agents
             </h3>
-            <p className="font-dm-mono mb-5 text-xs tracking-wider text-gray-500 uppercase">
+            <p className="font-dm-mono mb-5 text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase">
               Which agents are allowed to work in this chatbot
             </p>
             <ul className="space-y-4">
@@ -393,11 +537,11 @@ function ChatbotSettingsSidebar({
           </section>
 
           <section>
-            <h3 className="font-greed-narrow mb-3 text-base font-bold tracking-wider text-gray-900 uppercase">
+            <h3 className="font-greed-narrow mb-3 text-[34px] leading-[0.95] font-medium tracking-[-0.68px] text-black uppercase">
               Sandbox
             </h3>
-            <p className="font-dm-mono mb-5 text-xs tracking-wider text-gray-500 uppercase">
-              Please create a sandbox account and enter the login details for
+            <p className="font-dm-mono mb-5 text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase">
+              Please create a sandbox account and share the login details for
               Agent 047
             </p>
             <div className="space-y-4">
@@ -478,15 +622,32 @@ function ChatbotSettingsSidebar({
               )}
             </div>
           </section>
+
+          <PaymentSandboxSection />
+          <ApiKeysSection value={apiKeyRows} onChange={updateApiKeyRow} />
+          <SuggestedQuestionsSection
+            value={suggestedPrompts}
+            onChange={setSuggestedPrompts}
+          />
         </div>
 
         <div className="border-t border-gray-100 px-4 py-4 sm:px-6">
           <button
             onClick={handleSave}
-            disabled={updateConfig.isPending}
-            className="font-dm-mono w-full cursor-pointer rounded-sm bg-[#006BE5] py-3 text-center text-sm font-bold tracking-wider text-white uppercase transition-colors hover:bg-[#0055B8] disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={
+              updateConfig.isPending ||
+              updateCompany.isPending ||
+              createIntegration.isPending ||
+              updateIntegration.isPending
+            }
+            className="font-dm-mono w-full cursor-pointer rounded-[8px] bg-[#006BE5] py-3 text-center text-sm tracking-wider text-white uppercase shadow-[-3px_4px_0px_0px_#000000] transition-all hover:bg-[#0055B8] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-1px_2px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {updateConfig.isPending ? "Saving…" : "Save & Close"}
+            {updateConfig.isPending ||
+            updateCompany.isPending ||
+            createIntegration.isPending ||
+            updateIntegration.isPending
+              ? "Saving…"
+              : "Save & Close"}
           </button>
         </div>
       </aside>

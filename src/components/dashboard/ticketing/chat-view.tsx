@@ -5,17 +5,10 @@ import { useEffect, useRef, useState } from "react";
 
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useChat, useMarkChatSeen } from "@/hooks/use-conversations";
+import { resolveAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
 
 import { MessageMarkdown } from "./message-markdown";
-
-const AVATAR_IMAGES = [
-  "/images/chats/newimg.svg",
-  "/images/chats/newimg1.svg",
-  "/images/chats/newimg2.svg",
-  "/images/chats/newimg3.svg",
-  "/images/chats/newimg4.svg",
-];
 
 function MessageEmptyState() {
   return (
@@ -42,22 +35,17 @@ function MessageEmptyState() {
 
 interface ChatViewProps {
   ticketId: string;
-  avatarIndex?: number;
   className?: string;
   onClose?: () => void;
 }
 
-export function ChatView({
-  ticketId,
-  avatarIndex = 0,
-  className,
-  onClose,
-}: ChatViewProps) {
+export function ChatView({ ticketId, className, onClose }: ChatViewProps) {
   const companyId = useActiveCompanyId();
   const { data: chat, isFetching } = useChat(ticketId);
   const { mutate: markSeen } = useMarkChatSeen();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [draft, setDraft] = useState("");
+  const avatarSrc = resolveAvatarUrl(chat?.avatar);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -107,12 +95,8 @@ export function ChatView({
       <div className="flex items-center justify-between border-b border-gray-100 px-4 py-4 sm:px-6">
         <div className="flex min-w-0 items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-50">
-            <Image
-              src={AVATAR_IMAGES[avatarIndex % AVATAR_IMAGES.length]}
-              alt="Chat avatar"
-              width={36}
-              height={31}
-            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={avatarSrc} alt="Chat avatar" width={36} height={31} />
           </div>
           <span className="font-dm-mono min-w-0 truncate text-sm font-bold tracking-wider text-gray-900 uppercase">
             {chat?.session_id
@@ -157,12 +141,8 @@ export function ChatView({
             >
               {isVisitor && (
                 <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gray-50">
-                  <Image
-                    src={AVATAR_IMAGES[avatarIndex % AVATAR_IMAGES.length]}
-                    alt="Visitor"
-                    width={22}
-                    height={19}
-                  />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={avatarSrc} alt="Visitor" width={22} height={19} />
                 </div>
               )}
               <div

@@ -12,22 +12,15 @@ import { useState } from "react";
 import { Loader } from "@/components/loader";
 import { useResolvedChats } from "@/hooks/use-conversations";
 import { useTickets } from "@/hooks/use-tickets";
+import { resolveAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
 
 export type TicketKind = "ticket" | "chat";
 
 interface TicketListProps {
   selectedItemId: string;
-  onSelectItem: (id: string, index: number, kind: TicketKind) => void;
+  onSelectItem: (id: string, kind: TicketKind) => void;
 }
-
-const AVATAR_IMAGES = [
-  "/images/chats/newimg.svg",
-  "/images/chats/newimg1.svg",
-  "/images/chats/newimg2.svg",
-  "/images/chats/newimg3.svg",
-  "/images/chats/newimg4.svg",
-];
 
 function TicketListEmptyState() {
   return (
@@ -159,9 +152,9 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
           !tickets || tickets.length === 0 ? (
             <TicketListEmptyState />
           ) : (
-            tickets.map((ticket, index) => {
+            tickets.map((ticket) => {
               const unread = (ticket.unseen_count ?? 0) > 0;
-              const avatarSrc = AVATAR_IMAGES[index % AVATAR_IMAGES.length];
+              const avatarSrc = resolveAvatarUrl(ticket.avatar);
               const title =
                 ticket.customer_name?.trim() ||
                 ticket.customer_email ||
@@ -171,7 +164,7 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
               return (
                 <button
                   key={ticket.id}
-                  onClick={() => onSelectItem(ticket.id, index, "ticket")}
+                  onClick={() => onSelectItem(ticket.id, "ticket")}
                   className={cn(
                     "flex w-full cursor-pointer items-center gap-3 rounded-2xl p-0 text-left transition-colors lg:p-3",
                     selectedItemId === ticket.id
@@ -180,14 +173,15 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
                   )}
                 >
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-50">
-                    <Image
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
                       src={avatarSrc}
                       alt="Ticket avatar"
                       width={36}
                       height={31}
                     />
                   </div>
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-0 flex-1 space-y-1.5">
                     <div className="flex items-center justify-between">
                       <span
                         className={cn(
@@ -224,15 +218,15 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
         ) : !resolvedChats || resolvedChats.length === 0 ? (
           <TicketListEmptyState />
         ) : (
-          resolvedChats.map((chat, index) => {
-            const avatarSrc = AVATAR_IMAGES[index % AVATAR_IMAGES.length];
+          resolvedChats.map((chat) => {
+            const avatarSrc = resolveAvatarUrl(chat.avatar);
             const sessionLabel = chat.session_id
               ? chat.session_id.slice(0, 13).toUpperCase()
               : "UNKNOWN";
             return (
               <button
                 key={chat.id}
-                onClick={() => onSelectItem(chat.id, index, "chat")}
+                onClick={() => onSelectItem(chat.id, "chat")}
                 className={cn(
                   "flex w-full cursor-pointer items-center gap-3 rounded-2xl p-0 text-left transition-colors lg:p-3",
                   selectedItemId === chat.id
@@ -241,14 +235,15 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
                 )}
               >
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-50">
-                  <Image
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
                     src={avatarSrc}
                     alt="Chat avatar"
                     width={36}
                     height={31}
                   />
                 </div>
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 space-y-1.5">
                   <div className="flex items-center justify-between">
                     <span className="font-dm-mono truncate text-sm font-semibold text-gray-600">
                       {sessionLabel}

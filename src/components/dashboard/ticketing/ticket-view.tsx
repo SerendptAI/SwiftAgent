@@ -15,22 +15,16 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import { useActiveCompanyId } from "@/hooks/use-active-company";
+import { useCurrentUser } from "@/hooks/use-auth";
 import {
   useMarkTicketSeen,
   useReplyToTicket,
   useTicket,
 } from "@/hooks/use-tickets";
+import { resolveAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
 
 import { MessageMarkdown } from "./message-markdown";
-
-const AVATAR_IMAGES = [
-  "/images/chats/newimg.svg",
-  "/images/chats/newimg1.svg",
-  "/images/chats/newimg2.svg",
-  "/images/chats/newimg3.svg",
-  "/images/chats/newimg4.svg",
-];
 
 function MessageEmptyState() {
   return (
@@ -57,19 +51,14 @@ function MessageEmptyState() {
 
 interface TicketViewProps {
   ticketId: string;
-  avatarIndex?: number;
   className?: string;
   onClose?: () => void;
 }
 
-export function TicketView({
-  ticketId,
-  avatarIndex = 0,
-  className,
-  onClose,
-}: TicketViewProps) {
+export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
   const companyId = useActiveCompanyId();
   const { data: ticket, isFetching } = useTicket(ticketId);
+  const { data: currentUser } = useCurrentUser();
   const { mutate: markSeen } = useMarkTicketSeen();
   const { mutate: reply, isPending: isSending } = useReplyToTicket();
 
@@ -92,7 +81,7 @@ export function TicketView({
   }
 
   const messages = ticket?.messages ?? [];
-  const avatar = AVATAR_IMAGES[avatarIndex % AVATAR_IMAGES.length];
+  const avatar = resolveAvatarUrl(ticket?.avatar);
   const title =
     ticket?.customer_name?.trim() || ticket?.customer_email || "Ticket";
 
@@ -110,7 +99,15 @@ export function TicketView({
     const body_text = draft.trim();
     if (!body_text || !companyId || !ticket) return;
     reply(
-      { companyId, ticketId: ticket.id, payload: { body_text } },
+      {
+        companyId,
+        ticketId: ticket.id,
+        payload: {
+          body_text,
+          replier_name: currentUser?.name || currentUser?.email,
+          replier_picture: currentUser?.picture ?? null,
+        },
+      },
       { onSuccess: () => setDraft("") },
     );
   };
@@ -135,7 +132,8 @@ export function TicketView({
       <div className="flex items-center justify-between border-b border-gray-100 px-4 py-4 sm:px-6">
         <div className="flex min-w-0 items-center gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gray-50">
-            <Image src={avatar} alt="Ticket avatar" width={36} height={31} />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={avatar} alt="Ticket avatar" width={36} height={31} />
           </div>
           <div className="min-w-0">
             <div className="font-dm-mono truncate text-sm font-bold tracking-wider text-gray-900 uppercase">
@@ -236,7 +234,8 @@ export function TicketView({
             >
               {isCustomer && (
                 <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gray-50">
-                  <Image src={avatar} alt="Customer" width={22} height={19} />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={avatar} alt="Customer" width={22} height={19} />
                 </div>
               )}
               <div

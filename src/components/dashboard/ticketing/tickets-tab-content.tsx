@@ -11,14 +11,13 @@ import { useScrollLock } from "@/hooks/use-scroll-lock";
 
 interface TicketSelection {
   id: string;
-  index: number;
   kind: TicketKind;
 }
 
 interface TicketsTabContentProps {
   selection: TicketSelection | null;
-  onSelectItem: (id: string, index: number, kind: TicketKind) => void;
   onClearSelection: () => void;
+  onSelectItem: (id: string, kind: TicketKind) => void;
 }
 
 function MessageEmptyState() {
@@ -64,9 +63,9 @@ export function TicketsTabContent({
 
   const conversation = selection ? (
     selection.kind === "ticket" ? (
-      <TicketView ticketId={selection.id} avatarIndex={selection.index} />
+      <TicketView ticketId={selection.id} />
     ) : (
-      <ChatView ticketId={selection.id} avatarIndex={selection.index} />
+      <ChatView ticketId={selection.id} />
     )
   ) : (
     <MessageEmptyState />
@@ -76,14 +75,12 @@ export function TicketsTabContent({
     selection.kind === "ticket" ? (
       <TicketView
         ticketId={selection.id}
-        avatarIndex={selection.index}
         className="min-h-0 rounded-none shadow-none"
         onClose={onClearSelection}
       />
     ) : (
       <ChatView
         ticketId={selection.id}
-        avatarIndex={selection.index}
         className="min-h-0 rounded-none shadow-none"
         onClose={onClearSelection}
       />
