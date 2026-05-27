@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useEffect } from "react";
 
+import { useScrollLock } from "@/hooks/use-scroll-lock";
+
 interface FormCreationSuccessModalProps {
   open: boolean;
   formIcon: string;
@@ -16,11 +18,10 @@ export function FormCreationSuccessModal({
   formName,
   onClose,
 }: FormCreationSuccessModalProps) {
+  useScrollLock(open);
+
   useEffect(() => {
     if (!open) return;
-
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
@@ -29,7 +30,6 @@ export function FormCreationSuccessModal({
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.body.style.overflow = originalOverflow;
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [onClose, open]);

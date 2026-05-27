@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { Maximize2, Paperclip, Send } from "lucide-react";
+import { Maximize2, Paperclip, Send, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
@@ -19,7 +19,7 @@ const AVATAR_IMAGES = [
 
 function MessageEmptyState() {
   return (
-    <div className="flex h-full w-full items-center justify-center rounded-3xl bg-white shadow-sm">
+    <div className="flex min-h-[420px] w-full items-center justify-center rounded-[20px] bg-white px-4 pb-20 shadow-sm lg:h-full lg:rounded-3xl lg:pb-0">
       <div className="flex flex-col items-center gap-8 text-center">
         <Image
           src="/images/email-mailbox-open.svg"
@@ -43,9 +43,16 @@ function MessageEmptyState() {
 interface ChatViewProps {
   ticketId: string;
   avatarIndex?: number;
+  className?: string;
+  onClose?: () => void;
 }
 
-export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
+export function ChatView({
+  ticketId,
+  avatarIndex = 0,
+  className,
+  onClose,
+}: ChatViewProps) {
   const companyId = useActiveCompanyId();
   const { data: chat, isFetching } = useChat(ticketId);
   const { mutate: markSeen } = useMarkChatSeen();
@@ -80,7 +87,12 @@ export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
   }
 
   return (
-    <div className="relative flex h-full flex-col rounded-3xl bg-white shadow-sm">
+    <div
+      className={cn(
+        "relative flex h-full min-h-[520px] flex-col rounded-[20px] bg-white shadow-sm lg:min-h-0 lg:rounded-3xl",
+        className,
+      )}
+    >
       {/* Subtle loading bar */}
       {isFetching && (
         <div className="absolute top-0 right-0 left-0 z-10 ml-4 h-0.5 overflow-hidden rounded-t-3xl">
@@ -92,8 +104,8 @@ export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
       )}
 
       {/* Chat Header */}
-      <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between border-b border-gray-100 px-4 py-4 sm:px-6">
+        <div className="flex min-w-0 items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-50">
             <Image
               src={AVATAR_IMAGES[avatarIndex % AVATAR_IMAGES.length]}
@@ -102,22 +114,29 @@ export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
               height={31}
             />
           </div>
-          <span className="font-dm-mono text-sm font-bold tracking-wider text-gray-900 uppercase">
+          <span className="font-dm-mono min-w-0 truncate text-sm font-bold tracking-wider text-gray-900 uppercase">
             {chat?.session_id
               ? chat.session_id.slice(0, 13).toUpperCase()
               : "Conversation"}
           </span>
         </div>
         <button
-          aria-label="Expand"
+          type="button"
+          aria-label={onClose ? "Close conversation" : "Expand"}
+          onClick={onClose}
           className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
         >
-          <Maximize2 className="h-4 w-4" />
+          {onClose ? (
+            <X className="h-4 w-4 lg:hidden" />
+          ) : (
+            <Maximize2 className="h-4 w-4" />
+          )}
+          {onClose && <Maximize2 className="hidden h-4 w-4 lg:block" />}
         </button>
       </div>
 
       {/* Messages Area (read-only) */}
-      <div className="scrollbar-none flex-1 space-y-4 overflow-y-auto px-6 py-4">
+      <div className="scrollbar-none flex-1 space-y-4 overflow-y-auto px-4 py-4 sm:px-6">
         {headerTime && (
           <div className="flex items-center justify-center">
             <span className="text-xs text-gray-400">{headerTime}</span>

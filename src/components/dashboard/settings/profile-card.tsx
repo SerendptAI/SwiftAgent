@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { useCurrentUser, useLogout } from "@/hooks/use-auth";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
 import { getAuthProvider } from "@/lib/api-client";
 import { getProfileImage } from "@/lib/utils";
 
@@ -28,6 +29,7 @@ export function ProfileCard({
 
   const [currentIp, setCurrentIp] = useState<string>("");
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  useScrollLock(showLogoutModal);
 
   useEffect(() => {
     fetch("https://api.ipify.org?format=json")
@@ -62,9 +64,9 @@ export function ProfileCard({
   }, [propOnLogout, logoutMutation]);
 
   return (
-    <aside className="flex h-[450px] w-[320px] shrink-0 flex-col items-center gap-4 rounded-3xl bg-white p-6 shadow-sm">
+    <aside className="flex w-full shrink-0 flex-col items-center gap-4 rounded-[20px] bg-white p-4 shadow-sm lg:h-[450px] lg:w-[320px] lg:rounded-3xl lg:p-6">
       {/* Avatar */}
-      <div className="relative h-30 w-30 overflow-hidden rounded-full border-2 border-gray-100">
+      <div className="relative h-24 w-24 overflow-hidden rounded-full border-2 border-gray-100 lg:h-30 lg:w-30">
         <Image
           src={getProfileImage(user?.id)}
           alt={name || "User Avatar"}
@@ -74,12 +76,12 @@ export function ProfileCard({
       </div>
 
       {/* Name */}
-      <p className="font-400 font-stolzl text-center text-xl text-gray-900">
+      <p className="font-400 font-stolzl text-center text-lg text-gray-900 lg:text-xl">
         {name}
       </p>
 
       {/* Login Method */}
-      <div className="font-dm-mono mt-6 flex w-full items-center justify-center gap-2 rounded-md border border-gray-100 px-3 py-2 text-sm font-medium text-gray-600 shadow-[-6px_6px_0px_0px_#000000]">
+      <div className="font-dm-mono mt-2 flex w-full items-center justify-center gap-2 rounded-md border border-gray-100 px-3 py-2 text-xs font-medium text-gray-600 shadow-[-4px_4px_0px_0px_#000000] lg:mt-6 lg:text-sm lg:shadow-[-6px_6px_0px_0px_#000000]">
         <span>LOGGED IN VIA</span>
         {loginMethod === "Google" ? (
           <Icons.google className="h-4 w-4" />
@@ -91,7 +93,7 @@ export function ProfileCard({
       </div>
 
       {/* IP Address */}
-      <div className="font-dm-mono flex w-full items-center justify-center rounded-md border border-gray-100 px-3 py-2 text-sm text-gray-500 shadow-[-6px_6px_0px_0px_#000000]">
+      <div className="font-dm-mono flex w-full items-center justify-center rounded-md border border-gray-100 px-3 py-2 text-xs text-gray-500 shadow-[-4px_4px_0px_0px_#000000] lg:text-sm lg:shadow-[-6px_6px_0px_0px_#000000]">
         IP: {displayIp}
       </div>
 
@@ -99,7 +101,7 @@ export function ProfileCard({
       <button
         onClick={() => setShowLogoutModal(true)}
         disabled={logoutMutation.isPending}
-        className="font-dm-mono mt-auto w-full rounded-md bg-red-500 py-2.5 text-sm font-bold tracking-widest text-white uppercase shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-red-600 disabled:opacity-50"
+        className="font-dm-mono mt-2 w-full rounded-md bg-red-500 py-2.5 text-xs font-bold tracking-widest text-white uppercase shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-red-600 disabled:opacity-50 lg:mt-auto lg:text-sm lg:shadow-[-6px_6px_0px_0px_#000000]"
       >
         {logoutMutation.isPending ? "LOGGING OUT..." : "LOG OUT"}
       </button>
@@ -113,7 +115,7 @@ export function ProfileCard({
         >
           {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */}
           <div
-            className="relative mx-4 w-full max-w-[420px] rounded-3xl bg-white px-6 py-12 shadow-xl"
+            className="relative mx-4 w-full max-w-[420px] rounded-3xl bg-white px-5 py-8 shadow-xl sm:px-6 sm:py-12"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex flex-col items-center">
@@ -123,7 +125,7 @@ export function ProfileCard({
               </div>
 
               {/* Text */}
-              <h2 className="font-greed-narrow mb-8 line-clamp-6 text-center text-4xl font-bold tracking-tight text-black uppercase">
+              <h2 className="font-greed-narrow mb-8 line-clamp-6 text-center text-3xl font-bold tracking-tight text-black uppercase sm:text-4xl">
                 ARE YOU SURE YOU
                 <br />
                 WANT TO LOG OUT?

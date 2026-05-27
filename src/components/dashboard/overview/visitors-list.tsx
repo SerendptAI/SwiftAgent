@@ -59,15 +59,15 @@ export function VisitorsList({
 
   return (
     <>
-      <div className="flex max-h-[350px] flex-col rounded-3xl bg-white p-6 shadow-sm">
-        <div className="mb-6 flex items-center justify-between">
+      <div className="flex max-h-[420px] flex-col rounded-[20px] bg-white p-4 shadow-sm md:max-h-[350px] md:rounded-3xl md:p-6">
+        <div className="mb-5 flex items-center justify-between gap-3 md:mb-6">
           <h3 className="font-stolzl text-lg font-normal text-gray-900">
             Visitors
           </h3>
           {visitors && visitors.length > 0 && (
             <button
               onClick={openModal}
-              className="font-greed-narrow cursor-pointer rounded-md bg-[#F7F7F7] px-4 py-2 text-base font-bold tracking-wider text-gray-900 uppercase transition-colors hover:bg-gray-50"
+              className="font-greed-narrow cursor-pointer rounded-md bg-[#F7F7F7] px-3 py-2 text-sm font-bold tracking-wider text-gray-900 uppercase transition-colors hover:bg-gray-50 sm:px-4 sm:text-base"
             >
               SEE ALL
             </button>
@@ -84,9 +84,9 @@ export function VisitorsList({
               No visitors found.
             </div>
           ) : (
-            <table className="w-full text-left text-sm">
+            <table className="w-full min-w-[300px] text-left text-sm">
               <thead>
-                <tr className="font-dm-mono border-b border-gray-100 text-base text-gray-500">
+                <tr className="font-dm-mono border-b border-gray-100 text-sm text-gray-500 sm:text-base">
                   <th className="pb-3 font-normal">Visitor</th>
                   <th className="pb-3 font-normal">Duration</th>
                   <th className="pb-3 text-right font-normal">Time/Date</th>

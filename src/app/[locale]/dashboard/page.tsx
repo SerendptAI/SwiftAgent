@@ -32,13 +32,13 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="h-full w-full">
-      <div className="flex flex-col gap-6 lg:flex-row">
+    <div className="min-h-full w-full">
+      <div className="flex flex-col gap-4 lg:flex-row lg:gap-6">
         {/* Left Column - Stats Grid */}
-        <div className="flex-1">
+        <div className="min-w-0 flex-1">
           <CompanyToolbar />
           <OfflineScreen>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 xl:gap-6">
               <StatsCards initialData={initialStats} />
               <ResourcesCard />
             </div>
@@ -46,7 +46,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Right Column - Widget & Visitors */}
-        <div className="w-full space-y-6 lg:w-[350px]">
+        <div className="w-full min-w-0 space-y-4 lg:w-[350px] lg:space-y-6">
           <WidgetCard />
           <VisitorsList initialData={initialVisitors} />
         </div>

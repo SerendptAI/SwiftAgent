@@ -74,13 +74,13 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
   const isLoading = activeTab === "pending" ? ticketsLoading : chatsLoading;
 
   return (
-    <div className="flex h-full flex-col rounded-3xl bg-white p-4 shadow-sm">
+    <div className="flex flex-col lg:h-full lg:min-h-0 lg:rounded-3xl lg:bg-white lg:p-4 lg:shadow-sm">
       {/* Pending / Resolved Tabs */}
-      <div className="mb-4 flex items-center gap-4 rounded-full p-1">
+      <div className="mb-4 flex items-center gap-2 rounded-full p-1 sm:gap-4">
         <button
           onClick={() => setActiveTab("pending")}
           className={cn(
-            "relative flex cursor-pointer items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold transition-colors",
+            "relative flex min-h-9 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg px-2.5 py-2 text-xs font-semibold transition-colors sm:min-h-11 sm:flex-none sm:gap-2 sm:rounded-md sm:px-5 sm:py-2.5 sm:text-sm",
             activeTab === "pending"
               ? "bg-[#2196F3] text-white"
               : "bg-[#F6F6F6] text-gray-500 hover:text-gray-700",
@@ -92,6 +92,7 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4 shrink-0 sm:h-6 sm:w-6"
           >
             <path
               d="M17.2013 2H6.79864C5.34088 2 4.0619 2.9847 4.00348 4.40355C3.92997 6.18879 5.18552 7.37422 6.50423 8.4871C8.32849 10.0266 9.24063 10.7964 9.3363 11.7708C9.35127 11.9233 9.35127 12.0767 9.3363 12.2292C9.24063 13.2036 8.3285 13.9734 6.50423 15.5129C5.1492 16.6564 3.92618 17.7195 4.00348 19.5964C4.0619 21.0153 5.34088 22 6.79864 22H17.2013C18.659 22 19.938 21.0153 19.9964 19.5964C20.0429 18.4668 19.6243 17.342 18.7351 16.56C18.3297 16.2034 17.9088 15.8615 17.4957 15.5129C15.6714 13.9734 14.7593 13.2036 14.6636 12.2292C14.6486 12.0767 14.6486 11.9233 14.6636 11.7708C14.7593 10.7964 15.6714 10.0266 17.4957 8.4871C18.8365 7.35558 20.0728 6.25809 19.9964 4.40355C19.938 2.9847 18.659 2 17.2013 2Z"
@@ -104,9 +105,9 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
               strokeWidth="1.5"
             />
           </svg>
-          Pending
+          <span>Pending</span>
           {pendingCount > 0 && (
-            <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white sm:h-5 sm:w-5 sm:text-[10px]">
               {pendingCount}
             </span>
           )}
@@ -114,7 +115,7 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
         <button
           onClick={() => setActiveTab("resolved")}
           className={cn(
-            "flex cursor-pointer items-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold transition-colors",
+            "flex min-h-9 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg px-2.5 py-2 text-xs font-semibold transition-colors sm:min-h-11 sm:flex-none sm:gap-2 sm:rounded-md sm:px-5 sm:py-2.5 sm:text-sm",
             activeTab === "resolved"
               ? "bg-[#2196F3] text-white"
               : "bg-[#F6F6F6] text-gray-500 hover:text-gray-700",
@@ -125,7 +126,7 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
             height="16"
             viewBox="0 0 16 16"
             fill="none"
-            className="shrink-0"
+            className="size-4 shrink-0 sm:size-5"
           >
             <rect
               x="1"
@@ -144,12 +145,12 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
               strokeLinejoin="round"
             />
           </svg>
-          Resolved
+          <span>Resolved</span>
         </button>
       </div>
 
       {/* Items */}
-      <div className="scrollbar-none flex-1 space-y-1 overflow-y-auto">
+      <div className="scrollbar-none flex-1 space-y-1 overflow-y-auto pt-3 lg:pt-0">
         {isLoading ? (
           <div className="flex h-full items-center justify-center">
             <Loader />
@@ -172,10 +173,10 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
                   key={ticket.id}
                   onClick={() => onSelectItem(ticket.id, index, "ticket")}
                   className={cn(
-                    "flex w-full cursor-pointer items-center gap-3 rounded-2xl p-3 text-left transition-colors",
+                    "flex w-full cursor-pointer items-center gap-3 rounded-2xl p-0 text-left transition-colors lg:p-3",
                     selectedItemId === ticket.id
-                      ? "bg-blue-50"
-                      : "hover:bg-gray-50",
+                      ? "text-[#006BE5] lg:bg-blue-50"
+                      : "hover:text-gray-900 lg:hover:bg-gray-50",
                   )}
                 >
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-50">
@@ -233,10 +234,10 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
                 key={chat.id}
                 onClick={() => onSelectItem(chat.id, index, "chat")}
                 className={cn(
-                  "flex w-full cursor-pointer items-center gap-3 rounded-2xl p-3 text-left transition-colors",
+                  "flex w-full cursor-pointer items-center gap-3 rounded-2xl p-0 text-left transition-colors lg:p-3",
                   selectedItemId === chat.id
-                    ? "bg-[#ECECEC]"
-                    : "hover:bg-[#ECECEC]",
+                    ? "text-[#6433CC] lg:bg-[#ECECEC]"
+                    : "hover:text-gray-900 lg:hover:bg-[#ECECEC]",
                 )}
               >
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-50">

@@ -86,14 +86,14 @@ export function WidgetCard() {
         <div className="relative">
           <div className="relative">
             {/* Top bar with notch cutout */}
-            <div className="absolute top-0 right-0 left-0 z-50 flex h-[48px] items-center gap-4">
+            <div className="absolute top-0 right-0 left-0 z-10 flex h-[48px] items-center gap-2 pr-3 sm:gap-4 sm:pr-0">
               <div
                 className="bg-muted h-full rounded-br-md pr-4"
                 ref={modeDropdownRef}
               >
                 <button
                   onClick={() => setModeDropdownOpen((v) => !v)}
-                  className="font-dm-mono flex items-center gap-2 rounded-md bg-[#006BE5] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1E88E5]"
+                  className="font-dm-mono flex min-h-11 items-center gap-2 rounded-md bg-[#006BE5] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1E88E5] sm:px-5"
                 >
                   <ChevronDown
                     className={`h-4 w-4 transition-transform ${modeDropdownOpen ? "rotate-180" : ""}`}
@@ -102,7 +102,7 @@ export function WidgetCard() {
                 </button>
 
                 {modeDropdownOpen && (
-                  <div className="animate-in fade-in slide-in-from-top-1 absolute top-[48px] left-0 z-1000 min-w-[180px] overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg">
+                  <div className="animate-in fade-in slide-in-from-top-1 absolute top-[48px] left-0 z-20 min-w-[180px] overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg">
                     <button
                       onClick={() => {
                         setMode("widget");
@@ -134,20 +134,20 @@ export function WidgetCard() {
                 )}
               </div>
 
-              <div className="flex items-center pr-6">
+              <div className="flex items-center sm:pr-6">
                 <button
                   onClick={() => setIsSettingsOpen(true)}
-                  className="font-greed-narrow flex cursor-pointer items-center gap-2 rounded-md bg-[#EDEDED] px-4 py-2 text-xs font-bold tracking-wider text-gray-600 uppercase transition-colors hover:bg-gray-100"
+                  className="font-greed-narrow flex min-h-10 cursor-pointer items-center gap-2 rounded-md bg-[#EDEDED] px-3 py-2 text-xs font-bold tracking-wider text-gray-600 uppercase transition-colors hover:bg-gray-100 sm:px-4"
                 >
                   <Icons.Settings className="h-5 w-5" />
-                  SETTINGS
+                  <span className="hidden min-[360px]:inline">SETTINGS</span>
                 </button>
               </div>
             </div>
 
-            <div className="rounded-md border border-gray-100 bg-white px-5 pt-16 pb-5 shadow-sm">
+            <div className="rounded-[20px] border border-gray-100 bg-white px-4 pt-16 pb-5 shadow-sm md:rounded-md md:px-5">
               {/* Code snippet */}
-              <pre className="font-stolzl rounded-lg bg-[#F6F6F6] p-4 text-[13px] leading-relaxed break-all whitespace-pre-wrap text-gray-700">
+              <pre className="font-stolzl max-h-48 overflow-auto rounded-lg bg-[#F6F6F6] p-3 text-[11px] leading-relaxed break-all whitespace-pre-wrap text-gray-700 sm:p-4 sm:text-[13px]">
                 {codeSnippet || "No widget code found."}
               </pre>
               {mode === "button" && (
@@ -164,7 +164,7 @@ export function WidgetCard() {
               <button
                 onClick={handleCopy}
                 disabled={!codeSnippet}
-                className="font-dm-mono mt-6 flex w-full items-center justify-center gap-2.5 rounded-md bg-[#006BE5] py-2 text-base font-normal text-white shadow-[-4px_4px_0px_0px_#000000] transition-all hover:bg-[#1E88E5] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-2px_2px_0px_0px_#000000] disabled:opacity-50"
+                className="font-dm-mono mt-6 flex min-h-11 w-full items-center justify-center gap-2.5 rounded-md bg-[#006BE5] py-2 text-base font-normal text-white shadow-[-4px_4px_0px_0px_#000000] transition-all hover:bg-[#1E88E5] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-2px_2px_0px_0px_#000000] disabled:opacity-50"
               >
                 <Copy className="h-5 w-5" />
                 {copied ? "Copied!" : "Copy"}
@@ -352,7 +352,7 @@ function ChatbotSettingsSidebar({
           isShown ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex-1 space-y-8 overflow-y-auto px-6 py-6">
+        <div className="flex-1 space-y-8 overflow-y-auto px-4 py-5 sm:px-6 sm:py-6">
           <section>
             <h3 className="font-greed-narrow mb-3 text-base font-bold tracking-wider text-gray-900 uppercase">
               Select Agents
@@ -480,7 +480,7 @@ function ChatbotSettingsSidebar({
           </section>
         </div>
 
-        <div className="border-t border-gray-100 px-6 py-4">
+        <div className="border-t border-gray-100 px-4 py-4 sm:px-6">
           <button
             onClick={handleSave}
             disabled={updateConfig.isPending}
@@ -615,7 +615,7 @@ function ToastNotification({
   return (
     <div
       role="status"
-      className={`fixed top-6 right-6 z-[60] flex max-w-sm items-start gap-3 rounded-lg border px-4 py-3 shadow-lg ${
+      className={`fixed top-4 right-4 left-4 z-[60] flex items-start gap-3 rounded-lg border px-4 py-3 shadow-lg sm:top-6 sm:right-6 sm:left-auto sm:max-w-sm ${
         isSuccess
           ? "border-green-200 bg-green-50 text-green-800"
           : "border-red-200 bg-red-50 text-red-800"

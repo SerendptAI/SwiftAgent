@@ -90,11 +90,11 @@ export function VoiceConversationStep({
 
   return (
     <div className="mx-auto w-full max-w-4xl pb-4 text-center">
-      <h2 className="font-stolzl mb-12 text-sm font-bold tracking-wide text-gray-900 uppercase">
+      <h2 className="font-stolzl mb-8 text-sm font-bold tracking-wide text-gray-900 uppercase sm:mb-12">
         How should your agent sound to customers
       </h2>
 
-      <div className="mb-16 grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div className="mb-10 grid grid-cols-1 gap-4 sm:mb-16 sm:gap-6 md:grid-cols-3">
         {/* Professional */}
         <VoiceCard
           value="professional"
@@ -129,14 +129,14 @@ export function VoiceConversationStep({
         />
       </div>
 
-      <div className="mt-12 flex flex-col items-center justify-center gap-2">
+      <div className="mt-8 flex flex-col items-center justify-center gap-2 sm:mt-12">
         <OnboardingErrorToast
           message={error}
           onDismiss={() => setError(null)}
         />
         {footerAction ?? (
           <NextButton
-            className="max-w-2xl px-12"
+            className="max-w-2xl px-8 sm:px-12"
             onClick={handleSubmit(onSubmit)}
             disabled={isPending}
           >
@@ -187,24 +187,24 @@ function VoiceCard({
         }
       }}
       className={cn(
-        "flex h-full cursor-pointer flex-col rounded-3xl bg-gray-100 p-6 transition-all duration-300 hover:shadow-lg",
+        "flex h-full cursor-pointer flex-col rounded-2xl bg-gray-100 p-4 transition-all duration-300 hover:shadow-lg sm:rounded-3xl sm:p-6",
         selected && "shadow-[0px_4px_20px_rgba(0,0,0,0.05)]",
       )}
     >
-      <div className="mb-6 flex justify-center">
+      <div className="mb-4 flex justify-center sm:mb-6">
         <Image
           src={imageSrc}
           alt={label}
           width={90}
           height={90}
-          className="h-[90px] w-auto"
+          className="h-18 w-auto sm:h-[90px]"
         />
       </div>
 
-      <div className="font-dm-mono mb-6 flex justify-center">
+      <div className="font-dm-mono mb-4 flex justify-center sm:mb-6">
         <div
           className={cn(
-            "rounded-xl px-4 py-1.5 text-sm font-semibold shadow-[-4px_4px_0px_0px_#000000]",
+            "rounded-xl px-4 py-1.5 text-xs font-semibold shadow-[-4px_4px_0px_0px_#000000] sm:text-sm",
             "border border-white bg-white text-gray-900",
           )}
         >
@@ -212,7 +212,7 @@ function VoiceCard({
         </div>
       </div>
 
-      <div className="mb-8 flex-1 text-left">
+      <div className="mb-6 flex-1 text-left sm:mb-8">
         <p className="font-stolzl mb-1 text-xs font-bold text-gray-900 uppercase">
           Sounds like
         </p>

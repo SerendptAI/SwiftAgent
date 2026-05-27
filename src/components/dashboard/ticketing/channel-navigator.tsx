@@ -52,7 +52,7 @@ interface ChannelNavigatorProps {
 
 export function ChannelNavigator({ active, onChange }: ChannelNavigatorProps) {
   return (
-    <div className="flex flex-col items-center gap-8 rounded-3xl bg-white p-3 shadow-sm">
+    <div className="scrollbar-none flex w-full items-center gap-2 overflow-x-auto rounded-[20px] bg-white p-2 shadow-sm lg:w-auto lg:flex-col lg:gap-8 lg:rounded-3xl lg:p-3">
       {CHANNELS.map((ch) => {
         const Icon = ch.icon;
         const isActive = ch.key === active;
@@ -61,7 +61,7 @@ export function ChannelNavigator({ active, onChange }: ChannelNavigatorProps) {
             <button
               type="button"
               onClick={() => onChange(ch.key)}
-              className={`relative flex h-20 w-20 cursor-pointer items-center justify-center rounded-2xl transition-colors ${
+              className={`relative flex h-13 min-w-0 flex-1 cursor-pointer items-center justify-center gap-2 rounded-2xl px-3 transition-colors sm:h-14 lg:h-20 lg:w-20 lg:flex-none lg:px-0 ${
                 isActive
                   ? `${ch.activeBg} shadow-sm`
                   : "bg-[#F6F6F6] hover:bg-gray-100"
@@ -70,10 +70,17 @@ export function ChannelNavigator({ active, onChange }: ChannelNavigatorProps) {
               aria-pressed={isActive}
             >
               <Icon
-                className={`h-10 w-10 ${
+                className={`h-6 w-6 shrink-0 lg:h-10 lg:w-10 ${
                   isActive ? ch.activeIcon : "text-gray-500"
                 }`}
               />
+              <span
+                className={`font-dm-mono sr-only truncate text-xs uppercase ${
+                  isActive ? "text-white" : "text-gray-500"
+                }`}
+              >
+                {ch.label}
+              </span>
             </button>
           </InfoTooltip>
         );

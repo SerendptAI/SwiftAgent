@@ -105,12 +105,12 @@ export function KnowledgeSourcesStep({
   return (
     <div className="mx-auto w-full max-w-4xl pb-4">
       {/* Company Type Toggle */}
-      <div className="mb-12 flex justify-center">
-        <div className="relative flex items-center gap-8 rounded-2xl bg-gray-100 p-4 shadow-sm">
+      <div className="mb-8 flex justify-center sm:mb-12">
+        <div className="relative grid w-full grid-cols-1 gap-2 rounded-2xl bg-gray-100 p-3 shadow-sm sm:w-fit sm:grid-cols-2 sm:gap-8 sm:p-4">
           <button
             onClick={() => setValue("companyType", "saas")}
             className={cn(
-              "relative z-10 flex h-10 items-center gap-2 rounded-xl px-2 text-sm font-bold uppercase transition-all duration-300",
+              "relative z-10 flex min-h-10 items-center justify-center gap-2 rounded-xl px-3 text-xs font-bold uppercase transition-all duration-300 sm:justify-start sm:px-2 sm:text-sm",
               companyType === "saas"
                 ? "bg-white text-gray-900 shadow-[-6px_6px_0px_0px_#000000] ring-1 ring-black/5"
                 : "text-gray-400 hover:text-gray-600",
@@ -122,7 +122,7 @@ export function KnowledgeSourcesStep({
           <button
             onClick={() => setValue("companyType", "crypto")}
             className={cn(
-              "relative z-10 flex h-10 items-center gap-2 rounded-xl px-2 text-sm font-bold uppercase transition-all duration-300",
+              "relative z-10 flex min-h-10 items-center justify-center gap-2 rounded-xl px-3 text-xs font-bold uppercase transition-all duration-300 sm:justify-start sm:px-2 sm:text-sm",
               companyType === "crypto"
                 ? "bg-white text-gray-900 shadow-[-6px_6px_0px_0px_#000000] ring-1 ring-black/5"
                 : "text-gray-400 hover:text-gray-600",
@@ -260,10 +260,10 @@ export function KnowledgeSourcesStep({
               )}
             </NextButton>
           ) : cryptoPage === 1 ? (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               <button
                 onClick={() => setCryptoPage(2)}
-                className="w-full cursor-pointer rounded-xl bg-[#006BE5] py-4 text-center font-semibold text-white shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-[#0055B8]"
+                className="w-full cursor-pointer rounded-xl bg-[#006BE5] py-3 text-center font-semibold text-white shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-[#0055B8] sm:py-4"
               >
                 Next
               </button>
@@ -275,7 +275,7 @@ export function KnowledgeSourcesStep({
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               <button
                 onClick={() => setCryptoPage(1)}
                 className="flex h-[38px] w-[80px] shrink-0 cursor-pointer items-center justify-center rounded-xl bg-[#D6E4FF] shadow-[-6px_6px_0px_0px_#00000033] transition-colors hover:bg-blue-200"
@@ -285,7 +285,7 @@ export function KnowledgeSourcesStep({
               <button
                 onClick={handleSubmit(onSubmit)}
                 disabled={isPending}
-                className="w-full cursor-pointer rounded-xl bg-[#006BE5] py-2 text-center font-semibold text-white shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-[#0055B8] disabled:opacity-50"
+                className="w-full cursor-pointer rounded-xl bg-[#006BE5] py-3 text-center font-semibold text-white shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-[#0055B8] disabled:opacity-50 sm:py-2"
               >
                 {isPending ? (
                   <span className="flex items-center justify-center gap-2">
@@ -370,18 +370,18 @@ function UploadSection({
       />
       <div
         className={cn(
-          "font-dm-mono flex items-center justify-between rounded-lg px-8 py-2 text-white shadow-[-6px_6px_0px_0px_#000000] transition-transform hover:scale-[1.01]",
+          "font-dm-mono flex flex-col gap-4 rounded-lg px-4 py-4 text-white shadow-[-4px_4px_0px_0px_#000000] transition-transform hover:scale-[1.01] sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-2 sm:shadow-[-6px_6px_0px_0px_#000000]",
           color,
         )}
       >
-        <div className="flex items-center gap-4">
-          <div className="flex h-8 w-8">
+        <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+          <div className="flex h-7 w-7 shrink-0 sm:h-8 sm:w-8">
             <Icons.companyupload className="h-8 w-8" />
           </div>
-          <div className="flex flex-col">
-            <span className="text-lg font-medium">{label}</span>
+          <div className="flex min-w-0 flex-col">
+            <span className="text-sm font-medium sm:text-lg">{label}</span>
             {uploadedFileName && (
-              <span className="max-w-[200px] truncate text-sm text-white/80">
+              <span className="max-w-full truncate text-xs text-white/80 sm:max-w-[200px] sm:text-sm">
                 {uploadedFileName}
               </span>
             )}
@@ -391,7 +391,7 @@ function UploadSection({
           onClick={handleUploadClick}
           disabled={isPending}
           className={cn(
-            "group flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-white/30 disabled:opacity-50",
+            "group flex h-10 w-full items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold text-white transition-colors hover:bg-white/30 disabled:opacity-50 sm:w-auto sm:py-2",
             uploadedFileName && "bg-green-500/20 hover:bg-green-500/30",
           )}
         >

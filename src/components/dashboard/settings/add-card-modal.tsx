@@ -3,6 +3,8 @@
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 
+import { useScrollLock } from "@/hooks/use-scroll-lock";
+
 interface AddCardModalProps {
   onClose: () => void;
   onSubmit: (card: CardFormData) => void;
@@ -56,6 +58,8 @@ function FormInput({
 }
 
 export function AddCardModal({ onClose, onSubmit }: AddCardModalProps) {
+  useScrollLock(true);
+
   const [form, setForm] = useState<CardFormData>({
     nameOnCard: "",
     cardNumber: "",
