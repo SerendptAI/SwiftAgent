@@ -63,40 +63,57 @@ export function PaymentSandboxSection() {
 
 // ── API KEYS ───────────────────────────────────────────────────────────────
 
-const API_KEY_FIELDS: { id: string; label: string; tooltip: string }[] = [
-  {
-    id: "api-user-account",
-    label: "User / account data API",
-    tooltip: "API endpoint that exposes user and account profile data.",
-  },
-  {
-    id: "api-transaction-history",
-    label: "Transaction history API",
-    tooltip: "API endpoint that returns transaction history records.",
-  },
-  {
-    id: "api-balance",
-    label: "Current balance / wallet state API",
-    tooltip: "API endpoint that returns the current balance / wallet state.",
-  },
-  {
-    id: "api-orders",
-    label: "Order / service records API",
-    tooltip: "API endpoint that returns order or service records.",
-  },
-  {
-    id: "api-event-logs",
-    label: "In-app event logs  API",
-    tooltip: "API endpoint that exposes in-app event logs.",
-  },
-];
+export const API_KEY_FIELDS: { id: string; label: string; tooltip: string }[] =
+  [
+    {
+      id: "api-user-account",
+      label: "User / account data API",
+      tooltip: "API endpoint that exposes user and account profile data.",
+    },
+    {
+      id: "api-transaction-history",
+      label: "Transaction history API",
+      tooltip: "API endpoint that returns transaction history records.",
+    },
+    {
+      id: "api-balance",
+      label: "Current balance / wallet state API",
+      tooltip: "API endpoint that returns the current balance / wallet state.",
+    },
+    {
+      id: "api-orders",
+      label: "Order / service records API",
+      tooltip: "API endpoint that returns order or service records.",
+    },
+    {
+      id: "api-event-logs",
+      label: "In-app event logs  API",
+      tooltip: "API endpoint that exposes in-app event logs.",
+    },
+  ];
 
-export function ApiKeysSection() {
-  const [keys, setKeys] = useState<Record<string, string>>({});
+export interface ApiKeyRowValue {
+  integrationId: string | null;
+  apiKey: string;
+  baseUrl: string;
+  endpointPath: string;
+  endpointDescription: string;
+}
 
-  const handleChange = (id: string) => (value: string) =>
-    setKeys((prev) => ({ ...prev, [id]: value }));
+export const emptyApiKeyRow = (): ApiKeyRowValue => ({
+  integrationId: null,
+  apiKey: "",
+  baseUrl: "",
+  endpointPath: "",
+  endpointDescription: "",
+});
 
+interface ApiKeysSectionProps {
+  value: Record<string, ApiKeyRowValue>;
+  onChange: (presetId: string, next: ApiKeyRowValue) => void;
+}
+
+export function ApiKeysSection({ value, onChange }: ApiKeysSectionProps) {
   return (
     <section>
       <h3 className={SECTION_HEADING}>API Keys</h3>
@@ -106,20 +123,115 @@ export function ApiKeysSection() {
       </p>
 
       <div className="space-y-[18px]">
-        {API_KEY_FIELDS.map((field) => (
-          <SettingsField
-            key={field.id}
-            id={field.id}
-            label={field.label}
-            tooltip={field.tooltip}
-            type="password"
-            value={keys[field.id] || ""}
-            onChange={handleChange(field.id)}
-            placeholder="*********"
-          />
-        ))}
+        {API_KEY_FIELDS.map((field) => {
+          const row = value[field.id] ?? emptyApiKeyRow();
+          return (
+            <ApiKeyRow
+              key={field.id}
+              presetId={field.id}
+              label={field.label}
+              tooltip={field.tooltip}
+              row={row}
+              onChange={(next) => onChange(field.id, next)}
+            />
+          );
+        })}
       </div>
     </section>
+  );
+}
+
+function ApiKeyRow({
+  presetId,
+  label,
+  tooltip,
+  row,
+  onChange,
+}: {
+  presetId: string;
+  label: string;
+  tooltip: string;
+  row: ApiKeyRowValue;
+  onChange: (next: ApiKeyRowValue) => void;
+}) {
+  const expanded = !!row.integrationId || row.apiKey.length > 0;
+  const apiKeyId = `apikey-${presetId}`;
+  const baseUrlId = `apikey-${presetId}-base`;
+  const pathId = `apikey-${presetId}-path`;
+  const descId = `apikey-${presetId}-desc`;
+
+  const update = (patch: Partial<ApiKeyRowValue>) =>
+    onChange({ ...row, ...patch });
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <label htmlFor={apiKeyId} className={FIELD_LABEL}>
+          {label}
+        </label>
+        <div className="flex items-center gap-2">
+          {row.integrationId && (
+            <span className="font-dm-mono rounded-full bg-[#006BE5]/10 px-2 py-0.5 text-[10px] tracking-wider text-[#006BE5] uppercase">
+              Configured
+            </span>
+          )}
+          <InfoTooltip text={tooltip} className="h-4 w-4" />
+        </div>
+      </div>
+      <input
+        id={apiKeyId}
+        type="password"
+        value={row.apiKey}
+        onChange={(e) => update({ apiKey: e.target.value })}
+        placeholder={
+          row.integrationId ? "Leave blank to keep current key" : "*********"
+        }
+        className={FIELD_INPUT}
+      />
+      {expanded && (
+        <div className="space-y-2 rounded-[5px] border border-black/10 bg-black/[0.02] p-3">
+          <div>
+            <label htmlFor={baseUrlId} className={FIELD_LABEL}>
+              Base URL
+            </label>
+            <input
+              id={baseUrlId}
+              type="text"
+              value={row.baseUrl}
+              onChange={(e) => update({ baseUrl: e.target.value })}
+              placeholder="https://api.example.com"
+              className={FIELD_INPUT}
+            />
+          </div>
+          <div>
+            <label htmlFor={pathId} className={FIELD_LABEL}>
+              Endpoint path
+            </label>
+            <input
+              id={pathId}
+              type="text"
+              value={row.endpointPath}
+              onChange={(e) => update({ endpointPath: e.target.value })}
+              placeholder="/api/v1/orders/{order_id}"
+              className={FIELD_INPUT}
+            />
+          </div>
+          <div>
+            <label htmlFor={descId} className={FIELD_LABEL}>
+              Endpoint description
+            </label>
+            <input
+              id={descId}
+              type="text"
+              value={row.endpointDescription}
+              onChange={(e) => update({ endpointDescription: e.target.value })}
+              placeholder={tooltip}
+              className={FIELD_INPUT}
+            />
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 

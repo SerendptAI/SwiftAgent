@@ -14,11 +14,23 @@ import { Icons } from "@/components/icons";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
+import {
+  useCreateIntegration,
+  useIntegrations,
+  useUpdateIntegration,
+} from "@/hooks/use-integrations";
 import { useStrollConfig, useUpdateStrollConfig } from "@/hooks/use-stroll";
+import type {
+  IntegrationCreatePayload,
+  IntegrationUpdatePayload,
+} from "@/services/integrations";
 import type { StrollConfigPayload } from "@/services/stroll";
 
 import {
+  API_KEY_FIELDS,
+  type ApiKeyRowValue,
   ApiKeysSection,
+  emptyApiKeyRow,
   PaymentSandboxSection,
   SuggestedQuestionsSection,
 } from "./chatbot-settings-sections";
@@ -269,6 +281,9 @@ function ChatbotSettingsSidebar({
   const updateConfig = useUpdateStrollConfig();
   const { data: company } = useCompanyQuery(companyId || null);
   const { updateCompany } = useCompanyMutations();
+  const { data: integrations } = useIntegrations(companyId || null);
+  const createIntegration = useCreateIntegration(companyId || null);
+  const updateIntegration = useUpdateIntegration(companyId || null);
 
   const [selected, setSelected] = useState<Set<AgentId>>(
     () => new Set(["047", "007"]),
@@ -284,6 +299,16 @@ function ChatbotSettingsSidebar({
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [isShown, setIsShown] = useState(false);
   const [suggestedPrompts, setSuggestedPrompts] = useState<string[]>([]);
+  const [apiKeyRows, setApiKeyRows] = useState<Record<string, ApiKeyRowValue>>(
+    () =>
+      Object.fromEntries(API_KEY_FIELDS.map((f) => [f.id, emptyApiKeyRow()])),
+  );
+
+  const updateApiKeyRow = useCallback(
+    (presetId: string, next: ApiKeyRowValue) =>
+      setApiKeyRows((prev) => ({ ...prev, [presetId]: next })),
+    [],
+  );
 
   useEffect(() => {
     if (!config) return;
@@ -303,6 +328,26 @@ function ChatbotSettingsSidebar({
     if (!company) return;
     setSuggestedPrompts(company.suggested_ai_prompts ?? []);
   }, [company]);
+
+  useEffect(() => {
+    if (!integrations) return;
+    setApiKeyRows((prev) => {
+      const next = { ...prev };
+      for (const field of API_KEY_FIELDS) {
+        const existing = integrations.find((i) => i.name === field.label);
+        if (!existing) continue;
+        const endpoint = existing.endpoints[0];
+        next[field.id] = {
+          integrationId: existing.id,
+          apiKey: "",
+          baseUrl: existing.base_url ?? "",
+          endpointPath: endpoint?.path ?? "",
+          endpointDescription: endpoint?.description ?? "",
+        };
+      }
+      return next;
+    });
+  }, [integrations]);
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => setIsShown(true));
@@ -339,6 +384,64 @@ function ChatbotSettingsSidebar({
       .map((p) => p.trim())
       .filter(Boolean);
 
+    const integrationMutations: Promise<unknown>[] = [];
+    for (const field of API_KEY_FIELDS) {
+      const row = apiKeyRows[field.id];
+      if (!row) continue;
+      const apiKey = row.apiKey.trim();
+      const baseUrl = row.baseUrl.trim();
+      const endpointPath = row.endpointPath.trim();
+      const endpointDescription =
+        row.endpointDescription.trim() || field.tooltip;
+
+      if (row.integrationId) {
+        const dirty =
+          apiKey.length > 0 || baseUrl.length > 0 || endpointPath.length > 0;
+        if (!dirty) continue;
+        const payload: IntegrationUpdatePayload = {};
+        if (apiKey) payload.api_key = apiKey;
+        if (baseUrl) payload.base_url = baseUrl;
+        if (endpointPath) {
+          payload.endpoints = [
+            {
+              name: field.id,
+              path: endpointPath,
+              description: endpointDescription,
+            },
+          ];
+        }
+        integrationMutations.push(
+          updateIntegration.mutateAsync({
+            integrationId: row.integrationId,
+            payload,
+          }),
+        );
+        continue;
+      }
+
+      if (!apiKey) continue;
+      if (!baseUrl || !endpointPath) {
+        onError?.(
+          `${field.label} needs a Base URL and Endpoint path before it can be saved.`,
+        );
+        return;
+      }
+      const createPayload: IntegrationCreatePayload = {
+        name: field.label,
+        base_url: baseUrl,
+        api_key: apiKey,
+        documentation: field.tooltip,
+        endpoints: [
+          {
+            name: field.id,
+            path: endpointPath,
+            description: endpointDescription,
+          },
+        ],
+      };
+      integrationMutations.push(createIntegration.mutateAsync(createPayload));
+    }
+
     try {
       await Promise.all([
         updateConfig.mutateAsync({
@@ -356,6 +459,7 @@ function ChatbotSettingsSidebar({
           section: "identity",
           payload: { suggested_ai_prompts: cleanedPrompts },
         }),
+        ...integrationMutations,
       ]);
     } catch (err) {
       console.error("Failed to save sandbox credentials:", err);
@@ -520,7 +624,7 @@ function ChatbotSettingsSidebar({
           </section>
 
           <PaymentSandboxSection />
-          <ApiKeysSection />
+          <ApiKeysSection value={apiKeyRows} onChange={updateApiKeyRow} />
           <SuggestedQuestionsSection
             value={suggestedPrompts}
             onChange={setSuggestedPrompts}
@@ -530,10 +634,18 @@ function ChatbotSettingsSidebar({
         <div className="px-[36px] py-4">
           <button
             onClick={handleSave}
-            disabled={updateConfig.isPending || updateCompany.isPending}
+            disabled={
+              updateConfig.isPending ||
+              updateCompany.isPending ||
+              createIntegration.isPending ||
+              updateIntegration.isPending
+            }
             className="font-dm-mono w-full cursor-pointer rounded-[8px] bg-[#006BE5] py-3 text-center text-sm tracking-wider text-white uppercase shadow-[-3px_4px_0px_0px_#000000] transition-all hover:bg-[#0055B8] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-1px_2px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {updateConfig.isPending || updateCompany.isPending
+            {updateConfig.isPending ||
+            updateCompany.isPending ||
+            createIntegration.isPending ||
+            updateIntegration.isPending
               ? "Saving…"
               : "Save & Close"}
           </button>
