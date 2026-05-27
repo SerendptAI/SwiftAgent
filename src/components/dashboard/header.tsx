@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useRef, useState } from "react";
 
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { useCurrentUser } from "@/hooks/use-auth";
@@ -8,10 +9,13 @@ import { getProfileImage } from "@/lib/utils";
 
 import { Icons } from "../icons";
 import { DashboardSearch } from "./dashboard-search";
+import { NotificationsPanel } from "./notifications-panel";
 
 export function Header() {
   const { data: user } = useCurrentUser();
   const avatarSrc = user?.picture || getProfileImage(user?.id);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const bellRef = useRef<HTMLButtonElement>(null);
 
   return (
     <header className="flex h-20 items-center justify-between gap-4 px-6 lg:h-[90px]">
@@ -24,11 +28,18 @@ export function Header() {
           </span>
         </div>
       </div>
-      <div className="mt-6 flex items-center gap-4">
+      <div className="relative mt-6 flex items-center gap-4">
         <InfoTooltip text="Notifications">
-          <div className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-md bg-[#EDEDED]">
+          <button
+            ref={bellRef}
+            type="button"
+            aria-label="Notifications"
+            aria-expanded={isNotificationsOpen}
+            onClick={() => setIsNotificationsOpen((open) => !open)}
+            className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-md bg-[#EDEDED] transition-colors hover:bg-[#E0E0E0]"
+          >
             <Icons.bell className="h-10 w-10 p-2" />
-          </div>
+          </button>
         </InfoTooltip>
 
         <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full">
@@ -40,6 +51,12 @@ export function Header() {
             className="h-full w-full object-cover"
           />
         </div>
+
+        <NotificationsPanel
+          open={isNotificationsOpen}
+          onClose={() => setIsNotificationsOpen(false)}
+          triggerRef={bellRef}
+        />
       </div>
     </header>
   );

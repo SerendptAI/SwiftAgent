@@ -807,6 +807,253 @@ export const Icons = {
       />
     </svg>
   ),
+  EditProfile: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      {...props}
+      width="26"
+      height="26"
+      viewBox="0 0 26 26"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M26.0009 4.9563H24.7578V8.66942H26.0009V4.9563Z" fill="white" />
+      <path
+        d="M24.7565 8.66943H23.5215V9.90443H24.7565V8.66943Z"
+        fill="white"
+      />
+      <path
+        d="M24.7565 3.71313H23.5215V4.95626H24.7565V3.71313Z"
+        fill="white"
+      />
+      <path d="M23.5221 9.9043H22.2871V11.1393H23.5221V9.9043Z" fill="white" />
+      <path
+        d="M23.5221 2.47803H22.2871V3.71303H23.5221V2.47803Z"
+        fill="white"
+      />
+      <path d="M22.2861 11.1394H21.043V12.3825H22.2861V11.1394Z" fill="white" />
+      <path d="M22.2861 8.66943H21.043V9.90443H22.2861V8.66943Z" fill="white" />
+      <path d="M22.2861 1.23511H21.043V2.47823H22.2861V1.23511Z" fill="white" />
+      <path
+        d="M21.0436 12.3826H19.8086V13.6176H21.0436V12.3826Z"
+        fill="white"
+      />
+      <path
+        d="M21.0436 7.42627H19.8086V8.66939H21.0436V7.42627Z"
+        fill="white"
+      />
+      <path
+        d="M19.8095 13.6174H18.5664V14.8606H19.8095V13.6174Z"
+        fill="white"
+      />
+      <path
+        d="M19.8095 8.66943H18.5664V9.90443H19.8095V8.66943Z"
+        fill="white"
+      />
+      <path
+        d="M19.8095 6.19116H18.5664V7.42616H19.8095V6.19116Z"
+        fill="white"
+      />
+      <path d="M21.0432 0H17.3301V1.235H21.0432V0Z" fill="white" />
+      <path
+        d="M18.5651 14.8606H17.3301V16.0956H18.5651V14.8606Z"
+        fill="white"
+      />
+      <path d="M18.5651 9.9043H17.3301V11.1393H18.5651V9.9043Z" fill="white" />
+      <path d="M18.5651 4.9563H17.3301V6.1913H18.5651V4.9563Z" fill="white" />
+      <path
+        d="M17.3307 16.0957H16.0957V17.3307H17.3307V16.0957Z"
+        fill="white"
+      />
+      <path
+        d="M17.3307 11.1394H16.0957V12.3825H17.3307V11.1394Z"
+        fill="white"
+      />
+      <path
+        d="M17.3307 6.19116H16.0957V7.42616H17.3307V6.19116Z"
+        fill="white"
+      />
+      <path
+        d="M17.3307 3.71313H16.0957V4.95626H17.3307V3.71313Z"
+        fill="white"
+      />
+      <path
+        d="M17.3307 1.23511H16.0957V2.47823H17.3307V1.23511Z"
+        fill="white"
+      />
+      <path
+        d="M16.0947 17.3306H14.8516V18.5737H16.0947V17.3306Z"
+        fill="white"
+      />
+      <path
+        d="M16.0947 12.3826H14.8516V13.6176H16.0947V12.3826Z"
+        fill="white"
+      />
+      <path
+        d="M16.0947 7.42627H14.8516V8.66939H16.0947V7.42627Z"
+        fill="white"
+      />
+      <path
+        d="M16.0947 2.47803H14.8516V3.71303H16.0947V2.47803Z"
+        fill="white"
+      />
+      <path
+        d="M14.8522 18.5737H13.6172V19.8087H14.8522V18.5737Z"
+        fill="white"
+      />
+      <path
+        d="M14.8522 13.6174H13.6172V14.8606H14.8522V13.6174Z"
+        fill="white"
+      />
+      <path
+        d="M14.8522 8.66943H13.6172V9.90443H14.8522V8.66943Z"
+        fill="white"
+      />
+      <path
+        d="M14.8522 3.71313H13.6172V4.95626H14.8522V3.71313Z"
+        fill="white"
+      />
+      <path
+        d="M13.6178 19.8088H12.3828V21.0438H13.6178V19.8088Z"
+        fill="white"
+      />
+      <path
+        d="M13.6178 14.8606H12.3828V16.0956H13.6178V14.8606Z"
+        fill="white"
+      />
+      <path d="M13.6178 9.9043H12.3828V11.1393H13.6178V9.9043Z" fill="white" />
+      <path d="M13.6178 4.9563H12.3828V6.1913H13.6178V4.9563Z" fill="white" />
+      <path
+        d="M12.3818 21.0437H11.1387V22.2868H12.3818V21.0437Z"
+        fill="white"
+      />
+      <path
+        d="M12.3818 16.0957H11.1387V17.3307H12.3818V16.0957Z"
+        fill="white"
+      />
+      <path
+        d="M12.3818 11.1394H11.1387V12.3825H12.3818V11.1394Z"
+        fill="white"
+      />
+      <path
+        d="M12.3818 6.19116H11.1387V7.42616H12.3818V6.19116Z"
+        fill="white"
+      />
+      <path d="M11.1393 22.2869H9.9043V23.5219H11.1393V22.2869Z" fill="white" />
+      <path d="M11.1393 17.3306H9.9043V18.5737H11.1393V17.3306Z" fill="white" />
+      <path d="M11.1393 12.3826H9.9043V13.6176H11.1393V12.3826Z" fill="white" />
+      <path d="M11.1393 7.42627H9.9043V8.66939H11.1393V7.42627Z" fill="white" />
+      <path
+        d="M9.90523 18.5737H8.66211V19.8087H9.90523V18.5737Z"
+        fill="white"
+      />
+      <path
+        d="M9.90523 13.6174H8.66211V14.8606H9.90523V13.6174Z"
+        fill="white"
+      />
+      <path
+        d="M9.90523 8.66943H8.66211V9.90443H9.90523V8.66943Z"
+        fill="white"
+      />
+      <path
+        d="M8.66125 24.7651H9.90438V23.522H8.66125V19.8088H6.19125V17.3307H2.47813V16.0957H1.235V17.3307H0V26.0001H8.66125V24.7651ZM7.42625 24.7651H3.71313V23.522H2.47813V22.287H1.235V18.5738H4.94813V21.0438H7.42625V24.7651Z"
+        fill="white"
+      />
+      <path
+        d="M8.66078 14.8606H7.42578V16.0956H8.66078V14.8606Z"
+        fill="white"
+      />
+      <path d="M8.66078 9.9043H7.42578V11.1393H8.66078V9.9043Z" fill="white" />
+      <path
+        d="M7.42641 16.0957H6.19141V17.3307H7.42641V16.0957Z"
+        fill="white"
+      />
+      <path
+        d="M7.42641 11.1394H6.19141V12.3825H7.42641V11.1394Z"
+        fill="white"
+      />
+      <path
+        d="M6.19039 12.3826H4.94727V13.6176H6.19039V12.3826Z"
+        fill="white"
+      />
+      <path
+        d="M4.94789 13.6174H3.71289V14.8606H4.94789V13.6174Z"
+        fill="white"
+      />
+      <path
+        d="M3.71352 14.8606H2.47852V16.0956H3.71352V14.8606Z"
+        fill="white"
+      />
+    </svg>
+  ),
+  NotificationBellUnread: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      {...props}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g>
+        <path
+          d="M19 18V9.5C19 5.63401 15.866 2.5 12 2.5C8.13401 2.5 5 5.63401 5 9.5V18"
+          stroke="black"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M20.5 18H3.5"
+          stroke="black"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M13.5 20C13.5 20.8284 12.8284 21.5 12 21.5M12 21.5C11.1716 21.5 10.5 20.8284 10.5 20M12 21.5V20"
+          stroke="black"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
+      <circle cx="18" cy="4" r="4" fill="#E9080A" />
+    </svg>
+  ),
+  NotificationBellRead: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      {...props}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g opacity="0.4">
+        <path
+          d="M19 18V9.5C19 5.63401 15.866 2.5 12 2.5C8.13401 2.5 5 5.63401 5 9.5V18"
+          stroke="black"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M20.5 18H3.5"
+          stroke="black"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M13.5 20C13.5 20.8284 12.8284 21.5 12 21.5M12 21.5C11.1716 21.5 10.5 20.8284 10.5 20M12 21.5V20"
+          stroke="black"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
+    </svg>
+  ),
   phoneIncoming: (props: React.SVGProps<SVGSVGElement>) => (
     <svg
       {...props}
