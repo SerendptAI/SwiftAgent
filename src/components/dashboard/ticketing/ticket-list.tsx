@@ -97,10 +97,8 @@ export function TicketList({
   return (
     <div
       className={cn(
-        "flex h-full flex-col rounded-3xl border-2 bg-white p-4 shadow-sm transition-colors",
-        isSelectionLoading
-          ? "animate-pulse border-[#2196F3]"
-          : "border-transparent",
+        "flex h-full flex-col rounded-3xl bg-white p-4 shadow-sm",
+        isSelectionLoading && "travel-border-loading",
       )}
     >
       {/* Pending / Resolved Tabs */}
