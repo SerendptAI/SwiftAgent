@@ -141,10 +141,8 @@ export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
         onClick={handleClose}
         className="absolute inset-0 cursor-default bg-black/65"
       />
-      {/* Anchored top-left like Figma (not centered), but height is content-
-          driven so the third card never gets clipped on a real laptop viewport
-          (Figma's 1219px artboard doesn't fit a 900px screen). */}
-      <div className="absolute top-[3vh] left-[8vw] max-h-[94vh] w-[min(810px,84vw)] overflow-y-auto bg-white">
+
+      <div className="absolute top-[5vh] left-[8vw] max-h-[94vh] w-[min(810px,84vw)] overflow-y-auto bg-white">
         <button
           type="button"
           aria-label="Close"
@@ -156,7 +154,7 @@ export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
 
         <h2
           id="upgrade-plan-title"
-          className="font-greed-narrow mx-auto mt-[126px] w-[447px] max-w-full text-center text-[40px] leading-[1.1] font-semibold tracking-[-0.8px] text-black"
+          className="font-greed-narrow mx-auto mt-[46px] w-[447px] max-w-full text-center text-[40px] leading-[1.1] font-semibold tracking-[-0.8px] text-black"
         >
           Upgrade your plan to have access to that
         </h2>
