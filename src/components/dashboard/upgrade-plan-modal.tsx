@@ -156,7 +156,7 @@ export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
 
         <h2
           id="upgrade-plan-title"
-          className="font-greed-narrow mx-auto mt-[26px] w-[447px] max-w-full text-center text-[40px] leading-[1.1] font-semibold tracking-[-0.8px] text-black"
+          className="font-greed-narrow mx-auto mt-[126px] w-[447px] max-w-full text-center text-[40px] leading-[1.1] font-semibold tracking-[-0.8px] text-black"
         >
           Upgrade your plan to have access to that
         </h2>
@@ -165,7 +165,7 @@ export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
           have to upgrade
         </p>
 
-        <ul className="mx-auto mt-[28px] mb-[24px] flex w-[685px] max-w-full flex-col gap-[16px]">
+        <ul className="mx-auto mt-[47px] mb-[40px] flex w-[685px] max-w-full flex-col gap-[29px]">
           {plans.map((plan) => {
             const isActive = !!plan.tier && plan.tier === activeTier;
             return (
