@@ -110,7 +110,7 @@ export function CompanyIdentityStep({
   };
   return (
     <div className="w-full max-w-4xl pb-4">
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-6 sm:gap-8">
         {/* Left Column: Form */}
         <div className="flex-1">
           <div className="grid gap-6">
@@ -118,26 +118,29 @@ export function CompanyIdentityStep({
               <div className="col-span-1">
                 <FormLabel
                   htmlFor="companyDescription"
-                  className="mb-2 text-lg"
+                  className="mb-2 text-sm sm:text-lg"
                 >
                   Describe What Your Company Does In One Clear Sentence
                 </FormLabel>
                 <FormTextarea
                   id="companyDescription"
-                  className="min-h-[200px]"
+                  className="min-h-36 sm:min-h-[200px]"
                   placeholder="We empower businesses with cutting-edge AI solutions, driving efficiency and growth through intelligent automation."
                   {...register("description")}
                 />
               </div>
 
               <div className="col-span-1">
-                <FormLabel htmlFor="customerValue" className="mb-2 text-lg">
+                <FormLabel
+                  htmlFor="customerValue"
+                  className="mb-2 text-sm sm:text-lg"
+                >
                   What Does Your Company Do For <br />
                   Customers?
                 </FormLabel>
                 <FormTextarea
                   id="customerValue"
-                  className="min-h-[200px]"
+                  className="min-h-36 sm:min-h-[200px]"
                   placeholder="Main problem you solve for customers"
                   {...register("customer_value")}
                 />
@@ -180,7 +183,7 @@ export function CompanyIdentityStep({
             <div className="grid gap-6 md:grid-cols-2">
               <div className="col-span-1">
                 <FormLabel htmlFor="supportEmails">Support Emails</FormLabel>
-                <p className="mb-2 text-sm text-gray-400">
+                <p className="mb-2 text-xs text-gray-400 sm:text-sm">
                   Separate emails with a comma.
                 </p>
                 <FormTextarea

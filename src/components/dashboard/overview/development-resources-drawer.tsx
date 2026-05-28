@@ -4,6 +4,7 @@ import { ChevronDown, Play } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
 
 const DRAWER_TRANSITION_MS = 520;
 
@@ -33,6 +34,7 @@ export function DevelopmentResourcesDrawer({
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const closeTimeoutRef = useRef<number | null>(null);
   const contentMaxWidthClass = "max-w-[1240px]";
+  useScrollLock(isMounted);
 
   const closeDrawer = useCallback(() => {
     if (closeTimeoutRef.current) {
@@ -84,9 +86,6 @@ export function DevelopmentResourcesDrawer({
   useEffect(() => {
     if (!isMounted) return;
 
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") closeDrawer();
     };
@@ -94,7 +93,6 @@ export function DevelopmentResourcesDrawer({
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.body.style.overflow = originalOverflow;
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [closeDrawer, isMounted]);
@@ -121,7 +119,7 @@ export function DevelopmentResourcesDrawer({
         role="dialog"
         aria-modal="true"
         aria-labelledby="development-resources-title"
-        className="development-resources-sheet relative flex h-[90vh] w-full flex-col overflow-hidden bg-white shadow-[0_-20px_70px_rgba(0,0,0,0.18)] will-change-transform"
+        className="development-resources-sheet relative flex h-[calc(100svh-1rem)] w-full flex-col overflow-hidden rounded-t-[28px] bg-white shadow-[0_-20px_70px_rgba(0,0,0,0.18)] will-change-transform md:h-[90vh] md:rounded-t-none"
         style={{
           animation: `${
             isClosing
@@ -130,7 +128,7 @@ export function DevelopmentResourcesDrawer({
           } ${DRAWER_TRANSITION_MS}ms cubic-bezier(0.16, 1, 0.3, 1) both`,
         }}
       >
-        <div className="pointer-events-none absolute inset-x-0 top-[34px] z-10 px-6 md:px-10">
+        <div className="pointer-events-none absolute inset-x-0 top-4 z-10 px-4 md:top-[34px] md:px-10">
           <div className="mx-auto w-full max-w-[1400px]">
             <button
               type="button"
@@ -142,23 +140,27 @@ export function DevelopmentResourcesDrawer({
 
                 closeDrawer();
               }}
-              className="font-dm-mono pointer-events-auto flex w-fit cursor-pointer items-center gap-3 rounded-full bg-white px-3 py-1 text-xs leading-none tracking-[0.08em] text-black/50 uppercase transition-colors hover:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black md:text-sm"
+              className="font-dm-mono pointer-events-auto flex min-h-10 w-fit max-w-full cursor-pointer items-center gap-2 rounded-full bg-white px-3 py-1 text-xs leading-none tracking-[0.08em] text-black/60 uppercase shadow-sm transition-colors hover:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black md:min-h-0 md:gap-3 md:text-sm md:shadow-none"
             >
-              <Icons.leftArrow className="h-auto w-6 stroke-2 text-black" />
-              {selectedVideo ? "Back to Development Resources" : "Back"}
+              <Icons.leftArrow className="h-auto w-5 shrink-0 stroke-2 text-black md:w-6" />
+              <span className="truncate">
+                {selectedVideo ? "Back to Development Resources" : "Back"}
+              </span>
             </button>
           </div>
         </div>
 
-        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 pt-[76px] pb-16 md:px-10">
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-4 pt-18 pb-[calc(2rem+env(safe-area-inset-bottom))] md:px-10 md:pt-[76px] md:pb-16">
           <div
             className={`mx-auto flex w-full flex-col ${contentMaxWidthClass}`}
           >
             <header className="flex justify-center text-center">
               <h2
                 id="development-resources-title"
-                className={`font-greed-narrow text-center leading-[0.95] font-medium tracking-[-0.02em] text-black uppercase ${
-                  selectedVideo ? "mt-[86px] text-[42px]" : "text-[34px]"
+                className={`font-greed-narrow max-w-full text-center leading-[0.95] font-medium text-black uppercase ${
+                  selectedVideo
+                    ? "mt-10 text-[30px] md:mt-[86px] md:text-[42px]"
+                    : "text-[30px] md:text-[34px]"
                 }`}
               >
                 {selectedVideo ?? "Development Resources"}
@@ -166,11 +168,11 @@ export function DevelopmentResourcesDrawer({
             </header>
 
             {selectedVideo ? (
-              <div className="mt-[70px]">
+              <div className="mt-8 md:mt-[70px]">
                 <button
                   type="button"
                   aria-label={`Play ${selectedVideo}`}
-                  className="group relative h-[656px] w-full overflow-hidden bg-[#373737] text-left focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-black"
+                  className="group relative aspect-video w-full overflow-hidden bg-[#373737] text-left focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-black md:h-[656px]"
                 >
                   <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.18)_0%,rgba(0,0,0,0.18)_34%,rgba(210,210,210,0.72)_34%,rgba(210,210,210,0.72)_66%,rgba(0,0,0,0.18)_66%,rgba(0,0,0,0.18)_100%)]" />
                   <div className="absolute inset-0 bg-black/28" />
@@ -188,15 +190,15 @@ export function DevelopmentResourcesDrawer({
                   <div className="absolute top-[14%] right-[16%] h-[12%] w-[17%] rounded-[16px] bg-white/6" />
                   <div className="absolute right-[12%] bottom-[15%] h-[14%] w-[23%] rounded-[18px] bg-white/6" />
                   <span className="absolute inset-0 flex items-center justify-center">
-                    <span className="flex h-25 w-25 items-center justify-center rounded-full bg-white transition-transform duration-300 group-hover:scale-105">
-                      <Play className="h-9 w-9 fill-black text-black" />
+                    <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white transition-transform duration-300 group-hover:scale-105 md:h-25 md:w-25">
+                      <Play className="h-7 w-7 fill-black text-black md:h-9 md:w-9" />
                     </span>
                   </span>
                 </button>
               </div>
             ) : (
               <>
-                <div className="mt-[66px]">
+                <div className="mt-8 md:mt-[66px]">
                   <button
                     type="button"
                     aria-controls="development-resources-tutorial-videos"
@@ -204,11 +206,11 @@ export function DevelopmentResourcesDrawer({
                     onClick={() =>
                       setIsTutorialVideosExpanded((isExpanded) => !isExpanded)
                     }
-                    className="font-dm-mono inline-flex h-16 cursor-pointer items-center gap-5 rounded-full bg-[#F4F4F4] pr-8 pl-3 text-lg leading-none tracking-[0.08em] text-black uppercase transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
+                    className="font-dm-mono inline-flex h-13 cursor-pointer items-center gap-3 rounded-full bg-[#F4F4F4] pr-5 pl-2 text-sm leading-none tracking-[0.08em] text-black uppercase transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black md:h-16 md:gap-5 md:pr-8 md:pl-3 md:text-lg"
                   >
-                    <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E9E9E9]">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#E9E9E9] md:h-12 md:w-12">
                       <ChevronDown
-                        className={`h-6 w-6 transition-transform duration-200 ${
+                        className={`h-5 w-5 transition-transform duration-200 md:h-6 md:w-6 ${
                           isTutorialVideosExpanded ? "" : "-rotate-90"
                         }`}
                         strokeWidth={1.8}
@@ -221,7 +223,7 @@ export function DevelopmentResourcesDrawer({
                 {isTutorialVideosExpanded && (
                   <div
                     id="development-resources-tutorial-videos"
-                    className="mt-[42px] grid grid-cols-1 gap-x-[72px] gap-y-[54px] sm:grid-cols-2 xl:grid-cols-3"
+                    className="mt-7 grid grid-cols-1 gap-7 sm:grid-cols-2 md:mt-[42px] md:gap-x-[72px] md:gap-y-[54px] xl:grid-cols-3"
                   >
                     {VIDEOS.map((title, index) => (
                       <button
@@ -241,12 +243,12 @@ export function DevelopmentResourcesDrawer({
                             style={{ opacity: index % 3 === 1 ? 0.18 : 0.26 }}
                           />
                           <span className="absolute inset-0 flex items-center justify-center">
-                            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white transition-transform duration-300 group-hover:scale-105">
-                              <Play className="h-7 w-7 fill-black text-black" />
+                            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white transition-transform duration-300 group-hover:scale-105 md:h-16 md:w-16">
+                              <Play className="h-5 w-5 fill-black text-black md:h-7 md:w-7" />
                             </span>
                           </span>
                         </div>
-                        <h3 className="font-dm-mono mt-[22px] text-xl leading-none font-medium text-black uppercase">
+                        <h3 className="font-dm-mono mt-3 text-base leading-tight font-medium text-black uppercase md:mt-[22px] md:text-xl md:leading-none">
                           {title}
                         </h3>
                       </button>

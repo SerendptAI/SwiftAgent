@@ -217,10 +217,10 @@ export function CompanyInfoStep({
   };
 
   return (
-    <div className="max-w-4xl pb-4">
+    <div className="w-full max-w-4xl pb-4">
       {hideLogoUpload && (
-        <div className="mb-8 flex items-center gap-4">
-          <div className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
+        <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-center">
+          <div className="relative flex h-18 w-18 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-gray-100 bg-gray-50 sm:h-20 sm:w-20">
             {logoPreview ? (
               <Image
                 src={logoPreview}
@@ -244,18 +244,20 @@ export function CompanyInfoStep({
             </button>
           </div>
 
-          <div ref={dropdownRef} className="relative">
+          <div ref={dropdownRef} className="relative min-w-0 sm:w-fit">
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="font-dm-mono flex items-center gap-2 rounded-full border border-gray-100 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-100"
+              className="font-dm-mono flex min-h-11 w-full min-w-0 items-center gap-2 rounded-full border border-gray-100 bg-gray-50 px-4 py-2 text-left text-xs font-medium text-gray-900 transition-colors hover:bg-gray-100 sm:w-fit sm:text-sm"
             >
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-[10px] font-bold text-gray-600">
                 {selectedCompany?.initial ?? "?"}
               </span>
-              {selectedCompany?.name ?? "Select company"}
+              <span className="min-w-0 flex-1 truncate">
+                {selectedCompany?.name ?? "Select company"}
+              </span>
               <ChevronDown
                 className={cn(
-                  "h-4 w-4 text-gray-400 transition-transform",
+                  "h-4 w-4 shrink-0 text-gray-400 transition-transform",
                   isDropdownOpen && "rotate-180",
                 )}
               />
@@ -263,7 +265,7 @@ export function CompanyInfoStep({
 
             {/* Dropdown Menu */}
             {isDropdownOpen && (
-              <div className="animate-in fade-in slide-in-from-top-2 font-dm-mono absolute left-0 z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-gray-100 bg-white py-1 shadow-xl duration-200">
+              <div className="animate-in fade-in slide-in-from-top-2 font-dm-mono absolute left-0 z-50 mt-2 w-full min-w-0 overflow-hidden rounded-2xl border border-gray-100 bg-white py-1 shadow-xl duration-200 sm:w-64">
                 <div className="px-3 py-2 text-xs font-semibold tracking-wider text-gray-400 uppercase">
                   Switch Company
                 </div>
@@ -304,8 +306,8 @@ export function CompanyInfoStep({
 
       {!hideLogoUpload && (
         <div className="mb-6">
-          <div className="flex items-start gap-6">
-            <div className="relative flex h-32 w-32 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-gray-200 bg-gray-50">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
+            <div className="relative flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 sm:h-32 sm:w-32">
               {logoPreview ? (
                 <Image
                   src={logoPreview}
@@ -328,11 +330,11 @@ export function CompanyInfoStep({
                 <Icons.pencil className="h-4 w-4 text-gray-900" />
               </button>
             </div>
-            <div className="font-dm-mono flex flex-col justify-center pt-8">
+            <div className="font-dm-mono flex flex-col justify-center sm:pt-8">
               <FormLabel>COMPANY LOGO</FormLabel>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="flex cursor-pointer items-center gap-2 rounded-lg bg-[#6433CC] px-6 py-2.5 text-sm font-medium text-white font-stretch-50% shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-purple-700"
+                className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#6433CC] px-6 text-sm font-medium text-white font-stretch-50% shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-purple-700 sm:h-auto sm:py-2.5"
               >
                 UPLOAD
               </button>
@@ -341,7 +343,7 @@ export function CompanyInfoStep({
         </div>
       )}
 
-      <div className="font-stolzl grid gap-x-8 gap-y-4 md:grid-cols-2">
+      <div className="font-stolzl grid gap-x-8 gap-y-4 sm:gap-y-5 md:grid-cols-2">
         <div className="col-span-1">
           <FormLabel htmlFor="companyName">Company Name</FormLabel>
           <FormInput
