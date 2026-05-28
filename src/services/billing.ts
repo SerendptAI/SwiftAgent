@@ -14,6 +14,9 @@ export interface BillingPlan {
   display_name: string;
   agents_limit?: number;
   documents_limit?: number;
+  members_limit?: number;
+  /** Max companies allowed per user account on this tier. `null` = unlimited. */
+  companies_limit?: number | null;
   region?: PlanRegion;
   trial_months?: number;
   [key: string]: unknown;

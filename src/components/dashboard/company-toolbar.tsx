@@ -12,12 +12,16 @@ import {
   useActiveCompanyId,
   useSetActiveCompanyId,
 } from "@/hooks/use-active-company";
-import { useBillingDetails } from "@/hooks/use-billing";
+import { useBillingDetails, useBillingPlans } from "@/hooks/use-billing";
 import { useCompaniesQuery } from "@/hooks/use-company";
 
 import { UpgradePlanModal } from "./upgrade-plan-modal";
 
-const COMPANY_LIMITS: Record<string, number> = {
+/**
+ * Safety net only — used when the backend's plans payload doesn't yet expose
+ * `companies_limit`. Numbers mirror the bullets in pricing/plans.ts.
+ */
+const FALLBACK_COMPANY_LIMITS: Record<string, number> = {
   basic: 1,
   pro: 3,
   enterprise: Infinity,
@@ -58,14 +62,22 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const { data: billingDetails } = useBillingDetails(activeCompanyId);
+  const { data: backendPlans } = useBillingPlans();
+
+  function getCompanyLimit(): number {
+    const tier = billingDetails?.tier ?? "basic";
+    const backendLimit = backendPlans?.[tier]?.companies_limit;
+    // Backend `null` = unlimited; a number = explicit cap; missing = fallback.
+    if (backendLimit === null) return Infinity;
+    if (typeof backendLimit === "number") return backendLimit;
+    return FALLBACK_COMPANY_LIMITS[tier] ?? 1;
+  }
 
   function handleAddCompanyClick() {
     setIsOpen(false);
-    const tier = billingDetails?.tier ?? "basic";
-    const limit = COMPANY_LIMITS[tier] ?? 1;
     // Only block when we actually have billing data; otherwise let the backend
     // enforce so a momentary load doesn't trap users.
-    if (billingDetails && companies.length >= limit) {
+    if (billingDetails && companies.length >= getCompanyLimit()) {
       setShowUpgradeModal(true);
     } else {
       router.push(`/${locale}/onboarding?new_company=1`);
