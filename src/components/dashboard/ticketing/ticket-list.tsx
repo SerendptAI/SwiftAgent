@@ -10,8 +10,8 @@ import Image from "next/image";
 import { useState } from "react";
 
 import { Loader } from "@/components/loader";
-import { useResolvedChats } from "@/hooks/use-conversations";
-import { useTickets } from "@/hooks/use-tickets";
+import { useChat, useResolvedChats } from "@/hooks/use-conversations";
+import { useTicket, useTickets } from "@/hooks/use-tickets";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
 
@@ -67,6 +67,15 @@ export function TicketList({
   const [activeTab, setActiveTab] = useState<"pending" | "resolved">("pending");
   const { data: tickets, isLoading: ticketsLoading } = useTickets();
   const { data: resolvedChats, isLoading: chatsLoading } = useResolvedChats();
+
+  // Loading state for the currently-selected item (shared via React Query cache
+  // with TicketView / ChatView — no extra network requests).
+  const { isFetching: isSelectedTicketFetching } = useTicket(
+    activeTab === "pending" ? selectedItemId || null : null,
+  );
+  const { isFetching: isSelectedChatFetching } = useChat(
+    activeTab === "resolved" ? selectedItemId || null : null,
+  );
 
   const normalizedQuery = searchQuery?.trim().toLowerCase() ?? "";
   const matchesQuery = (...fields: Array<string | null | undefined>) =>
@@ -182,10 +191,12 @@ export function TicketList({
                   key={ticket.id}
                   onClick={() => onSelectItem(ticket.id, "ticket")}
                   className={cn(
-                    "flex w-full cursor-pointer items-center gap-3 rounded-2xl p-3 text-left transition-colors",
+                    "flex w-full cursor-pointer items-center gap-3 rounded-2xl border-2 p-3 text-left transition-colors",
                     selectedItemId === ticket.id
-                      ? "bg-blue-50"
-                      : "hover:bg-gray-50",
+                      ? isSelectedTicketFetching
+                        ? "animate-pulse border-[#2196F3] bg-blue-50"
+                        : "border-transparent bg-blue-50"
+                      : "border-transparent hover:bg-gray-50",
                   )}
                 >
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-50">
@@ -244,10 +255,12 @@ export function TicketList({
                 key={chat.id}
                 onClick={() => onSelectItem(chat.id, "chat")}
                 className={cn(
-                  "flex w-full cursor-pointer items-center gap-3 rounded-2xl p-3 text-left transition-colors",
+                  "flex w-full cursor-pointer items-center gap-3 rounded-2xl border-2 p-3 text-left transition-colors",
                   selectedItemId === chat.id
-                    ? "bg-[#ECECEC]"
-                    : "hover:bg-[#ECECEC]",
+                    ? isSelectedChatFetching
+                      ? "animate-pulse border-[#2196F3] bg-[#ECECEC]"
+                      : "border-transparent bg-[#ECECEC]"
+                    : "border-transparent hover:bg-[#ECECEC]",
                 )}
               >
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-50">

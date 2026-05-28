@@ -111,15 +111,6 @@ export function TicketView({ ticketId }: TicketViewProps) {
 
   return (
     <div className="relative flex h-full flex-col rounded-3xl bg-white shadow-sm">
-      {isFetching && (
-        <div className="absolute top-0 right-0 left-0 z-10 ml-4 h-0.5 overflow-hidden rounded-t-3xl">
-          <div
-            className="h-full w-1/3 animate-pulse rounded-full bg-[#2196F3]"
-            style={{ animation: "loading 1s ease-in-out infinite" }}
-          />
-        </div>
-      )}
-
       {/* Header */}
       <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
         <div className="flex min-w-0 items-center gap-3">
