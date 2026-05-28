@@ -133,7 +133,7 @@ export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
       role="dialog"
       aria-modal="true"
       aria-labelledby="upgrade-plan-title"
-      className="fixed inset-0 z-1040 flex items-center justify-center p-6"
+      className="fixed inset-0 z-1040"
     >
       <button
         type="button"
@@ -141,7 +141,10 @@ export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
         onClick={handleClose}
         className="absolute inset-0 cursor-default bg-black/65"
       />
-      <div className="relative h-[922px] max-h-[92vh] w-[810px] max-w-full overflow-y-auto bg-white">
+      {/* Figma positions the modal at ~12% from left & top of a 1512×1219 frame
+          (left:185 / top:151), not centered. Keep that proportional offset and
+          cap the box so it doesn't dominate smaller viewports. */}
+      <div className="absolute top-[12vh] left-[12vw] h-[922px] max-h-[85vh] w-[min(810px,76vw)] overflow-y-auto bg-white">
         <button
           type="button"
           aria-label="Close"
