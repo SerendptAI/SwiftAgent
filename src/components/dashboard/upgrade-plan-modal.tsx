@@ -141,10 +141,10 @@ export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
         onClick={handleClose}
         className="absolute inset-0 cursor-default bg-black/65"
       />
-      {/* Figma positions the modal at ~12% from left & top of a 1512×1219 frame
-          (left:185 / top:151), not centered. Keep that proportional offset and
-          cap the box so it doesn't dominate smaller viewports. */}
-      <div className="absolute top-[12vh] left-[12vw] h-[922px] max-h-[85vh] w-[min(810px,76vw)] overflow-y-auto bg-white">
+      {/* Anchored top-left like Figma (not centered), but height is content-
+          driven so the third card never gets clipped on a real laptop viewport
+          (Figma's 1219px artboard doesn't fit a 900px screen). */}
+      <div className="absolute top-[3vh] left-[8vw] max-h-[94vh] w-[min(810px,84vw)] overflow-y-auto bg-white">
         <button
           type="button"
           aria-label="Close"
@@ -156,7 +156,7 @@ export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
 
         <h2
           id="upgrade-plan-title"
-          className="font-greed-narrow mx-auto mt-[126px] w-[447px] max-w-full text-center text-[40px] leading-[1.1] font-semibold tracking-[-0.8px] text-black"
+          className="font-greed-narrow mx-auto mt-[26px] w-[447px] max-w-full text-center text-[40px] leading-[1.1] font-semibold tracking-[-0.8px] text-black"
         >
           Upgrade your plan to have access to that
         </h2>
@@ -165,7 +165,7 @@ export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
           have to upgrade
         </p>
 
-        <ul className="mx-auto mt-[47px] flex w-[685px] max-w-full flex-col gap-[29px]">
+        <ul className="mx-auto mt-[28px] mb-[24px] flex w-[685px] max-w-full flex-col gap-[16px]">
           {plans.map((plan) => {
             const isActive = !!plan.tier && plan.tier === activeTier;
             return (
