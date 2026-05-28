@@ -92,8 +92,17 @@ export function TicketList({
   const pendingCount = filteredTickets?.length ?? 0;
   const isLoading = activeTab === "pending" ? ticketsLoading : chatsLoading;
 
+  const isSelectionLoading = isSelectedTicketFetching || isSelectedChatFetching;
+
   return (
-    <div className="flex h-full flex-col rounded-3xl bg-white p-4 shadow-sm">
+    <div
+      className={cn(
+        "flex h-full flex-col rounded-3xl border-2 bg-white p-4 shadow-sm transition-colors",
+        isSelectionLoading
+          ? "animate-pulse border-[#2196F3]"
+          : "border-transparent",
+      )}
+    >
       {/* Pending / Resolved Tabs */}
       <div className="mb-4 flex items-center gap-4 rounded-full p-1">
         <button
@@ -191,12 +200,10 @@ export function TicketList({
                   key={ticket.id}
                   onClick={() => onSelectItem(ticket.id, "ticket")}
                   className={cn(
-                    "flex w-full cursor-pointer items-center gap-3 rounded-2xl border-2 p-3 text-left transition-colors",
+                    "flex w-full cursor-pointer items-center gap-3 rounded-2xl p-3 text-left transition-colors",
                     selectedItemId === ticket.id
-                      ? isSelectedTicketFetching
-                        ? "animate-pulse border-[#2196F3] bg-blue-50"
-                        : "border-transparent bg-blue-50"
-                      : "border-transparent hover:bg-gray-50",
+                      ? "bg-blue-50"
+                      : "hover:bg-gray-50",
                   )}
                 >
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-50">
@@ -255,12 +262,10 @@ export function TicketList({
                 key={chat.id}
                 onClick={() => onSelectItem(chat.id, "chat")}
                 className={cn(
-                  "flex w-full cursor-pointer items-center gap-3 rounded-2xl border-2 p-3 text-left transition-colors",
+                  "flex w-full cursor-pointer items-center gap-3 rounded-2xl p-3 text-left transition-colors",
                   selectedItemId === chat.id
-                    ? isSelectedChatFetching
-                      ? "animate-pulse border-[#2196F3] bg-[#ECECEC]"
-                      : "border-transparent bg-[#ECECEC]"
-                    : "border-transparent hover:bg-[#ECECEC]",
+                    ? "bg-[#ECECEC]"
+                    : "hover:bg-[#ECECEC]",
                 )}
               >
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-50">
