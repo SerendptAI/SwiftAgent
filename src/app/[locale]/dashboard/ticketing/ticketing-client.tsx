@@ -77,7 +77,7 @@ export function TicketingClient() {
   };
 
   return (
-    <div className="flex min-h-full w-full flex-col gap-4 lg:gap-8">
+    <div className="flex min-h-full w-full flex-col gap-4 lg:h-full lg:min-h-0 lg:gap-8">
       {/* Desktop toolbar with expandable search bar */}
       <div className="relative hidden items-center gap-8 lg:flex">
         <div

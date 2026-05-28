@@ -91,7 +91,7 @@ export function TicketsTabContent({
 
   return (
     <>
-      <div className="w-full shrink-0 lg:w-[320px]">
+      <div className="w-full shrink-0 lg:h-full lg:min-h-0 lg:w-[320px]">
         <TicketList
           selectedItemId={selection?.id ?? ""}
           onSelectItem={onSelectItem}
