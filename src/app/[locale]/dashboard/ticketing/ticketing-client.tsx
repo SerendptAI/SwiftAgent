@@ -77,7 +77,7 @@ export function TicketingClient() {
 
   return (
     <div className="flex h-full w-full flex-col gap-8">
-      <div className="flex items-center gap-8">
+      <div className="relative flex items-center gap-8">
         <div
           aria-hidden={isSearchOpen}
           className={`w-[70%] transition-opacity duration-500 ease-out ${
@@ -87,71 +87,73 @@ export function TicketingClient() {
           <CompanyToolbar />
         </div>
 
-        {/* Search slot — button morphs in place, growing LEFTWARD (right edge anchored) */}
-        <div className="relative mb-4 h-16 w-16">
+        {/* Spacer keeps the search button's flex slot reserved (h-16 + mb-4 matches original) */}
+        <div className="mb-4 h-16 w-16" aria-hidden />
+
+        {/* Absolute bar — right edge anchored at original button's right edge,
+            width grows leftward as a percentage of the whole row */}
+        <div
+          role={isSearchOpen ? undefined : "button"}
+          tabIndex={isSearchOpen ? undefined : 0}
+          aria-label={isSearchOpen ? undefined : "Open search"}
+          onClick={() => {
+            if (!isSearchOpen) setIsSearchOpen(true);
+          }}
+          onKeyDown={(e) => {
+            if (!isSearchOpen && (e.key === "Enter" || e.key === " ")) {
+              e.preventDefault();
+              setIsSearchOpen(true);
+            }
+          }}
+          className={`absolute top-[calc(50%-8px)] right-[calc(30%-6rem)] flex h-16 -translate-y-1/2 items-center overflow-hidden transition-all duration-500 ease-out ${
+            isSearchOpen
+              ? "w-[calc(70%+6rem)] cursor-default rounded-[22px] border border-[#EDEDED] bg-white px-4 shadow-sm"
+              : "w-16 cursor-pointer justify-center rounded-3xl border border-transparent bg-[#006BE5] hover:bg-[#1E88E5]"
+          }`}
+        >
           <div
-            role={isSearchOpen ? undefined : "button"}
-            tabIndex={isSearchOpen ? undefined : 0}
-            aria-label={isSearchOpen ? undefined : "Open search"}
-            onClick={() => {
-              if (!isSearchOpen) setIsSearchOpen(true);
-            }}
-            onKeyDown={(e) => {
-              if (!isSearchOpen && (e.key === "Enter" || e.key === " ")) {
-                e.preventDefault();
-                setIsSearchOpen(true);
-              }
-            }}
-            className={`absolute top-0 right-0 flex h-16 items-center overflow-hidden transition-all duration-500 ease-out ${
+            className={`flex shrink-0 items-center justify-center transition-all duration-500 ease-out ${
               isSearchOpen
-                ? "w-200 max-w-[80vw] cursor-default rounded-[22px] border border-[#EDEDED] bg-white px-4 shadow-sm"
-                : "w-16 cursor-pointer justify-center rounded-3xl border border-transparent bg-[#006BE5] hover:bg-[#1E88E5]"
+                ? "h-9 w-9 rounded-full bg-[#006BE5] p-2"
+                : "h-12 w-12"
             }`}
           >
-            <div
-              className={`flex shrink-0 items-center justify-center transition-all duration-500 ease-out ${
-                isSearchOpen
-                  ? "h-9 w-9 rounded-full bg-[#006BE5] p-2"
-                  : "h-12 w-12"
-              }`}
-            >
-              <Icons.SearchWhite className="h-full w-full text-white" />
-            </div>
-
-            <input
-              ref={searchInputRef}
-              type="search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Escape") closeSearch();
-              }}
-              placeholder="Search tickets by name, email, or subject"
-              tabIndex={isSearchOpen ? 0 : -1}
-              aria-hidden={!isSearchOpen}
-              className={`font-dm-mono min-w-0 flex-1 bg-transparent text-sm tracking-wider text-black uppercase transition-opacity duration-500 ease-out placeholder:text-black/40 focus:outline-none ${
-                isSearchOpen ? "ml-3 opacity-100 delay-200" : "w-0 opacity-0"
-              }`}
-            />
-
-            <button
-              type="button"
-              aria-label="Close search"
-              onClick={(e) => {
-                e.stopPropagation();
-                closeSearch();
-              }}
-              tabIndex={isSearchOpen ? 0 : -1}
-              aria-hidden={!isSearchOpen}
-              className={`flex h-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-black/60 transition-all duration-500 ease-out hover:bg-black/5 hover:text-black ${
-                isSearchOpen
-                  ? "ml-1 w-8 opacity-100 delay-200"
-                  : "pointer-events-none w-0 opacity-0"
-              }`}
-            >
-              <X className="h-4 w-4" />
-            </button>
+            <Icons.SearchWhite className="h-full w-full text-white" />
           </div>
+
+          <input
+            ref={searchInputRef}
+            type="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") closeSearch();
+            }}
+            placeholder="Search tickets by name, email, or subject"
+            tabIndex={isSearchOpen ? 0 : -1}
+            aria-hidden={!isSearchOpen}
+            className={`font-dm-mono min-w-0 flex-1 bg-transparent text-sm tracking-wider text-black uppercase transition-opacity duration-500 ease-out placeholder:text-black/40 focus:outline-none ${
+              isSearchOpen ? "ml-3 opacity-100 delay-200" : "w-0 opacity-0"
+            }`}
+          />
+
+          <button
+            type="button"
+            aria-label="Close search"
+            onClick={(e) => {
+              e.stopPropagation();
+              closeSearch();
+            }}
+            tabIndex={isSearchOpen ? 0 : -1}
+            aria-hidden={!isSearchOpen}
+            className={`flex h-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-black/60 transition-all duration-500 ease-out hover:bg-black/5 hover:text-black ${
+              isSearchOpen
+                ? "ml-1 w-8 opacity-100 delay-200"
+                : "pointer-events-none w-0 opacity-0"
+            }`}
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
       </div>
 
