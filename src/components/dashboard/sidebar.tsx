@@ -47,8 +47,8 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="hidden w-30 flex-col py-4 md:flex">
-      <div className="flex w-full items-center justify-center p-2">
+    <aside className="fixed bottom-3 left-1/2 z-40 flex w-fit max-w-[calc(100vw-1.5rem)] -translate-x-1/2 items-center justify-center rounded-2xl bg-white/95 p-2 shadow-[0_12px_32px_rgba(15,23,42,0.16)] backdrop-blur md:static md:inset-auto md:z-auto md:w-30 md:max-w-none md:translate-x-0 md:flex-col md:justify-start md:rounded-none md:bg-transparent md:py-4 md:shadow-none md:backdrop-blur-none">
+      <div className="hidden w-full items-center justify-center p-2 md:flex">
         <div className="flex h-16 w-16 items-center justify-center bg-[#F2B035] transition-none">
           <div className="relative h-8 w-8">
             <Image
@@ -61,8 +61,8 @@ export function Sidebar() {
           </div>
         </div>
       </div>
-      <div className="flex-1 overflow-auto py-12">
-        <nav className="flex flex-col items-center gap-4 px-2">
+      <div className="w-fit max-w-full overflow-auto md:w-full md:flex-1 md:py-12">
+        <nav className="flex items-center justify-center gap-2 px-1 md:flex-col md:gap-4 md:px-2">
           {navItems.map((item) => (
             <NavItem key={item.href} {...item} />
           ))}

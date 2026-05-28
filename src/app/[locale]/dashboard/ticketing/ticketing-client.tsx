@@ -65,6 +65,7 @@ export function TicketingClient() {
 
   const handleChannelChange = (channel: ChannelKey) => {
     setActiveChannel(channel);
+    setSelection(null);
 
     const next = new URLSearchParams(searchParams.toString());
     next.set("tab", channel);
@@ -76,8 +77,9 @@ export function TicketingClient() {
   };
 
   return (
-    <div className="flex h-full w-full flex-col gap-8">
-      <div className="relative flex items-center gap-8">
+    <div className="flex min-h-full w-full flex-col gap-4 lg:gap-8">
+      {/* Desktop toolbar with expandable search bar */}
+      <div className="relative hidden items-center gap-8 lg:flex">
         <div
           aria-hidden={isSearchOpen}
           className={`w-[70%] transition-opacity duration-500 ease-out ${
@@ -154,7 +156,19 @@ export function TicketingClient() {
         </div>
       </div>
 
-      <div className="flex min-h-0 flex-1 gap-8">
+      {/* Mobile/tablet toolbar — simple button (no expandable search) */}
+      <div className="flex items-stretch gap-3 sm:items-center sm:gap-4 lg:hidden">
+        <div className="min-w-0 flex-1">
+          <CompanyToolbar />
+        </div>
+        <div className="mb-4 flex shrink-0 items-center self-stretch">
+          <button className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-2xl bg-[#006BE5] text-white transition-colors hover:bg-[#1E88E5] sm:h-14 sm:w-14">
+            <Icons.SearchWhite className="h-8 w-8" />
+          </button>
+        </div>
+      </div>
+
+      <div className="flex min-h-0 flex-1 flex-col gap-4 lg:flex-row lg:gap-8">
         <div className="shrink-0">
           <ChannelNavigator
             active={activeChannel}
@@ -166,6 +180,7 @@ export function TicketingClient() {
           <TicketsTabContent
             selection={selection}
             onSelectItem={handleSelectItem}
+            onClearSelection={() => setSelection(null)}
             searchQuery={searchQuery}
           />
         )}

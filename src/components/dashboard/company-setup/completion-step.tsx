@@ -6,12 +6,15 @@ import { useState } from "react";
 import { Icons } from "@/components/icons";
 import { useCurrentUser } from "@/hooks/use-auth";
 import { useCompanyQuery } from "@/hooks/use-company";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
 import { useOnboardingStore } from "@/store/onboarding-store";
 
 import { QuestionnaireChat } from "./questionnaire-chat";
 import { NextButton } from "./ui-elements";
 
 function IntroModal({ onStart }: { onStart: () => void }) {
+  useScrollLock(true);
+
   return (
     <div className="fixed inset-0 z-50 bg-black/60">
       <div className="absolute inset-y-0 right-[350px] left-0 flex items-center justify-center p-6 lg:left-[105px]">

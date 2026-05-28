@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { Cell, Pie, PieChart, Tooltip } from "recharts";
 
 import { CountryFlag } from "@/components/ui/country-flag";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
 import { countryCodeToEmoji, getCountryName } from "@/lib/country";
 import { formatDate, formatDuration } from "@/lib/format";
 import { DashboardVisitor } from "@/services/dashboard";
@@ -78,6 +79,8 @@ export function VisitorsModal({
   visitors: DashboardVisitor[];
   onClose: () => void;
 }) {
+  useScrollLock(true);
+
   const countryData = useMemo(() => {
     const counts = new Map<string, number>();
     for (const v of visitors) {

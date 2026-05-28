@@ -13,6 +13,7 @@ interface NavItemProps {
   label: string;
   activeColor?: string;
   iconClassName?: string;
+  className?: string;
   badgeCount?: number;
 }
 
@@ -22,7 +23,8 @@ export function NavItem({
   activeIcon,
   label,
   activeColor,
-  iconClassName = "h-7 w-7",
+  iconClassName = "h-6 w-6 md:h-7 md:w-7",
+  className,
   badgeCount = 0,
 }: NavItemProps) {
   const pathname = usePathname();
@@ -34,8 +36,9 @@ export function NavItem({
         href={href}
         aria-label={label}
         className={cn(
-          "bg-muted relative flex h-16 w-16 items-center justify-center rounded-2xl transition-all duration-200",
+          "bg-muted relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl transition-all duration-200 md:h-16 md:w-16",
           isActive ? "" : "text-muted-foreground hover:bg-muted",
+          className,
         )}
         style={
           isActive

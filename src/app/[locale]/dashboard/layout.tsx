@@ -12,12 +12,12 @@ export default function DashboardLayout({
     <MobileGate>
       <AuthGuard>
         <div className="min-h-screen w-full bg-[#F6F6F6]">
-          <div className="mx-auto grid h-screen w-full max-w-[1536px] overflow-hidden md:grid-cols-[105px_1fr]">
+          <div className="mx-auto min-h-svh w-full max-w-[1536px] overflow-visible md:grid md:h-screen md:grid-cols-[105px_1fr] md:overflow-hidden">
             <Sidebar />
             <div className="flex h-full min-h-0 flex-col">
               <Header />
-              <main className="flex h-full min-h-0 flex-1 gap-4 overflow-hidden p-4 lg:gap-6 lg:p-6">
-                <div className="scrollbar-none h-full flex-1 overflow-y-auto rounded-3xl">
+              <main className="flex min-h-0 flex-1 gap-4 overflow-visible px-4 pb-24 md:h-full md:overflow-hidden md:p-4 lg:gap-6 lg:p-6">
+                <div className="scrollbar-none min-h-0 flex-1 rounded-[20px] md:h-full md:overflow-y-auto md:rounded-3xl">
                   {children}
                 </div>
               </main>

@@ -15,6 +15,7 @@ import { useEffect, useRef, useState } from "react";
 import { FormCreationSuccessModal } from "@/components/dashboard/ticketing/form-creation-success-modal";
 import { OnlineFormDrawer } from "@/components/dashboard/ticketing/online-form-drawer";
 import { WebsiteFormDrawer } from "@/components/dashboard/ticketing/website-form-drawer";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
 
 interface FormsEmptyStateProps {
   lines: string[];
@@ -260,8 +261,8 @@ function EmptyStateCenter({ lines }: { lines: string[] }) {
 
 function InboxHeader() {
   return (
-    <div className="absolute top-9 left-10 z-10">
-      <h2 className="font-dm-mono text-2xl font-bold tracking-[-0.02em] text-black uppercase">
+    <div className="absolute top-5 left-5 z-10 sm:top-9 sm:left-10">
+      <h2 className="font-dm-mono text-xl font-bold tracking-[-0.02em] text-black uppercase sm:text-2xl">
         Inbox
       </h2>
     </div>
@@ -276,41 +277,41 @@ function StatusControls({
   onStatusChange: (status: FormSubmissionStatus) => void;
 }) {
   return (
-    <div className="flex items-center justify-between gap-6">
-      <div className="flex min-w-0 items-center gap-8">
+    <div className="flex items-center justify-between gap-3 sm:gap-6">
+      <div className="flex min-w-0 items-center gap-2 sm:gap-8">
         <button
           type="button"
           onClick={() => onStatusChange("unread")}
-          className={`font-stolzl flex h-12 cursor-pointer items-center gap-2 rounded-xl px-5 text-base font-normal ${
+          className={`font-stolzl flex h-9 cursor-pointer items-center gap-1.5 rounded-lg px-2.5 text-xs font-normal sm:h-12 sm:gap-2 sm:rounded-xl sm:px-5 sm:text-base ${
             activeStatus === "unread"
               ? "bg-[#808080] text-white"
               : "bg-[#F6F6F6] text-black"
           }`}
           aria-pressed={activeStatus === "unread"}
         >
-          <PendingIcon className="h-6 w-6 shrink-0" />
+          <PendingIcon className="h-4 w-4 shrink-0 sm:h-6 sm:w-6" />
           <span>Unread</span>
         </button>
         <button
           type="button"
           onClick={() => onStatusChange("read")}
-          className={`font-stolzl flex h-12 cursor-pointer items-center gap-2 rounded-xl px-5 text-base font-normal ${
+          className={`font-stolzl flex h-9 cursor-pointer items-center gap-1.5 rounded-lg px-2.5 text-xs font-normal sm:h-12 sm:gap-2 sm:rounded-xl sm:px-5 sm:text-base ${
             activeStatus === "read"
               ? "bg-[#808080] text-white"
               : "bg-[#F6F6F6] text-black"
           }`}
           aria-pressed={activeStatus === "read"}
         >
-          <ResolvedIcon className="size-5 shrink-0 stroke-1" />
+          <ResolvedIcon className="size-4 shrink-0 stroke-1 sm:size-5" />
           <span>Read</span>
         </button>
       </div>
       <button
         type="button"
         aria-label="Form settings"
-        className="flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-xl text-[#808080] transition-colors hover:bg-[#F6F6F6]"
+        className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg text-[#808080] transition-colors hover:bg-[#F6F6F6] sm:h-12 sm:w-12 sm:rounded-xl"
       >
-        <Settings className="h-7 w-7" />
+        <Settings className="h-5 w-5 sm:h-7 sm:w-7" />
       </button>
     </div>
   );
@@ -322,7 +323,7 @@ function EmptyStateTopControls({ variant }: { variant: "list" | "detail" }) {
   }
 
   return (
-    <div className="absolute top-7 right-8 left-8 z-10">
+    <div className="absolute top-4 right-4 left-4 z-10 sm:top-7 sm:right-8 sm:left-8">
       <StatusControls activeStatus="unread" onStatusChange={() => undefined} />
     </div>
   );
@@ -330,7 +331,7 @@ function EmptyStateTopControls({ variant }: { variant: "list" | "detail" }) {
 
 function FormsEmptyState({ lines, variant }: FormsEmptyStateProps) {
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-3xl bg-white shadow-sm">
+    <div className="relative w-full overflow-hidden lg:h-full lg:rounded-3xl lg:bg-white lg:shadow-sm">
       <EmptyStateTopControls variant={variant} />
       <EmptyStateCenter lines={lines} />
     </div>
@@ -339,14 +340,14 @@ function FormsEmptyState({ lines, variant }: FormsEmptyStateProps) {
 
 function CreateFormMenu({ onSelect }: { onSelect: (type: FormType) => void }) {
   return (
-    <div className="font-dm-mono w-[430px] max-w-[calc(100vw-3rem)] rounded-xl bg-white px-3 py-2 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)]">
+    <div className="font-dm-mono w-[430px] max-w-[calc(100vw-2rem)] rounded-xl bg-white px-2 py-1.5 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] lg:max-w-[calc(100vw-3rem)] lg:px-3 lg:py-2">
       {(["website", "online"] as FormType[]).map((type, index) => {
         const meta = FORM_TYPE_META[type];
         return (
           <button
             key={type}
             type="button"
-            className={`flex h-12 w-full cursor-pointer items-center gap-3 px-3 text-left transition-colors hover:bg-gray-50 ${
+            className={`flex h-10 w-full cursor-pointer items-center gap-2 px-2 text-left transition-colors hover:bg-gray-50 lg:h-12 lg:gap-3 lg:px-3 ${
               index === 0 ? "border-b border-[#808080]" : ""
             }`}
             onClick={() => onSelect(type)}
@@ -356,14 +357,14 @@ function CreateFormMenu({ onSelect }: { onSelect: (type: FormType) => void }) {
               alt=""
               width={type === "website" ? 23 : 22}
               height={type === "website" ? 23 : 22}
-              className="h-[23px] w-[23px] shrink-0"
+              className="h-[18px] w-[18px] shrink-0 lg:h-[23px] lg:w-[23px]"
             />
             <span
-              className={`min-w-0 flex-1 text-base font-normal tracking-[0.18em] whitespace-nowrap uppercase ${meta.textColor}`}
+              className={`min-w-0 flex-1 text-xs font-normal tracking-[0.1em] whitespace-nowrap uppercase lg:text-base lg:tracking-[0.18em] ${meta.textColor}`}
             >
               {meta.label}
             </span>
-            <Info className="h-4 w-4 shrink-0 text-black" />
+            <Info className="h-3.5 w-3.5 shrink-0 text-black lg:h-4 lg:w-4" />
           </button>
         );
       })}
@@ -387,6 +388,7 @@ function FormsToolbar({
   const formDropdownRef = useRef<HTMLDivElement>(null);
   const createDropdownRef = useRef<HTMLDivElement>(null);
   const selectedForm = MOCK_FORMS[selectedFormIndex] ?? null;
+  useScrollLock(isFormMenuOpen || isCreateMenuOpen);
 
   const handleCreateForm = (type: FormType) => {
     setIsCreateMenuOpen(false);
@@ -421,38 +423,42 @@ function FormsToolbar({
   }, []);
 
   return (
-    <div className="grid h-15 shrink-0 grid-cols-12 gap-8">
-      <div className="col-span-7 flex min-w-0 items-center gap-8">
+    <div className="grid shrink-0 grid-cols-1 gap-3 lg:h-15 lg:grid-cols-12 lg:gap-8">
+      <div
+        className={`grid min-w-0 grid-cols-3 gap-2 lg:col-span-7 lg:flex lg:items-center lg:gap-8 ${
+          isCreateMenuOpen ? "relative z-[90]" : ""
+        }`}
+      >
         <button
           type="button"
-          className="font-dm-mono flex h-15 min-w-0 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#6433CC] px-5 text-base font-normal tracking-[0.18em] text-white uppercase transition-colors hover:bg-[#572bb5]"
+          className="font-dm-mono flex h-12 min-w-0 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#6433CC] px-3 text-xs font-normal tracking-[0.12em] text-white uppercase transition-colors hover:bg-[#572bb5] lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
         >
-          <Trash2 className="h-5 w-5 shrink-0" />
+          <Trash2 className="h-4 w-4 shrink-0 lg:h-5 lg:w-5" />
           <span className="truncate">Delete</span>
         </button>
         <button
           type="button"
-          className="font-dm-mono flex h-15 min-w-0 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#F25430] px-5 text-base font-normal tracking-[0.18em] text-white uppercase transition-colors hover:bg-[#d94526]"
+          className="font-dm-mono flex h-12 min-w-0 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#F25430] px-3 text-xs font-normal tracking-[0.12em] text-white uppercase transition-colors hover:bg-[#d94526] lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
         >
-          <Pencil className="h-5 w-5 shrink-0" />
+          <Pencil className="h-4 w-4 shrink-0 lg:h-5 lg:w-5" />
           <span className="truncate">Edit</span>
         </button>
         <div ref={createDropdownRef} className="relative min-w-0 flex-1">
           <button
             type="button"
             onClick={() => setIsCreateMenuOpen((open) => !open)}
-            className="font-dm-mono flex h-15 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#006BE5] px-5 text-base font-normal tracking-[0.18em] text-white uppercase transition-colors hover:bg-[#005fca]"
+            className="font-dm-mono flex h-12 w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#006BE5] px-3 text-xs font-normal tracking-[0.12em] text-white uppercase transition-colors hover:bg-[#005fca] lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
             aria-expanded={isCreateMenuOpen}
           >
             {isCreateMenuOpen ? (
-              <X className="h-5 w-5 shrink-0" />
+              <X className="h-4 w-4 shrink-0 lg:h-5 lg:w-5" />
             ) : (
-              <Plus className="h-5 w-5 shrink-0" />
+              <Plus className="h-4 w-4 shrink-0 lg:h-5 lg:w-5" />
             )}
             <span className="truncate">Create</span>
           </button>
           {isCreateMenuOpen && (
-            <div className="animate-in fade-in slide-in-from-top-2 absolute top-[calc(100%+1rem)] right-[-1.25rem] z-[70] duration-200">
+            <div className="animate-in fade-in slide-in-from-top-2 absolute top-[calc(100%+0.75rem)] right-0 z-[70] duration-200 lg:top-[calc(100%+1rem)] lg:right-[-1.25rem]">
               <CreateFormMenu onSelect={handleCreateForm} />
             </div>
           )}
@@ -461,7 +467,7 @@ function FormsToolbar({
 
       <div
         ref={formDropdownRef}
-        className={`relative col-span-5 min-w-0 ${isFormMenuOpen ? "z-[70]" : ""}`}
+        className={`relative min-w-0 lg:col-span-5 ${isFormMenuOpen ? "z-[70]" : ""}`}
       >
         {isFormMenuOpen && (
           <button
@@ -472,14 +478,14 @@ function FormsToolbar({
           />
         )}
 
-        <div className="relative z-[70] flex h-15 min-w-0 items-center rounded-[22px] border border-[#EDEDED] bg-white px-4 shadow-sm">
-          <div className="font-dm-mono shrink-0 pr-5 pl-3 text-base font-normal tracking-[0.16em] text-black uppercase">
+        <div className="relative z-[70] flex h-12 min-w-0 items-center rounded-[18px] border border-[#EDEDED] bg-white px-2 shadow-sm lg:h-15 lg:rounded-[22px] lg:px-4">
+          <div className="font-dm-mono shrink-0 pr-2 pl-1 text-xs font-normal tracking-[0.1em] text-black uppercase lg:pr-5 lg:pl-3 lg:text-base lg:tracking-[0.16em]">
             Forms
           </div>
           <button
             type="button"
             onClick={() => setIsFormMenuOpen((open) => !open)}
-            className="flex h-9 min-w-0 flex-1 cursor-pointer items-center justify-between gap-3 rounded-[13px] border border-[#EDEDED] bg-white px-5 text-left transition-colors hover:bg-gray-50"
+            className="flex h-9 min-w-0 flex-1 cursor-pointer items-center justify-between gap-1.5 rounded-[13px] border border-[#EDEDED] bg-white px-2 text-left transition-colors hover:bg-gray-50 lg:gap-3 lg:px-5"
             aria-expanded={isFormMenuOpen}
           >
             {selectedForm && (
@@ -488,29 +494,29 @@ function FormsToolbar({
                 alt=""
                 width={23}
                 height={23}
-                className="ml-1 h-[23px] w-[23px] shrink-0"
+                className="ml-0.5 h-[18px] w-[18px] shrink-0 lg:ml-1 lg:h-[23px] lg:w-[23px]"
               />
             )}
-            <span className="font-dm-mono min-w-0 flex-1 truncate text-base font-normal tracking-[0.18em] text-black uppercase">
+            <span className="font-dm-mono min-w-0 flex-1 truncate text-xs font-normal tracking-[0.1em] text-black uppercase lg:text-base lg:tracking-[0.18em]">
               {selectedForm?.name ?? "Create a new form"}
             </span>
             <ChevronDown
-              className={`h-4 w-4 shrink-0 text-black transition-transform duration-200 ${isFormMenuOpen ? "rotate-180" : ""}`}
+              className={`h-3.5 w-3.5 shrink-0 text-black transition-transform duration-200 lg:h-4 lg:w-4 ${isFormMenuOpen ? "rotate-180" : ""}`}
             />
           </button>
         </div>
 
         {isFormMenuOpen && (
-          <div className="animate-in fade-in slide-in-from-top-2 absolute right-4 z-[70] mt-3 w-[calc(100%-7.5rem)] min-w-[300px] duration-200">
+          <div className="animate-in fade-in slide-in-from-top-2 absolute right-0 left-0 z-[70] mt-3 duration-200 sm:right-4 sm:left-auto sm:w-[calc(100%-7.5rem)] sm:min-w-[300px]">
             {MOCK_FORMS.length === 0 ? (
               <CreateFormMenu onSelect={handleCreateForm} />
             ) : (
-              <div className="font-dm-mono rounded-xl bg-white px-3 py-2 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)]">
+              <div className="font-dm-mono rounded-xl bg-white px-2 py-1.5 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] lg:px-3 lg:py-2">
                 {MOCK_FORMS.map((form, index) => (
                   <button
                     key={form.name}
                     type="button"
-                    className="flex h-12 w-full cursor-pointer items-center gap-3 px-3 text-left transition-colors hover:bg-gray-50"
+                    className="flex h-10 w-full cursor-pointer items-center gap-2 px-2 text-left transition-colors hover:bg-gray-50 lg:h-12 lg:gap-3 lg:px-3"
                     onClick={() => {
                       onSelectForm(index);
                       setIsFormMenuOpen(false);
@@ -521,9 +527,9 @@ function FormsToolbar({
                       alt=""
                       width={23}
                       height={23}
-                      className="h-[23px] w-[23px] shrink-0"
+                      className="h-[18px] w-[18px] shrink-0 lg:h-[23px] lg:w-[23px]"
                     />
-                    <span className="min-w-0 flex-1 truncate text-base font-normal tracking-[0.18em] text-black uppercase">
+                    <span className="min-w-0 flex-1 truncate text-xs font-normal tracking-[0.1em] text-black uppercase lg:text-base lg:tracking-[0.18em]">
                       {form.name}
                     </span>
                   </button>
@@ -547,13 +553,13 @@ function FormPageTabs({
   onSelectPage: (index: number) => void;
 }) {
   return (
-    <div className="flex h-11 min-w-0 items-center gap-3 overflow-hidden">
+    <div className="scrollbar-none flex h-11 min-w-0 items-center gap-3 overflow-x-auto">
       {pages.map((page, index) => (
         <button
           key={page.path}
           type="button"
           onClick={() => onSelectPage(index)}
-          className={`font-dm-mono h-11 min-w-0 cursor-pointer rounded-lg px-4 text-base font-normal tracking-[0.12em] uppercase shadow-sm ${
+          className={`font-dm-mono h-11 min-w-[132px] cursor-pointer rounded-lg px-4 text-sm font-normal tracking-[0.12em] uppercase shadow-sm sm:text-base ${
             index === activePageIndex
               ? "bg-[#006BE5] text-white"
               : "border border-[#EDEDED] bg-white text-black"
@@ -579,6 +585,7 @@ function SubmissionNameDropdown({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  useScrollLock(isOpen);
   const selected =
     selectedIndex === null ? null : allSubmissions[selectedIndex] || null;
 
@@ -599,11 +606,11 @@ function SubmissionNameDropdown({
   if (!selected) return null;
 
   return (
-    <div ref={dropdownRef} className="relative w-fit">
+    <div ref={dropdownRef} className="relative w-full sm:w-fit">
       <button
         type="button"
         onClick={() => setIsOpen((open) => !open)}
-        className="flex h-9 min-w-[184px] cursor-pointer items-center gap-2 rounded-xl border border-[#EDEDED] bg-white px-3 text-left transition-colors hover:bg-gray-50"
+        className="flex h-9 w-full min-w-0 cursor-pointer items-center gap-2 rounded-xl border border-[#EDEDED] bg-white px-3 text-left transition-colors hover:bg-gray-50 sm:min-w-[184px]"
         aria-expanded={isOpen}
       >
         <Image
@@ -622,7 +629,7 @@ function SubmissionNameDropdown({
       </button>
 
       {isOpen && (
-        <div className="animate-in fade-in slide-in-from-top-1 absolute left-0 z-30 mt-2 w-56 rounded-xl border border-[#EDEDED] bg-white p-2 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] duration-200">
+        <div className="animate-in fade-in slide-in-from-top-1 absolute left-0 z-30 mt-2 w-full rounded-xl border border-[#EDEDED] bg-white p-2 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] duration-200 sm:w-56">
           {allSubmissions.map((submission, index) => (
             <button
               key={submission.name}
@@ -647,11 +654,13 @@ function FormSubmissionDetail({
   selectedIndex,
   onSelect,
   formType,
+  hideTitle = false,
 }: {
   allSubmissions: FormSubmission[];
   selectedIndex: number | null;
   onSelect: (index: number) => void;
   formType: FormType;
+  hideTitle?: boolean;
 }) {
   const selected =
     selectedIndex === null ? null : allSubmissions[selectedIndex] || null;
@@ -666,12 +675,14 @@ function FormSubmissionDetail({
   }
 
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-3xl bg-white px-10 py-9 shadow-sm">
-      <h2 className="font-dm-mono text-2xl font-bold tracking-[-0.02em] text-black uppercase">
-        Inbox
-      </h2>
+    <div className="relative min-h-[420px] w-full overflow-hidden lg:h-full lg:rounded-3xl lg:bg-white lg:px-10 lg:py-9 lg:shadow-sm">
+      {!hideTitle && (
+        <h2 className="font-dm-mono text-xl font-bold tracking-[-0.02em] text-black uppercase sm:text-2xl">
+          Inbox
+        </h2>
+      )}
 
-      <div className="mt-6">
+      <div className={hideTitle ? "" : "mt-5 sm:mt-6"}>
         <SubmissionNameDropdown
           allSubmissions={allSubmissions}
           selectedIndex={selectedIndex}
@@ -680,11 +691,11 @@ function FormSubmissionDetail({
         />
       </div>
 
-      <p className="font-dm-mono mt-8 text-sm font-normal tracking-[0.18em] text-black/60 uppercase">
+      <p className="font-dm-mono mt-6 text-xs font-normal tracking-[0.14em] text-black/60 uppercase sm:mt-8 sm:text-sm sm:tracking-[0.18em]">
         Recieved at {selected.receivedAt}
       </p>
 
-      <div className="font-dm-mono mt-10 space-y-7 text-2xl leading-[1.32] font-normal tracking-[-0.02em] text-black uppercase">
+      <div className="font-dm-mono mt-7 space-y-4 text-base leading-[1.45] font-normal tracking-[-0.02em] text-black uppercase sm:mt-10 sm:space-y-7 sm:text-2xl sm:leading-[1.32]">
         <p>
           <span className="font-bold">Name:</span> {selected.name}
         </p>
@@ -723,15 +734,15 @@ function FormSubmissionList({
     .filter((submission) => submission.status === activeStatus);
 
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-3xl bg-white shadow-sm">
-      <div className="absolute top-7 right-8 left-8 z-10">
+    <div className="relative w-full overflow-hidden lg:h-full lg:rounded-3xl lg:bg-white lg:shadow-sm">
+      <div className="mb-4 lg:absolute lg:top-7 lg:right-8 lg:left-8 lg:z-10 lg:mb-0">
         <StatusControls
           activeStatus={activeStatus}
           onStatusChange={onStatusChange}
         />
       </div>
 
-      <div className="scrollbar-none h-full overflow-y-auto px-9 pt-28">
+      <div className="scrollbar-none overflow-y-auto pt-2 lg:h-full lg:px-9 lg:pt-28">
         <div className="space-y-4">
           {visibleSubmissions.map((submission) => {
             const isSelected = submission.index === selectedIndex;
@@ -740,10 +751,10 @@ function FormSubmissionList({
                 key={submission.name}
                 type="button"
                 onClick={() => onSelect(submission.index)}
-                className={`flex h-[82px] w-full cursor-pointer items-center gap-4 rounded-[19px] px-5 text-left transition-colors ${
+                className={`flex w-full cursor-pointer items-center gap-3 rounded-[19px] p-0 text-left transition-colors lg:h-[82px] lg:gap-4 lg:px-5 ${
                   isSelected
-                    ? "bg-[#006BE5] text-white"
-                    : "bg-[#FBFBFB] text-black hover:bg-[#F6F6F6]"
+                    ? "text-[#006BE5] lg:bg-[#006BE5] lg:text-white"
+                    : "text-black lg:bg-[#FBFBFB] lg:hover:bg-[#F6F6F6]"
                 }`}
               >
                 <Image
@@ -751,7 +762,7 @@ function FormSubmissionList({
                   alt=""
                   width={52}
                   height={52}
-                  className="h-[52px] w-[52px] shrink-0 rounded-full"
+                  className="h-11 w-11 shrink-0 rounded-full lg:h-[52px] lg:w-[52px]"
                 />
                 <div className="min-w-0 flex-1">
                   <div className="font-dm-mono truncate text-base font-normal tracking-[0.08em] uppercase">
@@ -785,6 +796,7 @@ export function FormsTabContent() {
   const [selectedSubmissionIndex, setSelectedSubmissionIndex] = useState<
     number | null
   >(null);
+  const [isMobileDetail, setIsMobileDetail] = useState(false);
   const [selectedFormIndex, setSelectedFormIndex] = useState(0);
   const [selectedPageIndex, setSelectedPageIndex] = useState(0);
   const [activeStatus, setActiveStatus] =
@@ -804,6 +816,17 @@ export function FormsTabContent() {
       ? (selectedFormPages[selectedPageIndex]?.submissions ?? [])
       : (selectedForm?.submissions ?? []);
 
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 1023px)");
+    const updateMatch = () => setIsMobileDetail(mediaQuery.matches);
+
+    updateMatch();
+    mediaQuery.addEventListener("change", updateMatch);
+    return () => mediaQuery.removeEventListener("change", updateMatch);
+  }, []);
+
+  useScrollLock(selectedSubmissionIndex !== null && isMobileDetail);
+
   const handleSelectForm = (index: number) => {
     setSelectedFormIndex(index);
     setSelectedPageIndex(0);
@@ -820,24 +843,38 @@ export function FormsTabContent() {
     setSelectedSubmissionIndex(null);
   };
 
+  const inboxDetail = (
+    <FormSubmissionDetail
+      allSubmissions={selectedFormSubmissions}
+      selectedIndex={selectedSubmissionIndex}
+      onSelect={setSelectedSubmissionIndex}
+      formType={selectedFormType}
+    />
+  );
+
+  const mobileInboxDetail = (
+    <FormSubmissionDetail
+      allSubmissions={selectedFormSubmissions}
+      selectedIndex={selectedSubmissionIndex}
+      onSelect={setSelectedSubmissionIndex}
+      formType={selectedFormType}
+      hideTitle
+    />
+  );
+
   return (
-    <div className="flex min-w-0 flex-1 flex-col gap-8">
+    <div className="flex min-w-0 flex-1 flex-col gap-4 lg:gap-8">
       <FormsToolbar
         selectedFormIndex={selectedFormIndex}
         onSelectForm={handleSelectForm}
         onCreateWebsiteForm={() => setIsWebsiteFormDrawerOpen(true)}
         onCreateOnlineForm={() => setIsOnlineFormDrawerOpen(true)}
       />
-      <div className="grid min-h-0 flex-1 grid-cols-12 gap-8">
-        <div className="col-span-7 min-w-0">
-          <FormSubmissionDetail
-            allSubmissions={selectedFormSubmissions}
-            selectedIndex={selectedSubmissionIndex}
-            onSelect={setSelectedSubmissionIndex}
-            formType={selectedFormType}
-          />
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-8">
+        <div className="hidden min-w-0 lg:col-span-7 lg:block">
+          {inboxDetail}
         </div>
-        <div className="col-span-5 flex min-w-0 flex-col gap-8">
+        <div className="flex min-w-0 flex-col gap-5 lg:col-span-5 lg:gap-8">
           {isWebsiteForm && selectedFormPages.length > 0 && (
             <FormPageTabs
               pages={selectedFormPages}
@@ -856,6 +893,28 @@ export function FormsTabContent() {
           </div>
         </div>
       </div>
+      {selectedSubmissionIndex !== null && isMobileDetail && (
+        <div className="fixed inset-0 z-10000 bg-black/45 lg:hidden">
+          <section className="animate-in slide-in-from-right ml-auto flex h-full w-full max-w-[520px] flex-col bg-white shadow-[-20px_0_70px_rgba(0,0,0,0.18)] duration-300">
+            <div className="flex h-14 shrink-0 items-center justify-between border-b border-gray-100 px-4">
+              <h2 className="font-dm-mono text-xl font-bold tracking-[-0.02em] text-black uppercase">
+                Inbox
+              </h2>
+              <button
+                type="button"
+                aria-label="Close inbox"
+                onClick={() => setSelectedSubmissionIndex(null)}
+                className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-[#F6F6F6] text-gray-700 transition-colors hover:bg-gray-100"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="min-h-0 flex-1 overflow-y-auto p-4">
+              {mobileInboxDetail}
+            </div>
+          </section>
+        </div>
+      )}
       <WebsiteFormDrawer
         open={isWebsiteFormDrawerOpen}
         onClose={() => setIsWebsiteFormDrawerOpen(false)}
