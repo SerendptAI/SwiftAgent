@@ -117,43 +117,41 @@ export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
         onClick={handleClose}
         className="absolute inset-0 cursor-default bg-black/65"
       />
-      <div className="relative flex max-h-[92vh] w-[810px] max-w-full flex-col overflow-y-auto bg-white">
+      <div className="relative h-[922px] max-h-[92vh] w-[810px] max-w-full overflow-y-auto bg-white">
         <button
           type="button"
           aria-label="Close"
           onClick={handleClose}
-          className="absolute top-3 right-3 z-10 text-black/70 transition-colors hover:text-black"
+          className="absolute top-[12px] right-[10px] z-10 text-black/70 transition-colors hover:text-black"
         >
           <X className="size-[30px]" strokeWidth={1.5} />
         </button>
 
-        <div className="px-[60px] pt-[60px] pb-[40px]">
-          <h2
-            id="upgrade-plan-title"
-            className="font-greed-narrow mx-auto w-[447px] max-w-full text-center text-[32px] leading-[1.1] font-semibold tracking-[-0.64px] text-black"
-          >
-            Upgrade your plan to have access to that
-          </h2>
-          <p className="font-dm-mono mx-auto mt-[10px] w-[492px] max-w-full text-center text-lg leading-[1.8] tracking-[1.2px] text-black/60 uppercase">
-            Your plan currently supports {`{feature}"`} to use {`{feature}`} you
-            have to upgrade
-          </p>
+        <h2
+          id="upgrade-plan-title"
+          className="font-greed-narrow mx-auto mt-[126px] w-[447px] max-w-full text-center text-[40px] leading-[1.1] font-semibold tracking-[-0.8px] text-black"
+        >
+          Upgrade your plan to have access to that
+        </h2>
+        <p className="font-dm-mono mx-auto mt-[22px] w-[492px] max-w-full text-center text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase">
+          Your plan currently supports {`{feature}`} to use {`{feature}`} you
+          have to upgrade
+        </p>
 
-          <ul className="mt-[32px] space-y-[20px]">
-            {plans.map((plan) => {
-              const isActive = !!plan.tier && plan.tier === activeTier;
-              return (
-                <li key={plan.name}>
-                  <UpgradePlanCard
-                    plan={plan}
-                    isActive={isActive}
-                    onSelect={() => handleViewMore(plan)}
-                  />
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+        <ul className="mx-auto mt-[47px] flex w-[685px] max-w-full flex-col gap-[29px]">
+          {plans.map((plan) => {
+            const isActive = !!plan.tier && plan.tier === activeTier;
+            return (
+              <li key={plan.name}>
+                <UpgradePlanCard
+                  plan={plan}
+                  isActive={isActive}
+                  onSelect={() => handleViewMore(plan)}
+                />
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </div>
   );
@@ -170,53 +168,59 @@ function UpgradePlanCard({
 }) {
   const isLargeTitle = plan.tier !== "basic";
   return (
-    <div className="flex h-[150px] w-[685px] max-w-full overflow-hidden border border-black bg-white">
-      <div className="h-[150px] w-[136px] shrink-0">
+    <div className="relative h-[150px] w-[685px] max-w-full overflow-hidden border border-black bg-white">
+      {/* Plan image — left rail, full height */}
+      <div className="absolute top-0 left-0 h-[150px] w-[136px]">
         <PlanIcon tier={plan.tier} />
       </div>
 
-      <div className="relative flex-1 px-[18px] py-[12px]">
-        <p
-          className={`font-dm-mono leading-[1.2] tracking-[2px] uppercase ${plan.textColor} ${
-            isLargeTitle ? "text-[20px]" : "text-[18px] tracking-[1.8px]"
-          }`}
-        >
-          {plan.name}
-        </p>
-        <p className="font-dm-mono mt-[5px] text-[18px] leading-[1.2] tracking-[1.8px] text-black uppercase">
-          {plan.price} {plan.billing}
-        </p>
-        <div className="font-dm-mono mt-[10px] h-[51px] w-[269px] overflow-hidden text-[14px] leading-[1.86] tracking-[1.4px] text-black/70 uppercase">
-          {plan.features.map((feature, i) => (
-            <p key={i} className="whitespace-pre-line">
-              {feature}
-            </p>
-          ))}
-        </div>
+      {/* Plan name — Figma: left:154 top:12 */}
+      <p
+        className={`font-dm-mono absolute top-[12px] left-[154px] leading-[1.2] uppercase ${plan.textColor} ${
+          isLargeTitle
+            ? "text-[20px] tracking-[2px]"
+            : "text-[18px] tracking-[1.8px]"
+        }`}
+      >
+        {plan.name}
+      </p>
 
-        {isActive && (
-          <span className="font-dm-mono absolute top-[44px] right-[18px] flex items-center gap-2 text-[16px] leading-[1.2] tracking-[1.6px] text-black/60 uppercase">
-            <Icons.CheckCircle className="h-8 w-8" />
-            Subscribed
-          </span>
-        )}
+      {/* Price — Figma: left:154 top:43 */}
+      <p className="font-dm-mono absolute top-[43px] left-[154px] text-[18px] leading-[1.2] tracking-[1.8px] text-black uppercase">
+        {plan.price} {plan.billing}
+      </p>
 
-        <div className="absolute top-[97px] right-[18px]">
-          {isActive ? (
-            <span className="font-dm-mono inline-flex h-[38px] items-center justify-center rounded-[13px] border border-[#EDEDED] bg-[#EDEDED] px-5 text-[14px] leading-[1.2] tracking-[1.4px] text-black uppercase">
-              Presently On
-            </span>
-          ) : (
-            <button
-              type="button"
-              onClick={onSelect}
-              className="font-dm-mono inline-flex h-[38px] cursor-pointer items-center justify-center rounded-[13px] border border-[#EDEDED] bg-[#006BE5] px-5 text-[14px] leading-[1.2] tracking-[1.4px] text-white uppercase transition-colors hover:bg-[#0055B8]"
-            >
-              View More
-            </button>
-          )}
-        </div>
+      {/* Features — Figma: left:154 top:90 w:269 */}
+      <div className="font-dm-mono absolute top-[90px] left-[154px] max-h-[51px] w-[269px] overflow-hidden text-[14px] leading-[1.86] tracking-[1.4px] text-black/70 uppercase">
+        {plan.features.map((feature, i) => (
+          <p key={i} className="whitespace-pre-line">
+            {feature}
+          </p>
+        ))}
       </div>
+
+      {/* Subscribed indicator — Figma: text right edge ~27px from card right, top:44 */}
+      {isActive && (
+        <span className="font-dm-mono absolute top-[44px] right-[27px] flex items-center gap-[7px] text-[16px] leading-[1.2] tracking-[1.6px] text-black/60 uppercase">
+          <Icons.CheckCircle className="h-[24px] w-[24px]" />
+          Subscribed
+        </span>
+      )}
+
+      {/* Action button — PRESENTLY ON 160x38 right:27, VIEW MORE 143x38 right:14 */}
+      {isActive ? (
+        <span className="font-dm-mono absolute top-[97px] right-[27px] inline-flex h-[38px] w-[160px] items-center justify-center rounded-[13px] border border-[#EDEDED] bg-[#EDEDED] text-[14px] leading-[1.2] tracking-[1.4px] text-black uppercase">
+          Presently On
+        </span>
+      ) : (
+        <button
+          type="button"
+          onClick={onSelect}
+          className="font-dm-mono absolute top-[97px] right-[14px] inline-flex h-[38px] w-[143px] cursor-pointer items-center justify-center rounded-[13px] border border-[#EDEDED] bg-[#006BE5] text-[14px] leading-[1.2] tracking-[1.4px] text-white uppercase transition-colors hover:bg-[#0055B8]"
+        >
+          View More
+        </button>
+      )}
     </div>
   );
 }
