@@ -20,6 +20,7 @@ export type TicketKind = "ticket" | "chat";
 interface TicketListProps {
   selectedItemId: string;
   onSelectItem: (id: string, kind: TicketKind) => void;
+  searchQuery?: string;
 }
 
 function TicketListEmptyState() {
@@ -58,12 +59,28 @@ function formatRelativeTime(iso?: string): string {
   }
 }
 
-export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
+export function TicketList({
+  selectedItemId,
+  onSelectItem,
+  searchQuery,
+}: TicketListProps) {
   const [activeTab, setActiveTab] = useState<"pending" | "resolved">("pending");
   const { data: tickets, isLoading: ticketsLoading } = useTickets();
   const { data: resolvedChats, isLoading: chatsLoading } = useResolvedChats();
 
-  const pendingCount = tickets?.length ?? 0;
+  const normalizedQuery = searchQuery?.trim().toLowerCase() ?? "";
+  const matchesQuery = (...fields: Array<string | null | undefined>) =>
+    !normalizedQuery ||
+    fields.some((f) => f?.toLowerCase().includes(normalizedQuery));
+
+  const filteredTickets = tickets?.filter((t) =>
+    matchesQuery(t.customer_name, t.customer_email, t.subject, t.chat_summary),
+  );
+  const filteredChats = resolvedChats?.filter((c) =>
+    matchesQuery(c.session_id),
+  );
+
+  const pendingCount = filteredTickets?.length ?? 0;
   const isLoading = activeTab === "pending" ? ticketsLoading : chatsLoading;
 
   return (
@@ -148,10 +165,10 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
             <Loader />
           </div>
         ) : activeTab === "pending" ? (
-          !tickets || tickets.length === 0 ? (
+          !filteredTickets || filteredTickets.length === 0 ? (
             <TicketListEmptyState />
           ) : (
-            tickets.map((ticket) => {
+            filteredTickets.map((ticket) => {
               const unread = (ticket.unseen_count ?? 0) > 0;
               const avatarSrc = resolveAvatarUrl(ticket.avatar);
               const title =
@@ -214,10 +231,10 @@ export function TicketList({ selectedItemId, onSelectItem }: TicketListProps) {
               );
             })
           )
-        ) : !resolvedChats || resolvedChats.length === 0 ? (
+        ) : !filteredChats || filteredChats.length === 0 ? (
           <TicketListEmptyState />
         ) : (
-          resolvedChats.map((chat) => {
+          filteredChats.map((chat) => {
             const avatarSrc = resolveAvatarUrl(chat.avatar);
             const sessionLabel = chat.session_id
               ? chat.session_id.slice(0, 13).toUpperCase()

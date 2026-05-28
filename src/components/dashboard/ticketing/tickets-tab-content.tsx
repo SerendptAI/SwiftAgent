@@ -15,6 +15,7 @@ interface TicketSelection {
 interface TicketsTabContentProps {
   selection: TicketSelection | null;
   onSelectItem: (id: string, kind: TicketKind) => void;
+  searchQuery?: string;
 }
 
 function MessageEmptyState() {
@@ -43,6 +44,7 @@ function MessageEmptyState() {
 export function TicketsTabContent({
   selection,
   onSelectItem,
+  searchQuery,
 }: TicketsTabContentProps) {
   return (
     <>
@@ -50,6 +52,7 @@ export function TicketsTabContent({
         <TicketList
           selectedItemId={selection?.id ?? ""}
           onSelectItem={onSelectItem}
+          searchQuery={searchQuery}
         />
       </div>
 

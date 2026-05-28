@@ -1,7 +1,8 @@
 "use client";
 
+import { X } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { CompanyToolbar } from "@/components/dashboard/company-toolbar";
 import { BusinessEmailsTabContent } from "@/components/dashboard/ticketing/business-emails-tab-content";
@@ -29,6 +30,20 @@ export function TicketingClient() {
   const [activeChannel, setActiveChannel] = useState<ChannelKey>(
     () => getChannelFromTabParam(searchParams.get("tab")) ?? "tickets",
   );
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!isSearchOpen) return;
+    const id = window.setTimeout(() => searchInputRef.current?.focus(), 50);
+    return () => window.clearTimeout(id);
+  }, [isSearchOpen]);
+
+  const closeSearch = () => {
+    setIsSearchOpen(false);
+    setSearchQuery("");
+  };
 
   const { data: chats } = useResolvedChats();
 
@@ -63,13 +78,80 @@ export function TicketingClient() {
   return (
     <div className="flex h-full w-full flex-col gap-8">
       <div className="flex items-center gap-8">
-        <div className="w-[70%]">
+        <div
+          aria-hidden={isSearchOpen}
+          className={`w-[70%] transition-opacity duration-500 ease-out ${
+            isSearchOpen ? "pointer-events-none opacity-0" : "opacity-100"
+          }`}
+        >
           <CompanyToolbar />
         </div>
-        <div className="mb-4 flex items-center">
-          <button className="flex cursor-pointer items-center justify-center rounded-3xl bg-[#006BE5] p-2 text-white transition-colors hover:bg-[#1E88E5]">
-            <Icons.SearchWhite className="h-12 w-12" />
-          </button>
+
+        {/* Search slot — button morphs in place, growing LEFTWARD (right edge anchored) */}
+        <div className="relative mb-4 h-16 w-16">
+          <div
+            role={isSearchOpen ? undefined : "button"}
+            tabIndex={isSearchOpen ? undefined : 0}
+            aria-label={isSearchOpen ? undefined : "Open search"}
+            onClick={() => {
+              if (!isSearchOpen) setIsSearchOpen(true);
+            }}
+            onKeyDown={(e) => {
+              if (!isSearchOpen && (e.key === "Enter" || e.key === " ")) {
+                e.preventDefault();
+                setIsSearchOpen(true);
+              }
+            }}
+            className={`absolute top-0 right-0 flex h-16 items-center overflow-hidden transition-all duration-500 ease-out ${
+              isSearchOpen
+                ? "w-200 max-w-[80vw] cursor-default rounded-[22px] border border-[#EDEDED] bg-white px-4 shadow-sm"
+                : "w-16 cursor-pointer justify-center rounded-3xl border border-transparent bg-[#006BE5] hover:bg-[#1E88E5]"
+            }`}
+          >
+            <div
+              className={`flex shrink-0 items-center justify-center transition-all duration-500 ease-out ${
+                isSearchOpen
+                  ? "h-9 w-9 rounded-full bg-[#006BE5] p-2"
+                  : "h-12 w-12"
+              }`}
+            >
+              <Icons.SearchWhite className="h-full w-full text-white" />
+            </div>
+
+            <input
+              ref={searchInputRef}
+              type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") closeSearch();
+              }}
+              placeholder="Search tickets by name, email, or subject"
+              tabIndex={isSearchOpen ? 0 : -1}
+              aria-hidden={!isSearchOpen}
+              className={`font-dm-mono min-w-0 flex-1 bg-transparent text-sm tracking-wider text-black uppercase transition-opacity duration-500 ease-out placeholder:text-black/40 focus:outline-none ${
+                isSearchOpen ? "ml-3 opacity-100 delay-200" : "w-0 opacity-0"
+              }`}
+            />
+
+            <button
+              type="button"
+              aria-label="Close search"
+              onClick={(e) => {
+                e.stopPropagation();
+                closeSearch();
+              }}
+              tabIndex={isSearchOpen ? 0 : -1}
+              aria-hidden={!isSearchOpen}
+              className={`flex h-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-black/60 transition-all duration-500 ease-out hover:bg-black/5 hover:text-black ${
+                isSearchOpen
+                  ? "ml-1 w-8 opacity-100 delay-200"
+                  : "pointer-events-none w-0 opacity-0"
+              }`}
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -85,6 +167,7 @@ export function TicketingClient() {
           <TicketsTabContent
             selection={selection}
             onSelectItem={handleSelectItem}
+            searchQuery={searchQuery}
           />
         )}
         {activeChannel === "forms" && <FormsTabContent />}
