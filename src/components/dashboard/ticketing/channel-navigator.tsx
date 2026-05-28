@@ -2,6 +2,7 @@
 
 import { Icons } from "@/components/icons";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { useTickets } from "@/hooks/use-tickets";
 
 type ChannelKey = "tickets" | "forms" | "mail";
 
@@ -9,7 +10,6 @@ interface Channel {
   key: ChannelKey;
   label: string;
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  count: number;
   activeBg: string;
   activeIcon: string;
   badgeBg: string;
@@ -20,7 +20,6 @@ const CHANNELS: Channel[] = [
     key: "tickets",
     label: "Tickets",
     icon: Icons.ticketChat,
-    count: 0,
     activeBg: "bg-[#F25430]",
     activeIcon: "text-white",
     badgeBg: "bg-red-500",
@@ -29,7 +28,6 @@ const CHANNELS: Channel[] = [
     key: "forms",
     label: "Forms",
     icon: Icons.ticketForm,
-    count: 6,
     activeBg: "bg-[#F25430]",
     activeIcon: "text-white",
     badgeBg: "bg-[#6433CC]",
@@ -38,7 +36,6 @@ const CHANNELS: Channel[] = [
     key: "mail",
     label: "Business Emails",
     icon: Icons.ticketEmail,
-    count: 6,
     activeBg: "bg-[#F25430]",
     activeIcon: "text-white",
     badgeBg: "bg-[#6433CC]",
@@ -51,11 +48,19 @@ interface ChannelNavigatorProps {
 }
 
 export function ChannelNavigator({ active, onChange }: ChannelNavigatorProps) {
+  const { data: tickets } = useTickets();
+  const counts: Record<ChannelKey, number> = {
+    tickets: tickets?.length ?? 0,
+    forms: 0,
+    mail: 0,
+  };
+
   return (
     <div className="flex flex-col items-center gap-8 rounded-3xl bg-white p-3 shadow-sm">
       {CHANNELS.map((ch) => {
         const Icon = ch.icon;
         const isActive = ch.key === active;
+        const count = counts[ch.key];
         return (
           <InfoTooltip key={ch.key} text={ch.label} side="right">
             <button
@@ -66,7 +71,9 @@ export function ChannelNavigator({ active, onChange }: ChannelNavigatorProps) {
                   ? `${ch.activeBg} shadow-sm`
                   : "bg-[#F6F6F6] hover:bg-gray-100"
               }`}
-              aria-label={ch.label}
+              aria-label={
+                count > 0 ? `${ch.label} (${count} pending)` : ch.label
+              }
               aria-pressed={isActive}
             >
               <Icon
@@ -74,6 +81,13 @@ export function ChannelNavigator({ active, onChange }: ChannelNavigatorProps) {
                   isActive ? ch.activeIcon : "text-gray-500"
                 }`}
               />
+              {count > 0 && (
+                <span
+                  className={`absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold text-white ${ch.badgeBg}`}
+                >
+                  {count > 99 ? "99+" : count}
+                </span>
+              )}
             </button>
           </InfoTooltip>
         );
