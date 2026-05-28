@@ -3,7 +3,7 @@
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
 import type { Plan } from "@/components/pricing/plan-card";
 import { plansFromBackend } from "@/components/pricing/plans";
@@ -13,46 +13,70 @@ import type { SubscriptionTier } from "@/services/billing";
 
 import { Icons } from "../icons";
 
-const PLAN_S_PATH =
-  "M144.601 78.7329H177.928V145.447H144.601V178.773H111.214V145.385H144.54V112.121H78.1044V78.7329H111.214V45.8403H144.601V78.7329ZM277.472 78.7329H310.798V145.447H277.472V178.773H244.084V145.385H277.41V112.121H210.974V78.7329H244.084V45.8403H277.472V78.7329Z";
-
-const PLAN_ENTERPRISE_PATHS = [
-  "M172.714 217.428H121.143V269H18V217.428H69.5716V165.857H172.714V217.428Z",
-  "M327.428 269H275.857V217.428H327.428V269Z",
-  "M224.286 114.286H275.857V217.428H224.286V165.857H172.714V114.286H121.143V62.7144H224.286V114.286Z",
-  "M379 217.428H327.428V165.857H379V217.428Z",
-  "M327.428 114.286H275.857V62.7144H327.428V114.286Z",
-  "M379 62.7144H327.428V11.4865H275.857V-40.0847H327.428V-92H379V62.7144Z",
-];
-
-const TIER_ICON_STYLE: Record<
+// Exact path data lifted from the Figma export (viewBox 0 0 136 150).
+const PLAN_ICON_DATA: Record<
   string,
-  { bg: string; viewBox: string; paths: string[] }
+  { bg: string; paths: string[]; clipped?: boolean }
 > = {
-  basic: { bg: "#F2B035", viewBox: "60 37 136 150", paths: [PLAN_S_PATH] },
-  pro: { bg: "#6433CC", viewBox: "60 37 136 150", paths: [PLAN_S_PATH] },
+  basic: {
+    bg: "#F2B035",
+    paths: [
+      "M42.293 57.9629H59.4785V92.3672H42.293V109.554H25.0742V92.3359H42.2607V75.1807H8V57.9629H25.0742V41H42.293V57.9629ZM110.813 57.9629H128V75.1807H76.5215V57.9629H93.5957V41H110.813V57.9629Z",
+    ],
+  },
+  pro: {
+    bg: "#6433CC",
+    paths: [
+      "M45.4346 60.5596H60.1855V90.0898H45.4346V104.842H30.6553V90.0625H45.4072V75.3389H16V60.5596H30.6553V46H45.4346V60.5596ZM104.248 60.5596H119V90.0898H104.248V104.842H89.4697V90.0625H104.221V75.3389H74.8145V60.5596H89.4697V46H104.248V60.5596Z",
+    ],
+  },
   enterprise: {
     bg: "#F25430",
-    viewBox: "207 25 136 150",
-    paths: PLAN_ENTERPRISE_PATHS,
+    clipped: true,
+    paths: [
+      "M51.2858 117.571H31.8571V137H-7V117.571H12.4286V98.1429H51.2858V117.571Z",
+      "M109.571 137H90.1429V117.571H109.571V137Z",
+      "M70.7143 78.7143H90.1429V117.571H70.7143V98.1429H51.2858V78.7143H31.8571V59.2858H70.7143V78.7143Z",
+      "M129 117.571H109.571V98.1429H129V117.571Z",
+      "M109.571 78.7143H90.1429V59.2858H109.571V78.7143Z",
+      "M129 59.2858H109.571V39.9866H90.1429V20.5581H109.571V1H129V59.2858Z",
+    ],
   },
 };
 
 function PlanIcon({ tier }: { tier?: string }) {
-  const style = TIER_ICON_STYLE[tier ?? "basic"] ?? TIER_ICON_STYLE.basic;
-  return (
-    <svg
-      width="136"
-      height="150"
-      viewBox={style.viewBox}
-      preserveAspectRatio="xMidYMid slice"
-      aria-hidden="true"
-      className="block"
-    >
-      <rect x="0" y="0" width="398" height="269" fill={style.bg} />
+  const clipId = useId();
+  const style = PLAN_ICON_DATA[tier ?? "basic"] ?? PLAN_ICON_DATA.basic;
+  const body = (
+    <>
+      <rect width="136" height="150" fill={style.bg} />
       {style.paths.map((d, i) => (
         <path key={i} d={d} fill="#F6F4EF" />
       ))}
+    </>
+  );
+  return (
+    <svg
+      preserveAspectRatio="none"
+      width="100%"
+      height="100%"
+      viewBox="0 0 136 150"
+      fill="none"
+      aria-hidden="true"
+      className="block"
+    >
+      {style.clipped ? (
+        <>
+          <defs>
+            <clipPath id={clipId}>
+              <rect width="136" height="150" />
+            </clipPath>
+          </defs>
+          <g clipPath={`url(#${clipId})`}>{body}</g>
+        </>
+      ) : (
+        body
+      )}
     </svg>
   );
 }
@@ -169,8 +193,8 @@ function UpgradePlanCard({
   const isLargeTitle = plan.tier !== "basic";
   return (
     <div className="relative h-[150px] w-[685px] max-w-full overflow-hidden border border-black bg-white">
-      {/* Plan image — left rail, full height */}
-      <div className="absolute top-0 left-0 h-[150px] w-[136px]">
+      {/* Plan image — left rail, full height, right border separates from content */}
+      <div className="absolute top-0 left-0 h-[150px] w-[136px] border-r border-black">
         <PlanIcon tier={plan.tier} />
       </div>
 
