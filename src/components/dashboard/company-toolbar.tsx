@@ -12,7 +12,16 @@ import {
   useActiveCompanyId,
   useSetActiveCompanyId,
 } from "@/hooks/use-active-company";
+import { useBillingDetails } from "@/hooks/use-billing";
 import { useCompaniesQuery } from "@/hooks/use-company";
+
+import { UpgradePlanModal } from "./upgrade-plan-modal";
+
+const COMPANY_LIMITS: Record<string, number> = {
+  basic: 1,
+  pro: 3,
+  enterprise: Infinity,
+};
 
 interface Company {
   id: string;
@@ -45,7 +54,23 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
     companies.find((c) => c.id === activeCompanyId) ?? companies[0] ?? null;
 
   const [isOpen, setIsOpen] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const { data: billingDetails } = useBillingDetails(activeCompanyId);
+
+  function handleAddCompanyClick() {
+    setIsOpen(false);
+    const tier = billingDetails?.tier ?? "basic";
+    const limit = COMPANY_LIMITS[tier] ?? 1;
+    // Only block when we actually have billing data; otherwise let the backend
+    // enforce so a momentary load doesn't trap users.
+    if (billingDetails && companies.length >= limit) {
+      setShowUpgradeModal(true);
+    } else {
+      router.push(`/${locale}/onboarding?new_company=1`);
+    }
+  }
 
   function handleSwitch(companyId: string) {
     if (companyId !== activeCompanyId) {
@@ -138,10 +163,7 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
               );
             })}
             <button
-              onClick={() => {
-                setIsOpen(false);
-                router.push(`/${locale}/onboarding?new_company=1`);
-              }}
+              onClick={handleAddCompanyClick}
               className="mt-2 ml-5 flex w-[calc(100%-1.25rem)] items-center gap-3 rounded-xl border-2 border-dashed border-gray-300 px-3 py-2.5 text-sm text-gray-900 transition-colors hover:bg-gray-50"
             >
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100">
@@ -157,6 +179,11 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
 
       {/* Right-side actions */}
       {actions && <div className="flex items-center gap-3">{actions}</div>}
+
+      <UpgradePlanModal
+        open={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+      />
     </div>
   );
 }
