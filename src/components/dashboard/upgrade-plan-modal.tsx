@@ -118,7 +118,7 @@ export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
       role="dialog"
       aria-modal="true"
       aria-labelledby="upgrade-plan-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-6"
+      className="fixed inset-0 z-1040 flex items-center justify-center p-6"
     >
       <button
         type="button"
