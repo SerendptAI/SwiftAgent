@@ -206,8 +206,21 @@ export function TicketView({ ticketId }: TicketViewProps) {
         )}
 
         {messages.map((message, i) => {
-          const isCustomer = message.direction === "inbound";
           const body = message.body_text ?? "";
+          if (message.direction === "system") {
+            return (
+              <div key={`${ticket?.id}-${i}`} className="flex justify-center">
+                <div className="max-w-[85%] rounded-2xl border border-dashed border-gray-200 bg-gray-50 px-4 py-3 text-xs leading-relaxed [overflow-wrap:anywhere] text-gray-500">
+                  <div className="font-dm-mono mb-1 text-[10px] font-semibold tracking-wider text-gray-400 uppercase">
+                    System note
+                  </div>
+                  <MessageMarkdown text={body} compact />
+                </div>
+              </div>
+            );
+          }
+
+          const isCustomer = message.direction === "inbound";
           const isLong = body.length > 60 || body.includes("\n");
           return (
             <div
