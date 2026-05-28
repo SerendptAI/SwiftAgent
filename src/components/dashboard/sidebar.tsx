@@ -6,8 +6,12 @@ import Image from "next/image";
 import { NavItem } from "@/components/dashboard/nav-item";
 import { Icons } from "@/components/icons";
 import { HugeiconsIcon } from "@/components/ui/hugeicons-icon";
+import { useTickets } from "@/hooks/use-tickets";
 
 export function Sidebar() {
+  const { data: tickets } = useTickets();
+  const pendingTicketsCount = tickets?.length ?? 0;
+
   const navItems = [
     {
       href: "/dashboard",
@@ -23,6 +27,7 @@ export function Sidebar() {
         <HugeiconsIcon icon={Ticket02Icon} {...props} />
       ),
       label: "Ticketing",
+      badgeCount: pendingTicketsCount,
     },
     {
       href: "/dashboard/billing",
