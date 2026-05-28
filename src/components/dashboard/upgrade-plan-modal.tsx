@@ -1,16 +1,14 @@
 "use client";
 
 import { X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
 import { useEffect, useState } from "react";
 
 import type { Plan } from "@/components/pricing/plan-card";
 import { plansFromBackend } from "@/components/pricing/plans";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
-import {
-  useBillingDetails,
-  useBillingPlans,
-  useCreateCheckout,
-} from "@/hooks/use-billing";
+import { useBillingDetails, useBillingPlans } from "@/hooks/use-billing";
 import type { SubscriptionTier } from "@/services/billing";
 
 import { Icons } from "../icons";
@@ -68,9 +66,9 @@ export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
   const companyId = useActiveCompanyId();
   const { data: details } = useBillingDetails(companyId);
   const { data: backendPlans } = useBillingPlans();
-  const createCheckout = useCreateCheckout();
+  const router = useRouter();
+  const locale = useLocale();
 
-  const [pendingTier, setPendingTier] = useState<string | null>(null);
   const [visible, setVisible] = useState(open);
   const activeTier: SubscriptionTier = details?.tier ?? null;
   const plans = plansFromBackend(backendPlans);
@@ -98,19 +96,12 @@ export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
 
   if (!visible) return null;
 
-  const handleSubscribe = (plan: Plan) => {
-    if (!plan.tier || !companyId) return;
-    setPendingTier(plan.tier);
-    createCheckout.mutate(
-      { company_id: companyId, tier: plan.tier },
-      {
-        onSuccess: ({ checkout_url }) => {
-          if (checkout_url) window.location.href = checkout_url;
-          else setPendingTier(null);
-        },
-        onError: () => setPendingTier(null),
-      },
-    );
+  const handleViewMore = (plan: Plan) => {
+    handleClose();
+    const target = plan.tier
+      ? `/${locale}/dashboard/billing?tier=${plan.tier}`
+      : `/${locale}/dashboard/billing`;
+    router.push(target);
   };
 
   return (
@@ -151,15 +142,12 @@ export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
           <ul className="mt-[32px] space-y-[20px]">
             {plans.map((plan) => {
               const isActive = !!plan.tier && plan.tier === activeTier;
-              const isPending = pendingTier === plan.tier;
               return (
                 <li key={plan.name}>
                   <UpgradePlanCard
                     plan={plan}
                     isActive={isActive}
-                    isPending={isPending}
-                    disabled={!companyId || createCheckout.isPending}
-                    onSelect={() => handleSubscribe(plan)}
+                    onSelect={() => handleViewMore(plan)}
                   />
                 </li>
               );
@@ -174,14 +162,10 @@ export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
 function UpgradePlanCard({
   plan,
   isActive,
-  isPending,
-  disabled,
   onSelect,
 }: {
   plan: Plan;
   isActive: boolean;
-  isPending: boolean;
-  disabled: boolean;
   onSelect: () => void;
 }) {
   const isLargeTitle = plan.tier !== "basic";
@@ -226,10 +210,9 @@ function UpgradePlanCard({
             <button
               type="button"
               onClick={onSelect}
-              disabled={disabled}
-              className="font-dm-mono inline-flex h-[38px] cursor-pointer items-center justify-center rounded-[13px] border border-[#EDEDED] bg-[#006BE5] px-5 text-[14px] leading-[1.2] tracking-[1.4px] text-white uppercase transition-colors hover:bg-[#0055B8] disabled:cursor-not-allowed disabled:opacity-60"
+              className="font-dm-mono inline-flex h-[38px] cursor-pointer items-center justify-center rounded-[13px] border border-[#EDEDED] bg-[#006BE5] px-5 text-[14px] leading-[1.2] tracking-[1.4px] text-white uppercase transition-colors hover:bg-[#0055B8]"
             >
-              {isPending ? "Redirecting…" : "View More"}
+              View More
             </button>
           )}
         </div>
