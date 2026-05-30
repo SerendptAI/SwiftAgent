@@ -6,12 +6,18 @@ import type { ChatSessionDetail } from "./conversations";
 
 export type TicketStatus = "pending" | "resolved" | string;
 
-/** Metadata for a file attached to a ticket message. The raw file is not stored. */
+/** Metadata for a file attached to a ticket message. */
 export interface AttachmentMeta {
   filename: string;
   content_type?: string | null;
   /** Size in bytes. */
   size?: number | null;
+  /**
+   * Persistent URL to the stored file, when the backend serves it. When
+   * present, the attachment is viewable across reloads and devices. Absent for
+   * legacy/streamed attachments that were never stored.
+   */
+  url?: string | null;
 }
 
 /** Email-style message as returned in a ticket's `messages` array. */

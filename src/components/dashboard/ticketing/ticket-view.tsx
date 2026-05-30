@@ -583,10 +583,11 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
                 {message.attachments && message.attachments.length > 0 && (
                   <div className={cn("flex flex-wrap gap-1.5", body && "mt-2")}>
                     {message.attachments.map((attachment, j) => {
-                      const url = getPreviewUrl(
-                        attachment.filename,
-                        attachment.size,
-                      );
+                      // Prefer the backend-served URL (survives reloads); fall
+                      // back to the in-session object URL for a just-sent file.
+                      const url =
+                        attachment.url ??
+                        getPreviewUrl(attachment.filename, attachment.size);
                       return (
                         <AttachmentCard
                           key={`${ticket?.id}-${i}-att-${j}`}
