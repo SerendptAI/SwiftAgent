@@ -23,8 +23,50 @@ import {
 } from "@/hooks/use-tickets";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
+import {
+  type AttachmentMeta,
+  MAX_REPLY_ATTACHMENT_BYTES,
+  MAX_REPLY_ATTACHMENTS,
+} from "@/services/tickets";
 
 import { MessageMarkdown } from "./message-markdown";
+
+/** Format a byte count as a human-readable size (e.g. "1.0 MB"). */
+function formatBytes(bytes?: number | null): string {
+  if (bytes == null || bytes <= 0) return "";
+  const units = ["B", "KB", "MB", "GB"];
+  const i = Math.min(
+    units.length - 1,
+    Math.floor(Math.log(bytes) / Math.log(1024)),
+  );
+  const value = bytes / Math.pow(1024, i);
+  return `${i === 0 ? value : value.toFixed(1)} ${units[i]}`;
+}
+
+/** Informational tag for a file attached to a message (not downloadable). */
+function AttachmentTag({
+  attachment,
+  tone,
+}: {
+  attachment: AttachmentMeta;
+  tone: "customer" | "support";
+}) {
+  const size = formatBytes(attachment.size);
+  return (
+    <span
+      className={cn(
+        "font-dm-mono inline-flex max-w-full items-center gap-1.5 rounded-lg px-2 py-1 text-xs",
+        tone === "customer"
+          ? "bg-black/[0.04] text-[#303437]"
+          : "bg-[#006BE5]/10 text-[#006BE5]",
+      )}
+    >
+      <Paperclip className="h-3 w-3 shrink-0" />
+      <span className="truncate">{attachment.filename}</span>
+      {size && <span className="shrink-0 opacity-60">({size})</span>}
+    </span>
+  );
+}
 
 function MessageEmptyState() {
   return (
@@ -63,7 +105,10 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
   const { mutate: reply, isPending: isSending } = useReplyToTicket();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [draft, setDraft] = useState("");
+  const [files, setFiles] = useState<File[]>([]);
+  const [attachError, setAttachError] = useState<string | null>(null);
   const [showOriginalChat, setShowOriginalChat] = useState(false);
 
   useEffect(() => {
@@ -94,10 +139,46 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
     }
   }
 
+  const handleFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const picked = Array.from(e.target.files ?? []);
+    // Allow re-selecting the same file later.
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    if (picked.length === 0) return;
+
+    const oversized = picked.filter((f) => f.size > MAX_REPLY_ATTACHMENT_BYTES);
+    if (oversized.length > 0) {
+      setAttachError(`Each file must be 10MB or smaller.`);
+      const allowed = picked.filter(
+        (f) => f.size <= MAX_REPLY_ATTACHMENT_BYTES,
+      );
+      if (allowed.length === 0) return;
+      addFiles(allowed);
+      return;
+    }
+    addFiles(picked);
+  };
+
+  const addFiles = (incoming: File[]) => {
+    setFiles((prev) => {
+      const combined = [...prev, ...incoming];
+      if (combined.length > MAX_REPLY_ATTACHMENTS) {
+        setAttachError(`You can attach up to ${MAX_REPLY_ATTACHMENTS} files.`);
+        return combined.slice(0, MAX_REPLY_ATTACHMENTS);
+      }
+      setAttachError(null);
+      return combined;
+    });
+  };
+
+  const removeFile = (index: number) => {
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+    setAttachError(null);
+  };
+
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
     const body_text = draft.trim();
-    if (!body_text || !companyId || !ticket) return;
+    if (!body_text || !companyId || !ticket || isSending) return;
     reply(
       {
         companyId,
@@ -106,9 +187,16 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
           body_text,
           replier_name: currentUser?.name || currentUser?.email,
           replier_picture: currentUser?.picture ?? null,
+          attachments: files.length > 0 ? files : undefined,
         },
       },
-      { onSuccess: () => setDraft("") },
+      {
+        onSuccess: () => {
+          setDraft("");
+          setFiles([]);
+          setAttachError(null);
+        },
+      },
     );
   };
 
@@ -247,12 +335,23 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
                   "max-w-[85%] px-4 py-3 text-sm leading-relaxed [overflow-wrap:anywhere]",
                   isCustomer
                     ? "rounded-2xl rounded-bl-sm bg-[#F2F4F5] text-[#303437]"
-                    : isLong
+                    : isLong || (message.attachments?.length ?? 0) > 0
                       ? "rounded-2xl rounded-br-sm bg-[#F2F8FF] text-[#006BE5]"
                       : "rounded-full bg-[#F2F8FF] text-[#006BE5]",
                 )}
               >
-                <MessageMarkdown text={body} />
+                {body && <MessageMarkdown text={body} />}
+                {message.attachments && message.attachments.length > 0 && (
+                  <div className={cn("flex flex-wrap gap-1.5", body && "mt-2")}>
+                    {message.attachments.map((attachment, j) => (
+                      <AttachmentTag
+                        key={`${ticket?.id}-${i}-att-${j}`}
+                        attachment={attachment}
+                        tone={isCustomer ? "customer" : "support"}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           );
@@ -262,10 +361,47 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
 
       {/* Reply composer */}
       <div className="border-t border-gray-100 px-4 py-3">
+        {files.length > 0 && (
+          <div className="mb-2 flex flex-wrap gap-1.5">
+            {files.map((file, i) => (
+              <span
+                key={`${file.name}-${i}`}
+                className="font-dm-mono inline-flex max-w-full items-center gap-1.5 rounded-lg bg-gray-100 px-2 py-1 text-xs text-gray-700"
+              >
+                <Paperclip className="h-3 w-3 shrink-0" />
+                <span className="max-w-[160px] truncate">{file.name}</span>
+                <span className="shrink-0 text-gray-400">
+                  ({formatBytes(file.size)})
+                </span>
+                <button
+                  type="button"
+                  aria-label={`Remove ${file.name}`}
+                  onClick={() => removeFile(i)}
+                  disabled={isSending}
+                  className="shrink-0 cursor-pointer text-gray-400 transition-colors hover:text-gray-700 disabled:opacity-50"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
+        {attachError && (
+          <p className="font-dm-mono mb-2 text-xs text-red-500">
+            {attachError}
+          </p>
+        )}
         <form
           onSubmit={handleSend}
           className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2"
         >
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            onChange={handleFilesSelected}
+            className="hidden"
+          />
           <input
             type="text"
             value={draft}
@@ -277,7 +413,9 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
           <button
             type="button"
             aria-label="Attach"
-            className="shrink-0 cursor-pointer text-gray-400 transition-colors hover:text-gray-600"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isSending || files.length >= MAX_REPLY_ATTACHMENTS}
+            className="shrink-0 cursor-pointer text-gray-400 transition-colors hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-40"
           >
             <Paperclip className="h-4 w-4" />
           </button>
