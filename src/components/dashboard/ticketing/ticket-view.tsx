@@ -43,6 +43,16 @@ function formatBytes(bytes?: number | null): string {
   return `${i === 0 ? value : value.toFixed(1)} ${units[i]}`;
 }
 
+/** Shorten a filename to `max` chars, keeping the extension (e.g. "long-invo….pdf"). */
+function truncateFilename(filename: string, max = 22): string {
+  if (filename.length <= max) return filename;
+  const dot = filename.lastIndexOf(".");
+  const ext = dot > 0 ? filename.slice(dot) : "";
+  const base = dot > 0 ? filename.slice(0, dot) : filename;
+  const keep = Math.max(1, max - ext.length - 1);
+  return `${base.slice(0, keep)}…${ext}`;
+}
+
 type FileKind = "pdf" | "word" | "image" | "file";
 
 const FILE_THUMBNAILS: Partial<Record<FileKind, string>> = {
@@ -134,7 +144,12 @@ function AttachmentCard({
 
   const text = (
     <span className="flex min-w-0 flex-col text-left">
-      <span className="truncate text-xs font-medium">{filename}</span>
+      <span
+        title={filename}
+        className="max-w-[150px] truncate text-xs font-medium"
+      >
+        {truncateFilename(filename)}
+      </span>
       {sizeLabel && <span className="text-[10px] opacity-60">{sizeLabel}</span>}
     </span>
   );
