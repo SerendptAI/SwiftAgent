@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import {
   ChevronDown,
   ChevronRight,
+  ExternalLink,
   Loader2,
   Maximize2,
   MessageSquare,
@@ -90,6 +91,7 @@ function AttachmentCard({
   contentType,
   tone,
   previewUrl,
+  onOpen,
   onRemove,
 }: {
   filename: string;
@@ -97,6 +99,7 @@ function AttachmentCard({
   contentType?: string | null;
   tone: "customer" | "support";
   previewUrl?: string;
+  onOpen?: () => void;
   onRemove?: () => void;
 }) {
   const kind = detectFileKind(filename, contentType);
@@ -141,16 +144,16 @@ function AttachmentCard({
       ? "bg-black/[0.04] text-[#303437]"
       : "bg-[#006BE5]/10 text-[#006BE5]";
 
-  const body = previewUrl ? (
-    <a
-      href={previewUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="flex min-w-0 flex-1 items-center gap-2"
+  const body = onOpen ? (
+    <button
+      type="button"
+      onClick={onOpen}
+      title={`Preview ${filename}`}
+      className="flex min-w-0 flex-1 cursor-pointer items-center gap-2 text-left"
     >
       {preview}
       {text}
-    </a>
+    </button>
   ) : (
     <span className="flex min-w-0 flex-1 items-center gap-2">
       {preview}
@@ -163,7 +166,7 @@ function AttachmentCard({
       className={cn(
         "font-dm-mono inline-flex max-w-full items-center gap-1.5 rounded-xl px-2 py-1.5",
         toneClasses,
-        previewUrl && "transition-opacity hover:opacity-80",
+        onOpen && "transition-opacity hover:opacity-80",
       )}
     >
       {body}
@@ -178,6 +181,89 @@ function AttachmentCard({
         </button>
       )}
     </span>
+  );
+}
+
+interface AttachmentPreview {
+  url: string;
+  filename: string;
+  kind: FileKind;
+}
+
+/** Full-screen lightbox that previews an attachment inline over the chat. */
+function AttachmentPreviewModal({
+  preview,
+  onClose,
+}: {
+  preview: AttachmentPreview;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  const { url, filename, kind } = preview;
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Preview of ${filename}`}
+      className="fixed inset-0 z-[10000] flex flex-col p-3 sm:p-6"
+    >
+      <button
+        type="button"
+        aria-label="Close preview"
+        onClick={onClose}
+        className="absolute inset-0 cursor-default bg-black/70"
+      />
+      <div className="relative mx-auto flex h-full w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-xl">
+        <div className="flex items-center justify-between gap-3 border-b border-gray-100 px-4 py-3">
+          <span className="font-dm-mono truncate text-sm font-medium text-gray-900">
+            {filename}
+          </span>
+          <div className="flex shrink-0 items-center gap-1">
+            <a
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open in new tab"
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
+            >
+              <ExternalLink className="h-4 w-4" />
+            </a>
+            <button
+              type="button"
+              aria-label="Close preview"
+              onClick={onClose}
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+        <div className="flex flex-1 items-center justify-center overflow-auto bg-gray-50">
+          {kind === "image" ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={url}
+              alt={filename}
+              className="max-h-full max-w-full object-contain"
+            />
+          ) : (
+            <iframe
+              src={url}
+              title={filename}
+              className="h-full w-full border-0"
+            />
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -223,6 +309,14 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [attachError, setAttachError] = useState<string | null>(null);
   const [showOriginalChat, setShowOriginalChat] = useState(false);
+  const [preview, setPreview] = useState<AttachmentPreview | null>(null);
+
+  const openPreview = (
+    url: string,
+    filename: string,
+    contentType?: string | null,
+  ) =>
+    setPreview({ url, filename, kind: detectFileKind(filename, contentType) });
 
   // Object URLs so the user can preview attachments before sending.
   const filePreviews = useMemo(
@@ -473,19 +567,32 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
                 {body && <MessageMarkdown text={body} />}
                 {message.attachments && message.attachments.length > 0 && (
                   <div className={cn("flex flex-wrap gap-1.5", body && "mt-2")}>
-                    {message.attachments.map((attachment, j) => (
-                      <AttachmentCard
-                        key={`${ticket?.id}-${i}-att-${j}`}
-                        filename={attachment.filename}
-                        size={attachment.size}
-                        contentType={attachment.content_type}
-                        tone={isCustomer ? "customer" : "support"}
-                        previewUrl={getPreviewUrl(
-                          attachment.filename,
-                          attachment.size,
-                        )}
-                      />
-                    ))}
+                    {message.attachments.map((attachment, j) => {
+                      const url = getPreviewUrl(
+                        attachment.filename,
+                        attachment.size,
+                      );
+                      return (
+                        <AttachmentCard
+                          key={`${ticket?.id}-${i}-att-${j}`}
+                          filename={attachment.filename}
+                          size={attachment.size}
+                          contentType={attachment.content_type}
+                          tone={isCustomer ? "customer" : "support"}
+                          previewUrl={url}
+                          onOpen={
+                            url
+                              ? () =>
+                                  openPreview(
+                                    url,
+                                    attachment.filename,
+                                    attachment.content_type,
+                                  )
+                              : undefined
+                          }
+                        />
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -507,6 +614,11 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
                 contentType={file.type}
                 tone="customer"
                 previewUrl={filePreviews[i]}
+                onOpen={
+                  filePreviews[i]
+                    ? () => openPreview(filePreviews[i], file.name, file.type)
+                    : undefined
+                }
                 onRemove={isSending ? undefined : () => removeFile(i)}
               />
             ))}
@@ -559,6 +671,13 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
           </button>
         </form>
       </div>
+
+      {preview && (
+        <AttachmentPreviewModal
+          preview={preview}
+          onClose={() => setPreview(null)}
+        />
+      )}
     </div>
   );
 }
