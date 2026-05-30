@@ -1,54 +1,18 @@
 "use client";
 
+import { formatDistanceToNow } from "date-fns";
+import { X } from "lucide-react";
 import { useEffect, useRef } from "react";
 
 import { Icons } from "@/components/icons";
+import {
+  useDeleteNotification,
+  useMarkAllNotificationsRead,
+  useMarkNotificationRead,
+  useNotifications,
+} from "@/hooks/use-notifications";
 import { cn } from "@/lib/utils";
-
-type NotificationKind = "announcement" | "ticket";
-
-interface NotificationItem {
-  id: string;
-  text: string;
-  kind: NotificationKind;
-  unread: boolean;
-}
-
-const ANNOUNCEMENTS: NotificationItem[] = [
-  {
-    id: "a1",
-    text: "WE NOW HAVE A NEW MOBILE APP COMING SOON",
-    kind: "announcement",
-    unread: true,
-  },
-];
-
-const TICKETS: NotificationItem[] = [
-  {
-    id: "t1",
-    text: "REQUEST FROM DAVID JOHNSON SUCCESSFULLY RESOLVED",
-    kind: "ticket",
-    unread: true,
-  },
-  {
-    id: "t2",
-    text: "REQUEST FROM MARIA GONZALES SUCCESSFULLY RESOLVED",
-    kind: "ticket",
-    unread: false,
-  },
-  {
-    id: "t3",
-    text: "REQUEST FROM MARIA GONZALES SUCCESSFULLY RESOLVED",
-    kind: "ticket",
-    unread: false,
-  },
-  {
-    id: "t4",
-    text: "REQUEST FROM MARIA GONZALES SUCCESSFULLY RESOLVED",
-    kind: "ticket",
-    unread: false,
-  },
-];
+import type { NotificationItem } from "@/services/notifications";
 
 interface NotificationsPanelProps {
   open: boolean;
@@ -63,6 +27,14 @@ export function NotificationsPanel({
   triggerRef,
 }: NotificationsPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null);
+
+  const { data, isLoading, isError } = useNotifications(20);
+  const markRead = useMarkNotificationRead();
+  const markAllRead = useMarkAllNotificationsRead();
+  const removeNotification = useDeleteNotification();
+
+  const notifications = data?.notifications ?? [];
+  const unreadCount = data?.unread_count ?? 0;
 
   useEffect(() => {
     if (!open) return;
@@ -95,9 +67,21 @@ export function NotificationsPanel({
       className="absolute top-full right-0 z-1050 mt-3 flex max-h-[min(560px,calc(100vh-120px))] w-[340px] flex-col overflow-hidden rounded-[10px] border border-black bg-white"
     >
       <div className="flex flex-col gap-4 overflow-y-auto px-4 pt-4 pb-4">
-        <h2 className="font-greed-narrow text-[24px] leading-none font-medium text-black">
-          Notifications
-        </h2>
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="font-greed-narrow text-[24px] leading-none font-medium text-black">
+            Notifications
+          </h2>
+          {unreadCount > 0 && (
+            <button
+              type="button"
+              onClick={() => markAllRead.mutate()}
+              disabled={markAllRead.isPending}
+              className="font-dm-mono text-[11px] font-medium text-black/60 uppercase underline-offset-2 transition-colors hover:text-black hover:underline disabled:opacity-40"
+            >
+              Mark all read
+            </button>
+          )}
+        </div>
 
         <button
           type="button"
@@ -106,51 +90,106 @@ export function NotificationsPanel({
           Need anything? Reach out to us
         </button>
 
-        <NotificationSection title="Announcements" items={ANNOUNCEMENTS} />
-        <NotificationSection title="Tickets" items={TICKETS} />
+        {isLoading ? (
+          <PanelMessage>Loading…</PanelMessage>
+        ) : isError ? (
+          <PanelMessage>Couldn’t load notifications.</PanelMessage>
+        ) : notifications.length === 0 ? (
+          <PanelMessage>You’re all caught up.</PanelMessage>
+        ) : (
+          <ul className="flex flex-col gap-1.5">
+            {notifications.map((item) => (
+              <li key={item.id}>
+                <NotificationRow
+                  item={item}
+                  onMarkRead={() => {
+                    if (!item.read) markRead.mutate(item.id);
+                  }}
+                  onDelete={() => removeNotification.mutate(item.id)}
+                />
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );
 }
 
-function NotificationSection({
-  title,
-  items,
-}: {
-  title: string;
-  items: NotificationItem[];
-}) {
+function PanelMessage({ children }: { children: React.ReactNode }) {
   return (
-    <section className="flex flex-col gap-2">
-      <h3 className="font-dm-mono text-[15px] leading-[1.34] font-medium tracking-[-0.01em] text-black/80 uppercase">
-        {title}
-      </h3>
-      <ul className="flex flex-col gap-1.5">
-        {items.map((item) => (
-          <li key={item.id}>
-            <NotificationRow item={item} />
-          </li>
-        ))}
-      </ul>
-    </section>
+    <p className="font-dm-mono py-6 text-center text-[12px] text-black/40 uppercase">
+      {children}
+    </p>
   );
 }
 
-function NotificationRow({ item }: { item: NotificationItem }) {
-  const Icon = item.unread
-    ? Icons.NotificationBellUnread
-    : Icons.NotificationBellRead;
+function formatTimestamp(value: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return formatDistanceToNow(date, { addSuffix: true });
+}
+
+function NotificationRow({
+  item,
+  onMarkRead,
+  onDelete,
+}: {
+  item: NotificationItem;
+  onMarkRead: () => void;
+  onDelete: () => void;
+}) {
+  const Icon = item.read
+    ? Icons.NotificationBellRead
+    : Icons.NotificationBellUnread;
+  const timestamp = formatTimestamp(item.created_at);
+
   return (
-    <div className="flex h-[56px] w-full items-center gap-2.5 rounded-[16px] border border-black/5 bg-white px-3">
-      <Icon className="h-[18px] w-[18px] shrink-0" />
-      <p
+    <div className="group flex w-full items-center gap-2.5 rounded-[16px] border border-black/5 bg-white px-3 py-2.5">
+      <button
+        type="button"
+        onClick={onMarkRead}
+        disabled={item.read}
         className={cn(
-          "font-dm-mono line-clamp-2 text-[12px] leading-tight text-black uppercase",
-          !item.unread && "opacity-40",
+          "flex min-w-0 flex-1 items-start gap-2.5 text-left",
+          !item.read && "cursor-pointer",
         )}
       >
-        {item.text}
-      </p>
+        <Icon className="mt-0.5 h-[18px] w-[18px] shrink-0" />
+        <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+          <span
+            className={cn(
+              "font-dm-mono line-clamp-1 text-[12px] leading-tight font-medium text-black uppercase",
+              item.read && "opacity-40",
+            )}
+          >
+            {item.title}
+          </span>
+          {item.body && (
+            <span
+              className={cn(
+                "font-dm-mono line-clamp-2 text-[11px] leading-tight text-black/70",
+                item.read && "opacity-40",
+              )}
+            >
+              {item.body}
+            </span>
+          )}
+          {timestamp && (
+            <span className="font-dm-mono text-[10px] text-black/30 uppercase">
+              {timestamp}
+            </span>
+          )}
+        </span>
+      </button>
+      <button
+        type="button"
+        aria-label="Delete notification"
+        onClick={onDelete}
+        className="flex h-5 w-5 shrink-0 items-center justify-center self-start rounded-full text-black/30 opacity-0 transition group-hover:opacity-100 hover:bg-black/5 hover:text-black"
+      >
+        <X className="h-3.5 w-3.5" />
+      </button>
     </div>
   );
 }

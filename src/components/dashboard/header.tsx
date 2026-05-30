@@ -7,6 +7,7 @@ import { type RefObject, useEffect, useRef, useState } from "react";
 import { ProfileCard } from "@/components/dashboard/settings/profile-card";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { useCurrentUser } from "@/hooks/use-auth";
+import { useNotifications } from "@/hooks/use-notifications";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import { getProfileImage } from "@/lib/utils";
 
@@ -16,6 +17,8 @@ import { NotificationsPanel } from "./notifications-panel";
 
 export function Header() {
   const { data: user } = useCurrentUser();
+  const { data: notifications } = useNotifications(20);
+  const unreadCount = notifications?.unread_count ?? 0;
   const [isMobileProfileOpen, setIsMobileProfileOpen] = useState(false);
   const [notificationsOpenFor, setNotificationsOpenFor] = useState<
     "mobile" | "desktop" | null
@@ -77,9 +80,14 @@ export function Header() {
             openFor === target ? null : target,
           )
         }
-        className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-md bg-[#EDEDED] transition-colors hover:bg-[#E0E0E0] md:h-12 md:w-12"
+        className="relative flex h-11 w-11 cursor-pointer items-center justify-center rounded-md bg-[#EDEDED] transition-colors hover:bg-[#E0E0E0] md:h-12 md:w-12"
       >
         <Icons.bell className="h-9 w-9 p-2 md:h-10 md:w-10" />
+        {unreadCount > 0 && (
+          <span className="font-dm-mono absolute -top-1 -right-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full border border-white bg-[#F2B035] px-1 text-[10px] leading-none font-medium text-black">
+            {unreadCount > 99 ? "99+" : unreadCount}
+          </span>
+        )}
       </button>
     </InfoTooltip>
   );
