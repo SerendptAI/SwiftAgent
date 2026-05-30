@@ -12,7 +12,7 @@ import {
   X,
 } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useCurrentUser } from "@/hooks/use-auth";
@@ -24,7 +24,6 @@ import {
 import { resolveAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
 import {
-  type AttachmentMeta,
   MAX_REPLY_ATTACHMENT_BYTES,
   MAX_REPLY_ATTACHMENTS,
 } from "@/services/tickets";
@@ -43,27 +42,141 @@ function formatBytes(bytes?: number | null): string {
   return `${i === 0 ? value : value.toFixed(1)} ${units[i]}`;
 }
 
-/** Informational tag for a file attached to a message (not downloadable). */
-function AttachmentTag({
-  attachment,
+type FileKind = "pdf" | "word" | "image" | "file";
+
+const FILE_THUMBNAILS: Partial<Record<FileKind, string>> = {
+  pdf: "/images/pdf.svg",
+  word: "/images/word.svg",
+};
+
+function detectFileKind(
+  filename: string,
+  contentType?: string | null,
+): FileKind {
+  const ext = filename.toLowerCase().split(".").pop();
+  if (ext === "pdf" || contentType === "application/pdf") return "pdf";
+  if (ext === "doc" || ext === "docx" || contentType?.includes("word"))
+    return "word";
+  if (contentType?.startsWith("image/")) return "image";
+  return "file";
+}
+
+/**
+ * Object URLs for files attached during this session, keyed by name+size.
+ * The backend streams attachments out via email without storing them, so this
+ * is the only way a just-sent attachment can stay viewable in the thread.
+ */
+const attachmentPreviewCache = new Map<string, string>();
+
+function previewKey(filename: string, size?: number | null): string {
+  return `${filename}::${size ?? ""}`;
+}
+
+function getPreviewUrl(
+  filename: string,
+  size?: number | null,
+): string | undefined {
+  return attachmentPreviewCache.get(previewKey(filename, size));
+}
+
+/**
+ * A file attachment shown in a message bubble. Uses a proper PDF/Word
+ * thumbnail when available, and opens a preview in a new tab when the file
+ * is viewable (composer selection, or a file sent earlier this session).
+ */
+function AttachmentCard({
+  filename,
+  size,
+  contentType,
   tone,
+  previewUrl,
+  onRemove,
 }: {
-  attachment: AttachmentMeta;
+  filename: string;
+  size?: number | null;
+  contentType?: string | null;
   tone: "customer" | "support";
+  previewUrl?: string;
+  onRemove?: () => void;
 }) {
-  const size = formatBytes(attachment.size);
+  const kind = detectFileKind(filename, contentType);
+  const thumbnail =
+    kind === "image" && previewUrl ? previewUrl : FILE_THUMBNAILS[kind];
+  const sizeLabel = formatBytes(size);
+
+  const isImageThumb = kind === "image" && !!previewUrl;
+  const preview = (
+    <span
+      className={cn(
+        "flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md bg-white/70",
+      )}
+    >
+      {thumbnail ? (
+        <Image
+          src={thumbnail}
+          alt={kind.toUpperCase()}
+          width={36}
+          height={36}
+          className={cn(
+            "h-full w-full",
+            isImageThumb ? "object-cover" : "object-contain p-1",
+          )}
+          unoptimized={isImageThumb}
+        />
+      ) : (
+        <Paperclip className="h-4 w-4 opacity-60" />
+      )}
+    </span>
+  );
+
+  const text = (
+    <span className="flex min-w-0 flex-col text-left">
+      <span className="truncate text-xs font-medium">{filename}</span>
+      {sizeLabel && <span className="text-[10px] opacity-60">{sizeLabel}</span>}
+    </span>
+  );
+
+  const toneClasses =
+    tone === "customer"
+      ? "bg-black/[0.04] text-[#303437]"
+      : "bg-[#006BE5]/10 text-[#006BE5]";
+
+  const body = previewUrl ? (
+    <a
+      href={previewUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex min-w-0 flex-1 items-center gap-2"
+    >
+      {preview}
+      {text}
+    </a>
+  ) : (
+    <span className="flex min-w-0 flex-1 items-center gap-2">
+      {preview}
+      {text}
+    </span>
+  );
+
   return (
     <span
       className={cn(
-        "font-dm-mono inline-flex max-w-full items-center gap-1.5 rounded-lg px-2 py-1 text-xs",
-        tone === "customer"
-          ? "bg-black/[0.04] text-[#303437]"
-          : "bg-[#006BE5]/10 text-[#006BE5]",
+        "font-dm-mono inline-flex max-w-full items-center gap-1.5 rounded-xl px-2 py-1.5",
+        toneClasses,
+        previewUrl && "transition-opacity hover:opacity-80",
       )}
     >
-      <Paperclip className="h-3 w-3 shrink-0" />
-      <span className="truncate">{attachment.filename}</span>
-      {size && <span className="shrink-0 opacity-60">({size})</span>}
+      {body}
+      {onRemove && (
+        <button
+          type="button"
+          aria-label={`Remove ${filename}`}
+          onClick={onRemove}
+          className="shrink-0 cursor-pointer opacity-50 transition-opacity hover:opacity-100"
+        >
+          <X className="h-3.5 w-3.5" />
+        </button>
+      )}
     </span>
   );
 }
@@ -110,6 +223,15 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [attachError, setAttachError] = useState<string | null>(null);
   const [showOriginalChat, setShowOriginalChat] = useState(false);
+
+  // Object URLs so the user can preview attachments before sending.
+  const filePreviews = useMemo(
+    () => files.map((file) => URL.createObjectURL(file)),
+    [files],
+  );
+  useEffect(() => {
+    return () => filePreviews.forEach((url) => URL.revokeObjectURL(url));
+  }, [filePreviews]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -179,6 +301,14 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
     e.preventDefault();
     const body_text = draft.trim();
     if (!body_text || !companyId || !ticket || isSending) return;
+    // Cache object URLs so the attachments stay viewable in the thread after
+    // the optimistic refetch (the backend doesn't persist the raw files).
+    files.forEach((file) => {
+      const key = previewKey(file.name, file.size);
+      if (!attachmentPreviewCache.has(key)) {
+        attachmentPreviewCache.set(key, URL.createObjectURL(file));
+      }
+    });
     reply(
       {
         companyId,
@@ -344,10 +474,16 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
                 {message.attachments && message.attachments.length > 0 && (
                   <div className={cn("flex flex-wrap gap-1.5", body && "mt-2")}>
                     {message.attachments.map((attachment, j) => (
-                      <AttachmentTag
+                      <AttachmentCard
                         key={`${ticket?.id}-${i}-att-${j}`}
-                        attachment={attachment}
+                        filename={attachment.filename}
+                        size={attachment.size}
+                        contentType={attachment.content_type}
                         tone={isCustomer ? "customer" : "support"}
+                        previewUrl={getPreviewUrl(
+                          attachment.filename,
+                          attachment.size,
+                        )}
                       />
                     ))}
                   </div>
@@ -364,25 +500,15 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
         {files.length > 0 && (
           <div className="mb-2 flex flex-wrap gap-1.5">
             {files.map((file, i) => (
-              <span
+              <AttachmentCard
                 key={`${file.name}-${i}`}
-                className="font-dm-mono inline-flex max-w-full items-center gap-1.5 rounded-lg bg-gray-100 px-2 py-1 text-xs text-gray-700"
-              >
-                <Paperclip className="h-3 w-3 shrink-0" />
-                <span className="max-w-[160px] truncate">{file.name}</span>
-                <span className="shrink-0 text-gray-400">
-                  ({formatBytes(file.size)})
-                </span>
-                <button
-                  type="button"
-                  aria-label={`Remove ${file.name}`}
-                  onClick={() => removeFile(i)}
-                  disabled={isSending}
-                  className="shrink-0 cursor-pointer text-gray-400 transition-colors hover:text-gray-700 disabled:opacity-50"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </span>
+                filename={file.name}
+                size={file.size}
+                contentType={file.type}
+                tone="customer"
+                previewUrl={filePreviews[i]}
+                onRemove={isSending ? undefined : () => removeFile(i)}
+              />
             ))}
           </div>
         )}
