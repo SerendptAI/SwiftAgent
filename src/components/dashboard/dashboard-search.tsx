@@ -7,6 +7,7 @@ import { Icons } from "@/components/icons";
 import { useCurrentUser } from "@/hooks/use-auth";
 import { useAllChatDetails, useChats } from "@/hooks/use-conversations";
 import { useRouter } from "@/i18n/navigation";
+import { resolveAvatarUrl } from "@/lib/avatar";
 
 // ── Section definitions ─────────────────────────────────────────────────────
 
@@ -15,6 +16,7 @@ interface SearchResult {
   text: string;
   highlight: string;
   route?: string;
+  avatar?: string;
 }
 
 interface SectionResult {
@@ -177,6 +179,7 @@ export function DashboardSearch() {
             text: matchedMessage.content,
             highlight: `<span class="text-gray-400">${sessionLabel}:</span> ${highlightMatch(snippet, query)}`,
             route: `/dashboard/ticketing?chat=${chat.id}`,
+            avatar: resolveAvatarUrl(chat.avatar),
           });
         } else if (sessionMatch) {
           const searchText = `${sessionLabel}: ${chat.message_count} messages`;
@@ -188,6 +191,7 @@ export function DashboardSearch() {
               query,
             ),
             route: `/dashboard/ticketing?chat=${chat.id}`,
+            avatar: resolveAvatarUrl(chat.avatar),
           });
         }
       }
@@ -410,14 +414,15 @@ export function DashboardSearch() {
                                 }
                               }}
                             >
-                              {section.name === "Ticketing" && (
-                                // eslint-disable-next-line @next/next/no-img-element
-                                <img
-                                  src={`/images/profiles/profile${(i % 12) + 1}.svg`}
-                                  alt=""
-                                  className="h-8 w-8 shrink-0 rounded"
-                                />
-                              )}
+                              {section.name === "Ticketing" &&
+                                result.avatar && (
+                                  // eslint-disable-next-line @next/next/no-img-element
+                                  <img
+                                    src={result.avatar}
+                                    alt=""
+                                    className="h-8 w-8 shrink-0 rounded"
+                                  />
+                                )}
                               <span
                                 className="font-dm-mono text-sm text-gray-600"
                                 dangerouslySetInnerHTML={{
