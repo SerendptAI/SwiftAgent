@@ -91,7 +91,7 @@ export function TicketsTabContent({
 
   return (
     <>
-      <div className="w-full shrink-0 lg:h-full lg:min-h-0 lg:w-[320px]">
+      <div className="w-full shrink-0 lg:h-[600px] lg:min-h-0 lg:w-[320px]">
         <TicketList
           selectedItemId={selection?.id ?? ""}
           onSelectItem={onSelectItem}
@@ -99,7 +99,7 @@ export function TicketsTabContent({
         />
       </div>
 
-      <div className="hidden min-h-[520px] min-w-0 flex-1 lg:block lg:min-h-0">
+      <div className="hidden min-h-[520px] min-w-0 flex-1 lg:block lg:h-[600px] lg:min-h-0">
         {conversation}
       </div>
 
