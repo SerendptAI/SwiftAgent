@@ -1,10 +1,12 @@
 import { format } from "date-fns";
-import { Maximize2, Paperclip, Send, X } from "lucide-react";
+import { Maximize2, Minimize2, Paperclip, Send, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useChat, useMarkChatSeen } from "@/hooks/use-conversations";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
 import { resolveAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
 
@@ -45,11 +47,23 @@ export function ChatView({ ticketId, className, onClose }: ChatViewProps) {
   const { mutate: markSeen } = useMarkChatSeen();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [draft, setDraft] = useState("");
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const avatarSrc = resolveAvatarUrl(chat?.avatar);
+
+  useScrollLock(isFullscreen);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chat?.messages]);
+
+  useEffect(() => {
+    if (!isFullscreen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsFullscreen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [isFullscreen]);
 
   // Mark chat as seen when opened
   useEffect(() => {
@@ -74,13 +88,8 @@ export function ChatView({ ticketId, className, onClose }: ChatViewProps) {
     }
   }
 
-  return (
-    <div
-      className={cn(
-        "relative flex h-full min-h-[520px] flex-col rounded-[20px] bg-white shadow-sm lg:min-h-0 lg:rounded-3xl",
-        className,
-      )}
-    >
+  const body = (
+    <>
       {/* Chat Header */}
       <div className="flex items-center justify-between border-b border-gray-100 px-4 py-4 sm:px-6">
         <div className="flex min-w-0 items-center gap-3">
@@ -96,12 +105,20 @@ export function ChatView({ ticketId, className, onClose }: ChatViewProps) {
         </div>
         <button
           type="button"
-          aria-label={onClose ? "Close conversation" : "Expand"}
-          onClick={onClose}
+          aria-label={
+            onClose
+              ? "Close conversation"
+              : isFullscreen
+                ? "Exit fullscreen"
+                : "Expand"
+          }
+          onClick={onClose ?? (() => setIsFullscreen((v) => !v))}
           className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
         >
           {onClose ? (
             <X className="h-4 w-4 lg:hidden" />
+          ) : isFullscreen ? (
+            <Minimize2 className="h-4 w-4" />
           ) : (
             <Maximize2 className="h-4 w-4" />
           )}
@@ -190,6 +207,38 @@ export function ChatView({ ticketId, className, onClose }: ChatViewProps) {
           </button>
         </form>
       </div>
+    </>
+  );
+
+  if (isFullscreen) {
+    return createPortal(
+      <div
+        role="dialog"
+        aria-modal="true"
+        className="fixed inset-0 z-[10000] flex bg-black/50 sm:p-6"
+      >
+        <button
+          type="button"
+          aria-label="Exit fullscreen"
+          onClick={() => setIsFullscreen(false)}
+          className="absolute inset-0 cursor-default"
+        />
+        <div className="relative mx-auto flex h-full w-full max-w-5xl flex-col overflow-hidden bg-white shadow-xl sm:rounded-3xl">
+          {body}
+        </div>
+      </div>,
+      document.body,
+    );
+  }
+
+  return (
+    <div
+      className={cn(
+        "relative flex h-full min-h-[520px] flex-col rounded-[20px] bg-white shadow-sm lg:min-h-0 lg:rounded-3xl",
+        className,
+      )}
+    >
+      {body}
     </div>
   );
 }
