@@ -61,7 +61,7 @@ export function Sidebar() {
           </div>
         </div>
       </div>
-      <div className="w-fit max-w-full overflow-auto md:w-full md:flex-1 md:py-12">
+      <div className="w-fit max-w-full overflow-visible md:w-full md:flex-1 md:overflow-auto md:py-12">
         <nav className="flex items-center justify-center gap-2 px-1 md:flex-col md:gap-4 md:px-2">
           {navItems.map((item) => (
             <NavItem key={item.href} {...item} />
