@@ -230,10 +230,10 @@ export function TicketList({
                         <span className="h-2 w-2 shrink-0 rounded-full bg-[#006BE5]"></span>
                       )}
                     </div>
-                    <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center justify-between gap-2 overflow-hidden">
                       <span
                         className={cn(
-                          "font-stolzl truncate text-xs",
+                          "font-stolzl min-w-0 truncate text-xs",
                           unread ? "font-bold text-gray-600" : "text-gray-400",
                         )}
                       >
@@ -282,8 +282,8 @@ export function TicketList({
                       {sessionLabel}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-stolzl truncate text-xs text-gray-400">
+                  <div className="flex items-center justify-between gap-2 overflow-hidden">
+                    <span className="font-stolzl min-w-0 truncate text-xs text-gray-400">
                       {chat.message_count}{" "}
                       {chat.message_count === 1 ? "message" : "messages"}
                     </span>
