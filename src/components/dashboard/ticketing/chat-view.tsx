@@ -215,17 +215,9 @@ export function ChatView({ ticketId, className, onClose }: ChatViewProps) {
       <div
         role="dialog"
         aria-modal="true"
-        className="fixed inset-0 z-[10000] flex bg-black/50 sm:p-6"
+        className="fixed inset-0 z-[10000] flex flex-col bg-white"
       >
-        <button
-          type="button"
-          aria-label="Exit fullscreen"
-          onClick={() => setIsFullscreen(false)}
-          className="absolute inset-0 cursor-default"
-        />
-        <div className="relative mx-auto flex h-full w-full max-w-5xl flex-col overflow-hidden bg-white shadow-xl sm:rounded-3xl">
-          {body}
-        </div>
+        {body}
       </div>,
       document.body,
     );
