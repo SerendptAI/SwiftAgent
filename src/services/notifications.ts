@@ -2,15 +2,22 @@ import { apiClient } from "@/lib/api-client";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
-/** Known `data.type` values carried on a notification payload. */
+/** Known notification `type` values. The backend may add more over time. */
 export type NotificationType =
+  | "ticket_open"
+  | "ticket_reply"
+  | "ticket_close"
+  | "plan_upgrade"
+  | "system_notification"
   | "otp_challenge"
   | "test_otp_notification"
   | (string & {});
 
-/** Arbitrary payload attached to a notification. */
+/** Arbitrary payload attached to a notification — carries deep-link IDs. */
 export interface NotificationData {
+  /** Legacy field — some payloads echo the notification type inside `data`. */
   type?: NotificationType;
+  ticket_id?: string;
   challenge_id?: string;
   login_url?: string;
   screenshot_url?: string;
@@ -20,6 +27,7 @@ export interface NotificationData {
 export interface NotificationItem {
   id: string;
   user_id: string;
+  type: NotificationType;
   title: string;
   body: string;
   data: NotificationData | null;
@@ -67,3 +75,27 @@ export const notificationsApi = {
     await apiClient.delete(`/api/v1/notifications/${notificationId}`);
   },
 };
+
+// ── Deep-linking ─────────────────────────────────────────────────────────────
+
+/**
+ * Resolve the in-app route a notification should open on click, or `null` when
+ * it's purely informational (e.g. a system blast) or its target has no UI yet.
+ */
+export function getNotificationRoute(item: NotificationItem): string | null {
+  const ticketId = item.data?.ticket_id;
+  switch (item.type) {
+    case "ticket_open":
+    case "ticket_reply":
+    case "ticket_close":
+      return ticketId
+        ? `/dashboard/ticketing?tab=tickets&ticket=${encodeURIComponent(ticketId)}`
+        : "/dashboard/ticketing?tab=tickets";
+    case "plan_upgrade":
+      return "/dashboard/billing";
+    default:
+      // `system_notification`, `otp_challenge`, and unknown types have no
+      // dedicated dashboard route — leave them as informational entries.
+      return null;
+  }
+}

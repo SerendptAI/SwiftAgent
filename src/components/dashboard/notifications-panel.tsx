@@ -11,8 +11,12 @@ import {
   useMarkNotificationRead,
   useNotifications,
 } from "@/hooks/use-notifications";
+import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
-import type { NotificationItem } from "@/services/notifications";
+import {
+  getNotificationRoute,
+  type NotificationItem,
+} from "@/services/notifications";
 
 interface NotificationsPanelProps {
   open: boolean;
@@ -27,6 +31,7 @@ export function NotificationsPanel({
   triggerRef,
 }: NotificationsPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   const { data, isLoading, isError } = useNotifications(20);
   const markRead = useMarkNotificationRead();
@@ -102,8 +107,13 @@ export function NotificationsPanel({
               <li key={item.id}>
                 <NotificationRow
                   item={item}
-                  onMarkRead={() => {
+                  onActivate={() => {
                     if (!item.read) markRead.mutate(item.id);
+                    const route = getNotificationRoute(item);
+                    if (route) {
+                      router.push(route);
+                      onClose();
+                    }
                   }}
                   onDelete={() => removeNotification.mutate(item.id)}
                 />
@@ -132,27 +142,29 @@ function formatTimestamp(value: string): string {
 
 function NotificationRow({
   item,
-  onMarkRead,
+  onActivate,
   onDelete,
 }: {
   item: NotificationItem;
-  onMarkRead: () => void;
+  onActivate: () => void;
   onDelete: () => void;
 }) {
   const Icon = item.read
     ? Icons.NotificationBellRead
     : Icons.NotificationBellUnread;
   const timestamp = formatTimestamp(item.created_at);
+  // A row is actionable when it still needs marking read or links somewhere.
+  const isActionable = !item.read || getNotificationRoute(item) !== null;
 
   return (
     <div className="group flex w-full items-center gap-2.5 rounded-[16px] border border-black/5 bg-white px-3 py-2.5">
       <button
         type="button"
-        onClick={onMarkRead}
-        disabled={item.read}
+        onClick={onActivate}
+        disabled={!isActionable}
         className={cn(
           "flex min-w-0 flex-1 items-start gap-2.5 text-left",
-          !item.read && "cursor-pointer",
+          isActionable && "cursor-pointer",
         )}
       >
         <Icon className="mt-0.5 h-[18px] w-[18px] shrink-0" />

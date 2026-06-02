@@ -56,6 +56,17 @@ export function TicketingClient() {
     }
   }, [searchParams, chats]);
 
+  // Auto-select a ticket from URL query param (e.g. ?ticket=A3F8B2C1) — used by
+  // notification deep-links. The ticket may be resolved (and absent from the
+  // unresolved list), so we select by id directly; TicketView fetches it.
+  useEffect(() => {
+    const ticketId = searchParams.get("ticket");
+    if (ticketId) {
+      setActiveChannel("tickets");
+      setSelection({ id: ticketId, kind: "ticket" });
+    }
+  }, [searchParams]);
+
   useEffect(() => {
     const channel = getChannelFromTabParam(searchParams.get("tab"));
     if (channel && channel !== activeChannel) {
