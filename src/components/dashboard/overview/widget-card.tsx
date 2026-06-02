@@ -92,9 +92,9 @@ export function WidgetCard() {
   const codeSnippet = useMemo(() => {
     if (!companyId) return "";
     if (mode === "button") {
-      return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" data-mode="button" data-trigger="[data-swift-agent-open]" defer></script>\n<button data-swift-agent-open>Chat with us</button>`;
+      return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" data-api-key="YOUR_API_KEY" data-mode="button" data-trigger="[data-swift-agent-open]" defer></script>\n<button data-swift-agent-open>Chat with us</button>`;
     }
-    return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" defer></script>`;
+    return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" data-api-key="YOUR_API_KEY" defer></script>`;
   }, [companyId, mode]);
 
   const handleCopy = useCallback(() => {
@@ -175,6 +175,13 @@ export function WidgetCard() {
               <pre className="font-stolzl max-h-48 overflow-auto rounded-lg bg-[#F6F6F6] p-3 text-[11px] leading-relaxed break-all whitespace-pre-wrap text-gray-700 sm:p-4 sm:text-[13px]">
                 {codeSnippet || "No widget code found."}
               </pre>
+              <p className="font-dm-mono mt-2 text-[11px] text-gray-400">
+                Replace{" "}
+                <code className="rounded bg-gray-100 px-1 py-0.5 text-gray-600">
+                  YOUR_API_KEY
+                </code>{" "}
+                with the key from your API settings.
+              </p>
               {mode === "button" && (
                 <p className="font-dm-mono mt-2 text-[11px] text-gray-400">
                   Add the{" "}
