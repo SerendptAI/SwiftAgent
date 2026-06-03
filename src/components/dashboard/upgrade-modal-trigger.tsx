@@ -2,6 +2,9 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
+import { useActiveCompanyId } from "@/hooks/use-active-company";
+import { useCurrentUser } from "@/hooks/use-auth";
+import { useBillingDetails } from "@/hooks/use-billing";
 import { useUpgradeModalStore } from "@/store/upgrade-modal-store";
 
 import { UpgradePlanModal } from "./upgrade-plan-modal";
@@ -13,10 +16,25 @@ export function UpgradeModalTrigger() {
   const storeOpen = useUpgradeModalStore((s) => s.open);
   const hideStore = useUpgradeModalStore((s) => s.hide);
 
+  const { data: user } = useCurrentUser();
+  const companyId = useActiveCompanyId();
+  const { data: details } = useBillingDetails(companyId);
+
+  // After onboarding the company must hold an active subscription. Until the
+  // payment lands we keep the plan modal up and non-dismissible across the
+  // dashboard — except on billing routes, where the payment is completed.
+  const paymentRequired =
+    !!user?.onboarding_completed &&
+    pathname.includes("/dashboard") &&
+    !pathname.includes("/billing") &&
+    !!details &&
+    details.status !== "active";
+
   const urlOpen = params.get("upgrade") === "1";
-  const open = urlOpen || storeOpen;
+  const open = urlOpen || storeOpen || paymentRequired;
 
   const close = () => {
+    if (paymentRequired) return;
     if (storeOpen) hideStore();
     if (urlOpen) {
       const next = new URLSearchParams(params.toString());
@@ -28,5 +46,11 @@ export function UpgradeModalTrigger() {
     }
   };
 
-  return <UpgradePlanModal open={open} onClose={close} />;
+  return (
+    <UpgradePlanModal
+      open={open}
+      onClose={close}
+      dismissible={!paymentRequired}
+    />
+  );
 }
