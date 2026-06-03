@@ -47,7 +47,7 @@ const SETTINGS_NAV = [
 
 export function SettingsNav() {
   return (
-    <aside className="grid w-full shrink-0 grid-cols-5 gap-2 rounded-[20px] bg-white p-2 shadow-sm lg:flex lg:h-[400px] lg:w-[90px] lg:flex-col lg:justify-between lg:gap-6 lg:rounded-lg lg:py-6">
+    <aside className="grid w-full shrink-0 grid-cols-5 gap-2 rounded-[20px] bg-white p-2 shadow-sm lg:flex lg:w-[90px] lg:flex-col lg:items-center lg:justify-start lg:gap-6 lg:rounded-lg lg:py-6">
       {SETTINGS_NAV.map((item) => (
         <div key={item.href} className="flex min-w-0 justify-center">
           <NavItem {...item} className="w-full lg:w-16" />
