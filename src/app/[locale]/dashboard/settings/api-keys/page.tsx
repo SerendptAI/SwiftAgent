@@ -147,7 +147,7 @@ export default function ApiKeysPage() {
       {/* Existing keys */}
       <div className="space-y-4">
         <h3 className="font-stolzl text-base font-bold text-gray-900 sm:text-lg">
-          Active Keys
+          Your Keys
         </h3>
         <div className="rounded-xl border border-gray-100">
           {isLoading ? (
