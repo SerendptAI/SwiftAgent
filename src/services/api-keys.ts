@@ -5,10 +5,9 @@ import { apiClient } from "@/lib/api-client";
 /** An API key as returned by the list endpoint (never includes the raw secret). */
 export interface ApiKey {
   id: string;
-  company_id: string;
   label: string;
   /** Non-secret prefix shown so users can recognise the key, e.g. `swa_live_abc…`. */
-  prefix: string;
+  key_prefix: string;
   active: boolean;
   created_at: string;
   last_used_at?: string | null;
@@ -18,8 +17,12 @@ export interface ApiKey {
  * Response from creating a key. The raw `key` (e.g. `swa_live_…`) is only ever
  * present here — the backend hashes it (SHA-256) and never returns it again.
  */
-export interface ApiKeyCreated extends ApiKey {
+export interface ApiKeyCreated {
+  id: string;
   key: string;
+  key_prefix: string;
+  label: string;
+  created_at: string;
 }
 
 export type ApiKeyCreatePayload = {

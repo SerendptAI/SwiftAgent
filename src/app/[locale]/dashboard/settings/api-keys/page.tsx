@@ -166,7 +166,7 @@ export default function ApiKeysPage() {
                       {key.label}
                     </p>
                     <p className="font-stolzl truncate text-xs text-gray-400">
-                      {key.prefix}··· · created{" "}
+                      {key.key_prefix}··· · created{" "}
                       {new Date(key.created_at).toLocaleDateString()}
                       {key.last_used_at
                         ? ` · last used ${new Date(key.last_used_at).toLocaleDateString()}`
