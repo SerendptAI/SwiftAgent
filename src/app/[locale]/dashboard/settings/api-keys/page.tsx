@@ -22,6 +22,7 @@ export default function ApiKeysPage() {
   const [revealKey, setRevealKey] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [revokingId, setRevokingId] = useState<string | null>(null);
 
   const handleGenerate = async () => {
     if (!companyId) return;
@@ -44,10 +45,13 @@ export default function ApiKeysPage() {
 
   const handleRevoke = async (keyId: string) => {
     setError(null);
+    setRevokingId(keyId);
     try {
       await revokeKey.mutateAsync(keyId);
     } catch {
       setError("Could not revoke that key. Please try again.");
+    } finally {
+      setRevokingId(null);
     }
   };
 
@@ -159,7 +163,9 @@ export default function ApiKeysPage() {
               {keys.map((key) => (
                 <li
                   key={key.id}
-                  className="flex items-center gap-4 px-4 py-3 sm:px-6"
+                  className={`flex items-center gap-3 px-4 py-3 sm:px-6 ${
+                    key.active ? "" : "opacity-60"
+                  }`}
                 >
                   <div className="min-w-0 flex-1">
                     <p className="font-stolzl truncate text-sm font-semibold text-gray-900">
@@ -173,15 +179,30 @@ export default function ApiKeysPage() {
                         : ""}
                     </p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => handleRevoke(key.id)}
-                    disabled={revokeKey.isPending}
-                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
-                    aria-label={`Revoke ${key.label}`}
+                  <span
+                    className={`font-dm-mono shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase ${
+                      key.active
+                        ? "bg-green-50 text-green-700"
+                        : "bg-gray-100 text-gray-500"
+                    }`}
                   >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
+                    {key.active ? "Active" : "Revoked"}
+                  </span>
+                  {key.active && (
+                    <button
+                      type="button"
+                      onClick={() => handleRevoke(key.id)}
+                      disabled={revokingId === key.id}
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+                      aria-label={`Revoke ${key.label}`}
+                    >
+                      {revokingId === key.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>
