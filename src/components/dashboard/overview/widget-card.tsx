@@ -20,6 +20,7 @@ import {
   useUpdateIntegration,
 } from "@/hooks/use-integrations";
 import { useStrollConfig, useUpdateStrollConfig } from "@/hooks/use-stroll";
+import { Link } from "@/i18n/navigation";
 import type {
   IntegrationCreatePayload,
   IntegrationUpdatePayload,
@@ -34,7 +35,6 @@ import {
   PaymentSandboxSection,
   SuggestedQuestionsSection,
 } from "./chatbot-settings-sections";
-import { WidgetApiKeySection } from "./widget-api-key-section";
 
 type WidgetMode = "widget" | "button";
 
@@ -44,8 +44,6 @@ export function WidgetCard() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [modeDropdownOpen, setModeDropdownOpen] = useState(false);
   const [mode, setMode] = useState<WidgetMode>("widget");
-  // Set when a key is generated this session so the snippet is paste-ready.
-  const [widgetApiKey, setWidgetApiKey] = useState<string | null>(null);
   const [toast, setToast] = useState<{
     kind: "success" | "error";
     message: string;
@@ -94,12 +92,11 @@ export function WidgetCard() {
 
   const codeSnippet = useMemo(() => {
     if (!companyId) return "";
-    const apiKey = widgetApiKey ?? "YOUR_API_KEY";
     if (mode === "button") {
-      return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" data-api-key="${apiKey}" data-mode="button" data-trigger="[data-swift-agent-open]" defer></script>\n<button data-swift-agent-open>Chat with us</button>`;
+      return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" data-api-key="YOUR_API_KEY" data-mode="button" data-trigger="[data-swift-agent-open]" defer></script>\n<button data-swift-agent-open>Chat with us</button>`;
     }
-    return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" data-api-key="${apiKey}" defer></script>`;
-  }, [companyId, mode, widgetApiKey]);
+    return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" data-api-key="YOUR_API_KEY" defer></script>`;
+  }, [companyId, mode]);
 
   const handleCopy = useCallback(() => {
     if (!codeSnippet) return;
@@ -180,11 +177,18 @@ export function WidgetCard() {
                 {codeSnippet || "No widget code found."}
               </pre>
               <p className="font-dm-mono mt-2 text-[11px] text-gray-400">
-                Generate a key below — it&apos;s dropped into{" "}
+                Replace{" "}
                 <code className="rounded bg-gray-100 px-1 py-0.5 text-gray-600">
-                  data-api-key
+                  YOUR_API_KEY
                 </code>{" "}
-                automatically.
+                with a key from{" "}
+                <Link
+                  href="/dashboard/settings/api-keys"
+                  className="text-[#006BE5] underline hover:text-[#0055B8]"
+                >
+                  Settings → API Keys
+                </Link>
+                .
               </p>
               {mode === "button" && (
                 <p className="font-dm-mono mt-2 text-[11px] text-gray-400">
@@ -205,13 +209,6 @@ export function WidgetCard() {
                 <Copy className="h-5 w-5" />
                 {copied ? "Copied!" : "Copy"}
               </button>
-
-              <div className="mt-6 border-t border-gray-100 pt-6">
-                <WidgetApiKeySection
-                  companyId={companyId}
-                  onKeyGenerated={setWidgetApiKey}
-                />
-              </div>
             </div>
           </div>
         </div>
