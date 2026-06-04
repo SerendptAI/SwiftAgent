@@ -20,15 +20,20 @@ export function UpgradeModalTrigger() {
   const companyId = useActiveCompanyId();
   const { data: details } = useBillingDetails(companyId);
 
-  // After onboarding the company must hold an active subscription. Until the
-  // payment lands we keep the plan modal up and non-dismissible across the
+  // After onboarding (or once a subscription expires) the backend drops the
+  // company to the "none" tier, which has no allowance for paid features. Until
+  // they pick a paid plan we keep the modal up and non-dismissible across the
   // dashboard — except on billing routes, where the payment is completed.
+  const noPaidPlan =
+    !!details &&
+    (details.tier == null ||
+      details.tier === "none" ||
+      details.status !== "active");
   const paymentRequired =
     !!user?.onboarding_completed &&
     pathname.includes("/dashboard") &&
     !pathname.includes("/billing") &&
-    !!details &&
-    details.status !== "active";
+    noPaidPlan;
 
   const urlOpen = params.get("upgrade") === "1";
   const open = urlOpen || storeOpen || paymentRequired;

@@ -2,7 +2,10 @@ import { apiClient } from "@/lib/api-client";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
-export type SubscriptionTier = "basic" | "pro" | "enterprise" | null;
+// "none" is the post-onboarding / expired-subscription tier: a paywalled state
+// with zero allowance for paid features. The backend never returns it from
+// /plans, so it only ever appears on a company's own billing details.
+export type SubscriptionTier = "none" | "basic" | "pro" | "enterprise" | null;
 export type SubscriptionStatus = "active" | "inactive" | "canceled";
 export type BillingProvider = "polar" | "palmpay" | null;
 export type PlanRegion = "african" | "international";
@@ -30,6 +33,24 @@ export interface SavedCard {
   last4: string;
 }
 
+/** A single usage counter from the billing status `usage` payload. */
+export interface UsageMetric {
+  used: number;
+  limit: number;
+}
+
+/**
+ * Per-feature usage returned by `/billing/{company_id}/status`. Voice minutes
+ * were retired alongside voice agents; `agent_chats` and `strolls` replace them.
+ */
+export interface UsageBreakdown {
+  agents?: UsageMetric;
+  documents?: UsageMetric;
+  members?: UsageMetric;
+  agent_chats?: UsageMetric;
+  strolls?: UsageMetric;
+}
+
 export interface BillingDetails {
   company_id?: string;
   tier: SubscriptionTier;
@@ -40,14 +61,8 @@ export interface BillingDetails {
   subscription_started_at?: string;
   /** ISO timestamp the user retains access until (start + 30 days). */
   subscription_expires_at?: string;
-  agents_used?: number;
-  agents_limit?: number;
-  documents_used?: number;
-  documents_limit?: number;
-  members_used?: number;
-  members_limit?: number;
-  voice_minutes_used?: number;
-  voice_minutes_limit?: number;
+  /** Nested per-feature usage counters (agents, documents, members, agent_chats, strolls). */
+  usage?: UsageBreakdown;
   billing_provider?: BillingProvider;
   display_name?: string;
   /** Not in the /status response today; kept optional for the saved-cards UI when it lands. */
