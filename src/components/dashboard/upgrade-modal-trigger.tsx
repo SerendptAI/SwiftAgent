@@ -24,11 +24,17 @@ export function UpgradeModalTrigger() {
   // company to the "none" tier, which has no allowance for paid features. Until
   // they pick a paid plan we keep the modal up and non-dismissible across the
   // dashboard — except on billing routes, where the payment is completed.
+  //
+  // Resolve the subscription lifecycle the same way the modal does: prefer
+  // `subscription_status`, falling back to `status`. Keying off `status` alone
+  // wrongly paywalls users whose `subscription_status` is "active" but whose
+  // legacy `status` field reports something else.
+  const subscriptionStatus = details?.subscription_status ?? details?.status;
   const noPaidPlan =
     !!details &&
     (details.tier == null ||
       details.tier === "none" ||
-      details.status !== "active");
+      subscriptionStatus !== "active");
   const paymentRequired =
     !!user?.onboarding_completed &&
     pathname.includes("/dashboard") &&
