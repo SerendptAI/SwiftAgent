@@ -100,7 +100,12 @@ export function UpgradePlanModal({
   const locale = useLocale();
 
   const [visible, setVisible] = useState(open);
-  const activeTier: SubscriptionTier = details?.tier ?? null;
+  // Only an actually-active subscription counts as the current plan. The backend
+  // still reports a `tier` for inactive/canceled/"none" states, so keying off
+  // `tier` alone would wrongly light a card up as "Presently On".
+  const subscriptionStatus = details?.subscription_status ?? details?.status;
+  const activeTier: SubscriptionTier =
+    subscriptionStatus === "active" ? (details?.tier ?? null) : null;
   const plans = plansFromBackend(backendPlans);
 
   useEffect(() => {
