@@ -13,9 +13,9 @@ export function ResourcesCard() {
       <button
         type="button"
         onClick={() => setShowResources(true)}
-        className="group flex cursor-pointer flex-col items-center justify-center rounded-3xl bg-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
+        className="group flex min-h-[212px] cursor-pointer flex-col items-center justify-center rounded-[20px] bg-white p-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black sm:min-h-[220px] lg:min-h-[250px] lg:rounded-3xl"
       >
-        <div className="relative mb-8 flex h-[160px] w-full items-end justify-center overflow-hidden">
+        <div className="relative mb-6 flex h-[142px] w-full items-end justify-center overflow-hidden sm:h-[150px] lg:mb-8 lg:h-[160px]">
           <div
             className="absolute bottom-4 left-1/2 w-[95%] -translate-x-1/2 transition-all duration-500 ease-out group-hover:-translate-y-6 group-hover:rotate-[-2deg]"
             style={{ zIndex: 1 }}

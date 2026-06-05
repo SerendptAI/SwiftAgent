@@ -5,6 +5,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { chatsApi } from "@/services/conversations";
@@ -26,11 +27,11 @@ export function useChats() {
  */
 export function useResolvedChats() {
   const query = useChats();
-
-  return {
-    ...query,
-    data: query.data?.filter((c) => !c.escalated),
-  };
+  const data = useMemo(
+    () => query.data?.filter((c) => !c.escalated),
+    [query.data],
+  );
+  return { ...query, data };
 }
 
 /** Fetch the full detail (with messages) for a single chat session. */

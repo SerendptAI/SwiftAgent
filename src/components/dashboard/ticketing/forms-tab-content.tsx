@@ -15,36 +15,19 @@ import { useEffect, useRef, useState } from "react";
 import { FormCreationSuccessModal } from "@/components/dashboard/ticketing/form-creation-success-modal";
 import { OnlineFormDrawer } from "@/components/dashboard/ticketing/online-form-drawer";
 import { WebsiteFormDrawer } from "@/components/dashboard/ticketing/website-form-drawer";
+import {
+  useDeleteForm,
+  useForms,
+  useFormSubmissions,
+  useMarkSubmissionRead,
+} from "@/hooks/use-forms";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
+import type { Form, Submission } from "@/services/forms";
 
-interface FormsEmptyStateProps {
-  lines: string[];
-  variant: "list" | "detail";
-}
+// ── Helpers ────────────────────────────────────────────────────────────────────
 
 type FormSubmissionStatus = "unread" | "read";
 type FormType = "website" | "online";
-
-interface FormSubmission {
-  name: string;
-  preview: string;
-  time: string;
-  avatar: string;
-  email: string;
-  interest: string;
-  message: string;
-  receivedAt: string;
-  status: FormSubmissionStatus;
-}
-
-interface MockForm {
-  name: string;
-  type: FormType;
-  pages?: {
-    path: string;
-    submissions: FormSubmission[];
-  }[];
-  submissions: FormSubmission[];
-}
 
 const FORM_TYPE_META: Record<
   FormType,
@@ -62,124 +45,77 @@ const FORM_TYPE_META: Record<
   },
 };
 
-const MOCK_FORMS: MockForm[] = [
-  {
-    name: "NG Ballerz Form",
-    type: "online",
-    submissions: [
-      {
-        name: "John Doe",
-        preview: "Good day, i lost my...",
-        time: "4:13pm",
-        avatar: "/images/chats/newimg1.svg",
-        email: "johndoe@zvask.com",
-        interest: "Partnership",
-        message: "I would love a partnership with y'all, thanks a lot",
-        receivedAt: "2:33pm 02/04/2026",
-        status: "unread",
-      },
-      {
-        name: "Jane Austin",
-        preview: "Good day, i lost my...",
-        time: "4:13pm",
-        avatar: "/images/chats/newimg4.svg",
-        email: "janeaustin@zvask.com",
-        interest: "Support",
-        message: "I need help with a form submission from the contact page",
-        receivedAt: "2:41pm 02/04/2026",
-        status: "unread",
-      },
-      {
-        name: "Jane Jackson",
-        preview: "Good day, i lost my...",
-        time: "4:13pm",
-        avatar: "/images/chats/newimg.svg",
-        email: "janejackson@zvask.com",
-        interest: "Volunteer",
-        message: "I would like to volunteer for upcoming community programs",
-        receivedAt: "3:02pm 02/04/2026",
-        status: "read",
-      },
-    ],
-  },
-  {
-    name: "https://serendptai.com",
-    type: "website",
-    submissions: [],
-    pages: [
-      {
-        path: "/contact-us",
-        submissions: [
-          {
-            name: "Ayo Martins",
-            preview: "Hello, I want pricing...",
-            time: "3:25pm",
-            avatar: "/images/chats/newimg2.svg",
-            email: "ayo@serendptai.com",
-            interest: "Pricing",
-            message: "Hello, I want pricing details for a website form setup",
-            receivedAt: "3:25pm 02/05/2026",
-            status: "unread",
-          },
-          {
-            name: "Kemi Rhodes",
-            preview: "I need help with setup...",
-            time: "2:55pm",
-            avatar: "/images/chats/newimg.svg",
-            email: "kemi@serendptai.com",
-            interest: "Setup",
-            message: "I need help with setup for our contact workflow",
-            receivedAt: "2:55pm 02/05/2026",
-            status: "read",
-          },
-        ],
-      },
-      {
-        path: "/submission",
-        submissions: [
-          {
-            name: "Mina Cole",
-            preview: "Can I book a demo...",
-            time: "3:12pm",
-            avatar: "/images/chats/newimg3.svg",
-            email: "mina@serendptai.com",
-            interest: "Demo",
-            message: "Can I book a demo for the web assistant this week?",
-            receivedAt: "3:12pm 02/05/2026",
-            status: "unread",
-          },
-          {
-            name: "Tobi Green",
-            preview: "The submitted form...",
-            time: "1:48pm",
-            avatar: "/images/chats/newimg3.svg",
-            email: "tobi@serendptai.com",
-            interest: "Submission",
-            message: "The submitted form needs a confirmation email",
-            receivedAt: "1:48pm 02/05/2026",
-            status: "read",
-          },
-        ],
-      },
-      {
-        path: "/volunteer",
-        submissions: [
-          {
-            name: "Lara Stone",
-            preview: "I would like to help...",
-            time: "12:10pm",
-            avatar: "/images/chats/newimg4.svg",
-            email: "lara@serendptai.com",
-            interest: "Volunteer",
-            message: "I would like to help with volunteer coordination",
-            receivedAt: "12:10pm 02/05/2026",
-            status: "unread",
-          },
-        ],
-      },
-    ],
-  },
-];
+function getFormDisplayName(form: Form): string {
+  return form.form_title ?? form.website_link ?? form.id;
+}
+
+function getSubmissionDisplayName(submission: Submission): string {
+  const data = submission.data;
+  for (const key of [
+    "name",
+    "Name",
+    "full_name",
+    "fullName",
+    "firstName",
+    "first_name",
+    "username",
+  ]) {
+    const val = data[key];
+    if (typeof val === "string" && val.trim()) return val.trim();
+  }
+  return submission.visitor_id
+    ? `Visitor ${submission.visitor_id.slice(0, 6)}`
+    : "Anonymous";
+}
+
+function getSubmissionPreview(submission: Submission): string {
+  for (const val of Object.values(submission.data)) {
+    if (typeof val === "string" && val.trim()) return val.trim();
+  }
+  return "—";
+}
+
+function formatSubmissionTime(isoString: string): string {
+  try {
+    return new Date(isoString).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } catch {
+    return "";
+  }
+}
+
+function formatSubmissionReceivedAt(isoString: string): string {
+  try {
+    const d = new Date(isoString);
+    const time = d.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    const date = d.toLocaleDateString([], {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+    return `${time} ${date}`;
+  } catch {
+    return isoString;
+  }
+}
+
+// ── Sub-components ─────────────────────────────────────────────────────────────
+
+function SubmissionAvatar({ name }: { name: string }) {
+  const initial = name.charAt(0).toUpperCase() || "?";
+  return (
+    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#EDEDED] lg:h-[52px] lg:w-[52px]">
+      <span className="font-dm-mono text-base font-bold text-black/60 uppercase lg:text-lg">
+        {initial}
+      </span>
+    </div>
+  );
+}
 
 function PendingIcon({ className }: { className?: string }) {
   return (
@@ -260,8 +196,8 @@ function EmptyStateCenter({ lines }: { lines: string[] }) {
 
 function InboxHeader() {
   return (
-    <div className="absolute top-9 left-10 z-10">
-      <h2 className="font-dm-mono text-2xl font-bold tracking-[-0.02em] text-black uppercase">
+    <div className="absolute top-5 left-5 z-10 sm:top-9 sm:left-10">
+      <h2 className="font-dm-mono text-xl font-bold tracking-[-0.02em] text-black uppercase sm:text-2xl">
         Inbox
       </h2>
     </div>
@@ -276,62 +212,65 @@ function StatusControls({
   onStatusChange: (status: FormSubmissionStatus) => void;
 }) {
   return (
-    <div className="flex items-center justify-between gap-6">
-      <div className="flex min-w-0 items-center gap-8">
+    <div className="flex items-center justify-between gap-3 sm:gap-6">
+      <div className="flex min-w-0 items-center gap-2 sm:gap-8">
         <button
           type="button"
           onClick={() => onStatusChange("unread")}
-          className={`font-stolzl flex h-12 cursor-pointer items-center gap-2 rounded-xl px-5 text-base font-normal ${
+          className={`font-stolzl flex h-9 cursor-pointer items-center gap-1.5 rounded-lg px-2.5 text-xs font-normal sm:h-12 sm:gap-2 sm:rounded-xl sm:px-5 sm:text-base ${
             activeStatus === "unread"
               ? "bg-[#808080] text-white"
               : "bg-[#F6F6F6] text-black"
           }`}
           aria-pressed={activeStatus === "unread"}
         >
-          <PendingIcon className="h-6 w-6 shrink-0" />
+          <PendingIcon className="h-4 w-4 shrink-0 sm:h-6 sm:w-6" />
           <span>Unread</span>
         </button>
         <button
           type="button"
           onClick={() => onStatusChange("read")}
-          className={`font-stolzl flex h-12 cursor-pointer items-center gap-2 rounded-xl px-5 text-base font-normal ${
+          className={`font-stolzl flex h-9 cursor-pointer items-center gap-1.5 rounded-lg px-2.5 text-xs font-normal sm:h-12 sm:gap-2 sm:rounded-xl sm:px-5 sm:text-base ${
             activeStatus === "read"
               ? "bg-[#808080] text-white"
               : "bg-[#F6F6F6] text-black"
           }`}
           aria-pressed={activeStatus === "read"}
         >
-          <ResolvedIcon className="size-5 shrink-0 stroke-1" />
+          <ResolvedIcon className="size-4 shrink-0 stroke-1 sm:size-5" />
           <span>Read</span>
         </button>
       </div>
       <button
         type="button"
         aria-label="Form settings"
-        className="flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-xl text-[#808080] transition-colors hover:bg-[#F6F6F6]"
+        className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg text-[#808080] transition-colors hover:bg-[#F6F6F6] sm:h-12 sm:w-12 sm:rounded-xl"
       >
-        <Settings className="h-7 w-7" />
+        <Settings className="h-5 w-5 sm:h-7 sm:w-7" />
       </button>
     </div>
   );
 }
 
-function EmptyStateTopControls({ variant }: { variant: "list" | "detail" }) {
-  if (variant === "list") {
-    return <InboxHeader />;
-  }
-
+function FormsEmptyState({
+  lines,
+  variant,
+}: {
+  lines: string[];
+  variant: "list" | "detail";
+}) {
   return (
-    <div className="absolute top-7 right-8 left-8 z-10">
-      <StatusControls activeStatus="unread" onStatusChange={() => undefined} />
-    </div>
-  );
-}
-
-function FormsEmptyState({ lines, variant }: FormsEmptyStateProps) {
-  return (
-    <div className="relative h-full w-full overflow-hidden rounded-3xl bg-white shadow-sm">
-      <EmptyStateTopControls variant={variant} />
+    <div className="relative w-full overflow-hidden lg:h-full lg:rounded-3xl lg:bg-white lg:shadow-sm">
+      {variant === "list" ? (
+        <InboxHeader />
+      ) : (
+        <div className="absolute top-4 right-4 left-4 z-10 sm:top-7 sm:right-8 sm:left-8">
+          <StatusControls
+            activeStatus="unread"
+            onStatusChange={() => undefined}
+          />
+        </div>
+      )}
       <EmptyStateCenter lines={lines} />
     </div>
   );
@@ -339,14 +278,14 @@ function FormsEmptyState({ lines, variant }: FormsEmptyStateProps) {
 
 function CreateFormMenu({ onSelect }: { onSelect: (type: FormType) => void }) {
   return (
-    <div className="font-dm-mono w-[430px] max-w-[calc(100vw-3rem)] rounded-xl bg-white px-3 py-2 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)]">
+    <div className="font-dm-mono w-[430px] max-w-[calc(100vw-2rem)] rounded-xl bg-white px-2 py-1.5 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] lg:max-w-[calc(100vw-3rem)] lg:px-3 lg:py-2">
       {(["website", "online"] as FormType[]).map((type, index) => {
         const meta = FORM_TYPE_META[type];
         return (
           <button
             key={type}
             type="button"
-            className={`flex h-12 w-full cursor-pointer items-center gap-3 px-3 text-left transition-colors hover:bg-gray-50 ${
+            className={`flex h-10 w-full cursor-pointer items-center gap-2 px-2 text-left transition-colors hover:bg-gray-50 lg:h-12 lg:gap-3 lg:px-3 ${
               index === 0 ? "border-b border-[#808080]" : ""
             }`}
             onClick={() => onSelect(type)}
@@ -356,14 +295,14 @@ function CreateFormMenu({ onSelect }: { onSelect: (type: FormType) => void }) {
               alt=""
               width={type === "website" ? 23 : 22}
               height={type === "website" ? 23 : 22}
-              className="h-[23px] w-[23px] shrink-0"
+              className="h-[18px] w-[18px] shrink-0 lg:h-[23px] lg:w-[23px]"
             />
             <span
-              className={`min-w-0 flex-1 text-base font-normal tracking-[0.18em] whitespace-nowrap uppercase ${meta.textColor}`}
+              className={`min-w-0 flex-1 text-xs font-normal tracking-[0.1em] whitespace-nowrap uppercase lg:text-base lg:tracking-[0.18em] ${meta.textColor}`}
             >
               {meta.label}
             </span>
-            <Info className="h-4 w-4 shrink-0 text-black" />
+            <Info className="h-3.5 w-3.5 shrink-0 text-black lg:h-4 lg:w-4" />
           </button>
         );
       })}
@@ -372,13 +311,19 @@ function CreateFormMenu({ onSelect }: { onSelect: (type: FormType) => void }) {
 }
 
 function FormsToolbar({
-  selectedFormIndex,
+  forms,
+  selectedFormId,
   onSelectForm,
+  onDelete,
+  onEdit,
   onCreateWebsiteForm,
   onCreateOnlineForm,
 }: {
-  selectedFormIndex: number;
-  onSelectForm: (index: number) => void;
+  forms: Form[];
+  selectedFormId: string | null;
+  onSelectForm: (id: string) => void;
+  onDelete: () => void;
+  onEdit: () => void;
   onCreateWebsiteForm: () => void;
   onCreateOnlineForm: () => void;
 }) {
@@ -386,18 +331,17 @@ function FormsToolbar({
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
   const formDropdownRef = useRef<HTMLDivElement>(null);
   const createDropdownRef = useRef<HTMLDivElement>(null);
-  const selectedForm = MOCK_FORMS[selectedFormIndex] ?? null;
+  const selectedForm = forms.find((f) => f.id === selectedFormId) ?? null;
+  useScrollLock(isFormMenuOpen || isCreateMenuOpen);
 
   const handleCreateForm = (type: FormType) => {
     setIsCreateMenuOpen(false);
     setIsFormMenuOpen(false);
-
     if (type === "website") {
       onCreateWebsiteForm();
-      return;
+    } else {
+      onCreateOnlineForm();
     }
-
-    onCreateOnlineForm();
   };
 
   useEffect(() => {
@@ -415,44 +359,51 @@ function FormsToolbar({
         setIsCreateMenuOpen(false);
       }
     }
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
-    <div className="grid h-15 shrink-0 grid-cols-12 gap-8">
-      <div className="col-span-7 flex min-w-0 items-center gap-8">
+    <div className="grid shrink-0 grid-cols-1 gap-3 lg:h-15 lg:grid-cols-12 lg:gap-8">
+      <div
+        className={`grid min-w-0 grid-cols-3 gap-2 lg:col-span-7 lg:flex lg:items-center lg:gap-8 ${
+          isCreateMenuOpen ? "relative z-[90]" : ""
+        }`}
+      >
         <button
           type="button"
-          className="font-dm-mono flex h-15 min-w-0 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#6433CC] px-5 text-base font-normal tracking-[0.18em] text-white uppercase transition-colors hover:bg-[#572bb5]"
+          onClick={onDelete}
+          disabled={!selectedForm}
+          className="font-dm-mono flex h-12 min-w-0 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#6433CC] px-3 text-xs font-normal tracking-[0.12em] text-white uppercase transition-colors hover:bg-[#572bb5] disabled:cursor-not-allowed disabled:opacity-50 lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
         >
-          <Trash2 className="h-5 w-5 shrink-0" />
+          <Trash2 className="h-4 w-4 shrink-0 lg:h-5 lg:w-5" />
           <span className="truncate">Delete</span>
         </button>
         <button
           type="button"
-          className="font-dm-mono flex h-15 min-w-0 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#F25430] px-5 text-base font-normal tracking-[0.18em] text-white uppercase transition-colors hover:bg-[#d94526]"
+          onClick={onEdit}
+          disabled={!selectedForm}
+          className="font-dm-mono flex h-12 min-w-0 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#F25430] px-3 text-xs font-normal tracking-[0.12em] text-white uppercase transition-colors hover:bg-[#d94526] disabled:cursor-not-allowed disabled:opacity-50 lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
         >
-          <Pencil className="h-5 w-5 shrink-0" />
+          <Pencil className="h-4 w-4 shrink-0 lg:h-5 lg:w-5" />
           <span className="truncate">Edit</span>
         </button>
         <div ref={createDropdownRef} className="relative min-w-0 flex-1">
           <button
             type="button"
             onClick={() => setIsCreateMenuOpen((open) => !open)}
-            className="font-dm-mono flex h-15 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#006BE5] px-5 text-base font-normal tracking-[0.18em] text-white uppercase transition-colors hover:bg-[#005fca]"
+            className="font-dm-mono flex h-12 w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#006BE5] px-3 text-xs font-normal tracking-[0.12em] text-white uppercase transition-colors hover:bg-[#005fca] lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
             aria-expanded={isCreateMenuOpen}
           >
             {isCreateMenuOpen ? (
-              <X className="h-5 w-5 shrink-0" />
+              <X className="h-4 w-4 shrink-0 lg:h-5 lg:w-5" />
             ) : (
-              <Plus className="h-5 w-5 shrink-0" />
+              <Plus className="h-4 w-4 shrink-0 lg:h-5 lg:w-5" />
             )}
             <span className="truncate">Create</span>
           </button>
           {isCreateMenuOpen && (
-            <div className="animate-in fade-in slide-in-from-top-2 absolute top-[calc(100%+1rem)] right-[-1.25rem] z-[70] duration-200">
+            <div className="animate-in fade-in slide-in-from-top-2 absolute top-[calc(100%+0.75rem)] right-0 z-[70] duration-200 lg:top-[calc(100%+1rem)] lg:right-[-1.25rem]">
               <CreateFormMenu onSelect={handleCreateForm} />
             </div>
           )}
@@ -461,7 +412,7 @@ function FormsToolbar({
 
       <div
         ref={formDropdownRef}
-        className={`relative col-span-5 min-w-0 ${isFormMenuOpen ? "z-[70]" : ""}`}
+        className={`relative min-w-0 lg:col-span-5 ${isFormMenuOpen ? "z-[70]" : ""}`}
       >
         {isFormMenuOpen && (
           <button
@@ -472,14 +423,14 @@ function FormsToolbar({
           />
         )}
 
-        <div className="relative z-[70] flex h-15 min-w-0 items-center rounded-[22px] border border-[#EDEDED] bg-white px-4 shadow-sm">
-          <div className="font-dm-mono shrink-0 pr-5 pl-3 text-base font-normal tracking-[0.16em] text-black uppercase">
+        <div className="relative z-[70] flex h-12 min-w-0 items-center rounded-[18px] border border-[#EDEDED] bg-white px-2 shadow-sm lg:h-15 lg:rounded-[22px] lg:px-4">
+          <div className="font-dm-mono shrink-0 pr-2 pl-1 text-xs font-normal tracking-[0.1em] text-black uppercase lg:pr-5 lg:pl-3 lg:text-base lg:tracking-[0.16em]">
             Forms
           </div>
           <button
             type="button"
             onClick={() => setIsFormMenuOpen((open) => !open)}
-            className="flex h-9 min-w-0 flex-1 cursor-pointer items-center justify-between gap-3 rounded-[13px] border border-[#EDEDED] bg-white px-5 text-left transition-colors hover:bg-gray-50"
+            className="flex h-9 min-w-0 flex-1 cursor-pointer items-center justify-between gap-1.5 rounded-[13px] border border-[#EDEDED] bg-white px-2 text-left transition-colors hover:bg-gray-50 lg:gap-3 lg:px-5"
             aria-expanded={isFormMenuOpen}
           >
             {selectedForm && (
@@ -488,31 +439,33 @@ function FormsToolbar({
                 alt=""
                 width={23}
                 height={23}
-                className="ml-1 h-[23px] w-[23px] shrink-0"
+                className="ml-0.5 h-[18px] w-[18px] shrink-0 lg:ml-1 lg:h-[23px] lg:w-[23px]"
               />
             )}
-            <span className="font-dm-mono min-w-0 flex-1 truncate text-base font-normal tracking-[0.18em] text-black uppercase">
-              {selectedForm?.name ?? "Create a new form"}
+            <span className="font-dm-mono min-w-0 flex-1 truncate text-xs font-normal tracking-[0.1em] text-black uppercase lg:text-base lg:tracking-[0.18em]">
+              {selectedForm
+                ? getFormDisplayName(selectedForm)
+                : "Create a new form"}
             </span>
             <ChevronDown
-              className={`h-4 w-4 shrink-0 text-black transition-transform duration-200 ${isFormMenuOpen ? "rotate-180" : ""}`}
+              className={`h-3.5 w-3.5 shrink-0 text-black transition-transform duration-200 lg:h-4 lg:w-4 ${isFormMenuOpen ? "rotate-180" : ""}`}
             />
           </button>
         </div>
 
         {isFormMenuOpen && (
-          <div className="animate-in fade-in slide-in-from-top-2 absolute right-4 z-[70] mt-3 w-[calc(100%-7.5rem)] min-w-[300px] duration-200">
-            {MOCK_FORMS.length === 0 ? (
+          <div className="animate-in fade-in slide-in-from-top-2 absolute right-0 left-0 z-[70] mt-3 duration-200 sm:right-4 sm:left-auto sm:w-[calc(100%-7.5rem)] sm:min-w-[300px]">
+            {forms.length === 0 ? (
               <CreateFormMenu onSelect={handleCreateForm} />
             ) : (
-              <div className="font-dm-mono rounded-xl bg-white px-3 py-2 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)]">
-                {MOCK_FORMS.map((form, index) => (
+              <div className="font-dm-mono rounded-xl bg-white px-2 py-1.5 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] lg:px-3 lg:py-2">
+                {forms.map((form) => (
                   <button
-                    key={form.name}
+                    key={form.id}
                     type="button"
-                    className="flex h-12 w-full cursor-pointer items-center gap-3 px-3 text-left transition-colors hover:bg-gray-50"
+                    className="flex h-10 w-full cursor-pointer items-center gap-2 px-2 text-left transition-colors hover:bg-gray-50 lg:h-12 lg:gap-3 lg:px-3"
                     onClick={() => {
-                      onSelectForm(index);
+                      onSelectForm(form.id);
                       setIsFormMenuOpen(false);
                     }}
                   >
@@ -521,10 +474,10 @@ function FormsToolbar({
                       alt=""
                       width={23}
                       height={23}
-                      className="h-[23px] w-[23px] shrink-0"
+                      className="h-[18px] w-[18px] shrink-0 lg:h-[23px] lg:w-[23px]"
                     />
-                    <span className="min-w-0 flex-1 truncate text-base font-normal tracking-[0.18em] text-black uppercase">
-                      {form.name}
+                    <span className="min-w-0 flex-1 truncate text-xs font-normal tracking-[0.1em] text-black uppercase lg:text-base lg:tracking-[0.18em]">
+                      {getFormDisplayName(form)}
                     </span>
                   </button>
                 ))}
@@ -537,50 +490,27 @@ function FormsToolbar({
   );
 }
 
-function FormPageTabs({
-  pages,
-  activePageIndex,
-  onSelectPage,
-}: {
-  pages: NonNullable<MockForm["pages"]>;
-  activePageIndex: number;
-  onSelectPage: (index: number) => void;
-}) {
-  return (
-    <div className="flex h-11 min-w-0 items-center gap-3 overflow-hidden">
-      {pages.map((page, index) => (
-        <button
-          key={page.path}
-          type="button"
-          onClick={() => onSelectPage(index)}
-          className={`font-dm-mono h-11 min-w-0 cursor-pointer rounded-lg px-4 text-base font-normal tracking-[0.12em] uppercase shadow-sm ${
-            index === activePageIndex
-              ? "bg-[#006BE5] text-white"
-              : "border border-[#EDEDED] bg-white text-black"
-          }`}
-        >
-          <span className="block truncate">{page.path}</span>
-        </button>
-      ))}
-    </div>
-  );
-}
+// Page tabs UI kept for future backend support — path grouping not yet in API
+// function FormPageTabs({ ... }) { ... }
 
 function SubmissionNameDropdown({
   allSubmissions,
-  selectedIndex,
+  selectedId,
   onSelect,
   formType,
 }: {
-  allSubmissions: FormSubmission[];
-  selectedIndex: number | null;
-  onSelect: (index: number) => void;
+  allSubmissions: Submission[];
+  selectedId: string | null;
+  onSelect: (id: string) => void;
   formType: FormType;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  useScrollLock(isOpen);
   const selected =
-    selectedIndex === null ? null : allSubmissions[selectedIndex] || null;
+    selectedId === null
+      ? null
+      : (allSubmissions.find((s) => s.id === selectedId) ?? null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -591,7 +521,6 @@ function SubmissionNameDropdown({
         setIsOpen(false);
       }
     }
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -599,11 +528,11 @@ function SubmissionNameDropdown({
   if (!selected) return null;
 
   return (
-    <div ref={dropdownRef} className="relative w-fit">
+    <div ref={dropdownRef} className="relative w-full sm:w-fit">
       <button
         type="button"
         onClick={() => setIsOpen((open) => !open)}
-        className="flex h-9 min-w-[184px] cursor-pointer items-center gap-2 rounded-xl border border-[#EDEDED] bg-white px-3 text-left transition-colors hover:bg-gray-50"
+        className="flex h-9 w-full min-w-0 cursor-pointer items-center gap-2 rounded-xl border border-[#EDEDED] bg-white px-3 text-left transition-colors hover:bg-gray-50 sm:min-w-[184px]"
         aria-expanded={isOpen}
       >
         <Image
@@ -614,7 +543,7 @@ function SubmissionNameDropdown({
           className="h-[23px] w-[23px] shrink-0"
         />
         <span className="font-dm-mono min-w-0 flex-1 truncate text-base font-normal tracking-[0.12em] text-black uppercase">
-          {selected.name}
+          {getSubmissionDisplayName(selected)}
         </span>
         <ChevronDown
           className={`h-4 w-4 shrink-0 text-black transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
@@ -622,18 +551,20 @@ function SubmissionNameDropdown({
       </button>
 
       {isOpen && (
-        <div className="animate-in fade-in slide-in-from-top-1 absolute left-0 z-30 mt-2 w-56 rounded-xl border border-[#EDEDED] bg-white p-2 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] duration-200">
-          {allSubmissions.map((submission, index) => (
+        <div className="animate-in fade-in slide-in-from-top-1 absolute left-0 z-30 mt-2 w-full rounded-xl border border-[#EDEDED] bg-white p-2 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] duration-200 sm:w-56">
+          {allSubmissions.map((submission) => (
             <button
-              key={submission.name}
+              key={submission.id}
               type="button"
               className="font-dm-mono flex h-10 w-full cursor-pointer items-center rounded-lg px-3 text-left text-sm font-normal tracking-[0.12em] text-black uppercase transition-colors hover:bg-gray-50"
               onClick={() => {
-                onSelect(index);
+                onSelect(submission.id);
                 setIsOpen(false);
               }}
             >
-              <span className="truncate">{submission.name}</span>
+              <span className="truncate">
+                {getSubmissionDisplayName(submission)}
+              </span>
             </button>
           ))}
         </div>
@@ -644,17 +575,21 @@ function SubmissionNameDropdown({
 
 function FormSubmissionDetail({
   allSubmissions,
-  selectedIndex,
+  selectedId,
   onSelect,
   formType,
+  hideTitle = false,
 }: {
-  allSubmissions: FormSubmission[];
-  selectedIndex: number | null;
-  onSelect: (index: number) => void;
+  allSubmissions: Submission[];
+  selectedId: string | null;
+  onSelect: (id: string) => void;
   formType: FormType;
+  hideTitle?: boolean;
 }) {
   const selected =
-    selectedIndex === null ? null : allSubmissions[selectedIndex] || null;
+    selectedId === null
+      ? null
+      : (allSubmissions.find((s) => s.id === selectedId) ?? null);
 
   if (!selected) {
     return (
@@ -666,37 +601,42 @@ function FormSubmissionDetail({
   }
 
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-3xl bg-white px-10 py-9 shadow-sm">
-      <h2 className="font-dm-mono text-2xl font-bold tracking-[-0.02em] text-black uppercase">
-        Inbox
-      </h2>
+    <div className="relative min-h-[420px] w-full overflow-hidden lg:h-full lg:rounded-3xl lg:bg-white lg:px-10 lg:py-9 lg:shadow-sm">
+      {!hideTitle && (
+        <h2 className="font-dm-mono text-xl font-bold tracking-[-0.02em] text-black uppercase sm:text-2xl">
+          Inbox
+        </h2>
+      )}
 
-      <div className="mt-6">
+      <div className={hideTitle ? "" : "mt-5 sm:mt-6"}>
         <SubmissionNameDropdown
           allSubmissions={allSubmissions}
-          selectedIndex={selectedIndex}
+          selectedId={selectedId}
           onSelect={onSelect}
           formType={formType}
         />
       </div>
 
-      <p className="font-dm-mono mt-8 text-sm font-normal tracking-[0.18em] text-black/60 uppercase">
-        Recieved at {selected.receivedAt}
+      <p className="font-dm-mono mt-6 text-xs font-normal tracking-[0.14em] text-black/60 uppercase sm:mt-8 sm:text-sm sm:tracking-[0.18em]">
+        Received at {formatSubmissionReceivedAt(selected.submitted_at)}
       </p>
 
-      <div className="font-dm-mono mt-10 space-y-7 text-2xl leading-[1.32] font-normal tracking-[-0.02em] text-black uppercase">
-        <p>
-          <span className="font-bold">Name:</span> {selected.name}
-        </p>
-        <p>
-          <span className="font-bold">Email:</span> {selected.email}
-        </p>
-        <p>
-          <span className="font-bold">Interest:</span> {selected.interest}
-        </p>
-        <p className="max-w-[620px]">
-          <span className="font-bold">Message:</span> {selected.message}
-        </p>
+      <div className="font-dm-mono mt-7 space-y-4 text-base leading-[1.45] font-normal tracking-[-0.02em] text-black uppercase sm:mt-10 sm:space-y-7 sm:text-2xl sm:leading-[1.32]">
+        {Object.entries(selected.data).map(([key, value]) => (
+          <p key={key}>
+            <span className="font-bold">
+              {key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}:
+            </span>{" "}
+            {typeof value === "string"
+              ? value
+              : typeof value === "number" || typeof value === "boolean"
+                ? String(value)
+                : JSON.stringify(value)}
+          </p>
+        ))}
+        {Object.keys(selected.data).length === 0 && (
+          <p className="text-black/40">No submission data</p>
+        )}
       </div>
     </div>
   );
@@ -704,65 +644,60 @@ function FormSubmissionDetail({
 
 function FormSubmissionList({
   submissions,
-  selectedIndex,
+  selectedId,
   onSelect,
   activeStatus,
   onStatusChange,
 }: {
-  submissions: FormSubmission[];
-  selectedIndex: number | null;
-  onSelect: (index: number) => void;
+  submissions: Submission[];
+  selectedId: string | null;
+  onSelect: (id: string) => void;
   activeStatus: FormSubmissionStatus;
   onStatusChange: (status: FormSubmissionStatus) => void;
 }) {
-  const visibleSubmissions = submissions
-    .map((submission, index) => ({
-      ...submission,
-      index,
-    }))
-    .filter((submission) => submission.status === activeStatus);
+  const visibleSubmissions = submissions.filter(
+    (s) => s.is_read === (activeStatus === "read"),
+  );
 
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-3xl bg-white shadow-sm">
-      <div className="absolute top-7 right-8 left-8 z-10">
+    <div className="relative w-full overflow-hidden lg:h-full lg:rounded-3xl lg:bg-white lg:shadow-sm">
+      <div className="mb-4 lg:absolute lg:top-7 lg:right-8 lg:left-8 lg:z-10 lg:mb-0">
         <StatusControls
           activeStatus={activeStatus}
           onStatusChange={onStatusChange}
         />
       </div>
 
-      <div className="scrollbar-none h-full overflow-y-auto px-9 pt-28">
+      <div className="scrollbar-none overflow-y-auto pt-2 lg:h-full lg:px-9 lg:pt-28">
         <div className="space-y-4">
           {visibleSubmissions.map((submission) => {
-            const isSelected = submission.index === selectedIndex;
+            const isSelected = submission.id === selectedId;
+            const displayName = getSubmissionDisplayName(submission);
+            const preview = getSubmissionPreview(submission);
+            const time = formatSubmissionTime(submission.submitted_at);
+
             return (
               <button
-                key={submission.name}
+                key={submission.id}
                 type="button"
-                onClick={() => onSelect(submission.index)}
-                className={`flex h-[82px] w-full cursor-pointer items-center gap-4 rounded-[19px] px-5 text-left transition-colors ${
+                onClick={() => onSelect(submission.id)}
+                className={`flex w-full cursor-pointer items-center gap-3 rounded-[19px] p-0 text-left transition-colors lg:h-[82px] lg:gap-4 lg:px-5 ${
                   isSelected
-                    ? "bg-[#006BE5] text-white"
-                    : "bg-[#FBFBFB] text-black hover:bg-[#F6F6F6]"
+                    ? "text-[#006BE5] lg:bg-[#006BE5] lg:text-white"
+                    : "text-black lg:bg-[#FBFBFB] lg:hover:bg-[#F6F6F6]"
                 }`}
               >
-                <Image
-                  src={submission.avatar}
-                  alt=""
-                  width={52}
-                  height={52}
-                  className="h-[52px] w-[52px] shrink-0 rounded-full"
-                />
+                <SubmissionAvatar name={displayName} />
                 <div className="min-w-0 flex-1">
                   <div className="font-dm-mono truncate text-base font-normal tracking-[0.08em] uppercase">
-                    {submission.name}
+                    {displayName}
                   </div>
                   <div
                     className={`font-stolzl mt-1 truncate text-sm ${
                       isSelected ? "text-white/80" : "text-[#9B9B9B]"
                     }`}
                   >
-                    {submission.preview}
+                    {preview}
                   </div>
                 </div>
                 <span
@@ -770,111 +705,226 @@ function FormSubmissionList({
                     isSelected ? "text-white" : "text-[#6433CC]"
                   }`}
                 >
-                  {submission.time}
+                  {time}
                 </span>
               </button>
             );
           })}
+          {visibleSubmissions.length === 0 && (
+            <p className="font-dm-mono py-8 text-center text-sm tracking-widest text-black/40 uppercase">
+              No {activeStatus} submissions
+            </p>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
+// ── Main Component ─────────────────────────────────────────────────────────────
+
 export function FormsTabContent() {
-  const [selectedSubmissionIndex, setSelectedSubmissionIndex] = useState<
-    number | null
+  const [selectedSubmissionId, setSelectedSubmissionId] = useState<
+    string | null
   >(null);
-  const [selectedFormIndex, setSelectedFormIndex] = useState(0);
-  const [selectedPageIndex, setSelectedPageIndex] = useState(0);
+  const [isMobileDetail, setIsMobileDetail] = useState(false);
+  const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
   const [activeStatus, setActiveStatus] =
     useState<FormSubmissionStatus>("unread");
+  const [isEditMode, setIsEditMode] = useState(false);
   const [isWebsiteFormDrawerOpen, setIsWebsiteFormDrawerOpen] = useState(false);
   const [isOnlineFormDrawerOpen, setIsOnlineFormDrawerOpen] = useState(false);
   const [successForm, setSuccessForm] = useState<{
     type: FormType;
     name: string;
   } | null>(null);
-  const selectedForm = MOCK_FORMS[selectedFormIndex] ?? null;
-  const selectedFormType = selectedForm?.type ?? "website";
-  const selectedFormPages = selectedForm?.pages ?? [];
-  const isWebsiteForm = selectedFormType === "website";
-  const selectedFormSubmissions =
-    isWebsiteForm && selectedFormPages.length > 0
-      ? (selectedFormPages[selectedPageIndex]?.submissions ?? [])
-      : (selectedForm?.submissions ?? []);
 
-  const handleSelectForm = (index: number) => {
-    setSelectedFormIndex(index);
-    setSelectedPageIndex(0);
-    setSelectedSubmissionIndex(null);
-  };
+  const { data: forms = [] } = useForms();
+  const deleteForm = useDeleteForm();
+  const markRead = useMarkSubmissionRead();
 
-  const handleSelectPage = (index: number) => {
-    setSelectedPageIndex(index);
-    setSelectedSubmissionIndex(null);
+  // Auto-select first form when the list loads
+  useEffect(() => {
+    if (forms.length > 0 && !selectedFormId) {
+      setSelectedFormId(forms[0].id);
+    }
+  }, [forms, selectedFormId]);
+
+  const selectedForm = forms.find((f) => f.id === selectedFormId) ?? null;
+  const selectedFormType: FormType = selectedForm?.type ?? "website";
+
+  const { data: submissions = [] } = useFormSubmissions(
+    selectedForm?.id ?? null,
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 1023px)");
+    const updateMatch = () => setIsMobileDetail(mediaQuery.matches);
+    updateMatch();
+    mediaQuery.addEventListener("change", updateMatch);
+    return () => mediaQuery.removeEventListener("change", updateMatch);
+  }, []);
+
+  useScrollLock(selectedSubmissionId !== null && isMobileDetail);
+
+  // Mark submission as read when opened
+  useEffect(() => {
+    if (!selectedSubmissionId) return;
+    const submission = submissions.find((s) => s.id === selectedSubmissionId);
+    if (submission && !submission.is_read) {
+      markRead.mutate(selectedSubmissionId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedSubmissionId]);
+
+  const handleSelectForm = (id: string) => {
+    setSelectedFormId(id);
+    setSelectedSubmissionId(null);
   };
 
   const handleStatusChange = (status: FormSubmissionStatus) => {
     setActiveStatus(status);
-    setSelectedSubmissionIndex(null);
+    setSelectedSubmissionId(null);
   };
 
+  const handleEdit = () => {
+    if (!selectedForm) return;
+    setIsEditMode(true);
+    if (selectedForm.type === "website") {
+      setIsWebsiteFormDrawerOpen(true);
+    } else {
+      setIsOnlineFormDrawerOpen(true);
+    }
+  };
+
+  const handleDelete = () => {
+    if (!selectedFormId) return;
+    deleteForm.mutate(selectedFormId, {
+      onSuccess: () => {
+        setSelectedFormId(null);
+        setSelectedSubmissionId(null);
+      },
+    });
+  };
+
+  const handleWebsiteFormSuccess = (form: Form) => {
+    if (isEditMode) {
+      setIsEditMode(false);
+    } else {
+      setSelectedFormId(form.id);
+      setSuccessForm({ type: form.type, name: form.website_link ?? form.id });
+    }
+  };
+
+  const handleOnlineFormSuccess = (form: Form) => {
+    if (isEditMode) {
+      setIsEditMode(false);
+    } else {
+      setSelectedFormId(form.id);
+      setSuccessForm({ type: form.type, name: form.form_title ?? form.id });
+    }
+  };
+
+  const inboxDetail = (
+    <FormSubmissionDetail
+      allSubmissions={submissions}
+      selectedId={selectedSubmissionId}
+      onSelect={setSelectedSubmissionId}
+      formType={selectedFormType}
+    />
+  );
+
+  const mobileInboxDetail = (
+    <FormSubmissionDetail
+      allSubmissions={submissions}
+      selectedId={selectedSubmissionId}
+      onSelect={setSelectedSubmissionId}
+      formType={selectedFormType}
+      hideTitle
+    />
+  );
+
   return (
-    <div className="flex min-w-0 flex-1 flex-col gap-8">
+    <div className="flex min-w-0 flex-1 flex-col gap-4 lg:gap-8">
       <FormsToolbar
-        selectedFormIndex={selectedFormIndex}
+        forms={forms}
+        selectedFormId={selectedFormId}
         onSelectForm={handleSelectForm}
+        onDelete={handleDelete}
+        onEdit={handleEdit}
         onCreateWebsiteForm={() => setIsWebsiteFormDrawerOpen(true)}
         onCreateOnlineForm={() => setIsOnlineFormDrawerOpen(true)}
       />
-      <div className="grid min-h-0 flex-1 grid-cols-12 gap-8">
-        <div className="col-span-7 min-w-0">
-          <FormSubmissionDetail
-            allSubmissions={selectedFormSubmissions}
-            selectedIndex={selectedSubmissionIndex}
-            onSelect={setSelectedSubmissionIndex}
-            formType={selectedFormType}
-          />
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:h-[600px] lg:flex-none lg:grid-cols-12 lg:gap-8">
+        <div className="hidden min-w-0 lg:col-span-7 lg:block">
+          {inboxDetail}
         </div>
-        <div className="col-span-5 flex min-w-0 flex-col gap-8">
-          {isWebsiteForm && selectedFormPages.length > 0 && (
+        <div className="flex min-w-0 flex-col gap-5 lg:col-span-5 lg:gap-8">
+          {/* Page tabs (URL path grouping) — commented out pending backend support.
+              The API does not yet return a page/path field on submissions.
+              When available, restore FormPageTabs here using selectedFormPages
+              and wire onSelectPage to reset selectedSubmissionId. */}
+          {/* {isWebsiteForm && selectedFormPages.length > 0 && (
             <FormPageTabs
               pages={selectedFormPages}
               activePageIndex={selectedPageIndex}
               onSelectPage={handleSelectPage}
             />
-          )}
+          )} */}
           <div className="min-h-0 flex-1">
             <FormSubmissionList
-              submissions={selectedFormSubmissions}
-              selectedIndex={selectedSubmissionIndex}
-              onSelect={setSelectedSubmissionIndex}
+              submissions={submissions}
+              selectedId={selectedSubmissionId}
+              onSelect={setSelectedSubmissionId}
               activeStatus={activeStatus}
               onStatusChange={handleStatusChange}
             />
           </div>
         </div>
       </div>
+
+      {selectedSubmissionId !== null && isMobileDetail && (
+        <div className="fixed inset-0 z-10000 bg-black/45 lg:hidden">
+          <section className="animate-in slide-in-from-right ml-auto flex h-full w-full max-w-[520px] flex-col bg-white shadow-[-20px_0_70px_rgba(0,0,0,0.18)] duration-300">
+            <div className="flex h-14 shrink-0 items-center justify-between border-b border-gray-100 px-4">
+              <h2 className="font-dm-mono text-xl font-bold tracking-[-0.02em] text-black uppercase">
+                Inbox
+              </h2>
+              <button
+                type="button"
+                aria-label="Close inbox"
+                onClick={() => setSelectedSubmissionId(null)}
+                className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-[#F6F6F6] text-gray-700 transition-colors hover:bg-gray-100"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="min-h-0 flex-1 overflow-y-auto p-4">
+              {mobileInboxDetail}
+            </div>
+          </section>
+        </div>
+      )}
+
       <WebsiteFormDrawer
         open={isWebsiteFormDrawerOpen}
-        onClose={() => setIsWebsiteFormDrawerOpen(false)}
-        onSuccess={() =>
-          setSuccessForm({
-            type: "website",
-            name: "https://serendptai.com",
-          })
-        }
+        onClose={() => {
+          setIsWebsiteFormDrawerOpen(false);
+          setIsEditMode(false);
+        }}
+        onSuccess={handleWebsiteFormSuccess}
+        mode={isEditMode ? "edit" : "create"}
+        editForm={isEditMode ? (selectedForm ?? undefined) : undefined}
       />
       <OnlineFormDrawer
         open={isOnlineFormDrawerOpen}
-        onClose={() => setIsOnlineFormDrawerOpen(false)}
-        onSuccess={() =>
-          setSuccessForm({
-            type: "online",
-            name: "NG Ballerz Form",
-          })
-        }
+        onClose={() => {
+          setIsOnlineFormDrawerOpen(false);
+          setIsEditMode(false);
+        }}
+        onSuccess={handleOnlineFormSuccess}
+        mode={isEditMode ? "edit" : "create"}
+        editForm={isEditMode ? (selectedForm ?? undefined) : undefined}
       />
       <FormCreationSuccessModal
         open={successForm !== null}

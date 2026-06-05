@@ -3,8 +3,9 @@
 import { useMemo } from "react";
 import { Cell, Pie, PieChart, Tooltip } from "recharts";
 
-import { CountryFlag } from "@/components/ui/country-flag";
-import { countryCodeToEmoji, getCountryName } from "@/lib/country";
+import { CountryFlag, countryFlagDataUrl } from "@/components/ui/country-flag";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
+import { getCountryName } from "@/lib/country";
 import { formatDate, formatDuration } from "@/lib/format";
 import { DashboardVisitor } from "@/services/dashboard";
 
@@ -20,7 +21,7 @@ const PIE_COLORS = [
 ];
 
 function renderPieLabel(props: Record<string, unknown>) {
-  const { cx, cy, midAngle, innerRadius, outerRadius, name, value, emoji } =
+  const { cx, cy, midAngle, innerRadius, outerRadius, name, value, flag } =
     props as {
       cx: number;
       cy: number;
@@ -29,45 +30,50 @@ function renderPieLabel(props: Record<string, unknown>) {
       outerRadius: number;
       name: string;
       value: number;
-      emoji: string;
+      flag: string | null;
     };
 
   const RADIAN = Math.PI / 180;
   const radius = innerRadius + (outerRadius - innerRadius) * 0.55;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
+  const FLAG_W = 24;
+  const FLAG_H = 16;
 
   return (
-    <text
-      x={x}
-      y={y}
-      textAnchor="middle"
-      dominantBaseline="central"
-      className="pointer-events-none"
-    >
-      <tspan
-        x={x}
-        dy="-1.2em"
-        fontSize={13}
-        fontWeight={700}
-        fill="white"
-        style={{ fontFamily: "var(--font-greed-narrow)" }}
-      >
-        {name}
-      </tspan>
-      <tspan
-        x={x}
-        dy="1.3em"
-        fontSize={11}
-        fill="rgba(255,255,255,0.85)"
-        style={{ fontFamily: "var(--font-dm-mono)" }}
-      >
-        ~{value.toLocaleString()}
-      </tspan>
-      <tspan x={x} dy="1.4em" fontSize={22}>
-        {emoji}
-      </tspan>
-    </text>
+    <g className="pointer-events-none">
+      <text x={x} y={y} textAnchor="middle" dominantBaseline="central">
+        <tspan
+          x={x}
+          dy="-1.2em"
+          fontSize={13}
+          fontWeight={700}
+          fill="white"
+          style={{ fontFamily: "var(--font-greed-narrow)" }}
+        >
+          {name}
+        </tspan>
+        <tspan
+          x={x}
+          dy="1.3em"
+          fontSize={11}
+          fill="rgba(255,255,255,0.85)"
+          style={{ fontFamily: "var(--font-dm-mono)" }}
+        >
+          ~{value.toLocaleString()}
+        </tspan>
+      </text>
+      {flag && (
+        <image
+          href={flag}
+          x={x - FLAG_W / 2}
+          y={y + 10}
+          width={FLAG_W}
+          height={FLAG_H}
+          preserveAspectRatio="xMidYMid slice"
+        />
+      )}
+    </g>
   );
 }
 
@@ -78,6 +84,8 @@ export function VisitorsModal({
   visitors: DashboardVisitor[];
   onClose: () => void;
 }) {
+  useScrollLock(true);
+
   const countryData = useMemo(() => {
     const counts = new Map<string, number>();
     for (const v of visitors) {
@@ -89,7 +97,7 @@ export function VisitorsModal({
         code,
         name: getCountryName(code),
         value: count,
-        emoji: code.length === 2 ? countryCodeToEmoji(code) : "🏳️",
+        flag: countryFlagDataUrl(code),
       }))
       .sort((a, b) => b.value - a.value);
   }, [visitors]);

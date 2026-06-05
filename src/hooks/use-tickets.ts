@@ -16,6 +16,7 @@ export function useTickets() {
     queryKey: ["tickets", companyId],
     queryFn: () => ticketsApi.list(companyId!),
     enabled: !!companyId,
+    refetchInterval: 15000,
   });
 }
 
@@ -28,6 +29,7 @@ export function useTicket(ticketId: string | null) {
     queryFn: () => ticketsApi.getById(companyId!, ticketId!),
     enabled: !!companyId && !!ticketId,
     placeholderData: keepPreviousData,
+    refetchInterval: 15000,
   });
 }
 

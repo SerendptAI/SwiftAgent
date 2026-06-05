@@ -1,25 +1,20 @@
 import { format } from "date-fns";
-import { Maximize2, Paperclip, Send } from "lucide-react";
+import { Maximize2, Minimize2, Paperclip, Send, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useChat, useMarkChatSeen } from "@/hooks/use-conversations";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
+import { resolveAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
 
 import { MessageMarkdown } from "./message-markdown";
 
-const AVATAR_IMAGES = [
-  "/images/chats/newimg.svg",
-  "/images/chats/newimg1.svg",
-  "/images/chats/newimg2.svg",
-  "/images/chats/newimg3.svg",
-  "/images/chats/newimg4.svg",
-];
-
 function MessageEmptyState() {
   return (
-    <div className="flex h-full w-full items-center justify-center rounded-3xl bg-white shadow-sm">
+    <div className="flex min-h-[420px] w-full items-center justify-center rounded-[20px] bg-white px-4 pb-20 shadow-sm lg:h-full lg:rounded-3xl lg:pb-0">
       <div className="flex flex-col items-center gap-8 text-center">
         <Image
           src="/images/email-mailbox-open.svg"
@@ -42,19 +37,33 @@ function MessageEmptyState() {
 
 interface ChatViewProps {
   ticketId: string;
-  avatarIndex?: number;
+  className?: string;
+  onClose?: () => void;
 }
 
-export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
+export function ChatView({ ticketId, className, onClose }: ChatViewProps) {
   const companyId = useActiveCompanyId();
   const { data: chat, isFetching } = useChat(ticketId);
   const { mutate: markSeen } = useMarkChatSeen();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [draft, setDraft] = useState("");
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const avatarSrc = resolveAvatarUrl(chat?.avatar);
+
+  useScrollLock(isFullscreen);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chat?.messages]);
+
+  useEffect(() => {
+    if (!isFullscreen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsFullscreen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [isFullscreen]);
 
   // Mark chat as seen when opened
   useEffect(() => {
@@ -79,45 +88,46 @@ export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
     }
   }
 
-  return (
-    <div className="relative flex h-full flex-col rounded-3xl bg-white shadow-sm">
-      {/* Subtle loading bar */}
-      {isFetching && (
-        <div className="absolute top-0 right-0 left-0 z-10 ml-4 h-0.5 overflow-hidden rounded-t-3xl">
-          <div
-            className="h-full w-1/3 animate-pulse rounded-full bg-[#2196F3]"
-            style={{ animation: "loading 1s ease-in-out infinite" }}
-          />
-        </div>
-      )}
-
+  const body = (
+    <>
       {/* Chat Header */}
-      <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between border-b border-gray-100 px-4 py-4 sm:px-6">
+        <div className="flex min-w-0 items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-50">
-            <Image
-              src={AVATAR_IMAGES[avatarIndex % AVATAR_IMAGES.length]}
-              alt="Chat avatar"
-              width={36}
-              height={31}
-            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={avatarSrc} alt="Chat avatar" width={36} height={31} />
           </div>
-          <span className="font-dm-mono text-sm font-bold tracking-wider text-gray-900 uppercase">
+          <span className="font-dm-mono min-w-0 truncate text-sm font-bold tracking-wider text-gray-900 uppercase">
             {chat?.session_id
               ? chat.session_id.slice(0, 13).toUpperCase()
               : "Conversation"}
           </span>
         </div>
         <button
-          aria-label="Expand"
+          type="button"
+          aria-label={
+            onClose
+              ? "Close conversation"
+              : isFullscreen
+                ? "Exit fullscreen"
+                : "Expand"
+          }
+          onClick={onClose ?? (() => setIsFullscreen((v) => !v))}
           className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
         >
-          <Maximize2 className="h-4 w-4" />
+          {onClose ? (
+            <X className="h-4 w-4 lg:hidden" />
+          ) : isFullscreen ? (
+            <Minimize2 className="h-4 w-4" />
+          ) : (
+            <Maximize2 className="h-4 w-4" />
+          )}
+          {onClose && <Maximize2 className="hidden h-4 w-4 lg:block" />}
         </button>
       </div>
 
       {/* Messages Area (read-only) */}
-      <div className="scrollbar-none flex-1 space-y-4 overflow-y-auto px-6 py-4">
+      <div className="scrollbar-none flex-1 space-y-4 overflow-y-auto px-4 py-4 sm:px-6">
         {headerTime && (
           <div className="flex items-center justify-center">
             <span className="text-xs text-gray-400">{headerTime}</span>
@@ -138,12 +148,8 @@ export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
             >
               {isVisitor && (
                 <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gray-50">
-                  <Image
-                    src={AVATAR_IMAGES[avatarIndex % AVATAR_IMAGES.length]}
-                    alt="Visitor"
-                    width={22}
-                    height={19}
-                  />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={avatarSrc} alt="Visitor" width={22} height={19} />
                 </div>
               )}
               <div
@@ -201,6 +207,30 @@ export function ChatView({ ticketId, avatarIndex = 0 }: ChatViewProps) {
           </button>
         </form>
       </div>
+    </>
+  );
+
+  if (isFullscreen) {
+    return createPortal(
+      <div
+        role="dialog"
+        aria-modal="true"
+        className="fixed inset-0 z-[10000] flex flex-col bg-white"
+      >
+        {body}
+      </div>,
+      document.body,
+    );
+  }
+
+  return (
+    <div
+      className={cn(
+        "relative flex h-full min-h-[520px] flex-col rounded-[20px] bg-white shadow-sm lg:min-h-0 lg:rounded-3xl",
+        className,
+      )}
+    >
+      {body}
     </div>
   );
 }

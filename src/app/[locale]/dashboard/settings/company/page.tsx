@@ -32,12 +32,12 @@ export default function CompanyPage() {
   const companyId = useActiveCompanyId();
 
   return (
-    <div className="scrollbar-none flex min-h-[450px] flex-col gap-6 overflow-y-auto rounded-xl bg-white p-4 shadow-sm">
+    <div className="scrollbar-none flex min-h-[360px] flex-col gap-5 overflow-y-auto rounded-[20px] bg-white p-3 shadow-sm sm:min-h-[450px] sm:gap-6 sm:rounded-xl sm:p-4">
       <HelpBanner bgColor="bg-[#6433CC]" />
 
       {/* Tab Bar — matches StepIndicator style */}
-      <div className="scrollbar-none overflow-x-auto">
-        <div className="flex border-b border-gray-100">
+      <div className="w-full min-w-0 overflow-hidden">
+        <div className="grid w-full grid-cols-2 gap-2 border-b-0 border-gray-100 sm:flex sm:border-b">
           {TABS.map((tab, index) => {
             const isActive = index === activeTab;
             const barColor = TAB_COLORS[index] ?? "bg-gray-200";
@@ -46,13 +46,16 @@ export default function CompanyPage() {
                 key={tab}
                 onClick={() => setActiveTab(index)}
                 className={cn(
-                  "font-dm-mono relative shrink-0 cursor-pointer px-6 py-4 text-[10px] font-medium tracking-wider uppercase transition-colors",
+                  "font-dm-mono relative min-h-12 min-w-0 cursor-pointer rounded-lg bg-gray-50 px-2 py-3 text-center text-[9px] leading-tight font-medium tracking-[0.08em] uppercase transition-colors sm:min-h-0 sm:shrink-0 sm:rounded-none sm:bg-transparent sm:px-6 sm:py-4 sm:text-[10px] sm:tracking-wider",
+                  index === TABS.length - 1 && "col-span-2 sm:col-span-1",
                   isActive
                     ? "font-bold text-gray-900"
                     : "text-gray-400 hover:text-gray-600",
                 )}
               >
-                {tab}
+                <span className="block break-words whitespace-normal sm:whitespace-nowrap">
+                  {tab}
+                </span>
                 <div
                   className={cn(
                     "absolute bottom-0 left-0 h-1 w-full rounded-t-full",
@@ -67,7 +70,7 @@ export default function CompanyPage() {
       </div>
 
       {/* Tab Content */}
-      <div className="scrollbar-none overflow-y-auto p-4">
+      <div className="scrollbar-none overflow-y-auto p-0 sm:p-4">
         {activeTab === 0 && (
           <CompanyInfoStep
             companyId={companyId}

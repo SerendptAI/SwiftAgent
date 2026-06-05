@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronDown, Loader2 } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -9,7 +10,9 @@ import { z } from "zod";
 import { HelpBanner } from "@/components/dashboard/settings/help-banner";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useCurrentUser, useUpdateUserSecurity } from "@/hooks/use-auth";
-import { useInviteMember } from "@/hooks/use-company";
+import { useCompanyMembers, useInviteMember } from "@/hooks/use-company";
+import { cn } from "@/lib/utils";
+import type { CompanyMember, CompanyMemberStatus } from "@/services/company";
 
 const securitySchema = z.object({
   backup_email: z.string().email("Invalid email").optional().or(z.literal("")),
@@ -37,6 +40,8 @@ export default function SecurityPage() {
   const { data: user } = useCurrentUser();
   const updateSecurity = useUpdateUserSecurity();
   const inviteMember = useInviteMember();
+  const { data: members, isLoading: isLoadingMembers } =
+    useCompanyMembers(companyId);
 
   const {
     register,
@@ -90,24 +95,24 @@ export default function SecurityPage() {
     }
   };
   return (
-    <div className="flex min-h-[450px] flex-col gap-6 rounded-xl bg-white p-4 shadow-sm">
+    <div className="flex min-h-[360px] flex-col gap-5 rounded-[20px] bg-white p-3 shadow-sm sm:min-h-[450px] sm:gap-6 sm:rounded-xl sm:p-4">
       <HelpBanner bgColor="bg-[#7F9FFF]" />
 
       {/* Set a Back-up email */}
       <div className="space-y-4">
-        <h3 className="font-stolzl text-lg font-bold text-gray-900">
+        <h3 className="font-stolzl text-base font-bold text-gray-900 sm:text-lg">
           Set a Back-up email
         </h3>
 
-        <div className="flex items-center justify-between rounded-xl border border-gray-100 px-6 py-4">
-          <span className="font-dm-mono text-sm font-semibold tracking-[0.15em] text-gray-500 uppercase">
+        <div className="flex flex-col gap-3 rounded-xl border border-gray-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <span className="font-dm-mono text-xs font-semibold tracking-[0.15em] text-gray-500 uppercase sm:text-sm">
             Back-up Email
           </span>
           {isEditingEmail ? (
-            <div className="flex items-center gap-2">
-              <div>
+            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+              <div className="relative min-w-0">
                 <input
-                  className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm outline-none focus:border-[#006BE5]"
+                  className="h-10 w-full rounded-lg border border-gray-200 px-3 text-sm outline-none focus:border-[#006BE5] sm:h-auto sm:w-auto sm:py-1.5"
                   placeholder="backup@example.com"
                   {...register("backup_email")}
                 />
@@ -122,7 +127,7 @@ export default function SecurityPage() {
                   handleSubmit((data) => onSubmit(data, "email"))()
                 }
                 disabled={savingField === "email"}
-                className="flex items-center gap-2 rounded-lg bg-[#006BE5] px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#0058C0] disabled:opacity-50"
+                className="flex h-10 items-center justify-center gap-2 rounded-lg bg-[#006BE5] px-4 text-sm font-medium text-white transition-colors hover:bg-[#0058C0] disabled:opacity-50 sm:h-auto sm:py-1.5"
               >
                 {savingField === "email" ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -134,33 +139,33 @@ export default function SecurityPage() {
           ) : (
             <button
               onClick={() => setIsEditingEmail(true)}
-              className="flex items-center gap-2 rounded-2xl border border-gray-100 px-4 py-2.5 hover:bg-gray-50"
+              className="flex min-w-0 items-center justify-between gap-2 rounded-2xl border border-gray-100 px-4 py-2.5 hover:bg-gray-50 sm:justify-start"
             >
-              <span className="font-dm-mono text-sm font-medium tracking-wide text-gray-700 uppercase">
+              <span className="font-dm-mono min-w-0 truncate text-sm font-medium tracking-wide text-gray-700 uppercase">
                 {user?.backup_email
                   ? maskEmail(user.backup_email)
                   : "Add New Email"}
               </span>
-              <ChevronDown className="h-4 w-4 text-gray-400" />
+              <ChevronDown className="h-4 w-4 shrink-0 text-gray-400" />
             </button>
           )}
         </div>
 
-        <div className="flex items-center justify-between rounded-xl border border-gray-100 px-6 py-4">
-          <span className="font-dm-mono text-sm font-semibold tracking-[0.15em] text-gray-500 uppercase">
+        <div className="flex flex-col gap-3 rounded-xl border border-gray-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <span className="font-dm-mono text-xs font-semibold tracking-[0.15em] text-gray-500 uppercase sm:text-sm">
             Access Code
           </span>
           {isEditingCode ? (
-            <div className="flex items-center gap-2">
+            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
               <input
-                className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm outline-none focus:border-[#006BE5]"
+                className="h-10 w-full rounded-lg border border-gray-200 px-3 text-sm outline-none focus:border-[#006BE5] sm:h-auto sm:w-auto sm:py-1.5"
                 placeholder="************"
                 {...register("access_code")}
               />
               <button
                 onClick={() => handleSubmit((data) => onSubmit(data, "code"))()}
                 disabled={savingField === "code"}
-                className="flex items-center gap-2 rounded-lg bg-[#006BE5] px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#0058C0] disabled:opacity-50"
+                className="flex h-10 items-center justify-center gap-2 rounded-lg bg-[#006BE5] px-4 text-sm font-medium text-white transition-colors hover:bg-[#0058C0] disabled:opacity-50 sm:h-auto sm:py-1.5"
               >
                 {savingField === "code" ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -172,7 +177,7 @@ export default function SecurityPage() {
           ) : (
             <button
               onClick={() => setIsEditingCode(true)}
-              className="rounded-2xl border border-gray-100 px-4 py-2.5 hover:bg-gray-50"
+              className="rounded-2xl border border-gray-100 px-4 py-2.5 text-left hover:bg-gray-50 sm:text-center"
             >
               <span className="font-dm-mono text-sm font-medium tracking-wider text-gray-700">
                 {user?.access_code ? "••••••••••••" : "Add Access Code"}
@@ -184,27 +189,27 @@ export default function SecurityPage() {
 
       {/* Add a new member */}
       <div className="space-y-4">
-        <h3 className="font-stolzl text-lg font-bold text-gray-900">
+        <h3 className="font-stolzl text-base font-bold text-gray-900 sm:text-lg">
           Add a new member
         </h3>
 
-        <div className="flex items-center justify-between rounded-xl border border-gray-100 px-6 py-4">
-          <span className="font-dm-mono text-sm font-semibold tracking-[0.15em] text-gray-500 uppercase">
+        <div className="flex flex-col gap-3 rounded-xl border border-gray-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <span className="font-dm-mono text-xs font-semibold tracking-[0.15em] text-gray-500 uppercase sm:text-sm">
             Add Member
           </span>
           {isInviting ? (
-            <div className="flex items-center gap-2">
+            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
               <input
                 type="email"
                 value={inviteEmail}
                 onChange={(e) => setInviteEmail(e.target.value)}
-                className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm outline-none focus:border-[#006BE5]"
+                className="h-10 w-full rounded-lg border border-gray-200 px-3 text-sm outline-none focus:border-[#006BE5] sm:h-auto sm:w-auto sm:py-1.5"
                 placeholder="member@example.com"
               />
               <button
                 onClick={handleInvite}
                 disabled={inviteMember.isPending || !inviteEmail}
-                className="flex items-center gap-2 rounded-lg bg-[#006BE5] px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#0058C0] disabled:opacity-50"
+                className="flex h-10 items-center justify-center gap-2 rounded-lg bg-[#006BE5] px-4 text-sm font-medium text-white transition-colors hover:bg-[#0058C0] disabled:opacity-50 sm:h-auto sm:py-1.5"
               >
                 {inviteMember.isPending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -217,7 +222,7 @@ export default function SecurityPage() {
                   setIsInviting(false);
                   setInviteEmail("");
                 }}
-                className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-500 hover:bg-gray-50"
+                className="h-10 rounded-lg border border-gray-200 px-3 text-sm text-gray-500 hover:bg-gray-50 sm:h-auto sm:py-1.5"
               >
                 Cancel
               </button>
@@ -225,13 +230,82 @@ export default function SecurityPage() {
           ) : (
             <button
               onClick={() => setIsInviting(true)}
-              className="rounded-2xl bg-[#006BE5] px-6 py-2.5 text-sm font-bold tracking-wide text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#0058C0]"
+              className="h-11 rounded-2xl bg-[#006BE5] px-6 text-sm font-bold tracking-wide text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#0058C0] sm:h-auto sm:py-2.5"
             >
               Add Email
             </button>
           )}
         </div>
+
+        {/* Members list */}
+        <div className="rounded-xl border border-gray-100">
+          {isLoadingMembers ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
+            </div>
+          ) : !members || members.length === 0 ? (
+            <p className="font-stolzl px-6 py-6 text-center text-sm text-gray-400">
+              No members yet.
+            </p>
+          ) : (
+            <ul className="divide-y divide-gray-100">
+              {members.map((member) => (
+                <MemberRow key={member.email} member={member} />
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </div>
+  );
+}
+
+const STATUS_STYLES: Record<CompanyMemberStatus, string> = {
+  Active: "bg-green-50 text-green-700",
+  Pending: "bg-amber-50 text-amber-700",
+  Expired: "bg-gray-100 text-gray-500",
+};
+
+function MemberRow({ member }: { member: CompanyMember }) {
+  const displayName = member.name || member.email.split("@")[0];
+  const statusClass =
+    STATUS_STYLES[member.status] ?? "bg-gray-100 text-gray-500";
+
+  return (
+    <li className="flex items-center gap-4 px-6 py-3">
+      <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full bg-gray-100">
+        {member.picture ? (
+          <Image
+            src={member.picture}
+            alt={displayName}
+            fill
+            className="object-cover"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center text-sm font-semibold text-gray-500">
+            {displayName.charAt(0).toUpperCase()}
+          </div>
+        )}
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="font-stolzl truncate text-sm font-semibold text-gray-900">
+          {displayName}
+        </p>
+        <p className="font-stolzl truncate text-xs text-gray-400">
+          {member.email}
+        </p>
+      </div>
+      <span className="font-dm-mono shrink-0 text-xs tracking-wider text-gray-500 uppercase">
+        {member.role}
+      </span>
+      <span
+        className={cn(
+          "font-dm-mono shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase",
+          statusClass,
+        )}
+      >
+        {member.status}
+      </span>
+    </li>
   );
 }

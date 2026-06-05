@@ -6,19 +6,24 @@ import type {
   BillingPlansResponse,
   CheckoutPayload,
   CheckoutResponse,
+  PortalSessionResponse,
 } from "@/services/billing";
 import {
   createCheckoutSession,
+  createPortalSession,
   getBillingDetails,
   getBillingPlans,
+  getUserTimezone,
 } from "@/services/billing";
 
 // ── Billing Plans ─────────────────────────────────────────────────────────────
 
-export function useBillingPlans() {
+/** Region-aware plan list. Pass an explicit timezone to override the browser's. */
+export function useBillingPlans(timezone?: string) {
+  const tz = timezone ?? getUserTimezone();
   return useQuery<BillingPlansResponse>({
-    queryKey: ["billingPlans"],
-    queryFn: getBillingPlans,
+    queryKey: ["billingPlans", tz ?? "default"],
+    queryFn: () => getBillingPlans(tz),
     staleTime: 10 * 60 * 1000,
   });
 }
@@ -39,5 +44,13 @@ export function useBillingDetails(companyId: string | null | undefined) {
 export function useCreateCheckout() {
   return useMutation<CheckoutResponse, Error, CheckoutPayload>({
     mutationFn: createCheckoutSession,
+  });
+}
+
+// ── Create Polar Customer Portal Session ──────────────────────────────────────
+
+export function useCreatePortalSession() {
+  return useMutation<PortalSessionResponse, Error, string>({
+    mutationFn: createPortalSession,
   });
 }

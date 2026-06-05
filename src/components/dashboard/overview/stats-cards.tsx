@@ -50,17 +50,22 @@ function StatCard({
   return (
     <div
       className={cn(
-        "flex min-h-[250px] flex-col justify-between rounded-3xl bg-white p-6",
+        "flex min-h-[188px] flex-col justify-between rounded-[20px] bg-white p-4 sm:min-h-[220px] sm:p-5 lg:min-h-[250px] lg:rounded-3xl lg:p-6",
         className,
       )}
     >
       <div className="flex h-3/4 flex-col justify-between">
-        <div className="mb-6 flex items-start justify-between">
-          <div className="flex items-center gap-2">
-            <Icon className={cn("h-7 w-7", iconColor || "text-gray-500")} />
+        <div className="mb-5 flex items-start justify-between gap-3 lg:mb-6">
+          <div className="flex min-w-0 items-center gap-2">
+            <Icon
+              className={cn(
+                "h-6 w-6 shrink-0 sm:h-7 sm:w-7",
+                iconColor || "text-gray-500",
+              )}
+            />
             <span
               className={cn(
-                "font-dm-mono font-normal",
+                "font-dm-mono truncate text-sm font-normal sm:text-base",
                 iconColor || "text-gray-900",
               )}
             >
@@ -81,11 +86,11 @@ function StatCard({
           )}
 
           <div className="flex items-end justify-between gap-3">
-            <span className="font-greed-narrow font-condensed text-5xl font-medium tracking-tight text-gray-900">
+            <span className="font-greed-narrow font-condensed text-4xl font-medium tracking-tight text-gray-900 sm:text-5xl">
               {isLoading ? "-" : value}
             </span>
             {pending && (
-              <span className="font-stolzl mb-2 text-lg font-medium text-gray-400">
+              <span className="font-stolzl mb-1 text-base font-medium text-gray-400 sm:mb-2 sm:text-lg">
                 pending
               </span>
             )}
@@ -99,7 +104,7 @@ function StatCard({
                 )}
                 <span
                   className={cn(
-                    "font-greed-narrow font-semi-bold text-lg",
+                    "font-greed-narrow font-semi-bold text-base sm:text-lg",
                     isUp ? "text-[#008751]" : "text-[#F25430]",
                   )}
                 >
@@ -114,7 +119,7 @@ function StatCard({
       {/* Last 7 days trend footer - only for non-action cards with trends */}
       {trend && !action && !isLoading && (
         <div className="font-stolzl flex items-end justify-between">
-          <div className="flex w-full items-center justify-between gap-4 text-sm font-medium">
+          <div className="flex w-full items-center justify-between gap-3 text-xs font-medium sm:text-sm">
             <span className="text-gray-900">Last 7 days</span>
             <div className="flex items-center gap-2">
               <span className="flex items-center text-[#008751]">

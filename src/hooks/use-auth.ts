@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
 import { getAccessToken } from "@/lib/api-client";
 import type {
@@ -17,7 +18,9 @@ import {
   registerInterest,
   sendOtp,
   updateProfile,
+  updateUserName,
   updateUserSecurity,
+  uploadUserPfp,
   verifyOtp,
 } from "@/services/auth";
 
@@ -28,7 +31,15 @@ export function useCurrentUser() {
     queryKey: ["currentUser"],
     queryFn: getCurrentUser,
     enabled: !!getAccessToken(),
-    retry: false,
+    // Retry transient failures, but not auth errors (the interceptor already
+    // tried to refresh) — keeps a network blip from logging the user out.
+    retry: (failureCount, error) => {
+      const status = axios.isAxiosError(error)
+        ? error.response?.status
+        : undefined;
+      if (status === 401 || status === 403) return false;
+      return failureCount < 2;
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
@@ -50,6 +61,48 @@ export function useUpdateProfile() {
     mutationFn: updateProfile,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+    },
+  });
+}
+
+// ── Update display name (PATCH /me/name) ─────────────────────────────────────
+
+export function useUpdateUserName() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateUserName,
+    onSuccess: (data) => {
+      queryClient.setQueryData<User | undefined>(["currentUser"], (prev) =>
+        prev
+          ? {
+              ...prev,
+              name: data.name,
+              picture: data.picture ?? prev.picture,
+            }
+          : prev,
+      );
+    },
+  });
+}
+
+// ── Upload profile picture (PATCH /me/pfp) ───────────────────────────────────
+
+export function useUploadUserPfp() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: uploadUserPfp,
+    onSuccess: (data) => {
+      queryClient.setQueryData<User | undefined>(["currentUser"], (prev) =>
+        prev
+          ? {
+              ...prev,
+              name: data.name ?? prev.name,
+              picture: data.picture ?? prev.picture,
+            }
+          : prev,
+      );
     },
   });
 }

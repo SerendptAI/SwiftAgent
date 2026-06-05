@@ -176,7 +176,7 @@ export default function LoginPage() {
           {step === "email" ? (
             <div className="w-full">
               <div
-                className={`focus-within:ring-ring/50 relative flex h-11 w-full items-center rounded-md border bg-transparent pr-1 pl-6 focus-within:ring-2 md:pl-10 ${
+                className={`focus-within:ring-ring/50 relative flex h-11 w-full items-center rounded-md border bg-transparent focus-within:ring-2 ${
                   emailError ? "border-red-500" : "border-black/20"
                 }`}
               >
@@ -191,7 +191,7 @@ export default function LoginPage() {
                     if (e.key === "Enter") handleSendOtp();
                   }}
                   placeholder={t("companyEmailPlaceholder")}
-                  className="text-foreground placeholder:text-muted-foreground font-dm-mono h-full flex-1 bg-transparent text-xs leading-[1.2] tracking-[10%] uppercase outline-none md:text-sm"
+                  className="text-foreground placeholder:text-muted-foreground font-dm-mono h-full flex-1 bg-transparent text-center text-xs leading-[1.2] tracking-[10%] uppercase outline-none md:text-sm"
                 />
                 {email.length > 0 && (
                   <button

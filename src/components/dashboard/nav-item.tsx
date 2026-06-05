@@ -13,6 +13,8 @@ interface NavItemProps {
   label: string;
   activeColor?: string;
   iconClassName?: string;
+  className?: string;
+  badgeCount?: number;
 }
 
 export function NavItem({
@@ -21,7 +23,9 @@ export function NavItem({
   activeIcon,
   label,
   activeColor,
-  iconClassName = "h-7 w-7",
+  iconClassName = "h-6 w-6 md:h-7 md:w-7",
+  className,
+  badgeCount = 0,
 }: NavItemProps) {
   const pathname = usePathname();
   const isActive = pathname === href;
@@ -32,8 +36,9 @@ export function NavItem({
         href={href}
         aria-label={label}
         className={cn(
-          "bg-muted relative flex h-16 w-16 items-center justify-center rounded-2xl transition-all duration-200",
+          "bg-muted relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl transition-all duration-200 md:h-16 md:w-16",
           isActive ? "" : "text-muted-foreground hover:bg-muted",
+          className,
         )}
         style={
           isActive
@@ -61,7 +66,15 @@ export function NavItem({
             color: isActive && activeColor && !activeIcon ? "white" : undefined,
           },
         })}
-        <span className="sr-only">{label}</span>
+        {badgeCount > 0 && (
+          <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white">
+            {badgeCount > 99 ? "99+" : badgeCount}
+          </span>
+        )}
+        <span className="sr-only">
+          {label}
+          {badgeCount > 0 ? ` (${badgeCount} pending)` : ""}
+        </span>
       </Link>
     </InfoTooltip>
   );

@@ -50,8 +50,42 @@ export async function getCurrentUser(): Promise<User> {
 export async function updateProfile(payload: {
   personal_email?: string;
   personal_phone?: string;
+  name?: string;
+  picture?: string;
 }): Promise<User> {
-  const { data } = await apiClient.patch<User>("/api/v1/auth/me", payload);
+  const { data } = await apiClient.patch<
+    { status?: string; user?: User } | User
+  >("/api/v1/auth/me", payload);
+  // The handoff says this endpoint returns { status, user } — but earlier
+  // versions returned the user directly. Handle both shapes.
+  if ("user" in data && data.user) return data.user;
+  return data as User;
+}
+
+interface NamePictureResponse {
+  status?: string;
+  name: string;
+  picture?: string | null;
+}
+
+export async function updateUserName(
+  name: string,
+): Promise<NamePictureResponse> {
+  const { data } = await apiClient.patch<NamePictureResponse>(
+    "/api/v1/auth/me/name",
+    { name },
+  );
+  return data;
+}
+
+export async function uploadUserPfp(file: File): Promise<NamePictureResponse> {
+  const form = new FormData();
+  form.append("file", file);
+  const { data } = await apiClient.patch<NamePictureResponse>(
+    "/api/v1/auth/me/pfp",
+    form,
+    { headers: { "Content-Type": "multipart/form-data" } },
+  );
   return data;
 }
 

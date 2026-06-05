@@ -23,6 +23,7 @@ export interface Company {
   brand_tone: string;
   primary_language: string;
   support_emails: string[];
+  suggested_ai_prompts: string[];
   enabled_sources: string[];
   custom_info: string[];
   voice_style: string;
@@ -54,6 +55,17 @@ export type CompanyListItem = {
   setup_complete: boolean;
   onboarding_step: number;
 };
+
+export type CompanyMemberStatus = "Active" | "Pending" | "Expired" | string;
+export type CompanyMemberRole = "Admin" | "Member" | string;
+
+export interface CompanyMember {
+  email: string;
+  role: CompanyMemberRole;
+  status: CompanyMemberStatus;
+  name: string | null;
+  picture: string | null;
+}
 
 export const companyApi = {
   list: async (): Promise<CompanyListItem[]> => {
@@ -129,6 +141,13 @@ export const companyApi = {
     const { data } = await apiClient.post<Record<string, unknown>>(
       `/api/v1/companies/${companyId}/invites`,
       { email },
+    );
+    return data;
+  },
+
+  listMembers: async (companyId: string): Promise<CompanyMember[]> => {
+    const { data } = await apiClient.get<CompanyMember[]>(
+      `/api/v1/companies/${companyId}/members`,
     );
     return data;
   },

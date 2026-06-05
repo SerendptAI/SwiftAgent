@@ -21,6 +21,8 @@ export interface ChatSession {
   escalated?: boolean;
   /** ID of the ticket this chat was escalated into. */
   ticket_id?: string;
+  /** Relative path served by the API (e.g. "/chat-avatars/newimg.svg"). */
+  avatar?: string | null;
 }
 
 /** Returned by the detail endpoint (includes messages). */

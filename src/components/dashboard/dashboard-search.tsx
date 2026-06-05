@@ -7,6 +7,7 @@ import { Icons } from "@/components/icons";
 import { useCurrentUser } from "@/hooks/use-auth";
 import { useAllChatDetails, useChats } from "@/hooks/use-conversations";
 import { useRouter } from "@/i18n/navigation";
+import { resolveAvatarUrl } from "@/lib/avatar";
 
 // ── Section definitions ─────────────────────────────────────────────────────
 
@@ -15,6 +16,7 @@ interface SearchResult {
   text: string;
   highlight: string;
   route?: string;
+  avatar?: string;
 }
 
 interface SectionResult {
@@ -177,6 +179,7 @@ export function DashboardSearch() {
             text: matchedMessage.content,
             highlight: `<span class="text-gray-400">${sessionLabel}:</span> ${highlightMatch(snippet, query)}`,
             route: `/dashboard/ticketing?chat=${chat.id}`,
+            avatar: resolveAvatarUrl(chat.avatar),
           });
         } else if (sessionMatch) {
           const searchText = `${sessionLabel}: ${chat.message_count} messages`;
@@ -188,6 +191,7 @@ export function DashboardSearch() {
               query,
             ),
             route: `/dashboard/ticketing?chat=${chat.id}`,
+            avatar: resolveAvatarUrl(chat.avatar),
           });
         }
       }
@@ -282,7 +286,7 @@ export function DashboardSearch() {
             if (query.trim()) setIsOpen(true);
           }}
           placeholder="SEARCH YOUR DASHBOARD"
-          className="focus:ring-primary/20 h-10 w-full rounded-full bg-[#EDEDED] px-4 pr-10 text-[16px] outline-none placeholder:text-[16px] focus:ring-2"
+          className="focus:ring-primary/20 h-11 w-full rounded-full bg-[#EDEDED] px-4 pr-10 text-[16px] outline-none placeholder:text-[13px] focus:ring-2 sm:placeholder:text-[16px] md:h-10"
         />
         {isOpen && query.trim() ? (
           <button
@@ -333,7 +337,7 @@ export function DashboardSearch() {
             />
             <div
               ref={dropdownRef}
-              className="fixed max-h-[70vh] overflow-y-auto rounded-2xl bg-white p-4 shadow-lg [&_.search-result]:animate-[searchSlideIn_0.2s_ease-out_both] [&_.search-section]:animate-[searchFadeIn_0.25s_ease-out] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 hover:[&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-transparent"
+              className="fixed max-h-[70vh] overflow-y-auto rounded-2xl bg-white p-3 shadow-lg sm:p-4 [&_.search-result]:animate-[searchSlideIn_0.2s_ease-out_both] [&_.search-section]:animate-[searchFadeIn_0.25s_ease-out] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 hover:[&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-transparent"
               style={{
                 zIndex: 9999,
                 top:
@@ -358,11 +362,11 @@ export function DashboardSearch() {
                       className="search-section my-2 rounded-md border-b border-gray-100 bg-[#F3F3F3] p-4 first:pt-0 last:border-b-0 last:pb-0"
                     >
                       {/* Section header */}
-                      <div className="mb-3 flex items-baseline gap-3">
-                        <h3 className="font-greed-narrow text-2xl font-bold text-black">
+                      <div className="mb-3 flex flex-wrap items-baseline gap-2 sm:gap-3">
+                        <h3 className="font-greed-narrow text-xl font-bold text-black sm:text-2xl">
                           {section.name}
                         </h3>
-                        <span className="font-dm-mono text-xs font-semibold tracking-wider text-black uppercase">
+                        <span className="font-dm-mono max-w-full truncate text-xs font-semibold tracking-wider text-black uppercase">
                           &ldquo;{query.trim()}&rdquo;
                         </span>
                         <span className="font-dm-mono text-xs tracking-wider text-gray-400 uppercase">
@@ -410,14 +414,15 @@ export function DashboardSearch() {
                                 }
                               }}
                             >
-                              {section.name === "Ticketing" && (
-                                // eslint-disable-next-line @next/next/no-img-element
-                                <img
-                                  src={`/images/chats/img${(i % 3) + 1}.svg`}
-                                  alt=""
-                                  className="h-8 w-8 shrink-0 rounded"
-                                />
-                              )}
+                              {section.name === "Ticketing" &&
+                                result.avatar && (
+                                  // eslint-disable-next-line @next/next/no-img-element
+                                  <img
+                                    src={result.avatar}
+                                    alt=""
+                                    className="h-8 w-8 shrink-0 rounded"
+                                  />
+                                )}
                               <span
                                 className="font-dm-mono text-sm text-gray-600"
                                 dangerouslySetInnerHTML={{

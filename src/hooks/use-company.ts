@@ -1,7 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
-import type { Company, CompanyUpdateSection } from "@/services/company";
+import type {
+  Company,
+  CompanyMember,
+  CompanyUpdateSection,
+} from "@/services/company";
 import { companyApi, publicCompanyApi } from "@/services/company";
 
 /**
@@ -63,9 +67,24 @@ export function useCompanyMutations() {
 }
 
 export function useInviteMember() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: ({ companyId, email }: { companyId: string; email: string }) =>
       companyApi.inviteMember(companyId, email),
+    onSuccess: (_, { companyId }) => {
+      queryClient.invalidateQueries({
+        queryKey: ["company-members", companyId],
+      });
+    },
+  });
+}
+
+export function useCompanyMembers(companyId: string | null | undefined) {
+  return useQuery<CompanyMember[]>({
+    queryKey: ["company-members", companyId],
+    queryFn: () => companyApi.listMembers(companyId!),
+    enabled: !!companyId,
   });
 }
 

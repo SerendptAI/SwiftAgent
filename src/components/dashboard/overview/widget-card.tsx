@@ -1,14 +1,40 @@
 "use client";
 
-import { CheckCircle2, ChevronDown, Copy, XCircle } from "lucide-react";
+import {
+  CheckCircle2,
+  ChevronDown,
+  ChevronLeft,
+  Copy,
+  XCircle,
+} from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
+import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
+import {
+  useCreateIntegration,
+  useIntegrations,
+  useUpdateIntegration,
+} from "@/hooks/use-integrations";
 import { useStrollConfig, useUpdateStrollConfig } from "@/hooks/use-stroll";
+import { Link } from "@/i18n/navigation";
+import type {
+  IntegrationCreatePayload,
+  IntegrationUpdatePayload,
+} from "@/services/integrations";
 import type { StrollConfigPayload } from "@/services/stroll";
+
+import {
+  API_KEY_FIELDS,
+  type ApiKeyRowValue,
+  ApiKeysSection,
+  emptyApiKeyRow,
+  PaymentSandboxSection,
+  SuggestedQuestionsSection,
+} from "./chatbot-settings-sections";
 
 type WidgetMode = "widget" | "button";
 
@@ -67,9 +93,9 @@ export function WidgetCard() {
   const codeSnippet = useMemo(() => {
     if (!companyId) return "";
     if (mode === "button") {
-      return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" data-mode="button" data-trigger="[data-swift-agent-open]" defer></script>\n<button data-swift-agent-open>Chat with us</button>`;
+      return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" data-api-key="YOUR_API_KEY" data-mode="button" data-trigger="[data-swift-agent-open]" defer></script>\n<button data-swift-agent-open>Chat with us</button>`;
     }
-    return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" defer></script>`;
+    return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" data-api-key="YOUR_API_KEY" defer></script>`;
   }, [companyId, mode]);
 
   const handleCopy = useCallback(() => {
@@ -86,14 +112,14 @@ export function WidgetCard() {
         <div className="relative">
           <div className="relative">
             {/* Top bar with notch cutout */}
-            <div className="absolute top-0 right-0 left-0 z-50 flex h-[48px] items-center gap-4">
+            <div className="absolute top-0 right-0 left-0 z-10 flex h-[48px] items-center gap-2 pr-3 sm:gap-4 sm:pr-0">
               <div
                 className="bg-muted h-full rounded-br-md pr-4"
                 ref={modeDropdownRef}
               >
                 <button
                   onClick={() => setModeDropdownOpen((v) => !v)}
-                  className="font-dm-mono flex items-center gap-2 rounded-md bg-[#006BE5] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1E88E5]"
+                  className="font-dm-mono flex min-h-11 items-center gap-2 rounded-md bg-[#006BE5] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1E88E5] sm:px-5"
                 >
                   <ChevronDown
                     className={`h-4 w-4 transition-transform ${modeDropdownOpen ? "rotate-180" : ""}`}
@@ -102,7 +128,7 @@ export function WidgetCard() {
                 </button>
 
                 {modeDropdownOpen && (
-                  <div className="animate-in fade-in slide-in-from-top-1 absolute top-[48px] left-0 z-1000 min-w-[180px] overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg">
+                  <div className="animate-in fade-in slide-in-from-top-1 absolute top-[48px] left-0 z-20 min-w-[180px] overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg">
                     <button
                       onClick={() => {
                         setMode("widget");
@@ -134,22 +160,36 @@ export function WidgetCard() {
                 )}
               </div>
 
-              <div className="flex items-center pr-6">
+              <div className="flex items-center sm:pr-6">
                 <button
                   onClick={() => setIsSettingsOpen(true)}
-                  className="font-greed-narrow flex cursor-pointer items-center gap-2 rounded-md bg-[#EDEDED] px-4 py-2 text-xs font-bold tracking-wider text-gray-600 uppercase transition-colors hover:bg-gray-100"
+                  className="font-greed-narrow flex min-h-10 cursor-pointer items-center gap-2 rounded-md bg-[#EDEDED] px-3 py-2 text-xs font-bold tracking-wider text-gray-600 uppercase transition-colors hover:bg-gray-100 sm:px-4"
                 >
                   <Icons.Settings className="h-5 w-5" />
-                  SETTINGS
+                  <span className="hidden min-[360px]:inline">SETTINGS</span>
                 </button>
               </div>
             </div>
 
-            <div className="rounded-md border border-gray-100 bg-white px-5 pt-16 pb-5 shadow-sm">
+            <div className="rounded-[20px] border border-gray-100 bg-white px-4 pt-16 pb-5 shadow-sm md:rounded-md md:px-5">
               {/* Code snippet */}
-              <pre className="font-stolzl rounded-lg bg-[#F6F6F6] p-4 text-[13px] leading-relaxed break-all whitespace-pre-wrap text-gray-700">
+              <pre className="font-stolzl max-h-48 overflow-auto rounded-lg bg-[#F6F6F6] p-3 text-[11px] leading-relaxed break-all whitespace-pre-wrap text-gray-700 sm:p-4 sm:text-[13px]">
                 {codeSnippet || "No widget code found."}
               </pre>
+              <p className="font-dm-mono mt-2 text-[11px] text-gray-400">
+                Replace{" "}
+                <code className="rounded bg-gray-100 px-1 py-0.5 text-gray-600">
+                  YOUR_API_KEY
+                </code>{" "}
+                with a key from{" "}
+                <Link
+                  href="/dashboard/settings/api-keys"
+                  className="text-[#006BE5] underline hover:text-[#0055B8]"
+                >
+                  Settings → API Keys
+                </Link>
+                .
+              </p>
               {mode === "button" && (
                 <p className="font-dm-mono mt-2 text-[11px] text-gray-400">
                   Add the{" "}
@@ -164,7 +204,7 @@ export function WidgetCard() {
               <button
                 onClick={handleCopy}
                 disabled={!codeSnippet}
-                className="font-dm-mono mt-6 flex w-full items-center justify-center gap-2.5 rounded-md bg-[#006BE5] py-2 text-base font-normal text-white shadow-[-4px_4px_0px_0px_#000000] transition-all hover:bg-[#1E88E5] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-2px_2px_0px_0px_#000000] disabled:opacity-50"
+                className="font-dm-mono mt-6 flex min-h-11 w-full items-center justify-center gap-2.5 rounded-md bg-[#006BE5] py-2 text-base font-normal text-white shadow-[-4px_4px_0px_0px_#000000] transition-all hover:bg-[#1E88E5] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-2px_2px_0px_0px_#000000] disabled:opacity-50"
               >
                 <Copy className="h-5 w-5" />
                 {copied ? "Copied!" : "Copy"}
@@ -254,6 +294,11 @@ function ChatbotSettingsSidebar({
 }) {
   const { data: config } = useStrollConfig(companyId || null);
   const updateConfig = useUpdateStrollConfig();
+  const { data: company } = useCompanyQuery(companyId || null);
+  const { updateCompany } = useCompanyMutations();
+  const { data: integrations } = useIntegrations(companyId || null);
+  const createIntegration = useCreateIntegration(companyId || null);
+  const updateIntegration = useUpdateIntegration(companyId || null);
 
   const [selected, setSelected] = useState<Set<AgentId>>(
     () => new Set(["047", "007"]),
@@ -268,6 +313,17 @@ function ChatbotSettingsSidebar({
   const [sandboxMode, setSandboxMode] = useState(true);
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [isShown, setIsShown] = useState(false);
+  const [suggestedPrompts, setSuggestedPrompts] = useState<string[]>([]);
+  const [apiKeyRows, setApiKeyRows] = useState<Record<string, ApiKeyRowValue>>(
+    () =>
+      Object.fromEntries(API_KEY_FIELDS.map((f) => [f.id, emptyApiKeyRow()])),
+  );
+
+  const updateApiKeyRow = useCallback(
+    (presetId: string, next: ApiKeyRowValue) =>
+      setApiKeyRows((prev) => ({ ...prev, [presetId]: next })),
+    [],
+  );
 
   useEffect(() => {
     if (!config) return;
@@ -282,6 +338,31 @@ function ChatbotSettingsSidebar({
       setPreAuthUrl(config.credentials.pre_auth_url || "");
     }
   }, [config]);
+
+  useEffect(() => {
+    if (!company) return;
+    setSuggestedPrompts(company.suggested_ai_prompts ?? []);
+  }, [company]);
+
+  useEffect(() => {
+    if (!integrations) return;
+    setApiKeyRows((prev) => {
+      const next = { ...prev };
+      for (const field of API_KEY_FIELDS) {
+        const existing = integrations.find((i) => i.name === field.label);
+        if (!existing) continue;
+        const endpoint = existing.endpoints[0];
+        next[field.id] = {
+          integrationId: existing.id,
+          apiKey: "",
+          baseUrl: existing.base_url ?? "",
+          endpointPath: endpoint?.path ?? "",
+          endpointDescription: endpoint?.description ?? "",
+        };
+      }
+      return next;
+    });
+  }, [integrations]);
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => setIsShown(true));
@@ -314,17 +395,87 @@ function ChatbotSettingsSidebar({
     if (loginUrl.trim()) credentials.login_url = loginUrl.trim();
     if (preAuthUrl.trim()) credentials.pre_auth_url = preAuthUrl.trim();
 
+    const cleanedPrompts = suggestedPrompts
+      .map((p) => p.trim())
+      .filter(Boolean);
+
+    const integrationMutations: Promise<unknown>[] = [];
+    for (const field of API_KEY_FIELDS) {
+      const row = apiKeyRows[field.id];
+      if (!row) continue;
+      const apiKey = row.apiKey.trim();
+      const baseUrl = row.baseUrl.trim();
+      const endpointPath = row.endpointPath.trim();
+      const endpointDescription =
+        row.endpointDescription.trim() || field.tooltip;
+
+      if (row.integrationId) {
+        const dirty =
+          apiKey.length > 0 || baseUrl.length > 0 || endpointPath.length > 0;
+        if (!dirty) continue;
+        const payload: IntegrationUpdatePayload = {};
+        if (apiKey) payload.api_key = apiKey;
+        if (baseUrl) payload.base_url = baseUrl;
+        if (endpointPath) {
+          payload.endpoints = [
+            {
+              name: field.id,
+              path: endpointPath,
+              description: endpointDescription,
+            },
+          ];
+        }
+        integrationMutations.push(
+          updateIntegration.mutateAsync({
+            integrationId: row.integrationId,
+            payload,
+          }),
+        );
+        continue;
+      }
+
+      if (!apiKey) continue;
+      if (!baseUrl || !endpointPath) {
+        onError?.(
+          `${field.label} needs a Base URL and Endpoint path before it can be saved.`,
+        );
+        return;
+      }
+      const createPayload: IntegrationCreatePayload = {
+        name: field.label,
+        base_url: baseUrl,
+        api_key: apiKey,
+        documentation: field.tooltip,
+        endpoints: [
+          {
+            name: field.id,
+            path: endpointPath,
+            description: endpointDescription,
+          },
+        ],
+      };
+      integrationMutations.push(createIntegration.mutateAsync(createPayload));
+    }
+
     try {
-      await updateConfig.mutateAsync({
-        companyId,
-        payload: {
-          dashboard_url: dashboardUrl.trim(),
-          schedule: schedule.trim() || "0 2 * * *",
-          credentials,
-          sandbox_mode: sandboxMode,
-          max_pages: maxPages,
-        },
-      });
+      await Promise.all([
+        updateConfig.mutateAsync({
+          companyId,
+          payload: {
+            dashboard_url: dashboardUrl.trim(),
+            schedule: schedule.trim() || "0 2 * * *",
+            credentials,
+            sandbox_mode: sandboxMode,
+            max_pages: maxPages,
+          },
+        }),
+        updateCompany.mutateAsync({
+          companyId,
+          section: "identity",
+          payload: { suggested_ai_prompts: cleanedPrompts },
+        }),
+        ...integrationMutations,
+      ]);
     } catch (err) {
       console.error("Failed to save sandbox credentials:", err);
       onError?.(
@@ -352,12 +503,20 @@ function ChatbotSettingsSidebar({
           isShown ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex-1 space-y-8 overflow-y-auto px-6 py-6">
+        <div className="flex-1 space-y-8 overflow-y-auto px-4 py-5 sm:space-y-10 sm:px-6 sm:py-6">
+          <button
+            type="button"
+            onClick={closeWithAnimation}
+            className="font-dm-mono flex items-center gap-1.5 text-xs tracking-wider text-black/50 uppercase hover:text-black"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            Back
+          </button>
           <section>
-            <h3 className="font-greed-narrow mb-3 text-base font-bold tracking-wider text-gray-900 uppercase">
+            <h3 className="font-greed-narrow mb-3 text-[34px] leading-[0.95] font-medium tracking-[-0.68px] text-black uppercase">
               Select Agents
             </h3>
-            <p className="font-dm-mono mb-5 text-xs tracking-wider text-gray-500 uppercase">
+            <p className="font-dm-mono mb-5 text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase">
               Which agents are allowed to work in this chatbot
             </p>
             <ul className="space-y-4">
@@ -393,21 +552,14 @@ function ChatbotSettingsSidebar({
           </section>
 
           <section>
-            <h3 className="font-greed-narrow mb-3 text-base font-bold tracking-wider text-gray-900 uppercase">
+            <h3 className="font-greed-narrow mb-3 text-[34px] leading-[0.95] font-medium tracking-[-0.68px] text-black uppercase">
               Sandbox
             </h3>
-            <p className="font-dm-mono mb-5 text-xs tracking-wider text-gray-500 uppercase">
-              Please create a sandbox account and enter the login details for
+            <p className="font-dm-mono mb-5 text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase">
+              Please create a sandbox account and share the login details for
               Agent 047
             </p>
             <div className="space-y-4">
-              <FieldInput
-                id="sandbox-dashboard-url"
-                label="Dashboard URL"
-                value={dashboardUrl}
-                onChange={setDashboardUrl}
-                placeholder="https://app.example.com/dashboard"
-              />
               <FieldInput
                 id="sandbox-login-url"
                 label="Login URL"
@@ -416,11 +568,18 @@ function ChatbotSettingsSidebar({
                 placeholder="https://app.example.com/login"
               />
               <FieldInput
+                id="sandbox-dashboard-url"
+                label="Dashboard URL"
+                value={dashboardUrl}
+                onChange={setDashboardUrl}
+                placeholder="https://app.example.com/dashboard"
+              />
+              <FieldInput
                 id="sandbox-username"
-                label="Username"
+                label="Email/Username"
                 value={username}
                 onChange={setUsername}
-                placeholder="Username"
+                placeholder="Email/Username"
               />
               <FieldInput
                 id="sandbox-password"
@@ -478,15 +637,32 @@ function ChatbotSettingsSidebar({
               )}
             </div>
           </section>
+
+          <PaymentSandboxSection />
+          <ApiKeysSection value={apiKeyRows} onChange={updateApiKeyRow} />
+          <SuggestedQuestionsSection
+            value={suggestedPrompts}
+            onChange={setSuggestedPrompts}
+          />
         </div>
 
-        <div className="border-t border-gray-100 px-6 py-4">
+        <div className="border-t border-gray-100 px-4 py-4 sm:px-6">
           <button
             onClick={handleSave}
-            disabled={updateConfig.isPending}
-            className="font-dm-mono w-full cursor-pointer rounded-sm bg-[#006BE5] py-3 text-center text-sm font-bold tracking-wider text-white uppercase transition-colors hover:bg-[#0055B8] disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={
+              updateConfig.isPending ||
+              updateCompany.isPending ||
+              createIntegration.isPending ||
+              updateIntegration.isPending
+            }
+            className="font-dm-mono w-full cursor-pointer rounded-[8px] bg-[#006BE5] py-3 text-center text-sm tracking-wider text-white uppercase shadow-[-3px_4px_0px_0px_#000000] transition-all hover:bg-[#0055B8] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-1px_2px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {updateConfig.isPending ? "Saving…" : "Save & Close"}
+            {updateConfig.isPending ||
+            updateCompany.isPending ||
+            createIntegration.isPending ||
+            updateIntegration.isPending
+              ? "Saving…"
+              : "Save & Close"}
           </button>
         </div>
       </aside>
@@ -615,7 +791,7 @@ function ToastNotification({
   return (
     <div
       role="status"
-      className={`fixed top-6 right-6 z-[60] flex max-w-sm items-start gap-3 rounded-lg border px-4 py-3 shadow-lg ${
+      className={`fixed top-4 right-4 left-4 z-[60] flex items-start gap-3 rounded-lg border px-4 py-3 shadow-lg sm:top-6 sm:right-6 sm:left-auto sm:max-w-sm ${
         isSuccess
           ? "border-green-200 bg-green-50 text-green-800"
           : "border-red-200 bg-red-50 text-red-800"

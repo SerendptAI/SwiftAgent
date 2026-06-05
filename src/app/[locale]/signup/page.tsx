@@ -39,16 +39,27 @@ export default function RegisterCompanyPage() {
           setSubmitted(true);
         },
         onError: (error: unknown) => {
-          const data =
+          const response =
             error && typeof error === "object" && "response" in error
               ? (
                   error as {
                     response?: {
+                      status?: number;
                       data?: { message?: string; detail?: string };
                     };
                   }
-                ).response?.data
+                ).response
               : undefined;
+
+          // The endpoint is rate-limited to 5 requests/hour per IP.
+          if (response?.status === 429) {
+            setSubmitError(
+              "You've submitted too many requests. Please try again in an hour.",
+            );
+            return;
+          }
+
+          const data = response?.data;
           setSubmitError(
             data?.message ||
               data?.detail ||

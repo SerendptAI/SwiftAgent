@@ -145,16 +145,16 @@ export function AnswerBoundariesStep({
       <h2 className="mb-2 text-sm font-bold tracking-wide text-gray-900 uppercase">
         What uploaded information should the AI ignore?
       </h2>
-      <p className="mb-8 text-sm text-gray-400">
+      <p className="mb-6 text-xs text-gray-400 sm:mb-8 sm:text-sm">
         Any information that is ignored will not be used to talk to clients
       </p>
 
-      <div className="mb-12 flex flex-wrap justify-center gap-4 rounded-3xl bg-gray-100 p-8 shadow-inner">
+      <div className="mb-10 flex flex-wrap justify-center gap-2 rounded-2xl bg-gray-100 p-4 shadow-inner sm:mb-12 sm:gap-4 sm:rounded-3xl sm:p-8">
         {ignoredFields.map((field, index) => (
           <button
             key={field.id}
             onClick={() => removeIgnored(index)}
-            className="group flex items-center gap-3 rounded-xl bg-white px-3 py-3 text-sm font-bold text-gray-900 uppercase shadow-[-4px_4px_0px_0px_#000000] transition-all hover:translate-y-[2px] hover:shadow-[-2px_2px_0px_0px_#000000]"
+            className="group flex items-center gap-2 rounded-xl bg-white px-2.5 py-2 text-xs font-bold text-gray-900 uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:translate-y-[2px] hover:shadow-[-2px_2px_0px_0px_#000000] sm:gap-3 sm:px-3 sm:py-3 sm:text-sm sm:shadow-[-4px_4px_0px_0px_#000000]"
           >
             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#FF5F3D] text-white">
               <X className="h-3 w-3" />
@@ -168,16 +168,16 @@ export function AnswerBoundariesStep({
       <h2 className="mb-2 text-sm font-bold tracking-wide text-gray-900 uppercase">
         Ignored Information
       </h2>
-      <p className="mb-8 text-sm text-gray-400">
+      <p className="mb-6 text-xs text-gray-400 sm:mb-8 sm:text-sm">
         Tap the plus sign to add it back
       </p>
 
-      <div className="flex flex-wrap justify-center gap-4 rounded-3xl bg-gray-100 p-8 shadow-inner">
+      <div className="flex flex-wrap justify-center gap-2 rounded-2xl bg-gray-100 p-4 shadow-inner sm:gap-4 sm:rounded-3xl sm:p-8">
         {availableFields.map((field, index) => (
           <button
             key={field.id}
             onClick={() => addIgnored(index)}
-            className="group flex items-center gap-3 rounded-xl bg-white px-3 py-3 text-sm font-bold text-gray-900 uppercase shadow-[-4px_4px_0px_0px_#000000] transition-all hover:translate-y-[2px] hover:shadow-[-2px_2px_0px_0px_#000000]"
+            className="group flex items-center gap-2 rounded-xl bg-white px-2.5 py-2 text-xs font-bold text-gray-900 uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:translate-y-[2px] hover:shadow-[-2px_2px_0px_0px_#000000] sm:gap-3 sm:px-3 sm:py-3 sm:text-sm sm:shadow-[-4px_4px_0px_0px_#000000]"
           >
             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-200 text-black">
               <Plus className="h-3 w-3" />

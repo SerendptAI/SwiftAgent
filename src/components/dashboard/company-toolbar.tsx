@@ -12,7 +12,21 @@ import {
   useActiveCompanyId,
   useSetActiveCompanyId,
 } from "@/hooks/use-active-company";
+import { useBillingDetails, useBillingPlans } from "@/hooks/use-billing";
 import { useCompaniesQuery } from "@/hooks/use-company";
+import { useScrollLock } from "@/hooks/use-scroll-lock";
+
+import { UpgradePlanModal } from "./upgrade-plan-modal";
+
+/**
+ * Safety net only — used when the backend's plans payload doesn't yet expose
+ * `companies_limit`. Numbers mirror the bullets in pricing/plans.ts.
+ */
+const FALLBACK_COMPANY_LIMITS: Record<string, number> = {
+  basic: 1,
+  pro: 3,
+  enterprise: Infinity,
+};
 
 interface Company {
   id: string;
@@ -45,7 +59,32 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
     companies.find((c) => c.id === activeCompanyId) ?? companies[0] ?? null;
 
   const [isOpen, setIsOpen] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  useScrollLock(isOpen);
+
+  const { data: billingDetails } = useBillingDetails(activeCompanyId);
+  const { data: backendPlans } = useBillingPlans();
+
+  function getCompanyLimit(): number {
+    const tier = billingDetails?.tier ?? "basic";
+    const backendLimit = backendPlans?.[tier]?.companies_limit;
+    // Backend `null` = unlimited; a number = explicit cap; missing = fallback.
+    if (backendLimit === null) return Infinity;
+    if (typeof backendLimit === "number") return backendLimit;
+    return FALLBACK_COMPANY_LIMITS[tier] ?? 1;
+  }
+
+  function handleAddCompanyClick() {
+    setIsOpen(false);
+    // Only block when we actually have billing data; otherwise let the backend
+    // enforce so a momentary load doesn't trap users.
+    if (billingDetails && companies.length >= getCompanyLimit()) {
+      setShowUpgradeModal(true);
+    } else {
+      router.push(`/${locale}/onboarding?new_company=1`);
+    }
+  }
 
   function handleSwitch(companyId: string) {
     if (companyId !== activeCompanyId) {
@@ -72,13 +111,13 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
   }, []);
 
   return (
-    <div className="mb-4 flex items-center justify-between rounded-3xl bg-white p-2 shadow-sm">
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-[20px] bg-white p-2 shadow-sm md:rounded-3xl">
       {/* Company Selector Dropdown */}
-      <div ref={dropdownRef} className="relative">
+      <div ref={dropdownRef} className="relative min-w-0 flex-1 sm:flex-none">
         <button
           onClick={() => setIsOpen(!isOpen)}
           disabled={isLoading || companies.length === 0}
-          className="font-dm-mono flex items-center gap-3 rounded-2xl bg-gray-50 px-4 py-3 text-sm font-normal text-gray-900 uppercase transition-colors hover:bg-gray-100 disabled:opacity-60"
+          className="font-dm-mono flex max-w-full items-center gap-3 rounded-2xl bg-gray-50 px-4 py-3 text-sm font-normal text-gray-900 uppercase transition-colors hover:bg-gray-100 disabled:opacity-60"
         >
           <ChevronDown
             className={`h-4 w-4 text-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
@@ -86,7 +125,9 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
           {isLoading ? (
             <span className="h-4 w-28 animate-pulse rounded bg-gray-200" />
           ) : (
-            (selectedCompany?.name ?? "No company")
+            <span className="min-w-0 truncate">
+              {selectedCompany?.name ?? "No company"}
+            </span>
           )}
         </button>
 
@@ -102,7 +143,7 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
 
         {/* Dropdown Menu */}
         {isOpen && (
-          <div className="animate-in fade-in slide-in-from-top-2 font-dm-mono absolute left-0 z-[70] mt-2 w-80 rounded-2xl border border-gray-100 bg-white p-3 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] duration-200">
+          <div className="animate-in fade-in slide-in-from-top-2 font-dm-mono absolute left-0 z-[70] mt-2 w-[min(calc(100vw-2rem),20rem)] rounded-2xl border border-gray-100 bg-white p-3 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] duration-200">
             {companies.map((company) => {
               const isSelected = selectedCompany?.id === company.id;
               return (
@@ -138,10 +179,7 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
               );
             })}
             <button
-              onClick={() => {
-                setIsOpen(false);
-                router.push(`/${locale}/onboarding?new_company=1`);
-              }}
+              onClick={handleAddCompanyClick}
               className="mt-2 ml-5 flex w-[calc(100%-1.25rem)] items-center gap-3 rounded-xl border-2 border-dashed border-gray-300 px-3 py-2.5 text-sm text-gray-900 transition-colors hover:bg-gray-50"
             >
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100">
@@ -157,6 +195,11 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
 
       {/* Right-side actions */}
       {actions && <div className="flex items-center gap-3">{actions}</div>}
+
+      <UpgradePlanModal
+        open={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+      />
     </div>
   );
 }
