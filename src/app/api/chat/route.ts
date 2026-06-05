@@ -17,7 +17,15 @@ export async function POST(req: NextRequest) {
   );
 
   if (!upstream.ok || !upstream.body) {
-    return new Response(upstream.statusText, { status: upstream.status });
+    // Forward the upstream body (e.g. the 402 plan-limit detail) and its
+    // content type so the client can read the message, not just the status.
+    const body = await upstream.text();
+    return new Response(body || upstream.statusText, {
+      status: upstream.status,
+      headers: {
+        "Content-Type": upstream.headers.get("Content-Type") ?? "text/plain",
+      },
+    });
   }
 
   // Stream the SSE response through to the client

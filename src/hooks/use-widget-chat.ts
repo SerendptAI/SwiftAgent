@@ -2,10 +2,31 @@
 
 import { useCallback, useMemo, useRef, useState } from "react";
 
+import { useUpgradeModalStore } from "@/store/upgrade-modal-store";
 import { ChatMsg, NavigationGuide } from "@/types/widget";
 
 const DEFAULT_CHAT_ERROR_TEXT =
   "Sorry, something went wrong. Please try again.";
+
+const DEFAULT_PLAN_LIMIT_TEXT =
+  "You've reached your plan limit. Upgrade your plan to keep chatting.";
+
+/** Pull the plan-limit detail out of a 402 response, falling back to a default. */
+async function readPlanLimitMessage(res: Response): Promise<string> {
+  try {
+    const text = await res.text();
+    if (!text) return DEFAULT_PLAN_LIMIT_TEXT;
+    try {
+      const detail = (JSON.parse(text) as { detail?: unknown })?.detail;
+      if (typeof detail === "string" && detail.trim()) return detail;
+    } catch {
+      // Not JSON — fall through and use the raw text if it's meaningful.
+    }
+    return /payment required/i.test(text) ? DEFAULT_PLAN_LIMIT_TEXT : text;
+  } catch {
+    return DEFAULT_PLAN_LIMIT_TEXT;
+  }
+}
 
 interface UseWidgetChatOptions {
   companyId: string;
@@ -97,6 +118,26 @@ export function useWidgetChat({
             message: text,
           }),
         });
+
+        if (res.status === 402) {
+          // Plan limit reached — pop the upgrade modal and show the reason.
+          useUpgradeModalStore.getState().show();
+          const limitText = await readPlanLimitMessage(res);
+          setChatThinkingText(null);
+          setChatMessages((prev) => [
+            ...prev,
+            {
+              id: agentMsgId,
+              text: limitText,
+              sender: "agent" as const,
+              time: new Date().toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              }),
+            },
+          ]);
+          return;
+        }
 
         if (!res.ok || !res.body) {
           throw new Error(`Chat request failed: ${res.status}`);

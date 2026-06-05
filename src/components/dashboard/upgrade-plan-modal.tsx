@@ -84,9 +84,15 @@ function PlanIcon({ tier }: { tier?: string }) {
 interface UpgradePlanModalProps {
   open: boolean;
   onClose: () => void;
+  /** When false the modal can't be dismissed — no close button, backdrop click, or escape. */
+  dismissible?: boolean;
 }
 
-export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
+export function UpgradePlanModal({
+  open,
+  onClose,
+  dismissible = true,
+}: UpgradePlanModalProps) {
   const companyId = useActiveCompanyId();
   const { data: details } = useBillingDetails(companyId);
   const { data: backendPlans } = useBillingPlans();
@@ -94,7 +100,12 @@ export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
   const locale = useLocale();
 
   const [visible, setVisible] = useState(open);
-  const activeTier: SubscriptionTier = details?.tier ?? null;
+  // Only an actually-active subscription counts as the current plan. The backend
+  // still reports a `tier` for inactive/canceled/"none" states, so keying off
+  // `tier` alone would wrongly light a card up as "Presently On".
+  const subscriptionStatus = details?.subscription_status ?? details?.status;
+  const activeTier: SubscriptionTier =
+    subscriptionStatus === "active" ? (details?.tier ?? null) : null;
   const plans = plansFromBackend(backendPlans);
 
   useEffect(() => {
@@ -108,7 +119,8 @@ export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
 
   useEffect(() => {
     if (!visible) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && handleClose();
+    const onKey = (e: KeyboardEvent) =>
+      dismissible && e.key === "Escape" && handleClose();
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
     return () => {
@@ -116,7 +128,7 @@ export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
       document.body.style.overflow = "";
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible]);
+  }, [visible, dismissible]);
 
   if (!visible) return null;
 
@@ -135,32 +147,46 @@ export function UpgradePlanModal({ open, onClose }: UpgradePlanModalProps) {
       aria-labelledby="upgrade-plan-title"
       className="fixed inset-0 z-1040"
     >
-      <button
-        type="button"
-        aria-label="Close upgrade dialog"
-        onClick={handleClose}
-        className="absolute inset-0 cursor-default bg-black/65"
-      />
-
-      <div className="absolute top-[5vh] left-[8vw] max-h-[94vh] w-[min(810px,84vw)] overflow-y-auto bg-white">
+      {dismissible ? (
         <button
           type="button"
-          aria-label="Close"
+          aria-label="Close upgrade dialog"
           onClick={handleClose}
-          className="absolute top-[12px] right-[10px] z-10 text-black/70 transition-colors hover:text-black"
-        >
-          <X className="size-[30px]" strokeWidth={1.5} />
-        </button>
+          className="absolute inset-0 cursor-default bg-black/65"
+        />
+      ) : (
+        <div className="absolute inset-0 bg-black/65" />
+      )}
+
+      <div className="absolute top-[5vh] left-[8vw] max-h-[94vh] w-[min(810px,84vw)] overflow-y-auto bg-white">
+        {dismissible && (
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={handleClose}
+            className="absolute top-[12px] right-[10px] z-10 text-black/70 transition-colors hover:text-black"
+          >
+            <X className="size-[30px]" strokeWidth={1.5} />
+          </button>
+        )}
 
         <h2
           id="upgrade-plan-title"
           className="font-greed-narrow mx-auto mt-[46px] w-[447px] max-w-full text-center text-[40px] leading-[1.1] font-semibold tracking-[-0.8px] text-black"
         >
-          Upgrade your plan to have access to that
+          {dismissible
+            ? "Upgrade your plan to have access to that"
+            : "Choose a plan to get started"}
         </h2>
         <p className="font-dm-mono mx-auto mt-[22px] w-[492px] max-w-full text-center text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase">
-          Your plan currently supports {`{feature}`} to use {`{feature}`} you
-          have to upgrade
+          {dismissible ? (
+            <>
+              Your plan currently supports {`{feature}`} to use {`{feature}`}{" "}
+              you have to upgrade
+            </>
+          ) : (
+            "Select a plan to activate your account and start using SwiftAgent"
+          )}
         </p>
 
         <ul className="mx-auto mt-[47px] mb-[40px] flex w-[685px] max-w-full flex-col gap-[29px]">
