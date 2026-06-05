@@ -13,6 +13,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import { FormCreationSuccessModal } from "@/components/dashboard/ticketing/form-creation-success-modal";
+import { FormDeleteModal } from "@/components/dashboard/ticketing/form-delete-modal";
 import { OnlineFormDrawer } from "@/components/dashboard/ticketing/online-form-drawer";
 import { WebsiteFormDrawer } from "@/components/dashboard/ticketing/website-form-drawer";
 import {
@@ -731,6 +732,7 @@ export function FormsTabContent() {
   const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
   const [activeStatus, setActiveStatus] =
     useState<FormSubmissionStatus>("unread");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isWebsiteFormDrawerOpen, setIsWebsiteFormDrawerOpen] = useState(false);
   const [isOnlineFormDrawerOpen, setIsOnlineFormDrawerOpen] = useState(false);
@@ -798,9 +800,15 @@ export function FormsTabContent() {
   };
 
   const handleDelete = () => {
+    if (!selectedForm) return;
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
     if (!selectedFormId) return;
     deleteForm.mutate(selectedFormId, {
       onSuccess: () => {
+        setIsDeleteModalOpen(false);
         setSelectedFormId(null);
         setSelectedSubmissionId(null);
       },
@@ -931,6 +939,13 @@ export function FormsTabContent() {
         formIcon={FORM_TYPE_META[successForm?.type ?? "website"].icon}
         formName={successForm?.name ?? ""}
         onClose={() => setSuccessForm(null)}
+      />
+      <FormDeleteModal
+        open={isDeleteModalOpen}
+        form={selectedForm}
+        isDeleting={deleteForm.isPending}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
       />
     </div>
   );
