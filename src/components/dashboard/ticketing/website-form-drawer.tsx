@@ -4,7 +4,7 @@ import { Copy, Info } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
-import { useCreateWebsiteForm } from "@/hooks/use-forms";
+import { useCreateWebsiteForm, useUpdateForm } from "@/hooks/use-forms";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import type { Form } from "@/services/forms";
 
@@ -33,11 +33,16 @@ export function WebsiteFormDrawer({
   open,
   onClose,
   onSuccess,
+  mode = "create",
+  editForm,
 }: {
   open: boolean;
   onClose: () => void;
   onSuccess: (form: Form) => void;
+  mode?: "create" | "edit";
+  editForm?: Form;
 }) {
+  const isEdit = mode === "edit";
   const [isMounted, setIsMounted] = useState(open);
   const [isClosing, setIsClosing] = useState(false);
   const [activeStep, setActiveStep] = useState<WebsiteFormStep>("website");
@@ -47,6 +52,9 @@ export function WebsiteFormDrawer({
   const [createdForm, setCreatedForm] = useState<Form | null>(null);
   const closeTimeoutRef = useRef<number | null>(null);
   const createForm = useCreateWebsiteForm();
+  const updateForm = useUpdateForm();
+  const isPending = isEdit ? updateForm.isPending : createForm.isPending;
+  const isError = isEdit ? updateForm.isError : createForm.isError;
   useScrollLock(isMounted);
 
   const closeDrawer = useCallback(() => {
@@ -96,15 +104,28 @@ export function WebsiteFormDrawer({
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
-    createForm.mutate(
-      { website_link: websiteLink.trim(), alert_email: alertEmail.trim() },
-      {
-        onSuccess: (form) => {
-          setCreatedForm(form);
-          setActiveStep("security");
+    if (isEdit && editForm) {
+      updateForm.mutate(
+        {
+          formId: editForm.id,
+          payload: {
+            website_link: websiteLink.trim(),
+            alert_email: alertEmail.trim(),
+          },
         },
-      },
-    );
+        { onSuccess: (form) => completeCreation(form) },
+      );
+    } else {
+      createForm.mutate(
+        { website_link: websiteLink.trim(), alert_email: alertEmail.trim() },
+        {
+          onSuccess: (form) => {
+            setCreatedForm(form);
+            setActiveStep("security");
+          },
+        },
+      );
+    }
   };
 
   useEffect(() => {
@@ -116,10 +137,11 @@ export function WebsiteFormDrawer({
     setIsMounted(true);
     setIsClosing(false);
     setActiveStep("website");
-    setWebsiteLink("");
-    setAlertEmail("");
+    setWebsiteLink(isEdit ? (editForm?.website_link ?? "") : "");
+    setAlertEmail(isEdit ? (editForm?.alert_email ?? "") : "");
     setErrors({});
     setCreatedForm(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   useEffect(() => {
@@ -197,7 +219,7 @@ export function WebsiteFormDrawer({
               id="website-form-title"
               className="font-greed-narrow text-center text-[30px] leading-[0.95] font-medium tracking-[-0.02em] text-black uppercase md:text-[34px]"
             >
-              Create New Website Form
+              {isEdit ? "Edit Website Form" : "Create New Website Form"}
             </h2>
 
             <p className="font-dm-mono mt-6 w-full max-w-290 rounded-xl bg-[#EDEDED] px-4 py-3 text-center text-[11px] leading-[1.45] font-normal tracking-[0.12em] text-black/45 uppercase md:mt-14 md:rounded-2xl md:px-8 md:py-4 md:text-sm md:leading-[1.35] md:tracking-[0.18em]">
@@ -206,7 +228,7 @@ export function WebsiteFormDrawer({
               to have a functioning contact form
             </p>
 
-            <WebsiteFormProgress activeStep={activeStep} />
+            {!isEdit && <WebsiteFormProgress activeStep={activeStep} />}
 
             <div
               className={`mt-8 w-full md:mt-28 ${
@@ -218,10 +240,11 @@ export function WebsiteFormDrawer({
                   websiteLink={websiteLink}
                   alertEmail={alertEmail}
                   errors={errors}
-                  isLoading={createForm.isPending}
+                  isLoading={isPending}
+                  isEdit={isEdit}
                   apiError={
-                    createForm.isError
-                      ? "Failed to create form. Please try again."
+                    isError
+                      ? `Failed to ${isEdit ? "update" : "create"} form. Please try again.`
                       : undefined
                   }
                   onWebsiteLinkChange={setWebsiteLink}
@@ -273,6 +296,7 @@ function WebsiteInformationForm({
   alertEmail,
   errors,
   isLoading,
+  isEdit,
   apiError,
   onWebsiteLinkChange,
   onAlertEmailChange,
@@ -282,6 +306,7 @@ function WebsiteInformationForm({
   alertEmail: string;
   errors: WebsiteInformationErrors;
   isLoading: boolean;
+  isEdit?: boolean;
   apiError?: string;
   onWebsiteLinkChange: (value: string) => void;
   onAlertEmailChange: (value: string) => void;
@@ -347,7 +372,13 @@ function WebsiteInformationForm({
         disabled={isLoading}
         className="font-dm-mono mt-8 h-11 w-full cursor-pointer rounded-lg bg-[#006BE5] text-sm font-normal tracking-[0.08em] text-white uppercase shadow-[-3px_5px_0px_0px_#000000] transition-colors hover:bg-[#005fca] disabled:cursor-not-allowed disabled:opacity-60 md:mt-14 md:h-10 md:text-base"
       >
-        {isLoading ? "Creating..." : "Continue"}
+        {isLoading
+          ? isEdit
+            ? "Saving..."
+            : "Creating..."
+          : isEdit
+            ? "Save Changes"
+            : "Continue"}
       </button>
     </div>
   );

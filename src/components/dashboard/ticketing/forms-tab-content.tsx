@@ -315,6 +315,7 @@ function FormsToolbar({
   selectedFormId,
   onSelectForm,
   onDelete,
+  onEdit,
   onCreateWebsiteForm,
   onCreateOnlineForm,
 }: {
@@ -322,6 +323,7 @@ function FormsToolbar({
   selectedFormId: string | null;
   onSelectForm: (id: string) => void;
   onDelete: () => void;
+  onEdit: () => void;
   onCreateWebsiteForm: () => void;
   onCreateOnlineForm: () => void;
 }) {
@@ -379,6 +381,7 @@ function FormsToolbar({
         </button>
         <button
           type="button"
+          onClick={onEdit}
           disabled={!selectedForm}
           className="font-dm-mono flex h-12 min-w-0 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#F25430] px-3 text-xs font-normal tracking-[0.12em] text-white uppercase transition-colors hover:bg-[#d94526] disabled:cursor-not-allowed disabled:opacity-50 lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
         >
@@ -728,6 +731,7 @@ export function FormsTabContent() {
   const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
   const [activeStatus, setActiveStatus] =
     useState<FormSubmissionStatus>("unread");
+  const [isEditMode, setIsEditMode] = useState(false);
   const [isWebsiteFormDrawerOpen, setIsWebsiteFormDrawerOpen] = useState(false);
   const [isOnlineFormDrawerOpen, setIsOnlineFormDrawerOpen] = useState(false);
   const [successForm, setSuccessForm] = useState<{
@@ -783,6 +787,16 @@ export function FormsTabContent() {
     setSelectedSubmissionId(null);
   };
 
+  const handleEdit = () => {
+    if (!selectedForm) return;
+    setIsEditMode(true);
+    if (selectedForm.type === "website") {
+      setIsWebsiteFormDrawerOpen(true);
+    } else {
+      setIsOnlineFormDrawerOpen(true);
+    }
+  };
+
   const handleDelete = () => {
     if (!selectedFormId) return;
     deleteForm.mutate(selectedFormId, {
@@ -794,19 +808,21 @@ export function FormsTabContent() {
   };
 
   const handleWebsiteFormSuccess = (form: Form) => {
-    setSelectedFormId(form.id);
-    setSuccessForm({
-      type: form.type,
-      name: form.website_link ?? form.id,
-    });
+    if (isEditMode) {
+      setIsEditMode(false);
+    } else {
+      setSelectedFormId(form.id);
+      setSuccessForm({ type: form.type, name: form.website_link ?? form.id });
+    }
   };
 
   const handleOnlineFormSuccess = (form: Form) => {
-    setSelectedFormId(form.id);
-    setSuccessForm({
-      type: form.type,
-      name: form.form_title ?? form.id,
-    });
+    if (isEditMode) {
+      setIsEditMode(false);
+    } else {
+      setSelectedFormId(form.id);
+      setSuccessForm({ type: form.type, name: form.form_title ?? form.id });
+    }
   };
 
   const inboxDetail = (
@@ -835,6 +851,7 @@ export function FormsTabContent() {
         selectedFormId={selectedFormId}
         onSelectForm={handleSelectForm}
         onDelete={handleDelete}
+        onEdit={handleEdit}
         onCreateWebsiteForm={() => setIsWebsiteFormDrawerOpen(true)}
         onCreateOnlineForm={() => setIsOnlineFormDrawerOpen(true)}
       />
@@ -891,13 +908,23 @@ export function FormsTabContent() {
 
       <WebsiteFormDrawer
         open={isWebsiteFormDrawerOpen}
-        onClose={() => setIsWebsiteFormDrawerOpen(false)}
+        onClose={() => {
+          setIsWebsiteFormDrawerOpen(false);
+          setIsEditMode(false);
+        }}
         onSuccess={handleWebsiteFormSuccess}
+        mode={isEditMode ? "edit" : "create"}
+        editForm={isEditMode ? (selectedForm ?? undefined) : undefined}
       />
       <OnlineFormDrawer
         open={isOnlineFormDrawerOpen}
-        onClose={() => setIsOnlineFormDrawerOpen(false)}
+        onClose={() => {
+          setIsOnlineFormDrawerOpen(false);
+          setIsEditMode(false);
+        }}
         onSuccess={handleOnlineFormSuccess}
+        mode={isEditMode ? "edit" : "create"}
+        editForm={isEditMode ? (selectedForm ?? undefined) : undefined}
       />
       <FormCreationSuccessModal
         open={successForm !== null}

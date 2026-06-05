@@ -4,7 +4,7 @@ import { Copy, Info } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
-import { useCreateOnlineForm } from "@/hooks/use-forms";
+import { useCreateOnlineForm, useUpdateForm } from "@/hooks/use-forms";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import type { Form } from "@/services/forms";
 
@@ -29,11 +29,16 @@ export function OnlineFormDrawer({
   open,
   onClose,
   onSuccess,
+  mode = "create",
+  editForm,
 }: {
   open: boolean;
   onClose: () => void;
   onSuccess: (form: Form) => void;
+  mode?: "create" | "edit";
+  editForm?: Form;
 }) {
+  const isEdit = mode === "edit";
   const [isMounted, setIsMounted] = useState(open);
   const [isClosing, setIsClosing] = useState(false);
   const [activeStep, setActiveStep] = useState<OnlineFormStep>("form");
@@ -43,6 +48,9 @@ export function OnlineFormDrawer({
   const [createdForm, setCreatedForm] = useState<Form | null>(null);
   const closeTimeoutRef = useRef<number | null>(null);
   const createForm = useCreateOnlineForm();
+  const updateForm = useUpdateForm();
+  const isPending = isEdit ? updateForm.isPending : createForm.isPending;
+  const isError = isEdit ? updateForm.isError : createForm.isError;
   useScrollLock(isMounted);
 
   const closeDrawer = useCallback(() => {
@@ -92,15 +100,28 @@ export function OnlineFormDrawer({
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
-    createForm.mutate(
-      { form_image: formImage.trim(), form_title: formTitle.trim() },
-      {
-        onSuccess: (form) => {
-          setCreatedForm(form);
-          setActiveStep("security");
+    if (isEdit && editForm) {
+      updateForm.mutate(
+        {
+          formId: editForm.id,
+          payload: {
+            form_image: formImage.trim(),
+            form_title: formTitle.trim(),
+          },
         },
-      },
-    );
+        { onSuccess: (form) => completeCreation(form) },
+      );
+    } else {
+      createForm.mutate(
+        { form_image: formImage.trim(), form_title: formTitle.trim() },
+        {
+          onSuccess: (form) => {
+            setCreatedForm(form);
+            setActiveStep("security");
+          },
+        },
+      );
+    }
   };
 
   useEffect(() => {
@@ -112,8 +133,8 @@ export function OnlineFormDrawer({
     setIsMounted(true);
     setIsClosing(false);
     setActiveStep("form");
-    setFormImage("");
-    setFormTitle("");
+    setFormImage(isEdit ? (editForm?.form_image ?? "") : "");
+    setFormTitle(isEdit ? (editForm?.form_title ?? "") : "");
     setErrors({});
     setCreatedForm(null);
   }, [open]);
@@ -193,7 +214,7 @@ export function OnlineFormDrawer({
               id="online-form-title"
               className="font-greed-narrow text-center text-[30px] leading-[0.95] font-medium tracking-[-0.02em] text-black uppercase md:text-[34px]"
             >
-              Create New Online Form
+              {isEdit ? "Edit Online Form" : "Create New Online Form"}
             </h2>
 
             <p className="font-dm-mono mt-6 w-full max-w-290 rounded-xl bg-[#EDEDED] px-4 py-3 text-center text-[11px] leading-[1.45] font-normal tracking-[0.12em] text-black/45 uppercase md:mt-14 md:rounded-2xl md:px-8 md:py-4 md:text-sm md:leading-[1.35] md:tracking-[0.18em]">
@@ -202,7 +223,7 @@ export function OnlineFormDrawer({
               to have a functioning contact form
             </p>
 
-            <OnlineFormProgress activeStep={activeStep} />
+            {!isEdit && <OnlineFormProgress activeStep={activeStep} />}
 
             <div
               className={`mt-8 w-full md:mt-28 ${
@@ -214,10 +235,11 @@ export function OnlineFormDrawer({
                   formImage={formImage}
                   formTitle={formTitle}
                   errors={errors}
-                  isLoading={createForm.isPending}
+                  isLoading={isPending}
+                  isEdit={isEdit}
                   apiError={
-                    createForm.isError
-                      ? "Failed to create form. Please try again."
+                    isError
+                      ? `Failed to ${isEdit ? "update" : "create"} form. Please try again.`
                       : undefined
                   }
                   onFormImageChange={setFormImage}
@@ -269,6 +291,7 @@ function OnlineFormInformation({
   formTitle,
   errors,
   isLoading,
+  isEdit,
   apiError,
   onFormImageChange,
   onFormTitleChange,
@@ -278,6 +301,7 @@ function OnlineFormInformation({
   formTitle: string;
   errors: OnlineFormInformationErrors;
   isLoading: boolean;
+  isEdit?: boolean;
   apiError?: string;
   onFormImageChange: (value: string) => void;
   onFormTitleChange: (value: string) => void;
@@ -341,7 +365,13 @@ function OnlineFormInformation({
         disabled={isLoading}
         className="font-dm-mono mt-8 h-11 w-full cursor-pointer rounded-lg bg-[#006BE5] text-sm font-normal tracking-[0.08em] text-white uppercase shadow-[-3px_5px_0px_0px_#000000] transition-colors hover:bg-[#005fca] disabled:cursor-not-allowed disabled:opacity-60 md:mt-14 md:h-10 md:text-base"
       >
-        {isLoading ? "Creating..." : "Continue"}
+        {isLoading
+          ? isEdit
+            ? "Saving..."
+            : "Creating..."
+          : isEdit
+            ? "Save Changes"
+            : "Continue"}
       </button>
     </div>
   );
