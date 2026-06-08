@@ -187,13 +187,13 @@ export function WidgetCard() {
                   {codeSnippet || "No widget code found."}
                 </pre>
                 {locked && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-lg bg-white/50">
-                    <p className="font-dm-mono max-w-[260px] text-center text-xs font-bold tracking-wider text-gray-700 uppercase">
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-lg border border-white/50 bg-gradient-to-br from-white/60 via-white/40 to-white/20 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.7),0_8px_24px_-10px_rgba(0,0,0,0.3)] backdrop-blur-md">
+                    <p className="font-dm-mono max-w-[260px] text-center text-xs font-bold tracking-wider text-gray-700 uppercase drop-shadow-sm">
                       Subscribe to a plan to unlock your widget code
                     </p>
                     <button
                       onClick={showUpgrade}
-                      className="font-dm-mono rounded-md bg-[#006BE5] px-5 py-2 text-xs font-semibold tracking-wider text-white uppercase transition-colors hover:bg-[#0055B8]"
+                      className="font-dm-mono rounded-md border border-white/30 bg-gradient-to-b from-[#2E9BFF] to-[#006BE5] px-5 py-2 text-xs font-semibold tracking-wider text-white uppercase shadow-[inset_0_1px_0_0_rgba(255,255,255,0.4),0_4px_12px_-2px_rgba(0,107,229,0.5)] transition-all hover:from-[#1E88E5] hover:to-[#0055B8] active:translate-y-px"
                     >
                       Upgrade
                     </button>
