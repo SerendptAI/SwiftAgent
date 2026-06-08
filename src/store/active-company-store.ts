@@ -15,3 +15,13 @@ export const useActiveCompanyStore = create<ActiveCompanyState>()(
     { name: "active-company" },
   ),
 );
+
+/**
+ * Resets the active company and wipes its persisted localStorage entry.
+ * Called on logout — otherwise the previous user's company id survives the
+ * sign-out and the next user gets paywalled/billed against the wrong company.
+ */
+export function clearActiveCompany() {
+  useActiveCompanyStore.setState({ activeCompanyId: null });
+  useActiveCompanyStore.persist.clearStorage();
+}
