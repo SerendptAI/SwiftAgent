@@ -33,8 +33,6 @@ export function clearAuthTokens() {
   localStorage.removeItem(AUTH_TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
   localStorage.removeItem(AUTH_PROVIDER_KEY);
-  // Drop the persisted active company too, so the previous user's company
-  // can't bleed into the next session (wrong billing/paywall/data).
   clearActiveCompany();
 }
 

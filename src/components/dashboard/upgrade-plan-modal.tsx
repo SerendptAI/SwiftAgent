@@ -86,12 +86,15 @@ interface UpgradePlanModalProps {
   onClose: () => void;
   /** When false the modal can't be dismissed — no close button, backdrop click, or escape. */
   dismissible?: boolean;
+  /** Shows the "choose a plan to get started" activation copy instead of the upgrade copy. */
+  getStarted?: boolean;
 }
 
 export function UpgradePlanModal({
   open,
   onClose,
   dismissible = true,
+  getStarted = false,
 }: UpgradePlanModalProps) {
   const companyId = useActiveCompanyId();
   const { data: details } = useBillingDetails(companyId);
@@ -174,18 +177,18 @@ export function UpgradePlanModal({
           id="upgrade-plan-title"
           className="font-greed-narrow mx-auto mt-[46px] w-[447px] max-w-full text-center text-[40px] leading-[1.1] font-semibold tracking-[-0.8px] text-black"
         >
-          {dismissible
-            ? "Upgrade your plan to have access to that"
-            : "Choose a plan to get started"}
+          {getStarted
+            ? "Choose a plan to get started"
+            : "Upgrade your plan to have access to that"}
         </h2>
         <p className="font-dm-mono mx-auto mt-[22px] w-[492px] max-w-full text-center text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase">
-          {dismissible ? (
+          {getStarted ? (
+            "Select a plan to activate your account and start using SwiftAgent"
+          ) : (
             <>
               Your plan currently supports {`{feature}`} to use {`{feature}`}{" "}
               you have to upgrade
             </>
-          ) : (
-            "Select a plan to activate your account and start using SwiftAgent"
           )}
         </p>
 

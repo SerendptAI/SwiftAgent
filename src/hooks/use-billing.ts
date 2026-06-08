@@ -39,6 +39,15 @@ export function useBillingDetails(companyId: string | null | undefined) {
   });
 }
 
+export function useHasActivePlan(
+  companyId: string | null | undefined,
+): boolean | undefined {
+  const { data } = useBillingDetails(companyId);
+  if (!data) return undefined;
+  const status = data.subscription_status ?? data.status;
+  return data.tier != null && data.tier !== "none" && status === "active";
+}
+
 // ── Create Checkout Session ───────────────────────────────────────────────────
 
 export function useCreateCheckout() {
