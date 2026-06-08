@@ -8,6 +8,7 @@ import { useEffect, useRef } from "react";
 import { Loader } from "@/components/loader";
 import { getAccessToken } from "@/lib/api-client";
 import { getCurrentUser, processAuthCallback } from "@/services/auth";
+import { clearActiveCompany } from "@/store/active-company-store";
 
 export default function AuthCallbackPage() {
   const router = useRouter();
@@ -34,7 +35,8 @@ export default function AuthCallbackPage() {
         return;
       }
 
-      await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+      clearActiveCompany();
+      queryClient.clear();
 
       try {
         const user = await getCurrentUser();
