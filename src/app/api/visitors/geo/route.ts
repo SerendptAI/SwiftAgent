@@ -51,8 +51,6 @@ export async function GET(req: NextRequest) {
 
   const payload: unknown = await upstream.json();
 
-  // Backend may return either a bare array or a paginated wrapper like
-  // { items: [...] } / { visitors: [...] } / { data: [...] }.
   const visitors: Visitor[] = Array.isArray(payload)
     ? (payload as Visitor[])
     : Array.isArray((payload as { items?: unknown })?.items)

@@ -1,6 +1,4 @@
 export function formatDuration(seconds: number): string {
-  // 0 / missing → dash: visitor browsed but never chatted (or chatted
-  // before duration tracking existed). Reads cleaner than "00:00".
   if (!seconds) return "—";
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
