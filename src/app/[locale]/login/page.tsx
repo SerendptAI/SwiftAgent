@@ -176,7 +176,7 @@ export default function LoginPage() {
           {step === "email" ? (
             <div className="w-full">
               <div
-                className={`focus-within:ring-ring/50 relative flex h-11 w-full items-center rounded-md border bg-transparent focus-within:ring-2 ${
+                className={`focus-within:ring-ring/50 relative flex h-11 w-full items-center rounded-md border bg-transparent px-[0.2rem] focus-within:ring-2 ${
                   emailError ? "border-red-500" : "border-black/20"
                 }`}
               >
