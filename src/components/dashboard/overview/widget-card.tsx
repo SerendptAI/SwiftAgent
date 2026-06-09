@@ -23,6 +23,7 @@ import {
 import { useStrollConfig, useUpdateStrollConfig } from "@/hooks/use-stroll";
 import { Link } from "@/i18n/navigation";
 import type {
+  APIEndpoint,
   IntegrationCreatePayload,
   IntegrationUpdatePayload,
 } from "@/services/integrations";
@@ -30,10 +31,11 @@ import type { StrollConfigPayload } from "@/services/stroll";
 import { useUpgradeModalStore } from "@/store/upgrade-modal-store";
 
 import {
-  API_KEY_FIELDS,
-  type ApiKeyRowValue,
-  ApiKeysSection,
-  emptyApiKeyRow,
+  API_INTEGRATION_NAME,
+  ApiIntegrationSection,
+  type ApiIntegrationValue,
+  emptyApiIntegration,
+  ENDPOINT_PRESETS,
   PaymentSandboxSection,
   SuggestedQuestionsSection,
 } from "./chatbot-settings-sections";
@@ -305,6 +307,13 @@ const AGENT_OPTIONS: AgentOption[] = [
 
 const SIDEBAR_TRANSITION_MS = 300;
 
+const slugifyEndpointName = (label: string) =>
+  label
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+
 function ChatbotSettingsSidebar({
   companyId,
   onClose,
@@ -338,15 +347,8 @@ function ChatbotSettingsSidebar({
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [isShown, setIsShown] = useState(false);
   const [suggestedPrompts, setSuggestedPrompts] = useState<string[]>([]);
-  const [apiKeyRows, setApiKeyRows] = useState<Record<string, ApiKeyRowValue>>(
-    () =>
-      Object.fromEntries(API_KEY_FIELDS.map((f) => [f.id, emptyApiKeyRow()])),
-  );
-
-  const updateApiKeyRow = useCallback(
-    (presetId: string, next: ApiKeyRowValue) =>
-      setApiKeyRows((prev) => ({ ...prev, [presetId]: next })),
-    [],
+  const [apiIntegration, setApiIntegration] = useState<ApiIntegrationValue>(
+    () => emptyApiIntegration(),
   );
 
   useEffect(() => {
@@ -370,21 +372,47 @@ function ChatbotSettingsSidebar({
 
   useEffect(() => {
     if (!integrations) return;
-    setApiKeyRows((prev) => {
-      const next = { ...prev };
-      for (const field of API_KEY_FIELDS) {
-        const existing = integrations.find((i) => i.name === field.label);
-        if (!existing) continue;
-        const endpoint = existing.endpoints[0];
-        next[field.id] = {
-          integrationId: existing.id,
-          apiKey: "",
-          baseUrl: existing.base_url ?? "",
-          endpointPath: endpoint?.path ?? "",
-          endpointDescription: endpoint?.description ?? "",
-        };
-      }
-      return next;
+    // Only adopt the integration we own (named API_INTEGRATION_NAME); never
+    // fall back to an arbitrary one, which could overwrite unrelated data.
+    const existing = integrations.find((i) => i.name === API_INTEGRATION_NAME);
+    if (!existing) return;
+
+    const presetNames = new Set(ENDPOINT_PRESETS.map((p) => p.name));
+    const presetRows = ENDPOINT_PRESETS.map((preset) => {
+      const endpoint = existing.endpoints.find((e) => e.name === preset.name);
+      return {
+        id: preset.name,
+        name: preset.name,
+        label: preset.label,
+        path: endpoint?.path ?? "",
+        description: endpoint?.description ?? "",
+        preset: true,
+        tooltip: preset.tooltip,
+        placeholder: preset.placeholder,
+        queryParams: endpoint?.query_params,
+        headers: endpoint?.headers,
+      };
+    });
+    const customRows = existing.endpoints
+      .filter((e) => !presetNames.has(e.name))
+      .map((e) => ({
+        id: e.name,
+        name: e.name,
+        label: e.name,
+        path: e.path,
+        description: e.description,
+        preset: false,
+        queryParams: e.query_params,
+        headers: e.headers,
+      }));
+
+    setApiIntegration({
+      integrationId: existing.id,
+      baseUrl: existing.base_url ?? "",
+      apiKey: "",
+      authHeader: existing.auth_header || "Authorization",
+      authPrefix: existing.auth_prefix || "Bearer",
+      endpoints: [...presetRows, ...customRows],
     });
   }, [integrations]);
 
@@ -424,61 +452,78 @@ function ChatbotSettingsSidebar({
       .filter(Boolean);
 
     const integrationMutations: Promise<unknown>[] = [];
-    for (const field of API_KEY_FIELDS) {
-      const row = apiKeyRows[field.id];
-      if (!row) continue;
-      const apiKey = row.apiKey.trim();
-      const baseUrl = row.baseUrl.trim();
-      const endpointPath = row.endpointPath.trim();
-      const endpointDescription =
-        row.endpointDescription.trim() || field.tooltip;
+    {
+      const baseUrl = apiIntegration.baseUrl.trim();
+      const apiKey = apiIntegration.apiKey.trim();
+      const authHeader = apiIntegration.authHeader.trim() || "Authorization";
+      const authPrefix = apiIntegration.authPrefix.trim() || "Bearer";
 
-      if (row.integrationId) {
-        const dirty =
-          apiKey.length > 0 || baseUrl.length > 0 || endpointPath.length > 0;
-        if (!dirty) continue;
-        const payload: IntegrationUpdatePayload = {};
-        if (apiKey) payload.api_key = apiKey;
-        if (baseUrl) payload.base_url = baseUrl;
-        if (endpointPath) {
-          payload.endpoints = [
-            {
-              name: field.id,
-              path: endpointPath,
-              description: endpointDescription,
-            },
-          ];
-        }
-        integrationMutations.push(
-          updateIntegration.mutateAsync({
-            integrationId: row.integrationId,
-            payload,
-          }),
-        );
-        continue;
-      }
+      const usedNames = new Set<string>();
+      const endpoints: APIEndpoint[] = apiIntegration.endpoints
+        .filter((e) => e.path.trim())
+        .map((e) => {
+          const base =
+            (e.preset ? e.name : slugifyEndpointName(e.label)) || "endpoint";
+          let name = base;
+          for (let n = 2; usedNames.has(name); n++) name = `${base}_${n}`;
+          usedNames.add(name);
 
-      if (!apiKey) continue;
-      if (!baseUrl || !endpointPath) {
-        onError?.(
-          `${field.label} needs a Base URL and Endpoint path before it can be saved.`,
-        );
+          const endpoint: APIEndpoint = {
+            name,
+            path: e.path.trim(),
+            description: e.description.trim() || e.tooltip || e.label || name,
+          };
+          if (e.queryParams) endpoint.query_params = e.queryParams;
+          if (e.headers) endpoint.headers = e.headers;
+          return endpoint;
+        });
+
+      const hasInput =
+        baseUrl.length > 0 || apiKey.length > 0 || endpoints.length > 0;
+
+      if (hasInput && endpoints.length === 0) {
+        onError?.("Add at least one endpoint path to the API integration.");
         return;
       }
-      const createPayload: IntegrationCreatePayload = {
-        name: field.label,
-        base_url: baseUrl,
-        api_key: apiKey,
-        documentation: field.tooltip,
-        endpoints: [
-          {
-            name: field.id,
-            path: endpointPath,
-            description: endpointDescription,
-          },
-        ],
-      };
-      integrationMutations.push(createIntegration.mutateAsync(createPayload));
+
+      if (apiIntegration.integrationId) {
+        if (hasInput) {
+          if (!baseUrl) {
+            onError?.("Add a Base URL before saving the API integration.");
+            return;
+          }
+          const payload: IntegrationUpdatePayload = {
+            base_url: baseUrl,
+            auth_header: authHeader,
+            auth_prefix: authPrefix,
+            endpoints,
+          };
+          if (apiKey) payload.api_key = apiKey;
+          integrationMutations.push(
+            updateIntegration.mutateAsync({
+              integrationId: apiIntegration.integrationId,
+              payload,
+            }),
+          );
+        }
+      } else if (hasInput) {
+        if (!baseUrl || !apiKey) {
+          onError?.(
+            "The API integration needs a Base URL and API Key before it can be saved.",
+          );
+          return;
+        }
+        const createPayload: IntegrationCreatePayload = {
+          name: API_INTEGRATION_NAME,
+          base_url: baseUrl,
+          api_key: apiKey,
+          auth_header: authHeader,
+          auth_prefix: authPrefix,
+          documentation: "",
+          endpoints,
+        };
+        integrationMutations.push(createIntegration.mutateAsync(createPayload));
+      }
     }
 
     try {
@@ -663,7 +708,10 @@ function ChatbotSettingsSidebar({
           </section>
 
           <PaymentSandboxSection />
-          <ApiKeysSection value={apiKeyRows} onChange={updateApiKeyRow} />
+          <ApiIntegrationSection
+            value={apiIntegration}
+            onChange={setApiIntegration}
+          />
           <SuggestedQuestionsSection
             value={suggestedPrompts}
             onChange={setSuggestedPrompts}

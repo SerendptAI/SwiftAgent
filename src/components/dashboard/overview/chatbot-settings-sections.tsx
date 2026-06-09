@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, X } from "lucide-react";
+import { ChevronDown, Plus, X } from "lucide-react";
 import { useState } from "react";
 
 import { InfoTooltip } from "@/components/ui/info-tooltip";
@@ -61,176 +61,301 @@ export function PaymentSandboxSection() {
   );
 }
 
-// ── API KEYS ───────────────────────────────────────────────────────────────
+// ── API INTEGRATION ──────────────────────────────────────────────────────────
+// One integration = one product API (shared base URL + key) exposing many
+// endpoints, mirroring the backend IntegrationCreate schema.
 
-export const API_KEY_FIELDS: { id: string; label: string; tooltip: string }[] =
-  [
-    {
-      id: "api-user-account",
-      label: "User / account data API",
-      tooltip: "API endpoint that exposes user and account profile data.",
-    },
-    {
-      id: "api-transaction-history",
-      label: "Transaction history API",
-      tooltip: "API endpoint that returns transaction history records.",
-    },
-    {
-      id: "api-balance",
-      label: "Current balance / wallet state API",
-      tooltip: "API endpoint that returns the current balance / wallet state.",
-    },
-    {
-      id: "api-orders",
-      label: "Order / service records API",
-      tooltip: "API endpoint that returns order or service records.",
-    },
-    {
-      id: "api-event-logs",
-      label: "In-app event logs  API",
-      tooltip: "API endpoint that exposes in-app event logs.",
-    },
-  ];
+export const API_INTEGRATION_NAME = "Product API";
 
-export interface ApiKeyRowValue {
-  integrationId: string | null;
-  apiKey: string;
-  baseUrl: string;
-  endpointPath: string;
-  endpointDescription: string;
+export const ENDPOINT_PRESETS: {
+  name: string;
+  label: string;
+  tooltip: string;
+  placeholder: string;
+}[] = [
+  {
+    name: "user_account",
+    label: "User / account data",
+    tooltip: "Endpoint that exposes user and account profile data.",
+    placeholder: "/v1/users/{user_id}",
+  },
+  {
+    name: "transaction_history",
+    label: "Transaction history",
+    tooltip: "Endpoint that returns transaction history records.",
+    placeholder: "/v1/transactions",
+  },
+  {
+    name: "balance",
+    label: "Current balance / wallet state",
+    tooltip: "Endpoint that returns the current balance / wallet state.",
+    placeholder: "/v1/wallet/balance",
+  },
+  {
+    name: "orders",
+    label: "Order / service records",
+    tooltip: "Endpoint that returns order or service records.",
+    placeholder: "/v1/orders",
+  },
+  {
+    name: "event_logs",
+    label: "In-app event logs",
+    tooltip: "Endpoint that exposes in-app event logs.",
+    placeholder: "/v1/events",
+  },
+];
+
+export interface IntegrationEndpointRow {
+  id: string;
+  name: string;
+  label: string;
+  path: string;
+  description: string;
+  preset: boolean;
+  tooltip?: string;
+  placeholder?: string;
+  queryParams?: Record<string, string>;
+  headers?: Record<string, string>;
 }
 
-export const emptyApiKeyRow = (): ApiKeyRowValue => ({
+export interface ApiIntegrationValue {
+  integrationId: string | null;
+  baseUrl: string;
+  apiKey: string;
+  authHeader: string;
+  authPrefix: string;
+  endpoints: IntegrationEndpointRow[];
+}
+
+export const emptyApiIntegration = (): ApiIntegrationValue => ({
   integrationId: null,
-  apiKey: "",
   baseUrl: "",
-  endpointPath: "",
-  endpointDescription: "",
+  apiKey: "",
+  authHeader: "Authorization",
+  authPrefix: "Bearer",
+  endpoints: ENDPOINT_PRESETS.map((p) => ({
+    id: p.name,
+    name: p.name,
+    label: p.label,
+    path: "",
+    description: "",
+    preset: true,
+    tooltip: p.tooltip,
+    placeholder: p.placeholder,
+  })),
 });
 
-interface ApiKeysSectionProps {
-  value: Record<string, ApiKeyRowValue>;
-  onChange: (presetId: string, next: ApiKeyRowValue) => void;
+interface ApiIntegrationSectionProps {
+  value: ApiIntegrationValue;
+  onChange: (next: ApiIntegrationValue) => void;
 }
 
-export function ApiKeysSection({ value, onChange }: ApiKeysSectionProps) {
+export function ApiIntegrationSection({
+  value,
+  onChange,
+}: ApiIntegrationSectionProps) {
+  const [authOpen, setAuthOpen] = useState(false);
+
+  const update = (patch: Partial<ApiIntegrationValue>) =>
+    onChange({ ...value, ...patch });
+
+  const updateEndpoint = (
+    index: number,
+    patch: Partial<IntegrationEndpointRow>,
+  ) =>
+    update({
+      endpoints: value.endpoints.map((e, i) =>
+        i === index ? { ...e, ...patch } : e,
+      ),
+    });
+
+  const addEndpoint = () =>
+    update({
+      endpoints: [
+        ...value.endpoints,
+        {
+          id: crypto.randomUUID(),
+          name: "",
+          label: "",
+          path: "",
+          description: "",
+          preset: false,
+        },
+      ],
+    });
+
+  const removeEndpoint = (index: number) =>
+    update({ endpoints: value.endpoints.filter((_, i) => i !== index) });
+
   return (
     <section>
-      <h3 className={SECTION_HEADING}>API Keys</h3>
+      <h3 className={SECTION_HEADING}>API Integration</h3>
       <p className={SECTION_DESCRIPTION}>
-        To achieve complete automation of your product, please enter your API
-        keys here. This will enable agents to fully automate various RESPONSES.
+        Connect your product API once, then map the endpoints agents can call to
+        automate responses.
       </p>
 
       <div className="space-y-[18px]">
-        {API_KEY_FIELDS.map((field) => {
-          const row = value[field.id] ?? emptyApiKeyRow();
-          return (
-            <ApiKeyRow
-              key={field.id}
-              presetId={field.id}
-              label={field.label}
-              tooltip={field.tooltip}
-              row={row}
-              onChange={(next) => onChange(field.id, next)}
+        <SettingsField
+          id="integration-base-url"
+          label="Base URL"
+          value={value.baseUrl}
+          onChange={(v) => update({ baseUrl: v })}
+          placeholder="https://api.yourcompany.com"
+        />
+
+        <div>
+          <div className="mb-2 flex items-center justify-between">
+            <label htmlFor="integration-api-key" className={FIELD_LABEL}>
+              API Key
+            </label>
+            {value.integrationId && (
+              <span className="font-dm-mono rounded-full bg-[#006BE5]/10 px-2 py-0.5 text-[10px] tracking-wider text-[#006BE5] uppercase">
+                Configured
+              </span>
+            )}
+          </div>
+          <input
+            id="integration-api-key"
+            type="password"
+            value={value.apiKey}
+            onChange={(e) => update({ apiKey: e.target.value })}
+            placeholder={
+              value.integrationId
+                ? "Leave blank to keep current key"
+                : "*********"
+            }
+            className={FIELD_INPUT}
+          />
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setAuthOpen((v) => !v)}
+          className="font-dm-mono flex items-center gap-1 text-[12px] tracking-[1.4px] text-black/50 uppercase hover:text-black"
+        >
+          <ChevronDown
+            className={`h-3.5 w-3.5 transition-transform ${
+              authOpen ? "rotate-180" : ""
+            }`}
+          />
+          Authentication
+        </button>
+
+        {authOpen && (
+          <div className="space-y-[18px] border-l-2 border-black/10 pl-3">
+            <SettingsField
+              id="integration-auth-header"
+              label="Auth header"
+              value={value.authHeader}
+              onChange={(v) => update({ authHeader: v })}
+              placeholder="Authorization"
             />
-          );
-        })}
+            <SettingsField
+              id="integration-auth-prefix"
+              label="Auth prefix"
+              value={value.authPrefix}
+              onChange={(v) => update({ authPrefix: v })}
+              placeholder="Bearer"
+            />
+          </div>
+        )}
+      </div>
+
+      <div className="mt-8">
+        <h4 className="font-stolzl mb-1 text-[16px] text-black">Endpoints</h4>
+        <p className="font-dm-mono mb-4 text-[12px] leading-[1.8] tracking-[1.2px] text-black/50 uppercase">
+          Add the API paths agents can call. Leave a path blank to skip it.
+        </p>
+
+        <div className="space-y-3">
+          {value.endpoints.map((endpoint, index) => (
+            <EndpointRow
+              key={endpoint.id}
+              endpoint={endpoint}
+              index={index}
+              onChange={(patch) => updateEndpoint(index, patch)}
+              onRemove={
+                endpoint.preset ? undefined : () => removeEndpoint(index)
+              }
+            />
+          ))}
+
+          <button
+            type="button"
+            onClick={addEndpoint}
+            className="font-dm-mono relative flex w-full items-center justify-center gap-6 rounded-[5px] bg-[#F2B035] px-[10px] py-[10px] text-[14px] tracking-[1.4px] text-black/60 uppercase shadow-[inset_0px_-1px_4px_0px_rgba(0,0,0,0.25)] transition-colors hover:bg-[#E0A030]"
+          >
+            <Plus className="h-5 w-5" />
+            Add custom endpoint
+          </button>
+        </div>
       </div>
     </section>
   );
 }
 
-function ApiKeyRow({
-  presetId,
-  label,
-  tooltip,
-  row,
+function EndpointRow({
+  endpoint,
+  index,
   onChange,
+  onRemove,
 }: {
-  presetId: string;
-  label: string;
-  tooltip: string;
-  row: ApiKeyRowValue;
-  onChange: (next: ApiKeyRowValue) => void;
+  endpoint: IntegrationEndpointRow;
+  index: number;
+  onChange: (patch: Partial<IntegrationEndpointRow>) => void;
+  onRemove?: () => void;
 }) {
-  const expanded = !!row.integrationId || row.apiKey.length > 0;
-  const apiKeyId = `apikey-${presetId}`;
-  const baseUrlId = `apikey-${presetId}-base`;
-  const pathId = `apikey-${presetId}-path`;
-  const descId = `apikey-${presetId}-desc`;
-
-  const update = (patch: Partial<ApiKeyRowValue>) =>
-    onChange({ ...row, ...patch });
+  const nameId = `endpoint-${index}-name`;
+  const pathId = `endpoint-${index}-path`;
+  const descId = `endpoint-${index}-desc`;
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 rounded-[5px] border border-black/10 bg-black/[0.02] p-3">
       <div className="flex items-center justify-between">
-        <label htmlFor={apiKeyId} className={FIELD_LABEL}>
-          {label}
-        </label>
+        {endpoint.preset ? (
+          <span className={FIELD_LABEL}>{endpoint.label}</span>
+        ) : (
+          <input
+            id={nameId}
+            value={endpoint.label}
+            onChange={(e) => onChange({ label: e.target.value })}
+            placeholder="Endpoint name"
+            className="font-stolzl flex-1 bg-transparent text-[16px] text-black outline-none placeholder:text-black/40"
+          />
+        )}
         <div className="flex items-center gap-2">
-          {row.integrationId && (
-            <span className="font-dm-mono rounded-full bg-[#006BE5]/10 px-2 py-0.5 text-[10px] tracking-wider text-[#006BE5] uppercase">
-              Configured
-            </span>
+          {endpoint.tooltip && (
+            <InfoTooltip text={endpoint.tooltip} className="h-4 w-4" />
           )}
-          <InfoTooltip text={tooltip} className="h-4 w-4" />
+          {onRemove && (
+            <button
+              type="button"
+              onClick={onRemove}
+              aria-label="Remove endpoint"
+              className="flex h-4 w-4 items-center justify-center rounded-full text-black/50 transition-colors hover:bg-black/5 hover:text-black"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          )}
         </div>
       </div>
       <input
-        id={apiKeyId}
-        type="password"
-        value={row.apiKey}
-        onChange={(e) => update({ apiKey: e.target.value })}
-        placeholder={
-          row.integrationId ? "Leave blank to keep current key" : "*********"
-        }
+        id={pathId}
+        type="text"
+        value={endpoint.path}
+        onChange={(e) => onChange({ path: e.target.value })}
+        placeholder={endpoint.placeholder ?? "/v1/resource"}
         className={FIELD_INPUT}
       />
-      {expanded && (
-        <div className="space-y-2 rounded-[5px] border border-black/10 bg-black/[0.02] p-3">
-          <div>
-            <label htmlFor={baseUrlId} className={FIELD_LABEL}>
-              Base URL
-            </label>
-            <input
-              id={baseUrlId}
-              type="text"
-              value={row.baseUrl}
-              onChange={(e) => update({ baseUrl: e.target.value })}
-              placeholder="https://api.example.com"
-              className={FIELD_INPUT}
-            />
-          </div>
-          <div>
-            <label htmlFor={pathId} className={FIELD_LABEL}>
-              Endpoint path
-            </label>
-            <input
-              id={pathId}
-              type="text"
-              value={row.endpointPath}
-              onChange={(e) => update({ endpointPath: e.target.value })}
-              placeholder="/api/v1/orders/{order_id}"
-              className={FIELD_INPUT}
-            />
-          </div>
-          <div>
-            <label htmlFor={descId} className={FIELD_LABEL}>
-              Endpoint description
-            </label>
-            <input
-              id={descId}
-              type="text"
-              value={row.endpointDescription}
-              onChange={(e) => update({ endpointDescription: e.target.value })}
-              placeholder={tooltip}
-              className={FIELD_INPUT}
-            />
-          </div>
-        </div>
-      )}
+      <input
+        id={descId}
+        type="text"
+        value={endpoint.description}
+        onChange={(e) => onChange({ description: e.target.value })}
+        placeholder={endpoint.tooltip ?? "What this endpoint returns"}
+        className={FIELD_INPUT}
+      />
     </div>
   );
 }
