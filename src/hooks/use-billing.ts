@@ -1,4 +1,8 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  type UseQueryOptions,
+} from "@tanstack/react-query";
 
 import { getAccessToken } from "@/lib/api-client";
 import type {
@@ -30,12 +34,18 @@ export function useBillingPlans(timezone?: string) {
 
 // ── Billing Details (per company) ─────────────────────────────────────────────
 
-export function useBillingDetails(companyId: string | null | undefined) {
+export function useBillingDetails(
+  companyId: string | null | undefined,
+  options?: {
+    refetchInterval?: UseQueryOptions<BillingDetails>["refetchInterval"];
+  },
+) {
   return useQuery<BillingDetails>({
     queryKey: ["billingDetails", companyId],
     queryFn: () => getBillingDetails(companyId as string),
     enabled: !!companyId && !!getAccessToken(),
     staleTime: 60 * 1000,
+    refetchInterval: options?.refetchInterval ?? false,
   });
 }
 
