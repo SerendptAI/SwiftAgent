@@ -67,52 +67,45 @@ export function PaymentSandboxSection() {
 
 export const API_INTEGRATION_NAME = "Product API";
 
-export const ENDPOINT_PRESETS: {
-  name: string;
+// Optional starting points — the agent reasons over each endpoint's
+// description, so these are just convenience prefills, not required slots.
+export const ENDPOINT_SUGGESTIONS: {
   label: string;
-  tooltip: string;
+  description: string;
   placeholder: string;
 }[] = [
   {
-    name: "user_account",
     label: "User / account data",
-    tooltip: "Endpoint that exposes user and account profile data.",
+    description: "Endpoint that exposes user and account profile data.",
     placeholder: "/v1/users/{user_id}",
   },
   {
-    name: "transaction_history",
     label: "Transaction history",
-    tooltip: "Endpoint that returns transaction history records.",
+    description: "Endpoint that returns transaction history records.",
     placeholder: "/v1/transactions",
   },
   {
-    name: "balance",
     label: "Current balance / wallet state",
-    tooltip: "Endpoint that returns the current balance / wallet state.",
+    description: "Endpoint that returns the current balance / wallet state.",
     placeholder: "/v1/wallet/balance",
   },
   {
-    name: "orders",
     label: "Order / service records",
-    tooltip: "Endpoint that returns order or service records.",
+    description: "Endpoint that returns order or service records.",
     placeholder: "/v1/orders",
   },
   {
-    name: "event_logs",
     label: "In-app event logs",
-    tooltip: "Endpoint that exposes in-app event logs.",
+    description: "Endpoint that exposes in-app event logs.",
     placeholder: "/v1/events",
   },
 ];
 
 export interface IntegrationEndpointRow {
   id: string;
-  name: string;
   label: string;
   path: string;
   description: string;
-  preset: boolean;
-  tooltip?: string;
   placeholder?: string;
   queryParams?: Record<string, string>;
   headers?: Record<string, string>;
@@ -133,16 +126,7 @@ export const emptyApiIntegration = (): ApiIntegrationValue => ({
   apiKey: "",
   authHeader: "Authorization",
   authPrefix: "Bearer",
-  endpoints: ENDPOINT_PRESETS.map((p) => ({
-    id: p.name,
-    name: p.name,
-    label: p.label,
-    path: "",
-    description: "",
-    preset: true,
-    tooltip: p.tooltip,
-    placeholder: p.placeholder,
-  })),
+  endpoints: [],
 });
 
 interface ApiIntegrationSectionProps {
@@ -169,23 +153,26 @@ export function ApiIntegrationSection({
       ),
     });
 
-  const addEndpoint = () =>
+  const addEndpoint = (suggestion?: (typeof ENDPOINT_SUGGESTIONS)[number]) =>
     update({
       endpoints: [
         ...value.endpoints,
         {
           id: crypto.randomUUID(),
-          name: "",
-          label: "",
+          label: suggestion?.label ?? "",
           path: "",
-          description: "",
-          preset: false,
+          description: suggestion?.description ?? "",
+          placeholder: suggestion?.placeholder,
         },
       ],
     });
 
   const removeEndpoint = (index: number) =>
     update({ endpoints: value.endpoints.filter((_, i) => i !== index) });
+
+  const availableSuggestions = ENDPOINT_SUGGESTIONS.filter(
+    (s) => !value.endpoints.some((e) => e.label === s.label),
+  );
 
   return (
     <section>
@@ -265,7 +252,8 @@ export function ApiIntegrationSection({
       <div className="mt-8">
         <h4 className="font-stolzl mb-1 text-[16px] text-black">Endpoints</h4>
         <p className="font-dm-mono mb-4 text-[12px] leading-[1.8] tracking-[1.2px] text-black/50 uppercase">
-          Add the API paths agents can call. Leave a path blank to skip it.
+          Add the API endpoints agents can call to fetch data. Pick a suggestion
+          or add your own.
         </p>
 
         <div className="space-y-3">
@@ -275,15 +263,29 @@ export function ApiIntegrationSection({
               endpoint={endpoint}
               index={index}
               onChange={(patch) => updateEndpoint(index, patch)}
-              onRemove={
-                endpoint.preset ? undefined : () => removeEndpoint(index)
-              }
+              onRemove={() => removeEndpoint(index)}
             />
           ))}
 
+          {availableSuggestions.length > 0 && (
+            <div className="flex flex-wrap gap-2 pt-1">
+              {availableSuggestions.map((suggestion) => (
+                <button
+                  key={suggestion.label}
+                  type="button"
+                  onClick={() => addEndpoint(suggestion)}
+                  className="font-dm-mono flex items-center gap-1 rounded-full border border-black/15 px-3 py-1 text-[11px] tracking-[1px] text-black/60 uppercase transition-colors hover:border-black/40 hover:text-black"
+                >
+                  <Plus className="h-3 w-3" />
+                  {suggestion.label}
+                </button>
+              ))}
+            </div>
+          )}
+
           <button
             type="button"
-            onClick={addEndpoint}
+            onClick={() => addEndpoint()}
             className="font-dm-mono relative flex w-full items-center justify-center gap-6 rounded-[5px] bg-[#F2B035] px-[10px] py-[10px] text-[14px] tracking-[1.4px] text-black/60 uppercase shadow-[inset_0px_-1px_4px_0px_rgba(0,0,0,0.25)] transition-colors hover:bg-[#E0A030]"
           >
             <Plus className="h-5 w-5" />
@@ -304,7 +306,7 @@ function EndpointRow({
   endpoint: IntegrationEndpointRow;
   index: number;
   onChange: (patch: Partial<IntegrationEndpointRow>) => void;
-  onRemove?: () => void;
+  onRemove: () => void;
 }) {
   const nameId = `endpoint-${index}-name`;
   const pathId = `endpoint-${index}-path`;
@@ -312,33 +314,22 @@ function EndpointRow({
 
   return (
     <div className="space-y-2 rounded-[5px] border border-black/10 bg-black/[0.02] p-3">
-      <div className="flex items-center justify-between">
-        {endpoint.preset ? (
-          <span className={FIELD_LABEL}>{endpoint.label}</span>
-        ) : (
-          <input
-            id={nameId}
-            value={endpoint.label}
-            onChange={(e) => onChange({ label: e.target.value })}
-            placeholder="Endpoint name"
-            className="font-stolzl flex-1 bg-transparent text-[16px] text-black outline-none placeholder:text-black/40"
-          />
-        )}
-        <div className="flex items-center gap-2">
-          {endpoint.tooltip && (
-            <InfoTooltip text={endpoint.tooltip} className="h-4 w-4" />
-          )}
-          {onRemove && (
-            <button
-              type="button"
-              onClick={onRemove}
-              aria-label="Remove endpoint"
-              className="flex h-4 w-4 items-center justify-center rounded-full text-black/50 transition-colors hover:bg-black/5 hover:text-black"
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
-          )}
-        </div>
+      <div className="flex items-center justify-between gap-2">
+        <input
+          id={nameId}
+          value={endpoint.label}
+          onChange={(e) => onChange({ label: e.target.value })}
+          placeholder="Endpoint name"
+          className="font-stolzl flex-1 bg-transparent text-[16px] text-black outline-none placeholder:text-black/40"
+        />
+        <button
+          type="button"
+          onClick={onRemove}
+          aria-label="Remove endpoint"
+          className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-black/50 transition-colors hover:bg-black/5 hover:text-black"
+        >
+          <X className="h-3.5 w-3.5" />
+        </button>
       </div>
       <input
         id={pathId}
@@ -353,7 +344,7 @@ function EndpointRow({
         type="text"
         value={endpoint.description}
         onChange={(e) => onChange({ description: e.target.value })}
-        placeholder={endpoint.tooltip ?? "What this endpoint returns"}
+        placeholder="What this endpoint returns"
         className={FIELD_INPUT}
       />
     </div>

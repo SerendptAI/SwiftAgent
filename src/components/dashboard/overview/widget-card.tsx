@@ -35,7 +35,6 @@ import {
   ApiIntegrationSection,
   type ApiIntegrationValue,
   emptyApiIntegration,
-  ENDPOINT_PRESETS,
   PaymentSandboxSection,
   SuggestedQuestionsSection,
 } from "./chatbot-settings-sections";
@@ -377,42 +376,20 @@ function ChatbotSettingsSidebar({
     const existing = integrations.find((i) => i.name === API_INTEGRATION_NAME);
     if (!existing) return;
 
-    const presetNames = new Set(ENDPOINT_PRESETS.map((p) => p.name));
-    const presetRows = ENDPOINT_PRESETS.map((preset) => {
-      const endpoint = existing.endpoints.find((e) => e.name === preset.name);
-      return {
-        id: preset.name,
-        name: preset.name,
-        label: preset.label,
-        path: endpoint?.path ?? "",
-        description: endpoint?.description ?? "",
-        preset: true,
-        tooltip: preset.tooltip,
-        placeholder: preset.placeholder,
-        queryParams: endpoint?.query_params,
-        headers: endpoint?.headers,
-      };
-    });
-    const customRows = existing.endpoints
-      .filter((e) => !presetNames.has(e.name))
-      .map((e) => ({
-        id: e.name,
-        name: e.name,
-        label: e.name,
-        path: e.path,
-        description: e.description,
-        preset: false,
-        queryParams: e.query_params,
-        headers: e.headers,
-      }));
-
     setApiIntegration({
       integrationId: existing.id,
       baseUrl: existing.base_url ?? "",
       apiKey: "",
       authHeader: existing.auth_header || "Authorization",
       authPrefix: existing.auth_prefix || "Bearer",
-      endpoints: [...presetRows, ...customRows],
+      endpoints: existing.endpoints.map((e) => ({
+        id: e.name || crypto.randomUUID(),
+        label: e.name,
+        path: e.path,
+        description: e.description,
+        queryParams: e.query_params,
+        headers: e.headers,
+      })),
     });
   }, [integrations]);
 
@@ -462,8 +439,7 @@ function ChatbotSettingsSidebar({
       const endpoints: APIEndpoint[] = apiIntegration.endpoints
         .filter((e) => e.path.trim())
         .map((e) => {
-          const base =
-            (e.preset ? e.name : slugifyEndpointName(e.label)) || "endpoint";
+          const base = slugifyEndpointName(e.label) || "endpoint";
           let name = base;
           for (let n = 2; usedNames.has(name); n++) name = `${base}_${n}`;
           usedNames.add(name);
@@ -471,7 +447,7 @@ function ChatbotSettingsSidebar({
           const endpoint: APIEndpoint = {
             name,
             path: e.path.trim(),
-            description: e.description.trim() || e.tooltip || e.label || name,
+            description: e.description.trim() || e.label || name,
           };
           if (e.queryParams) endpoint.query_params = e.queryParams;
           if (e.headers) endpoint.headers = e.headers;
