@@ -59,11 +59,11 @@ export function PlanCard({
           >
             {plan.name}
           </h3>
-          {plan.trialMonths ? (
+          {/* {plan.trialMonths ? (
             <span className="rounded-full bg-[#F2B035] px-2 py-0.5 text-[10px] leading-none font-bold tracking-wider text-black uppercase">
               {plan.trialMonths} Months Free!
             </span>
-          ) : null}
+          ) : null} */}
         </div>
 
         <p className="mb-3 flex items-baseline gap-2 text-sm leading-none text-gray-900 md:mb-3.5 md:text-base">
