@@ -22,10 +22,13 @@ export function UpgradeModalTrigger() {
   const hasActivePlan = useHasActivePlan(companyId);
   const [dismissed, setDismissed] = useState(false);
 
+  // Configuration pages (billing, company settings, knowledge upload) stay
+  // accessible without a plan — only live widget usage is gated elsewhere.
   const paymentRequired =
     !!user?.onboarding_completed &&
     pathname.includes("/dashboard") &&
     !pathname.includes("/billing") &&
+    !pathname.includes("/settings") &&
     hasActivePlan === false;
 
   const urlOpen = params.get("upgrade") === "1";
