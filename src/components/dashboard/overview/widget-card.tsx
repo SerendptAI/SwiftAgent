@@ -62,21 +62,29 @@ export function WidgetCard() {
     return () => clearTimeout(id);
   }, [toast]);
 
-  // Auto-open settings when arriving from onboarding (/dashboard?settings=1)
+  // Auto-open settings when arriving from onboarding (/dashboard?settings=1),
+  // but only for users on an active plan — otherwise prompt them to upgrade.
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
   useEffect(() => {
-    if (searchParams.get("settings") === "1") {
+    if (searchParams.get("settings") !== "1") return;
+    // Wait until the plan status is known before deciding what to open.
+    if (hasActivePlan === undefined) return;
+
+    const next = new URLSearchParams(searchParams.toString());
+    next.delete("settings");
+    const query = next.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, {
+      scroll: false,
+    });
+
+    if (hasActivePlan) {
       setIsSettingsOpen(true);
-      const next = new URLSearchParams(searchParams.toString());
-      next.delete("settings");
-      const query = next.toString();
-      router.replace(query ? `${pathname}?${query}` : pathname, {
-        scroll: false,
-      });
+    } else {
+      showUpgrade();
     }
-  }, [searchParams, pathname, router]);
+  }, [searchParams, pathname, router, hasActivePlan, showUpgrade]);
 
   // Close mode dropdown on outside click
   const modeDropdownRef = useRef<HTMLDivElement>(null);
@@ -168,7 +176,13 @@ export function WidgetCard() {
 
               <div className="flex items-center sm:pr-6">
                 <button
-                  onClick={() => setIsSettingsOpen(true)}
+                  onClick={() => {
+                    if (locked) {
+                      showUpgrade();
+                      return;
+                    }
+                    setIsSettingsOpen(true);
+                  }}
                   className="font-greed-narrow flex min-h-10 cursor-pointer items-center gap-2 rounded-md bg-[#EDEDED] px-3 py-2 text-xs font-bold tracking-wider text-gray-600 uppercase transition-colors hover:bg-gray-100 sm:px-4"
                 >
                   <Icons.Settings className="h-5 w-5" />
