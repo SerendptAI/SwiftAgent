@@ -161,7 +161,7 @@ export function UpgradePlanModal({
         <div className="absolute inset-0 bg-black/65" />
       )}
 
-      <div className="absolute top-[5vh] left-[8vw] max-h-[94vh] w-[min(810px,84vw)] overflow-y-auto bg-white">
+      <div className="absolute top-[5vh] left-1/2 max-h-[94vh] w-[min(810px,84vw)] -translate-x-1/2 overflow-y-auto bg-white">
         {dismissible && (
           <button
             type="button"
