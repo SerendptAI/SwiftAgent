@@ -204,6 +204,11 @@ export function CompanyInfoStep({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Prefill with the uploaded preview, falling back to the saved company logo,
+  // then the default placeholder.
+  const displayLogoSrc =
+    logoPreview || companyData?.logo_url || "/images/company_logo_new.svg";
+
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -221,21 +226,12 @@ export function CompanyInfoStep({
       {hideLogoUpload && (
         <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-center">
           <div className="relative flex h-18 w-18 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-gray-100 bg-gray-50 sm:h-20 sm:w-20">
-            {logoPreview ? (
-              <Image
-                src={logoPreview}
-                alt="Company Logo"
-                fill
-                className="object-cover"
-              />
-            ) : (
-              <Image
-                src="/images/company_logo_new.svg"
-                alt="Default Logo"
-                fill
-                className="object-cover"
-              />
-            )}
+            <Image
+              src={displayLogoSrc}
+              alt="Company Logo"
+              fill
+              className="object-cover"
+            />
             <button
               onClick={() => fileInputRef.current?.click()}
               className="absolute right-1 bottom-1 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-white shadow-sm transition-colors hover:bg-gray-50"
@@ -308,21 +304,12 @@ export function CompanyInfoStep({
         <div className="mb-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
             <div className="relative flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 sm:h-32 sm:w-32">
-              {logoPreview ? (
-                <Image
-                  src={logoPreview}
-                  alt="Company Logo"
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <Image
-                  src="/images/company_logo_new.svg"
-                  alt="Default Logo"
-                  fill
-                  className="object-cover"
-                />
-              )}
+              <Image
+                src={displayLogoSrc}
+                alt="Company Logo"
+                fill
+                className="object-cover"
+              />
               <button
                 onClick={() => fileInputRef.current?.click()}
                 className="absolute right-2 bottom-2 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white shadow-md transition-colors hover:bg-gray-50"
