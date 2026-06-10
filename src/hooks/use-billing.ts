@@ -44,7 +44,8 @@ export function useBillingDetails(
     queryKey: ["billingDetails", companyId],
     queryFn: () => getBillingDetails(companyId as string),
     enabled: !!companyId && !!getAccessToken(),
-    staleTime: 60 * 1000,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
     refetchInterval: options?.refetchInterval ?? false,
   });
 }
