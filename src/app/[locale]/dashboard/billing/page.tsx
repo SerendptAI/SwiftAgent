@@ -48,7 +48,6 @@ export default function BillingPage() {
   const savedCards: SavedCard[] = [...backendCards, ...localAsSaved];
   const activeTier = details?.tier ?? null;
 
-  // Close the saved-cards dropdown when clicking outside of it.
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (

@@ -204,8 +204,6 @@ export function CompanyInfoStep({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Prefill with the uploaded preview, falling back to the saved company logo,
-  // then the default placeholder.
   const displayLogoSrc =
     logoPreview || companyData?.logo_url || "/images/company_logo_new.svg";
 

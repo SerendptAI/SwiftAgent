@@ -70,7 +70,6 @@ export const knowledgeApi = {
       | { documents?: KnowledgeDocument[]; items?: KnowledgeDocument[] }
     >("/api/v1/knowledge/", { params: { company_id: companyId } });
 
-    // The backend may return a bare array or wrap it (e.g. { documents: [...] }).
     if (Array.isArray(data)) return data;
     return data?.documents ?? data?.items ?? [];
   },
