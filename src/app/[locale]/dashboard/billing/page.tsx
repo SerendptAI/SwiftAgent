@@ -101,11 +101,11 @@ export default function BillingPage() {
 
   return (
     <div className="flex h-full min-w-0 flex-col pb-6 lg:pb-0">
-      <div className="mb-6 flex w-full max-w-[1536px] flex-col gap-3 lg:mb-4 lg:flex-row lg:items-center lg:gap-8">
-        <div className="min-w-0 flex-1">
+      <div className="mb-6 flex w-full max-w-[1536px] flex-col gap-3 lg:mb-4 lg:grid lg:grid-cols-3 lg:items-center lg:gap-10">
+        <div className="min-w-0 lg:col-span-2">
           <CompanyToolbar />
         </div>
-        <div className="rounded-[20px] bg-white p-2 shadow-sm lg:h-16 lg:w-[400px] lg:rounded-3xl lg:py-2 lg:pr-2 lg:pl-6">
+        <div className="rounded-[20px] bg-white p-2 shadow-sm lg:col-span-1 lg:h-16 lg:rounded-3xl lg:py-2 lg:pr-2 lg:pl-6">
           <div className="flex w-full items-center justify-between gap-2 text-xs font-semibold text-gray-600 sm:text-sm">
             <span className="shrink-0 tracking-[0.14em] uppercase sm:tracking-widest">
               Saved Cards
