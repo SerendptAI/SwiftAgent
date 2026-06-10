@@ -52,6 +52,10 @@ export function useCompanyMutations() {
   const uploadLogo = useMutation({
     mutationFn: ({ companyId, file }: { companyId: string; file: File }) =>
       companyApi.uploadLogo(companyId, file),
+    onSuccess: (_, { companyId }) => {
+      queryClient.invalidateQueries({ queryKey: ["company", companyId] });
+      queryClient.invalidateQueries({ queryKey: ["companies"] });
+    },
   });
 
   const updateEmailSlug = useMutation({
