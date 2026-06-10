@@ -65,11 +65,14 @@ export const knowledgeApi = {
    * Lists all uploaded knowledge documents for a company.
    */
   listDocuments: async (companyId: string): Promise<KnowledgeDocument[]> => {
-    const { data } = await apiClient.get<KnowledgeDocument[]>(
-      "/api/v1/knowledge/",
-      { params: { company_id: companyId } },
-    );
-    return data;
+    const { data } = await apiClient.get<
+      | KnowledgeDocument[]
+      | { documents?: KnowledgeDocument[]; items?: KnowledgeDocument[] }
+    >("/api/v1/knowledge/", { params: { company_id: companyId } });
+
+    // The backend may return a bare array or wrap it (e.g. { documents: [...] }).
+    if (Array.isArray(data)) return data;
+    return data?.documents ?? data?.items ?? [];
   },
 
   /**
