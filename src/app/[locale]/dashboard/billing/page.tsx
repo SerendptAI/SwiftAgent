@@ -1,7 +1,7 @@
 "use client";
 
-import { ChevronDown, CreditCard } from "lucide-react";
-import { useState } from "react";
+import { ChevronDown, CreditCard, Plus } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 import { CompanyToolbar } from "@/components/dashboard/company-toolbar";
 import { AddCardModal } from "@/components/dashboard/settings/add-card-modal";
@@ -15,6 +15,7 @@ import {
   useBillingPlans,
   useCreateCheckout,
 } from "@/hooks/use-billing";
+import { cn } from "@/lib/utils";
 import type { SavedCard } from "@/services/billing";
 import { useCardStore } from "@/store/card-store";
 
@@ -27,8 +28,10 @@ function CardBrandIcon({ brand }: { brand: string }) {
 
 export default function BillingPage() {
   const [showAddCard, setShowAddCard] = useState(false);
+  const [cardMenuOpen, setCardMenuOpen] = useState(false);
   const [pendingTier, setPendingTier] = useState<string | null>(null);
   const [checkoutError, setCheckoutError] = useState("");
+  const cardMenuRef = useRef<HTMLDivElement>(null);
 
   const companyId = useActiveCompanyId();
   const { data: details } = useBillingDetails(companyId);
@@ -44,6 +47,20 @@ export default function BillingPage() {
   }));
   const savedCards: SavedCard[] = [...backendCards, ...localAsSaved];
   const activeTier = details?.tier ?? null;
+
+  // Close the saved-cards dropdown when clicking outside of it.
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        cardMenuRef.current &&
+        !cardMenuRef.current.contains(event.target as Node)
+      ) {
+        setCardMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleSubscribe = (plan: Plan) => {
     if (!plan.tier || !companyId) return;
@@ -94,11 +111,47 @@ export default function BillingPage() {
               Saved Cards
             </span>
             {savedCards.length > 0 ? (
-              <aside className="flex min-w-0 items-center gap-2 rounded-2xl border border-gray-100 px-3 py-2.5 sm:px-4 sm:py-3">
-                <CardBrandIcon brand={savedCards[0].brand} />
-                <span className="truncate">{savedCards[0].last4}</span>
-                <ChevronDown className="h-3.5 w-3.5 shrink-0 text-gray-400 sm:h-4 sm:w-4" />
-              </aside>
+              <div ref={cardMenuRef} className="relative min-w-0">
+                <button
+                  onClick={() => setCardMenuOpen((open) => !open)}
+                  className="flex min-w-0 items-center gap-2 rounded-2xl border border-gray-100 px-3 py-2.5 transition-colors hover:bg-gray-50 sm:px-4 sm:py-3"
+                >
+                  <CardBrandIcon brand={savedCards[0].brand} />
+                  <span className="truncate">{savedCards[0].last4}</span>
+                  <ChevronDown
+                    className={cn(
+                      "h-3.5 w-3.5 shrink-0 text-gray-400 transition-transform sm:h-4 sm:w-4",
+                      cardMenuOpen && "rotate-180",
+                    )}
+                  />
+                </button>
+
+                {cardMenuOpen && (
+                  <div className="animate-in fade-in slide-in-from-top-2 absolute right-0 z-50 mt-2 w-60 overflow-hidden rounded-2xl border border-gray-100 bg-white py-1 shadow-xl duration-200">
+                    {savedCards.map((card, index) => (
+                      <div
+                        key={`${card.last4}-${index}`}
+                        className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700"
+                      >
+                        <CardBrandIcon brand={card.brand} />
+                        <span className="min-w-0 flex-1 truncate">
+                          •••• {card.last4}
+                        </span>
+                      </div>
+                    ))}
+                    <button
+                      onClick={() => {
+                        setCardMenuOpen(false);
+                        setShowAddCard(true);
+                      }}
+                      className="flex w-full items-center gap-2 border-t border-gray-100 px-4 py-2.5 text-left text-xs font-semibold tracking-[0.14em] text-[#6433CC] uppercase transition-colors hover:bg-gray-50 sm:text-sm"
+                    >
+                      <Plus className="h-4 w-4 shrink-0" />
+                      ADD NEW CARD
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               <button
                 onClick={() => setShowAddCard(true)}
