@@ -111,7 +111,7 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
   }, []);
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2 rounded-[20px] bg-white p-2 shadow-sm md:rounded-3xl">
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-[20px] bg-white p-2 shadow-sm md:rounded-3xl">
       {/* Company Selector Dropdown */}
       <div ref={dropdownRef} className="relative min-w-0 flex-1 sm:flex-none">
         <button
