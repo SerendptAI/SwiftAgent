@@ -50,7 +50,7 @@ interface ChannelNavigatorProps {
 export function ChannelNavigator({ active, onChange }: ChannelNavigatorProps) {
   const { data: tickets } = useTickets();
   const counts: Record<ChannelKey, number> = {
-    tickets: tickets?.length ?? 0,
+    tickets: tickets?.filter((t) => (t.unseen_count ?? 0) > 0).length ?? 0,
     forms: 0,
     mail: 0,
   };

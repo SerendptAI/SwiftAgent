@@ -89,7 +89,8 @@ export function TicketList({
     matchesQuery(c.session_id),
   );
 
-  const pendingCount = filteredTickets?.length ?? 0;
+  const pendingCount =
+    filteredTickets?.filter((t) => (t.unseen_count ?? 0) > 0).length ?? 0;
   const isLoading = activeTab === "pending" ? ticketsLoading : chatsLoading;
 
   const isSelectionLoading = isSelectedTicketFetching || isSelectedChatFetching;

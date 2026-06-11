@@ -10,7 +10,8 @@ import { useTickets } from "@/hooks/use-tickets";
 
 export function Sidebar() {
   const { data: tickets } = useTickets();
-  const pendingTicketsCount = tickets?.length ?? 0;
+  const pendingTicketsCount =
+    tickets?.filter((t) => (t.unseen_count ?? 0) > 0).length ?? 0;
 
   const navItems = [
     {
