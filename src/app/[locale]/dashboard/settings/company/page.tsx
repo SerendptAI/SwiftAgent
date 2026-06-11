@@ -36,8 +36,8 @@ export default function CompanyPage() {
       <HelpBanner bgColor="bg-[#6433CC]" />
 
       {/* Tab Bar — matches StepIndicator style */}
-      <div className="w-full min-w-0 overflow-hidden">
-        <div className="grid w-full grid-cols-2 gap-2 border-b-0 border-gray-100 sm:flex sm:border-b">
+      <div className="w-full min-w-0">
+        <div className="scrollbar-none flex w-full snap-x snap-mandatory gap-2 overflow-x-auto border-b border-gray-100 sm:gap-0">
           {TABS.map((tab, index) => {
             const isActive = index === activeTab;
             const barColor = TAB_COLORS[index] ?? "bg-gray-200";
@@ -46,16 +46,13 @@ export default function CompanyPage() {
                 key={tab}
                 onClick={() => setActiveTab(index)}
                 className={cn(
-                  "font-dm-mono relative min-h-12 min-w-0 cursor-pointer rounded-lg bg-gray-50 px-2 py-3 text-center text-[9px] leading-tight font-medium tracking-[0.08em] uppercase transition-colors sm:min-h-0 sm:shrink-0 sm:rounded-none sm:bg-transparent sm:px-6 sm:py-4 sm:text-[10px] sm:tracking-wider",
-                  index === TABS.length - 1 && "col-span-2 sm:col-span-1",
+                  "font-dm-mono relative min-h-12 shrink-0 cursor-pointer snap-start rounded-lg bg-gray-50 px-2 py-3 text-center text-[9px] leading-tight font-medium tracking-[0.08em] uppercase transition-colors sm:min-h-0 sm:rounded-none sm:bg-transparent sm:px-6 sm:py-4 sm:text-[10px] sm:tracking-wider",
                   isActive
                     ? "font-bold text-gray-900"
                     : "text-gray-400 hover:text-gray-600",
                 )}
               >
-                <span className="block break-words whitespace-normal sm:whitespace-nowrap">
-                  {tab}
-                </span>
+                <span className="block whitespace-nowrap">{tab}</span>
                 <div
                   className={cn(
                     "absolute bottom-0 left-0 h-1 w-full rounded-t-full",
