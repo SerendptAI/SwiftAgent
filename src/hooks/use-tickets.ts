@@ -17,9 +17,6 @@ export function useTickets() {
     queryFn: () => ticketsApi.list(companyId!),
     enabled: !!companyId,
     refetchInterval: 15000,
-    // Keep polling while the tab is backgrounded and refetch the moment it
-    // regains focus, so new tickets show up without a manual page refresh.
-    refetchIntervalInBackground: true,
     refetchOnWindowFocus: true,
   });
 }
@@ -34,7 +31,6 @@ export function useTicket(ticketId: string | null) {
     enabled: !!companyId && !!ticketId,
     placeholderData: keepPreviousData,
     refetchInterval: 15000,
-    refetchIntervalInBackground: true,
     refetchOnWindowFocus: true,
   });
 }
