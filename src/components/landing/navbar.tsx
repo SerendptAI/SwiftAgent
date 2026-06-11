@@ -5,7 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { forwardRef, useEffect, useState } from "react";
 
-import { cn } from "@/lib/utils";
+import { useCurrentUser } from "@/hooks/use-auth";
+import { cn, getProfileImage } from "@/lib/utils";
 
 import { Icons } from "../icons";
 import { isLandingNavLinkActive, LANDING_NAV_LINKS } from "./nav-links";
@@ -19,9 +20,16 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
   ({ className }, ref) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [hash, setHash] = useState("");
+    const [isMounted, setIsMounted] = useState(false);
     const pathname = usePathname();
+    const { data: user } = useCurrentUser();
+
+    // Only trust the auth state after mount to avoid a hydration mismatch
+    // (the token lives in localStorage, unavailable during SSR).
+    const isLoggedIn = isMounted && !!user;
 
     useEffect(() => {
+      setIsMounted(true);
       const updateHash = () => setHash(window.location.hash);
 
       updateHash();
@@ -109,12 +117,32 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                 <Icons.Cross />
               </span>
             </button>
-            <Link
-              href="/en/login"
-              className="font-dm-mono hidden w-full max-w-[220px] items-center justify-center rounded-lg border border-black bg-white px-8 py-3 text-base font-medium tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-black hover:text-white md:flex"
-            >
-              LOGIN
-            </Link>
+            {isLoggedIn ? (
+              <Link
+                href="/en/dashboard"
+                aria-label="Go to dashboard"
+                className="font-dm-mono hidden max-w-[220px] items-center justify-center gap-3 rounded-lg border border-black bg-white py-2 pr-5 pl-2 text-sm font-medium tracking-[0.12em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-black hover:text-white md:flex"
+              >
+                <span className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border border-black/10">
+                  <Image
+                    src={user?.picture || getProfileImage(user?.id)}
+                    alt={user?.name || "Profile"}
+                    fill
+                    className="object-cover"
+                  />
+                </span>
+                <span className="max-w-[110px] truncate">
+                  {user?.name || "Dashboard"}
+                </span>
+              </Link>
+            ) : (
+              <Link
+                href="/en/login"
+                className="font-dm-mono hidden w-full max-w-[220px] items-center justify-center rounded-lg border border-black bg-white px-8 py-3 text-base font-medium tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-black hover:text-white md:flex"
+              >
+                LOGIN
+              </Link>
+            )}
           </div>
         </nav>
 
