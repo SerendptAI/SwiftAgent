@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
+import { useToast } from "@/components/ui/toast";
 import {
   useCurrentUser,
   useLogout,
@@ -32,6 +33,7 @@ export function ProfileCard({
   onLogout: propOnLogout,
 }: ProfileCardProps) {
   const { data: user } = useCurrentUser();
+  const toast = useToast();
   const logoutMutation = useLogout();
   const { mutateAsync: uploadUserPfp, isPending: isUploadingPfp } =
     useUploadUserPfp();
@@ -82,7 +84,7 @@ export function ProfileCard({
     const file = event.target.files?.[0];
     if (!file) return;
     if (file.size > MAX_PFP_BYTES) {
-      alert("Image must be under 5 MB.");
+      toast.error("Image must be under 5 MB.");
       if (pfpInputRef.current) pfpInputRef.current.value = "";
       return;
     }
@@ -90,7 +92,7 @@ export function ProfileCard({
       await uploadUserPfp(file);
     } catch (err) {
       console.error(err);
-      alert("Failed to upload picture.");
+      toast.error("Failed to upload picture.");
     } finally {
       if (pfpInputRef.current) pfpInputRef.current.value = "";
     }
@@ -114,7 +116,7 @@ export function ProfileCard({
       setIsEditingName(false);
     } catch (err) {
       console.error(err);
-      alert("Failed to update name.");
+      toast.error("Failed to update name.");
     }
   };
 

@@ -79,7 +79,7 @@ export function CompanyIdentityStep({
   const onSubmit = async (data: CompanyIdentityValues) => {
     try {
       if (!companyId) {
-        alert("Missing company data. Please go back.");
+        setError("Missing company data. Please go back.");
         return;
       }
 

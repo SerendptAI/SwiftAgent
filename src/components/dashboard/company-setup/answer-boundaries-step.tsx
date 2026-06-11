@@ -114,7 +114,7 @@ export function AnswerBoundariesStep({
   const onSubmit = async (data: AnswerBoundariesValues) => {
     try {
       if (!companyId) {
-        alert("Missing company data. Please go back.");
+        setError("Missing company data. Please go back.");
         return;
       }
 

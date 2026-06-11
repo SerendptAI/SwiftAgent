@@ -64,7 +64,7 @@ export function VoiceConversationStep({
   const onSubmit = async (data: VoiceConversationValues) => {
     try {
       if (!companyId) {
-        alert("Missing company data. Please go back.");
+        setError("Missing company data. Please go back.");
         return;
       }
 

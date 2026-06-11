@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import { HelpBanner } from "@/components/dashboard/settings/help-banner";
+import { useToast } from "@/components/ui/toast";
 import {
   useCurrentUser,
   useUpdateProfile,
@@ -33,6 +34,7 @@ function EditableField({
 }) {
   const [localValue, setLocalValue] = useState(value);
   const [saved, setSaved] = useState(false);
+  const toast = useToast();
 
   useEffect(() => {
     setLocalValue(value);
@@ -45,7 +47,7 @@ function EditableField({
       setTimeout(() => setSaved(false), 2000);
     } catch (e) {
       console.error(e);
-      alert("Failed to save changes.");
+      toast.error("Failed to save changes.");
     }
   };
 

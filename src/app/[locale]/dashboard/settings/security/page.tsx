@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { HelpBanner } from "@/components/dashboard/settings/help-banner";
+import { useToast } from "@/components/ui/toast";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useCurrentUser, useUpdateUserSecurity } from "@/hooks/use-auth";
 import { useCompanyMembers, useInviteMember } from "@/hooks/use-company";
@@ -36,6 +37,7 @@ export default function SecurityPage() {
   const [inviteEmail, setInviteEmail] = useState("");
 
   const companyId = useActiveCompanyId();
+  const toast = useToast();
 
   const { data: user } = useCurrentUser();
   const updateSecurity = useUpdateUserSecurity();
@@ -71,9 +73,9 @@ export default function SecurityPage() {
       await inviteMember.mutateAsync({ companyId, email: inviteEmail });
       setInviteEmail("");
       setIsInviting(false);
-      alert("Invite sent successfully.");
+      toast.success("Invite sent successfully.");
     } catch {
-      alert("Failed to send invite.");
+      toast.error("Failed to send invite.");
     }
   };
 
@@ -86,10 +88,10 @@ export default function SecurityPage() {
       });
       if (field === "email") setIsEditingEmail(false);
       if (field === "code") setIsEditingCode(false);
-      alert("Security settings updated successfully.");
+      toast.success("Security settings updated successfully.");
     } catch (error) {
       console.error(error);
-      alert("Failed to update security settings.");
+      toast.error("Failed to update security settings.");
     } finally {
       setSavingField(null);
     }

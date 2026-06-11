@@ -78,7 +78,7 @@ export function KnowledgeSourcesStep({
   const onSubmit = async (data: KnowledgeSourcesValues) => {
     try {
       if (!companyId) {
-        alert("Missing company data. Please go back.");
+        setError("Missing company data. Please go back.");
         return;
       }
 
@@ -335,7 +335,9 @@ function UploadSection({
 
   const handleUploadClick = () => {
     if (!companyId) {
-      alert("Please ensure company is created first (Go back to step 1).");
+      setUploadError(
+        "Please ensure company is created first (Go back to step 1).",
+      );
       return;
     }
     fileInputRef.current?.click();
