@@ -70,7 +70,7 @@ export default function CompanyPage() {
       </div>
 
       {/* Tab Content */}
-      <div className="scrollbar-none overflow-y-auto p-0 sm:p-4">
+      <div className="scrollbar-none min-w-0 overflow-x-hidden overflow-y-auto p-0 sm:p-4">
         {activeTab === 0 && (
           <CompanyInfoStep
             companyId={companyId}
