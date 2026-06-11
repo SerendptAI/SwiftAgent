@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/toast";
 import { useGoogleLogin, useSendOtp, useVerifyOtp } from "@/hooks/use-auth";
 
 const OTP_LENGTH = 6;
@@ -14,6 +15,7 @@ const OTP_LENGTH = 6;
 export default function LoginPage() {
   const router = useRouter();
   const t = useTranslations("login");
+  const toast = useToast();
   const { setTheme } = useTheme();
   const googleLogin = useGoogleLogin();
   const sendOtp = useSendOtp();
@@ -59,6 +61,8 @@ export default function LoginPage() {
             return;
           }
           setStep("otp");
+          // Remind users to check spam — OTP emails are commonly filtered.
+          toast.success(t("checkSpam"));
           // Focus the first OTP input after transition
           setTimeout(() => inputRefs.current[0]?.focus(), 50);
         },
@@ -234,6 +238,13 @@ export default function LoginPage() {
                   />
                 ))}
               </div>
+
+              {/* Spam reminder — OTP emails are commonly filtered. */}
+              {!isVerifying && !otpError && (
+                <p className="font-dm-mono max-w-xs text-center text-xs leading-[1.4] text-[#7E7E7E]">
+                  {t("checkSpam")}
+                </p>
+              )}
 
               {/* Status text */}
               {isVerifying && (
