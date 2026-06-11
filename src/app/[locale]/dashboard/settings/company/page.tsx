@@ -32,7 +32,7 @@ export default function CompanyPage() {
   const companyId = useActiveCompanyId();
 
   return (
-    <div className="scrollbar-none flex min-h-[360px] flex-col gap-5 overflow-y-auto rounded-[20px] bg-white p-3 shadow-sm sm:min-h-[450px] sm:gap-6 sm:rounded-xl sm:p-4">
+    <div className="scrollbar-none flex min-h-[360px] w-full max-w-4xl min-w-0 flex-col gap-5 overflow-x-hidden overflow-y-auto rounded-[20px] bg-white p-3 shadow-sm sm:min-h-[450px] sm:gap-6 sm:rounded-xl sm:p-4">
       <HelpBanner bgColor="bg-[#6433CC]" />
 
       {/* Tab Bar — matches StepIndicator style */}
