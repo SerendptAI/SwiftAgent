@@ -38,7 +38,7 @@ const SETTINGS_NAV = [
   },
   {
     href: "/dashboard/settings/api-keys",
-    icon: KeyRound,
+    icon: Icons.KeyRound,
     label: "API Keys",
     activeColor: "#00B37E",
     iconClassName: "h-6 w-6 md:h-9 md:w-9",
