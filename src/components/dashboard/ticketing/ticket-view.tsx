@@ -501,44 +501,27 @@ export function TicketView({
             )}
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-2">
-          {ticket && ticket.status !== "resolved" && (
-            <button
-              type="button"
-              onClick={handleResolve}
-              disabled={isResolving}
-              className="font-dm-mono flex h-8 cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 text-xs font-semibold tracking-wider text-white uppercase transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {isResolving ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              ) : (
-                <Check className="h-3.5 w-3.5" />
-              )}
-              Resolve
-            </button>
+        <button
+          type="button"
+          aria-label={
+            onClose
+              ? "Close conversation"
+              : isFullscreen
+                ? "Exit fullscreen"
+                : "Expand"
+          }
+          onClick={onClose ?? (() => setIsFullscreen((v) => !v))}
+          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
+        >
+          {onClose ? (
+            <X className="h-4 w-4 lg:hidden" />
+          ) : isFullscreen ? (
+            <Minimize2 className="h-4 w-4" />
+          ) : (
+            <Maximize2 className="h-4 w-4" />
           )}
-          <button
-            type="button"
-            aria-label={
-              onClose
-                ? "Close conversation"
-                : isFullscreen
-                  ? "Exit fullscreen"
-                  : "Expand"
-            }
-            onClick={onClose ?? (() => setIsFullscreen((v) => !v))}
-            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
-          >
-            {onClose ? (
-              <X className="h-4 w-4 lg:hidden" />
-            ) : isFullscreen ? (
-              <Minimize2 className="h-4 w-4" />
-            ) : (
-              <Maximize2 className="h-4 w-4" />
-            )}
-            {onClose && <Maximize2 className="hidden h-4 w-4 lg:block" />}
-          </button>
-        </div>
+          {onClose && <Maximize2 className="hidden h-4 w-4 lg:block" />}
+        </button>
       </div>
 
       {/* Originating chat (collapsible) */}
@@ -707,47 +690,64 @@ export function TicketView({
             {attachError}
           </p>
         )}
-        <form
-          onSubmit={handleSend}
-          className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2"
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            onChange={handleFilesSelected}
-            className="hidden"
-          />
-          <input
-            type="text"
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            placeholder="Type a reply..."
-            disabled={isSending}
-            className="font-dm-mono flex-1 bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400 disabled:opacity-60"
-          />
-          <button
-            type="button"
-            aria-label="Attach"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isSending || files.length >= MAX_REPLY_ATTACHMENTS}
-            className="shrink-0 cursor-pointer text-gray-400 transition-colors hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-40"
+        <div className="flex items-center gap-2">
+          <form
+            onSubmit={handleSend}
+            className="flex flex-1 items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2"
           >
-            <Paperclip className="h-4 w-4" />
-          </button>
-          <button
-            type="submit"
-            disabled={!draft.trim() || isSending}
-            aria-label="Send"
-            className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:text-[#006BE5] disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {isSending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Send className="h-4 w-4 -translate-x-px" />
-            )}
-          </button>
-        </form>
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              onChange={handleFilesSelected}
+              className="hidden"
+            />
+            <input
+              type="text"
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              placeholder="Type a reply..."
+              disabled={isSending}
+              className="font-dm-mono flex-1 bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400 disabled:opacity-60"
+            />
+            <button
+              type="button"
+              aria-label="Attach"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isSending || files.length >= MAX_REPLY_ATTACHMENTS}
+              className="shrink-0 cursor-pointer text-gray-400 transition-colors hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <Paperclip className="h-4 w-4" />
+            </button>
+            <button
+              type="submit"
+              disabled={!draft.trim() || isSending}
+              aria-label="Send"
+              className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:text-[#006BE5] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {isSending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Send className="h-4 w-4 -translate-x-px" />
+              )}
+            </button>
+          </form>
+          {ticket && ticket.status !== "resolved" && (
+            <button
+              type="button"
+              onClick={handleResolve}
+              disabled={isResolving}
+              className="font-dm-mono flex h-10 shrink-0 cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-4 text-xs font-semibold tracking-wider text-white uppercase transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isResolving ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Check className="h-4 w-4" />
+              )}
+              Resolve
+            </button>
+          )}
+        </div>
       </div>
 
       {preview && (
