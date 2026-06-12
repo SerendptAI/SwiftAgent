@@ -1,7 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronDown, Loader2 } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  Loader2,
+  RotateCcw,
+  Trash2,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -11,7 +18,12 @@ import { HelpBanner } from "@/components/dashboard/settings/help-banner";
 import { useToast } from "@/components/ui/toast";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useCurrentUser, useUpdateUserSecurity } from "@/hooks/use-auth";
-import { useCompanyMembers, useInviteMember } from "@/hooks/use-company";
+import {
+  useCompanyMembers,
+  useInviteMember,
+  useRemoveMember,
+  useResendInvite,
+} from "@/hooks/use-company";
 import { cn } from "@/lib/utils";
 import type { CompanyMember, CompanyMemberStatus } from "@/services/company";
 
@@ -269,9 +281,41 @@ const STATUS_STYLES: Record<CompanyMemberStatus, string> = {
 };
 
 function MemberRow({ member }: { member: CompanyMember }) {
+  const companyId = useActiveCompanyId();
+  const toast = useToast();
+  const resendInvite = useResendInvite();
+  const removeMember = useRemoveMember();
+  const [confirmingRemove, setConfirmingRemove] = useState(false);
+
   const displayName = member.name || member.email.split("@")[0];
   const statusClass =
     STATUS_STYLES[member.status] ?? "bg-gray-100 text-gray-500";
+  const canResend = member.status === "Pending" || member.status === "Expired";
+
+  const handleResend = () => {
+    if (!companyId || resendInvite.isPending) return;
+    resendInvite.mutate(
+      { companyId, email: member.email },
+      {
+        onSuccess: () => toast.success("Invite resent successfully."),
+        onError: () => toast.error("Failed to resend invite."),
+      },
+    );
+  };
+
+  const handleRemove = () => {
+    if (!companyId || removeMember.isPending) return;
+    removeMember.mutate(
+      { companyId, email: member.email },
+      {
+        onSuccess: () => {
+          toast.success("Member removed.");
+          setConfirmingRemove(false);
+        },
+        onError: () => toast.error("Failed to remove member."),
+      },
+    );
+  };
 
   return (
     <li className="flex items-center gap-4 px-6 py-3">
@@ -297,7 +341,7 @@ function MemberRow({ member }: { member: CompanyMember }) {
           {member.email}
         </p>
       </div>
-      <span className="font-dm-mono shrink-0 text-xs tracking-wider text-gray-500 uppercase">
+      <span className="font-dm-mono hidden shrink-0 text-xs tracking-wider text-gray-500 uppercase sm:inline">
         {member.role}
       </span>
       <span
@@ -308,6 +352,59 @@ function MemberRow({ member }: { member: CompanyMember }) {
       >
         {member.status}
       </span>
+
+      {canResend && (
+        <button
+          type="button"
+          onClick={handleResend}
+          disabled={resendInvite.isPending}
+          aria-label="Resend invite"
+          title="Resend invite"
+          className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {resendInvite.isPending ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <RotateCcw className="h-4 w-4" />
+          )}
+        </button>
+      )}
+
+      {confirmingRemove ? (
+        <div className="flex shrink-0 items-center gap-1">
+          <button
+            type="button"
+            onClick={handleRemove}
+            disabled={removeMember.isPending}
+            aria-label="Confirm remove"
+            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-red-50 text-red-600 transition-colors hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {removeMember.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Check className="h-4 w-4" />
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={() => setConfirmingRemove(false)}
+            aria-label="Cancel"
+            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setConfirmingRemove(true)}
+          aria-label="Remove member"
+          title="Remove member"
+          className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
+        >
+          <Trash2 className="h-4 w-4" />
+        </button>
+      )}
     </li>
   );
 }

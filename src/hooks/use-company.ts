@@ -84,6 +84,34 @@ export function useInviteMember() {
   });
 }
 
+export function useResendInvite() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ companyId, email }: { companyId: string; email: string }) =>
+      companyApi.resendInvite(companyId, email),
+    onSuccess: (_, { companyId }) => {
+      queryClient.invalidateQueries({
+        queryKey: ["company-members", companyId],
+      });
+    },
+  });
+}
+
+export function useRemoveMember() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ companyId, email }: { companyId: string; email: string }) =>
+      companyApi.removeMember(companyId, email),
+    onSuccess: (_, { companyId }) => {
+      queryClient.invalidateQueries({
+        queryKey: ["company-members", companyId],
+      });
+    },
+  });
+}
+
 export function useCompanyMembers(companyId: string | null | undefined) {
   return useQuery<CompanyMember[]>({
     queryKey: ["company-members", companyId],

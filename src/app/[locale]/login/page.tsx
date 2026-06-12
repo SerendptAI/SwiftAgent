@@ -73,6 +73,24 @@ export default function LoginPage() {
     );
   };
 
+  const handleResendOtp = () => {
+    if (sendOtp.isPending) return;
+    sendOtp.mutate(
+      { email: email.trim() },
+      {
+        onSuccess: () => {
+          setOtp(Array(OTP_LENGTH).fill(""));
+          setOtpError("");
+          toast.success(t("codeResent"));
+          setTimeout(() => inputRefs.current[0]?.focus(), 50);
+        },
+        onError: () => {
+          setOtpError(t("otpSendFailed"));
+        },
+      },
+    );
+  };
+
   // Verify OTP when all digits are filled
   const handleVerifyOtp = useCallback(
     async (code: string) => {
@@ -258,20 +276,30 @@ export default function LoginPage() {
                 </p>
               )}
 
-              {/* Back to email link */}
+              {/* Resend code + back to email */}
               {!isVerifying && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setStep("email");
-                    setOtp(Array(OTP_LENGTH).fill(""));
-                    setOtpError("");
-                    setIsVerifying(false);
-                  }}
-                  className="text-muted-foreground text-sm leading-[1.2] tracking-[10%] uppercase underline underline-offset-2"
-                >
-                  {t("backToEmail")}
-                </button>
+                <div className="flex flex-col items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={handleResendOtp}
+                    disabled={sendOtp.isPending}
+                    className="text-muted-foreground text-sm leading-[1.2] tracking-[10%] uppercase underline underline-offset-2 disabled:opacity-50"
+                  >
+                    {t("resendCode")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setStep("email");
+                      setOtp(Array(OTP_LENGTH).fill(""));
+                      setOtpError("");
+                      setIsVerifying(false);
+                    }}
+                    className="text-muted-foreground text-sm leading-[1.2] tracking-[10%] uppercase underline underline-offset-2"
+                  >
+                    {t("backToEmail")}
+                  </button>
+                </div>
               )}
             </div>
           )}

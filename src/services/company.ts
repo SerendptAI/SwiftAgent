@@ -151,6 +151,23 @@ export const companyApi = {
     );
     return data;
   },
+
+  resendInvite: async (
+    companyId: string,
+    email: string,
+  ): Promise<Record<string, unknown>> => {
+    const { data } = await apiClient.post<Record<string, unknown>>(
+      `/api/v1/companies/${companyId}/invites/resend`,
+      { email },
+    );
+    return data;
+  },
+
+  removeMember: async (companyId: string, email: string): Promise<void> => {
+    await apiClient.delete(
+      `/api/v1/companies/${companyId}/members/${encodeURIComponent(email)}`,
+    );
+  },
 };
 
 export const publicCompanyApi = {
