@@ -2,6 +2,7 @@
 
 import { format } from "date-fns";
 import {
+  Check,
   ChevronDown,
   ChevronRight,
   ExternalLink,
@@ -17,12 +18,14 @@ import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
+import { useToast } from "@/components/ui/toast";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useCurrentUser } from "@/hooks/use-auth";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import {
   useMarkTicketSeen,
   useReplyToTicket,
+  useResolveTicket,
   useTicket,
 } from "@/hooks/use-tickets";
 import { resolveAvatarUrl } from "@/lib/avatar";
@@ -312,14 +315,22 @@ interface TicketViewProps {
   ticketId: string;
   className?: string;
   onClose?: () => void;
+  onResolved?: () => void;
 }
 
-export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
+export function TicketView({
+  ticketId,
+  className,
+  onClose,
+  onResolved,
+}: TicketViewProps) {
   const companyId = useActiveCompanyId();
+  const toast = useToast();
   const { data: ticket, isFetching } = useTicket(ticketId);
   const { data: currentUser } = useCurrentUser();
   const { mutate: markSeen } = useMarkTicketSeen();
   const { mutate: reply, isPending: isSending } = useReplyToTicket();
+  const { mutate: resolveTicket, isPending: isResolving } = useResolveTicket();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -421,6 +432,22 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
     setAttachError(null);
   };
 
+  const handleResolve = () => {
+    if (!companyId || !ticket || isResolving) return;
+    resolveTicket(
+      { companyId, ticketId: ticket.id },
+      {
+        onSuccess: () => {
+          toast.success("Ticket resolved. The customer has been notified.");
+          onResolved?.();
+        },
+        onError: () => {
+          toast.error("Failed to resolve ticket. Please try again.");
+        },
+      },
+    );
+  };
+
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
     const body_text = draft.trim();
@@ -474,27 +501,44 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
             )}
           </div>
         </div>
-        <button
-          type="button"
-          aria-label={
-            onClose
-              ? "Close conversation"
-              : isFullscreen
-                ? "Exit fullscreen"
-                : "Expand"
-          }
-          onClick={onClose ?? (() => setIsFullscreen((v) => !v))}
-          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
-        >
-          {onClose ? (
-            <X className="h-4 w-4 lg:hidden" />
-          ) : isFullscreen ? (
-            <Minimize2 className="h-4 w-4" />
-          ) : (
-            <Maximize2 className="h-4 w-4" />
+        <div className="flex shrink-0 items-center gap-2">
+          {ticket && ticket.status !== "resolved" && (
+            <button
+              type="button"
+              onClick={handleResolve}
+              disabled={isResolving}
+              className="font-dm-mono flex h-8 cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 text-xs font-semibold tracking-wider text-white uppercase transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isResolving ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Check className="h-3.5 w-3.5" />
+              )}
+              Resolve
+            </button>
           )}
-          {onClose && <Maximize2 className="hidden h-4 w-4 lg:block" />}
-        </button>
+          <button
+            type="button"
+            aria-label={
+              onClose
+                ? "Close conversation"
+                : isFullscreen
+                  ? "Exit fullscreen"
+                  : "Expand"
+            }
+            onClick={onClose ?? (() => setIsFullscreen((v) => !v))}
+            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
+          >
+            {onClose ? (
+              <X className="h-4 w-4 lg:hidden" />
+            ) : isFullscreen ? (
+              <Minimize2 className="h-4 w-4" />
+            ) : (
+              <Maximize2 className="h-4 w-4" />
+            )}
+            {onClose && <Maximize2 className="hidden h-4 w-4 lg:block" />}
+          </button>
+        </div>
       </div>
 
       {/* Originating chat (collapsible) */}

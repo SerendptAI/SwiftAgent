@@ -54,6 +54,25 @@ export function useMarkTicketSeen() {
   });
 }
 
+/** Resolve a ticket — backend closes it and emails the customer. */
+export function useResolveTicket() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      companyId,
+      ticketId,
+    }: {
+      companyId: string;
+      ticketId: string;
+    }) => ticketsApi.resolve(companyId, ticketId),
+    onSuccess: (_, { companyId }) => {
+      queryClient.invalidateQueries({ queryKey: ["tickets", companyId] });
+      queryClient.invalidateQueries({ queryKey: ["chats", companyId] });
+    },
+  });
+}
+
 /** Send a reply on a ticket thread. */
 export function useReplyToTicket() {
   const queryClient = useQueryClient();

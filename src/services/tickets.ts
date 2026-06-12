@@ -128,4 +128,10 @@ export const ticketsApi = {
       `/api/v1/email/${companyId}/tickets/${ticketId}/seen`,
     );
   },
+
+  resolve: async (companyId: string, ticketId: string): Promise<void> => {
+    await apiClient.patch(
+      `/api/v1/email/${companyId}/tickets/${ticketId}/resolve`,
+    );
+  },
 };
