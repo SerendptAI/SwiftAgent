@@ -6,7 +6,6 @@ import { AnswerBoundariesStep } from "@/components/dashboard/company-setup/answe
 import { CompanyIdentityStep } from "@/components/dashboard/company-setup/company-identity-step";
 import { CompanyInfoStep } from "@/components/dashboard/company-setup/company-info-step";
 import { KnowledgeSourcesStep } from "@/components/dashboard/company-setup/knowledge-sources-step";
-import { VoiceConversationStep } from "@/components/dashboard/company-setup/voice-conversation-step";
 import { HelpBanner } from "@/components/dashboard/settings/help-banner";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { cn } from "@/lib/utils";
@@ -16,7 +15,6 @@ const TABS = [
   "Company Identity",
   "Knowledge Sources",
   "Answer Boundaries",
-  "Voice & Conversation",
 ];
 
 const TAB_COLORS = [
@@ -24,7 +22,6 @@ const TAB_COLORS = [
   "bg-orange-300", // Orange
   "bg-pink-300", // Pink
   "bg-violet-300", // Lavender
-  "bg-yellow-100", // Yellow
 ];
 
 export default function CompanyPage() {
@@ -83,9 +80,6 @@ export default function CompanyPage() {
         )}
         {activeTab === 3 && (
           <AnswerBoundariesStep companyId={companyId} isUpdateMode={true} />
-        )}
-        {activeTab === 4 && (
-          <VoiceConversationStep companyId={companyId} isUpdateMode={true} />
         )}
       </div>
     </div>
