@@ -660,16 +660,6 @@ export function TicketView({
             </div>
           );
         })}
-        {ticket?.status === "resolved" && (
-          <div className="flex items-center justify-center gap-3 py-1">
-            <span className="h-px flex-1 bg-gray-100" />
-            <span className="font-dm-mono flex items-center gap-1.5 rounded-full bg-green-50 px-3 py-1 text-[10px] font-semibold tracking-wider text-green-600 uppercase">
-              <Check className="h-3 w-3" />
-              Ticket resolved
-            </span>
-            <span className="h-px flex-1 bg-gray-100" />
-          </div>
-        )}
         <div ref={messagesEndRef} />
       </div>
 
