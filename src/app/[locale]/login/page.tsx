@@ -33,8 +33,15 @@ export default function LoginPage() {
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [otpError, setOtpError] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const id = setTimeout(() => setResendCooldown((s) => s - 1), 1000);
+    return () => clearTimeout(id);
+  }, [resendCooldown]);
 
   const isValidEmail = (value: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
@@ -61,6 +68,7 @@ export default function LoginPage() {
             return;
           }
           setStep("otp");
+          setResendCooldown(30);
           // Remind users to check spam — OTP emails are commonly filtered.
           toast.success(t("checkSpam"));
           // Focus the first OTP input after transition
@@ -74,13 +82,14 @@ export default function LoginPage() {
   };
 
   const handleResendOtp = () => {
-    if (sendOtp.isPending) return;
+    if (sendOtp.isPending || resendCooldown > 0) return;
     sendOtp.mutate(
       { email: email.trim() },
       {
         onSuccess: () => {
           setOtp(Array(OTP_LENGTH).fill(""));
           setOtpError("");
+          setResendCooldown(30);
           toast.success(t("codeResent"));
           setTimeout(() => inputRefs.current[0]?.focus(), 50);
         },
@@ -278,14 +287,16 @@ export default function LoginPage() {
 
               {/* Resend code + back to email */}
               {!isVerifying && (
-                <div className="flex flex-col items-center gap-3">
+                <div className="flex items-center gap-3 max-md:flex-col">
                   <button
                     type="button"
                     onClick={handleResendOtp}
-                    disabled={sendOtp.isPending}
-                    className="text-muted-foreground text-sm leading-[1.2] tracking-[10%] uppercase underline underline-offset-2 disabled:opacity-50"
+                    disabled={sendOtp.isPending || resendCooldown > 0}
+                    className="text-muted-foreground text-sm leading-[1.2] tracking-[10%] uppercase underline underline-offset-2 disabled:no-underline disabled:opacity-50"
                   >
-                    {t("resendCode")}
+                    {resendCooldown > 0
+                      ? `${t("resendCode")} (${resendCooldown}s)`
+                      : t("resendCode")}
                   </button>
                   <button
                     type="button"
