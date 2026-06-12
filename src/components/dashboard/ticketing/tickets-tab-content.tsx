@@ -65,7 +65,7 @@ export function TicketsTabContent({
 
   const conversation = selection ? (
     selection.kind === "ticket" ? (
-      <TicketView ticketId={selection.id} onResolved={onClearSelection} />
+      <TicketView ticketId={selection.id} />
     ) : (
       <ChatView ticketId={selection.id} />
     )
@@ -79,7 +79,6 @@ export function TicketsTabContent({
         ticketId={selection.id}
         className="min-h-0 rounded-none shadow-none"
         onClose={onClearSelection}
-        onResolved={onClearSelection}
       />
     ) : (
       <ChatView
