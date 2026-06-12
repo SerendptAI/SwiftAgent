@@ -98,19 +98,12 @@ export function TicketList({
     matchesQuery(c.session_id),
   );
 
-  // Pending shows only tickets with unread messages. Once a ticket has been read
-  // (unseen_count === 0) it moves to the Resolved tab alongside resolved chats.
   type TicketItem = NonNullable<typeof tickets>[number];
   type ChatItem = NonNullable<typeof resolvedChats>[number];
 
-  const pendingTickets: TicketItem[] =
-    filteredTickets?.filter((t) => (t.unseen_count ?? 0) > 0) ?? [];
-  const readTickets: TicketItem[] =
-    filteredTickets?.filter((t) => (t.unseen_count ?? 0) === 0) ?? [];
-
-  const pendingCount = pendingTickets.length;
-  const isLoading =
-    activeTab === "pending" ? ticketsLoading : ticketsLoading || chatsLoading;
+  const unreadCount =
+    filteredTickets?.filter((t) => (t.unseen_count ?? 0) > 0).length ?? 0;
+  const isLoading = activeTab === "pending" ? ticketsLoading : chatsLoading;
 
   const isSelectionLoading = isSelectedTicketFetching || isSelectedChatFetching;
 
@@ -248,9 +241,9 @@ export function TicketList({
             />
           </svg>
           <span>Pending</span>
-          {pendingCount > 0 && (
+          {unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white sm:h-5 sm:w-5 sm:text-[10px]">
-              {pendingCount}
+              {unreadCount}
             </span>
           )}
         </button>
@@ -298,19 +291,15 @@ export function TicketList({
             <Loader />
           </div>
         ) : activeTab === "pending" ? (
-          pendingTickets.length === 0 ? (
+          !filteredTickets || filteredTickets.length === 0 ? (
             <TicketListEmptyState />
           ) : (
-            pendingTickets.map(renderTicketButton)
+            filteredTickets.map(renderTicketButton)
           )
-        ) : readTickets.length === 0 &&
-          (!filteredChats || filteredChats.length === 0) ? (
+        ) : !filteredChats || filteredChats.length === 0 ? (
           <TicketListEmptyState />
         ) : (
-          <>
-            {readTickets.map(renderTicketButton)}
-            {filteredChats?.map(renderChatButton)}
-          </>
+          filteredChats.map(renderChatButton)
         )}
       </div>
     </div>
