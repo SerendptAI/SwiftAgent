@@ -16,8 +16,6 @@ export function useTickets() {
     queryKey: ["tickets", companyId],
     queryFn: () => ticketsApi.list(companyId!),
     enabled: !!companyId,
-    refetchInterval: 15000,
-    refetchOnWindowFocus: true,
   });
 }
 

@@ -1,6 +1,7 @@
 import { AuthGuard } from "@/components/auth-check";
 import { Header } from "@/components/dashboard/header";
 import { Sidebar } from "@/components/dashboard/sidebar";
+import { TicketsSocket } from "@/components/dashboard/ticketing/tickets-socket";
 import { MobileGate } from "@/components/mobile-gate";
 
 export default function DashboardLayout({
@@ -11,6 +12,7 @@ export default function DashboardLayout({
   return (
     <MobileGate>
       <AuthGuard>
+        <TicketsSocket />
         <div className="min-h-screen w-full bg-[#F6F6F6]">
           <div className="mx-auto min-h-svh w-full max-w-[1536px] overflow-visible md:grid md:h-screen md:grid-cols-[105px_1fr] md:overflow-hidden">
             <Sidebar />
