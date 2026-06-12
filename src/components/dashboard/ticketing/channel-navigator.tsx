@@ -24,22 +24,23 @@ const CHANNELS: Channel[] = [
     activeIcon: "text-white",
     badgeBg: "bg-red-500",
   },
-  {
-    key: "forms",
-    label: "Forms",
-    icon: Icons.ticketForm,
-    activeBg: "bg-[#F25430]",
-    activeIcon: "text-white",
-    badgeBg: "bg-[#6433CC]",
-  },
-  {
-    key: "mail",
-    label: "Business Emails",
-    icon: Icons.ticketEmail,
-    activeBg: "bg-[#F25430]",
-    activeIcon: "text-white",
-    badgeBg: "bg-[#6433CC]",
-  },
+  // Forms and Business Emails are hidden for now — keep for later.
+  // {
+  //   key: "forms",
+  //   label: "Forms",
+  //   icon: Icons.ticketForm,
+  //   activeBg: "bg-[#F25430]",
+  //   activeIcon: "text-white",
+  //   badgeBg: "bg-[#6433CC]",
+  // },
+  // {
+  //   key: "mail",
+  //   label: "Business Emails",
+  //   icon: Icons.ticketEmail,
+  //   activeBg: "bg-[#F25430]",
+  //   activeIcon: "text-white",
+  //   badgeBg: "bg-[#6433CC]",
+  // },
 ];
 
 interface ChannelNavigatorProps {
