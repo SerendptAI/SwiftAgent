@@ -17,6 +17,8 @@ export interface ChatSession {
   updated_at: string;
   message_count: number;
   seen?: boolean;
+  /** Latest message snippet shown in the list. */
+  preview_message?: string;
   /** True when this chat has been escalated to a ticket. */
   escalated?: boolean;
   /** ID of the ticket this chat was escalated into. */

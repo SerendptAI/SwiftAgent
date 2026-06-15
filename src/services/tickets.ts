@@ -56,6 +56,8 @@ export interface Ticket {
 /** The list endpoint may return the same shape or a lighter summary. */
 export type TicketListItem = Omit<Ticket, "messages"> & {
   messages?: EmailMessage[];
+  /** Latest message snippet shown in the list. */
+  preview_message?: string;
 };
 
 export interface ReplyPayload {

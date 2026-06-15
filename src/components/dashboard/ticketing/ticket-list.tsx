@@ -113,7 +113,10 @@ export function TicketList({
     const title =
       ticket.customer_name?.trim() || ticket.customer_email || "Unknown sender";
     const subtitle =
-      ticket.subject?.trim() || ticket.chat_summary || "(no subject)";
+      ticket.preview_message?.trim() ||
+      ticket.subject?.trim() ||
+      ticket.chat_summary ||
+      "(no subject)";
     return (
       <button
         key={ticket.id}
@@ -191,8 +194,8 @@ export function TicketList({
           </div>
           <div className="flex items-center justify-between gap-2 overflow-hidden">
             <span className="font-stolzl min-w-0 truncate text-xs text-gray-400">
-              {chat.message_count}{" "}
-              {chat.message_count === 1 ? "message" : "messages"}
+              {chat.preview_message?.trim() ||
+                `${chat.message_count} ${chat.message_count === 1 ? "message" : "messages"}`}
             </span>
             <span className="font-stolzl shrink-0 text-xs text-[#6433CC]">
               {formatRelativeTime(chat.updated_at)}
