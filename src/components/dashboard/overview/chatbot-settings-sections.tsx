@@ -351,9 +351,7 @@ function EndpointRow({
   );
 }
 
-// ── SUGGESTED QUESTIONS ────────────────────────────────────────────────────
-
-const SUGGESTION_MAX_LENGTH = 80;
+const SUGGESTION_MAX_LENGTH = 27;
 
 interface SuggestedQuestionsSectionProps {
   value: string[];
