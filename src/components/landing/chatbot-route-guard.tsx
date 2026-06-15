@@ -12,11 +12,17 @@ function isHomepagePath(pathname: string) {
   return ["/", "/en", "/pl"].includes(normalizedPathname);
 }
 
+// The dashboard intentionally hosts its own button-mode support widget
+// (SupportChatbot), which shares the same DOM ids the cleanup targets.
+function isDashboardPath(pathname: string) {
+  return pathname.includes("/dashboard");
+}
+
 export function ChatbotRouteGuard() {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (isHomepagePath(pathname)) return;
+    if (isHomepagePath(pathname) || isDashboardPath(pathname)) return;
 
     cleanupChatbotDom();
 
