@@ -23,6 +23,7 @@ import {
   uploadUserPfp,
   verifyOtp,
 } from "@/services/auth";
+import { clearActiveCompany } from "@/store/active-company-store";
 
 // ── Fetch & cache the current user ─────────────────────────────────────────────
 
@@ -123,6 +124,7 @@ export function useUpdateUserSecurity() {
 // ── Send OTP ──────────────────────────────────────────────────────────────────
 
 export function useSendOtp() {
+  const queryClient = useQueryClient();
   return useMutation<
     OtpSendResponse,
     Error,
@@ -130,18 +132,29 @@ export function useSendOtp() {
   >({
     mutationFn: ({ email, isSignup, fullName }) =>
       sendOtp(email, isSignup, fullName),
+    onSuccess: (data) => {
+      if (!data.otp_required && data.access_token) {
+        clearActiveCompany();
+        queryClient.clear();
+      }
+    },
   });
 }
 
 // ── Verify OTP ────────────────────────────────────────────────────────────────
 
 export function useVerifyOtp() {
+  const queryClient = useQueryClient();
   return useMutation<
     OtpVerifyResponse,
     Error,
     { email: string; otpCode: string }
   >({
     mutationFn: ({ email, otpCode }) => verifyOtp(email, otpCode),
+    onSuccess: () => {
+      clearActiveCompany();
+      queryClient.clear();
+    },
   });
 }
 

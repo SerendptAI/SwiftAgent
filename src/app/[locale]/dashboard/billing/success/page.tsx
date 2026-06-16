@@ -1,12 +1,19 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { differenceInDays, differenceInMonths } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useBillingDetails, useBillingPlans } from "@/hooks/use-billing";
+
+// How long to keep polling the backend for the webhook-driven activation
+// before showing a "still processing" state.
+const CONFIRM_TIMEOUT_MS = 30_000;
+const POLL_INTERVAL_MS = 3_000;
 
 function formatDuration(startIso?: string, endIso?: string): string {
   if (!startIso || !endIso) return "—";
@@ -21,18 +28,69 @@ function formatDuration(startIso?: string, endIso?: string): string {
 
 export default function BillingSuccessPage() {
   const companyId = useActiveCompanyId();
-  const { data: details } = useBillingDetails(companyId);
+  const queryClient = useQueryClient();
   const { data: plans } = useBillingPlans();
 
-  const tierKey = details?.tier ?? null;
+  const [gaveUp, setGaveUp] = useState(false);
+
+  // Read live billing details; poll until the subscription flips to active
+  // (the Polar webhook can land a few seconds after the redirect back), then
+  // stop. Give up after the grace period if it never confirms.
+  const { data: details } = useBillingDetails(companyId, {
+    refetchInterval: (query) => {
+      if (gaveUp) return false;
+      const d = query.state.data;
+      const st = d?.subscription_status ?? d?.status;
+      const active = d?.tier != null && d.tier !== "none" && st === "active";
+      return active ? false : POLL_INTERVAL_MS;
+    },
+  });
+
+  const status = details?.subscription_status ?? details?.status;
+  const confirmed =
+    details?.tier != null && details.tier !== "none" && status === "active";
+
+  // Force a fresh read on arrival (the cached value may pre-date the payment),
+  // and stop polling after a grace period if the webhook never confirms.
+  useEffect(() => {
+    if (companyId) {
+      queryClient.invalidateQueries({
+        queryKey: ["billingDetails", companyId],
+      });
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+    }
+    const timer = setTimeout(() => setGaveUp(true), CONFIRM_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, [companyId, queryClient]);
+
+  // Once confirmed, stop the give-up timer from mattering.
+  const confirming = !confirmed && !gaveUp;
+
+  const tierKey =
+    details?.tier && details.tier !== "none" ? details.tier : null;
   const plan = tierKey && plans ? plans[tierKey] : undefined;
-  const planName = details?.display_name || plan?.display_name || "Yellow Pill";
-  const amount = plan?.price_usd != null ? `$${plan.price_usd}` : "$1000";
+  const planName =
+    details?.display_name || plan?.display_name || tierKey || "—";
+  const amount = plan?.price_usd != null ? `$${plan.price_usd}` : "—";
   const duration = formatDuration(
     details?.subscription_started_at,
     details?.subscription_expires_at,
   );
-  const paymentStatus = "Successful";
+  const heading = confirmed
+    ? "Congratulations!"
+    : confirming
+      ? "Confirming your payment…"
+      : "Payment received";
+  const subcopy = confirmed
+    ? "Your journey to AGI starts here"
+    : confirming
+      ? "Hang tight while we confirm your subscription."
+      : "We're finalizing your subscription — this can take a moment.";
+  const paymentStatus = confirmed
+    ? "Successful"
+    : confirming
+      ? "Confirming…"
+      : "Processing";
 
   return (
     <div className="relative h-full w-full overflow-hidden rounded-[22px] border border-black/5 bg-white px-[30px] pt-[33px] pb-10">
@@ -63,10 +121,10 @@ export default function BillingSuccessPage() {
             className="font-instrument text-[40px] leading-[0.95] font-bold tracking-[-0.02em] text-[#F6F4EF]"
             style={{ fontVariationSettings: "'wdth' 80" }}
           >
-            Congratulations!
+            {heading}
           </h1>
           <p className="font-stolzl mt-[23px] text-[16px] leading-normal text-white opacity-[0.77]">
-            Your journey to AGI starts here
+            {subcopy}
           </p>
 
           <dl className="font-dm-mono mt-[22px] flex flex-col gap-[20px] text-[14px] leading-none text-black/[0.69]">

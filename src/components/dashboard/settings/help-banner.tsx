@@ -28,7 +28,11 @@ export function HelpBanner({
       >
         Need help?
       </h2>
-      <button className="relative z-10 flex h-11 items-center gap-2 rounded-md bg-[#2196F3] px-4 text-xs font-bold text-white shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#1E88E5] sm:px-6 sm:text-sm">
+      <button
+        type="button"
+        data-swift-agent-help
+        className="relative z-10 flex h-11 items-center gap-2 rounded-md bg-[#2196F3] px-4 text-xs font-bold text-white shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#1E88E5] sm:px-6 sm:text-sm"
+      >
         <Icons.CallAgent /> CALL AGENT
       </button>
     </div>

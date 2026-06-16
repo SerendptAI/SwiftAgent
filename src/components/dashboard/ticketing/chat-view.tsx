@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { Maximize2, Minimize2, Paperclip, Send, X } from "lucide-react";
+import { Check, Maximize2, Minimize2, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -46,7 +46,6 @@ export function ChatView({ ticketId, className, onClose }: ChatViewProps) {
   const { data: chat, isFetching } = useChat(ticketId);
   const { mutate: markSeen } = useMarkChatSeen();
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [draft, setDraft] = useState("");
   const [isFullscreen, setIsFullscreen] = useState(false);
   const avatarSrc = resolveAvatarUrl(chat?.avatar);
 
@@ -135,6 +134,19 @@ export function ChatView({ ticketId, className, onClose }: ChatViewProps) {
         )}
 
         {messages.map((message, i) => {
+          if (message.role === "system") {
+            return (
+              <div key={`${chat?.id}-${i}`} className="flex justify-center">
+                <div className="max-w-[85%] rounded-2xl border border-dashed border-gray-200 bg-gray-50 px-4 py-3 text-center text-xs leading-relaxed [overflow-wrap:anywhere] text-gray-500">
+                  <div className="font-dm-mono mb-1 text-[10px] font-semibold tracking-wider text-gray-400 uppercase">
+                    System note
+                  </div>
+                  <MessageMarkdown text={message.content} compact />
+                </div>
+              </div>
+            );
+          }
+
           const isVisitor = message.role === "user";
           const isLong =
             message.content.length > 60 || message.content.includes("\n");
@@ -170,42 +182,14 @@ export function ChatView({ ticketId, className, onClose }: ChatViewProps) {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Message input */}
+      {/* Resolved — read-only with optional reopen */}
       <div className="border-t border-gray-100 px-4 py-3">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            const message = draft.trim();
-            if (!message) return;
-            // TODO: wire up to send-message endpoint when available
-            console.log("Send message:", message);
-            setDraft("");
-          }}
-          className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2"
-        >
-          <input
-            type="text"
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            placeholder="Type a message..."
-            className="font-dm-mono flex-1 bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400"
-          />
-          <button
-            type="button"
-            aria-label="Attach"
-            className="shrink-0 cursor-pointer text-gray-400 transition-colors hover:text-gray-600"
-          >
-            <Paperclip className="h-4 w-4" />
-          </button>
-          <button
-            type="submit"
-            disabled={!draft.trim()}
-            aria-label="Send"
-            className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:text-[#006BE5] disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <Send className="h-4 w-4 -translate-x-px" />
-          </button>
-        </form>
+        <div className="flex items-center justify-center gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-4 py-2.5">
+          <Check className="h-4 w-4 text-green-500" />
+          <span className="font-dm-mono text-xs font-semibold tracking-wider text-gray-500 uppercase">
+            Resolved
+          </span>
+        </div>
       </div>
     </>
   );

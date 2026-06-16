@@ -13,6 +13,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Icons } from "@/components/icons";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
+import { useHasActivePlan } from "@/hooks/use-billing";
 import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
 import {
   useCreateIntegration,
@@ -22,16 +23,18 @@ import {
 import { useStrollConfig, useUpdateStrollConfig } from "@/hooks/use-stroll";
 import { Link } from "@/i18n/navigation";
 import type {
+  APIEndpoint,
   IntegrationCreatePayload,
   IntegrationUpdatePayload,
 } from "@/services/integrations";
 import type { StrollConfigPayload } from "@/services/stroll";
+import { useUpgradeModalStore } from "@/store/upgrade-modal-store";
 
 import {
-  API_KEY_FIELDS,
-  type ApiKeyRowValue,
-  ApiKeysSection,
-  emptyApiKeyRow,
+  API_INTEGRATION_NAME,
+  ApiIntegrationSection,
+  type ApiIntegrationValue,
+  emptyApiIntegration,
   PaymentSandboxSection,
   SuggestedQuestionsSection,
 } from "./chatbot-settings-sections";
@@ -49,6 +52,9 @@ export function WidgetCard() {
     message: string;
   } | null>(null);
   const activeCompanyId = useActiveCompanyId();
+  const hasActivePlan = useHasActivePlan(activeCompanyId);
+  const locked = hasActivePlan === false;
+  const showUpgrade = useUpgradeModalStore((s) => s.show);
 
   useEffect(() => {
     if (!toast) return;
@@ -56,21 +62,29 @@ export function WidgetCard() {
     return () => clearTimeout(id);
   }, [toast]);
 
-  // Auto-open settings when arriving from onboarding (/dashboard?settings=1)
+  // Auto-open settings when arriving from onboarding (/dashboard?settings=1),
+  // but only for users on an active plan — otherwise prompt them to upgrade.
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
   useEffect(() => {
-    if (searchParams.get("settings") === "1") {
+    if (searchParams.get("settings") !== "1") return;
+    // Wait until the plan status is known before deciding what to open.
+    if (hasActivePlan === undefined) return;
+
+    const next = new URLSearchParams(searchParams.toString());
+    next.delete("settings");
+    const query = next.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, {
+      scroll: false,
+    });
+
+    if (hasActivePlan) {
       setIsSettingsOpen(true);
-      const next = new URLSearchParams(searchParams.toString());
-      next.delete("settings");
-      const query = next.toString();
-      router.replace(query ? `${pathname}?${query}` : pathname, {
-        scroll: false,
-      });
+    } else {
+      showUpgrade();
     }
-  }, [searchParams, pathname, router]);
+  }, [searchParams, pathname, router, hasActivePlan, showUpgrade]);
 
   // Close mode dropdown on outside click
   const modeDropdownRef = useRef<HTMLDivElement>(null);
@@ -99,12 +113,12 @@ export function WidgetCard() {
   }, [companyId, mode]);
 
   const handleCopy = useCallback(() => {
-    if (!codeSnippet) return;
+    if (!codeSnippet || locked) return;
     navigator.clipboard.writeText(codeSnippet);
     setCopied(true);
     setIsSettingsOpen(true);
     setTimeout(() => setCopied(false), 2000);
-  }, [codeSnippet]);
+  }, [codeSnippet, locked]);
 
   return (
     <div className="rounded-xl">
@@ -162,7 +176,13 @@ export function WidgetCard() {
 
               <div className="flex items-center sm:pr-6">
                 <button
-                  onClick={() => setIsSettingsOpen(true)}
+                  onClick={() => {
+                    if (locked) {
+                      showUpgrade();
+                      return;
+                    }
+                    setIsSettingsOpen(true);
+                  }}
                   className="font-greed-narrow flex min-h-10 cursor-pointer items-center gap-2 rounded-md bg-[#EDEDED] px-3 py-2 text-xs font-bold tracking-wider text-gray-600 uppercase transition-colors hover:bg-gray-100 sm:px-4"
                 >
                   <Icons.Settings className="h-5 w-5" />
@@ -173,9 +193,28 @@ export function WidgetCard() {
 
             <div className="rounded-[20px] border border-gray-100 bg-white px-4 pt-16 pb-5 shadow-sm md:rounded-md md:px-5">
               {/* Code snippet */}
-              <pre className="font-stolzl max-h-48 overflow-auto rounded-lg bg-[#F6F6F6] p-3 text-[11px] leading-relaxed break-all whitespace-pre-wrap text-gray-700 sm:p-4 sm:text-[13px]">
-                {codeSnippet || "No widget code found."}
-              </pre>
+              <div className="relative">
+                <pre
+                  className={`font-stolzl max-h-48 overflow-auto rounded-lg bg-[#F6F6F6] p-3 text-[11px] leading-relaxed break-all whitespace-pre-wrap text-gray-700 sm:p-4 sm:text-[13px] ${
+                    locked ? "pointer-events-none blur-sm select-none" : ""
+                  }`}
+                >
+                  {codeSnippet || "No widget code found."}
+                </pre>
+                {locked && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-lg bg-white/50">
+                    <p className="font-dm-mono max-w-[260px] text-center text-xs font-bold tracking-wider text-gray-700 uppercase">
+                      Subscribe to a plan to unlock your widget code
+                    </p>
+                    <button
+                      onClick={showUpgrade}
+                      className="font-dm-mono rounded-md bg-[#006BE5] px-5 py-2 text-xs font-semibold tracking-wider text-white uppercase transition-colors hover:bg-[#0055B8]"
+                    >
+                      Upgrade
+                    </button>
+                  </div>
+                )}
+              </div>
               <p className="font-dm-mono mt-2 text-[11px] text-gray-400">
                 Replace{" "}
                 <code className="rounded bg-gray-100 px-1 py-0.5 text-gray-600">
@@ -203,8 +242,8 @@ export function WidgetCard() {
               {/* Copy button */}
               <button
                 onClick={handleCopy}
-                disabled={!codeSnippet}
-                className="font-dm-mono mt-6 flex min-h-11 w-full items-center justify-center gap-2.5 rounded-md bg-[#006BE5] py-2 text-base font-normal text-white shadow-[-4px_4px_0px_0px_#000000] transition-all hover:bg-[#1E88E5] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-2px_2px_0px_0px_#000000] disabled:opacity-50"
+                disabled={!codeSnippet || locked}
+                className="font-dm-mono mt-6 flex min-h-11 w-full items-center justify-center gap-2.5 rounded-md bg-[#006BE5] py-2 text-base font-normal text-white shadow-[-4px_4px_0px_0px_#000000] transition-all hover:bg-[#1E88E5] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-2px_2px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Copy className="h-5 w-5" />
                 {copied ? "Copied!" : "Copy"}
@@ -281,6 +320,13 @@ const AGENT_OPTIONS: AgentOption[] = [
 
 const SIDEBAR_TRANSITION_MS = 300;
 
+const slugifyEndpointName = (label: string) =>
+  label
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+
 function ChatbotSettingsSidebar({
   companyId,
   onClose,
@@ -314,15 +360,8 @@ function ChatbotSettingsSidebar({
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [isShown, setIsShown] = useState(false);
   const [suggestedPrompts, setSuggestedPrompts] = useState<string[]>([]);
-  const [apiKeyRows, setApiKeyRows] = useState<Record<string, ApiKeyRowValue>>(
-    () =>
-      Object.fromEntries(API_KEY_FIELDS.map((f) => [f.id, emptyApiKeyRow()])),
-  );
-
-  const updateApiKeyRow = useCallback(
-    (presetId: string, next: ApiKeyRowValue) =>
-      setApiKeyRows((prev) => ({ ...prev, [presetId]: next })),
-    [],
+  const [apiIntegration, setApiIntegration] = useState<ApiIntegrationValue>(
+    () => emptyApiIntegration(),
   );
 
   useEffect(() => {
@@ -346,21 +385,25 @@ function ChatbotSettingsSidebar({
 
   useEffect(() => {
     if (!integrations) return;
-    setApiKeyRows((prev) => {
-      const next = { ...prev };
-      for (const field of API_KEY_FIELDS) {
-        const existing = integrations.find((i) => i.name === field.label);
-        if (!existing) continue;
-        const endpoint = existing.endpoints[0];
-        next[field.id] = {
-          integrationId: existing.id,
-          apiKey: "",
-          baseUrl: existing.base_url ?? "",
-          endpointPath: endpoint?.path ?? "",
-          endpointDescription: endpoint?.description ?? "",
-        };
-      }
-      return next;
+    // Only adopt the integration we own (named API_INTEGRATION_NAME); never
+    // fall back to an arbitrary one, which could overwrite unrelated data.
+    const existing = integrations.find((i) => i.name === API_INTEGRATION_NAME);
+    if (!existing) return;
+
+    setApiIntegration({
+      integrationId: existing.id,
+      baseUrl: existing.base_url ?? "",
+      apiKey: "",
+      authHeader: existing.auth_header || "Authorization",
+      authPrefix: existing.auth_prefix || "Bearer",
+      endpoints: existing.endpoints.map((e) => ({
+        id: e.name || crypto.randomUUID(),
+        label: e.name,
+        path: e.path,
+        description: e.description,
+        queryParams: e.query_params,
+        headers: e.headers,
+      })),
     });
   }, [integrations]);
 
@@ -400,61 +443,77 @@ function ChatbotSettingsSidebar({
       .filter(Boolean);
 
     const integrationMutations: Promise<unknown>[] = [];
-    for (const field of API_KEY_FIELDS) {
-      const row = apiKeyRows[field.id];
-      if (!row) continue;
-      const apiKey = row.apiKey.trim();
-      const baseUrl = row.baseUrl.trim();
-      const endpointPath = row.endpointPath.trim();
-      const endpointDescription =
-        row.endpointDescription.trim() || field.tooltip;
+    {
+      const baseUrl = apiIntegration.baseUrl.trim();
+      const apiKey = apiIntegration.apiKey.trim();
+      const authHeader = apiIntegration.authHeader.trim() || "Authorization";
+      const authPrefix = apiIntegration.authPrefix.trim() || "Bearer";
 
-      if (row.integrationId) {
-        const dirty =
-          apiKey.length > 0 || baseUrl.length > 0 || endpointPath.length > 0;
-        if (!dirty) continue;
-        const payload: IntegrationUpdatePayload = {};
-        if (apiKey) payload.api_key = apiKey;
-        if (baseUrl) payload.base_url = baseUrl;
-        if (endpointPath) {
-          payload.endpoints = [
-            {
-              name: field.id,
-              path: endpointPath,
-              description: endpointDescription,
-            },
-          ];
-        }
-        integrationMutations.push(
-          updateIntegration.mutateAsync({
-            integrationId: row.integrationId,
-            payload,
-          }),
-        );
-        continue;
-      }
+      const usedNames = new Set<string>();
+      const endpoints: APIEndpoint[] = apiIntegration.endpoints
+        .filter((e) => e.path.trim())
+        .map((e) => {
+          const base = slugifyEndpointName(e.label) || "endpoint";
+          let name = base;
+          for (let n = 2; usedNames.has(name); n++) name = `${base}_${n}`;
+          usedNames.add(name);
 
-      if (!apiKey) continue;
-      if (!baseUrl || !endpointPath) {
-        onError?.(
-          `${field.label} needs a Base URL and Endpoint path before it can be saved.`,
-        );
+          const endpoint: APIEndpoint = {
+            name,
+            path: e.path.trim(),
+            description: e.description.trim() || e.label || name,
+          };
+          if (e.queryParams) endpoint.query_params = e.queryParams;
+          if (e.headers) endpoint.headers = e.headers;
+          return endpoint;
+        });
+
+      const hasInput =
+        baseUrl.length > 0 || apiKey.length > 0 || endpoints.length > 0;
+
+      if (hasInput && endpoints.length === 0) {
+        onError?.("Add at least one endpoint path to the API integration.");
         return;
       }
-      const createPayload: IntegrationCreatePayload = {
-        name: field.label,
-        base_url: baseUrl,
-        api_key: apiKey,
-        documentation: field.tooltip,
-        endpoints: [
-          {
-            name: field.id,
-            path: endpointPath,
-            description: endpointDescription,
-          },
-        ],
-      };
-      integrationMutations.push(createIntegration.mutateAsync(createPayload));
+
+      if (apiIntegration.integrationId) {
+        if (hasInput) {
+          if (!baseUrl) {
+            onError?.("Add a Base URL before saving the API integration.");
+            return;
+          }
+          const payload: IntegrationUpdatePayload = {
+            base_url: baseUrl,
+            auth_header: authHeader,
+            auth_prefix: authPrefix,
+            endpoints,
+          };
+          if (apiKey) payload.api_key = apiKey;
+          integrationMutations.push(
+            updateIntegration.mutateAsync({
+              integrationId: apiIntegration.integrationId,
+              payload,
+            }),
+          );
+        }
+      } else if (hasInput) {
+        if (!baseUrl || !apiKey) {
+          onError?.(
+            "The API integration needs a Base URL and API Key before it can be saved.",
+          );
+          return;
+        }
+        const createPayload: IntegrationCreatePayload = {
+          name: API_INTEGRATION_NAME,
+          base_url: baseUrl,
+          api_key: apiKey,
+          auth_header: authHeader,
+          auth_prefix: authPrefix,
+          documentation: "",
+          endpoints,
+        };
+        integrationMutations.push(createIntegration.mutateAsync(createPayload));
+      }
     }
 
     try {
@@ -639,7 +698,10 @@ function ChatbotSettingsSidebar({
           </section>
 
           <PaymentSandboxSection />
-          <ApiKeysSection value={apiKeyRows} onChange={updateApiKeyRow} />
+          <ApiIntegrationSection
+            value={apiIntegration}
+            onChange={setApiIntegration}
+          />
           <SuggestedQuestionsSection
             value={suggestedPrompts}
             onChange={setSuggestedPrompts}

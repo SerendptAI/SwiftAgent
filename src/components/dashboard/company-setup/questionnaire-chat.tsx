@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { useCheckEmailSlug, useCompanyMutations } from "@/hooks/use-company";
 import { useIngestKnowledge, useUploadKnowledge } from "@/hooks/use-knowledge";
+import { getApiErrorMessage } from "@/lib/api-error";
 
 const BriggsAnimation = dynamic(
   () => import("@/components/briggs-face-animation"),
@@ -30,6 +31,7 @@ interface ChatUpload {
   label: string;
   kind: UploadKind;
   status: "pending" | "done" | "error";
+  error?: string;
 }
 
 function detectFileKind(filename: string): UploadKind {
@@ -317,6 +319,7 @@ export function QuestionnaireChat({
   const setUploadStatus = (
     uploadIndex: number,
     status: ChatUpload["status"],
+    error?: string,
   ) => {
     if (uploadIndex < 0) return;
     setEntries((prev) =>
@@ -325,7 +328,7 @@ export function QuestionnaireChat({
         return {
           ...entry,
           uploads: entry.uploads.map((u, j) =>
-            j === uploadIndex ? { ...u, status } : u,
+            j === uploadIndex ? { ...u, status, error } : u,
           ),
         };
       }),
@@ -352,7 +355,11 @@ export function QuestionnaireChat({
       advanceToNextStep();
     } catch (err) {
       console.error("Failed to upload:", err);
-      setUploadStatus(uploadIndex, "error");
+      setUploadStatus(
+        uploadIndex,
+        "error",
+        getApiErrorMessage(err, "Upload failed. Please try again."),
+      );
     }
   };
 
@@ -376,7 +383,11 @@ export function QuestionnaireChat({
       advanceToNextStep();
     } catch (err) {
       console.error("Failed to save knowledge text:", err);
-      setUploadStatus(uploadIndex, "error");
+      setUploadStatus(
+        uploadIndex,
+        "error",
+        getApiErrorMessage(err, "Failed to save. Please try again."),
+      );
     }
   };
 
@@ -593,6 +604,11 @@ export function QuestionnaireChat({
                               : "Uploading…"}
                           </p>
                         )}
+                        {item.status === "error" && item.error && (
+                          <p className="font-dm-mono mt-1 max-w-[200px] text-right text-[10px] leading-snug text-red-500">
+                            {item.error}
+                          </p>
+                        )}
                       </div>
                     );
                   }
@@ -619,6 +635,11 @@ export function QuestionnaireChat({
                         {item.label}
                         {statusLabel}
                       </p>
+                      {item.status === "error" && item.error && (
+                        <p className="font-dm-mono mt-1 text-[11px] leading-snug text-white/90">
+                          {item.error}
+                        </p>
+                      )}
                     </div>
                   );
                 })}

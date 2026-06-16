@@ -15,3 +15,8 @@ export const useActiveCompanyStore = create<ActiveCompanyState>()(
     { name: "active-company" },
   ),
 );
+
+export function clearActiveCompany() {
+  useActiveCompanyStore.setState({ activeCompanyId: null });
+  useActiveCompanyStore.persist.clearStorage();
+}

@@ -55,7 +55,7 @@ export function useAllChatDetails() {
     queries: (chats ?? []).map((chat) => ({
       queryKey: ["chats", companyId, chat.id],
       queryFn: () => chatsApi.getById(companyId!, chat.id),
-      enabled: !!companyId,
+      enabled: !!companyId && !!chat.id,
       staleTime: 5 * 60 * 1000,
     })),
   });

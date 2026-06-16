@@ -1,11 +1,13 @@
 "use client";
 
 import gsap from "gsap";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-import { cn } from "@/lib/utils";
+import { useCurrentUser } from "@/hooks/use-auth";
+import { cn, getProfileImage } from "@/lib/utils";
 
 import { isLandingNavLinkActive, LANDING_NAV_LINKS } from "./nav-links";
 
@@ -19,9 +21,14 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const linksRef = useRef<HTMLDivElement>(null);
   const [hash, setHash] = useState("");
+  const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
+  const { data: user } = useCurrentUser();
+
+  const isLoggedIn = isMounted && !!user;
 
   useEffect(() => {
+    setIsMounted(true);
     const updateHash = () => setHash(window.location.hash);
 
     updateHash();
@@ -124,15 +131,35 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
             );
           })}
 
-          {/* Login button inside menu */}
+          {/* Login / profile button inside menu */}
           <div className="p-4">
-            <Link
-              href="/en/login"
-              onClick={onClose}
-              className="font-dm-mono flex w-full items-center justify-center rounded-lg border bg-[#F2B035] px-8 py-3 text-base font-normal tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-800"
-            >
-              LOGIN
-            </Link>
+            {isLoggedIn ? (
+              <Link
+                href="/en/dashboard"
+                onClick={onClose}
+                className="font-dm-mono flex w-full items-center justify-center gap-3 rounded-lg border bg-[#F2B035] px-8 py-3 text-base font-normal tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-800"
+              >
+                <span className="relative h-7 w-7 shrink-0 overflow-hidden rounded-full border border-black/10">
+                  <Image
+                    src={user?.picture || getProfileImage(user?.id)}
+                    alt={user?.name || "Profile"}
+                    fill
+                    className="object-cover"
+                  />
+                </span>
+                <span className="max-w-[160px] truncate">
+                  {user?.name || "Dashboard"}
+                </span>
+              </Link>
+            ) : (
+              <Link
+                href="/en/login"
+                onClick={onClose}
+                className="font-dm-mono flex w-full items-center justify-center rounded-lg border bg-[#F2B035] px-8 py-3 text-base font-normal tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-800"
+              >
+                LOGIN
+              </Link>
+            )}
           </div>
         </div>
       </div>

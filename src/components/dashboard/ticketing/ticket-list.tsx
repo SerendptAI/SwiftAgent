@@ -69,12 +69,21 @@ export function TicketList({
   const { data: resolvedChats, isLoading: chatsLoading } = useResolvedChats();
 
   // Loading state for the currently-selected item (shared via React Query cache
-  // with TicketView / ChatView — no extra network requests).
+  // with TicketView / ChatView — no extra network requests). A ticket can now be
+  // selected from either tab (read tickets live under Resolved), so key the fetch
+  // off which list the id belongs to rather than the active tab.
+  const selectedIsTicket =
+    !!selectedItemId &&
+    (tickets?.some((t) => t.id === selectedItemId) ?? false);
+  const selectedIsChat =
+    !!selectedItemId &&
+    (resolvedChats?.some((c) => c.id === selectedItemId) ?? false);
+
   const { isFetching: isSelectedTicketFetching } = useTicket(
-    activeTab === "pending" ? selectedItemId || null : null,
+    selectedIsTicket ? selectedItemId : null,
   );
   const { isFetching: isSelectedChatFetching } = useChat(
-    activeTab === "resolved" ? selectedItemId || null : null,
+    selectedIsChat ? selectedItemId : null,
   );
 
   const normalizedQuery = searchQuery?.trim().toLowerCase() ?? "";
@@ -89,10 +98,113 @@ export function TicketList({
     matchesQuery(c.session_id),
   );
 
-  const pendingCount = filteredTickets?.length ?? 0;
+  type TicketItem = NonNullable<typeof tickets>[number];
+  type ChatItem = NonNullable<typeof resolvedChats>[number];
+
+  const unreadCount =
+    filteredTickets?.filter((t) => (t.unseen_count ?? 0) > 0).length ?? 0;
   const isLoading = activeTab === "pending" ? ticketsLoading : chatsLoading;
 
   const isSelectionLoading = isSelectedTicketFetching || isSelectedChatFetching;
+
+  const renderTicketButton = (ticket: TicketItem) => {
+    const unread = (ticket.unseen_count ?? 0) > 0;
+    const avatarSrc = resolveAvatarUrl(ticket.avatar);
+    const title =
+      ticket.customer_name?.trim() || ticket.customer_email || "Unknown sender";
+    const subtitle =
+      ticket.preview_message?.trim() ||
+      ticket.subject?.trim() ||
+      ticket.chat_summary ||
+      "(no subject)";
+    return (
+      <button
+        key={ticket.id}
+        onClick={() => onSelectItem(ticket.id, "ticket")}
+        className={cn(
+          "flex w-full cursor-pointer items-center gap-3 rounded-2xl p-0 text-left transition-colors lg:p-3",
+          selectedItemId === ticket.id
+            ? "text-[#006BE5] lg:bg-blue-50"
+            : "hover:text-gray-900 lg:hover:bg-gray-50",
+        )}
+      >
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-50">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={avatarSrc} alt="Ticket avatar" width={36} height={31} />
+        </div>
+        <div className="min-w-0 flex-1 space-y-1.5">
+          <div className="flex items-center justify-between">
+            <span
+              className={cn(
+                "font-dm-mono truncate text-sm",
+                unread
+                  ? "font-black text-gray-900"
+                  : "font-semibold text-gray-600",
+              )}
+            >
+              {title}
+            </span>
+            {unread && (
+              <span className="h-2 w-2 shrink-0 rounded-full bg-[#006BE5]"></span>
+            )}
+          </div>
+          <div className="flex items-center justify-between gap-2 overflow-hidden">
+            <span
+              className={cn(
+                "font-stolzl min-w-0 truncate text-xs",
+                unread ? "font-bold text-gray-600" : "text-gray-400",
+              )}
+            >
+              {subtitle}
+            </span>
+            <span className="font-stolzl shrink-0 text-xs text-[#2196F3]">
+              {formatRelativeTime(ticket.updated_at)}
+            </span>
+          </div>
+        </div>
+      </button>
+    );
+  };
+
+  const renderChatButton = (chat: ChatItem) => {
+    const avatarSrc = resolveAvatarUrl(chat.avatar);
+    const sessionLabel = chat.session_id
+      ? chat.session_id.slice(0, 13).toUpperCase()
+      : "UNKNOWN";
+    return (
+      <button
+        key={chat.id}
+        onClick={() => onSelectItem(chat.id, "chat")}
+        className={cn(
+          "flex w-full cursor-pointer items-center gap-3 rounded-2xl p-0 text-left transition-colors lg:p-3",
+          selectedItemId === chat.id
+            ? "text-[#6433CC] lg:bg-[#ECECEC]"
+            : "hover:text-gray-900 lg:hover:bg-[#ECECEC]",
+        )}
+      >
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-50">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={avatarSrc} alt="Chat avatar" width={36} height={31} />
+        </div>
+        <div className="min-w-0 flex-1 space-y-1.5">
+          <div className="flex items-center justify-between">
+            <span className="font-dm-mono truncate text-sm font-semibold text-gray-600">
+              {sessionLabel}
+            </span>
+          </div>
+          <div className="flex items-center justify-between gap-2 overflow-hidden">
+            <span className="font-stolzl min-w-0 truncate text-xs text-gray-400">
+              {chat.preview_message?.trim() ||
+                `${chat.message_count} ${chat.message_count === 1 ? "message" : "messages"}`}
+            </span>
+            <span className="font-stolzl shrink-0 text-xs text-[#6433CC]">
+              {formatRelativeTime(chat.updated_at)}
+            </span>
+          </div>
+        </div>
+      </button>
+    );
+  };
 
   return (
     <div
@@ -132,9 +244,9 @@ export function TicketList({
             />
           </svg>
           <span>Pending</span>
-          {pendingCount > 0 && (
+          {unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white sm:h-5 sm:w-5 sm:text-[10px]">
-              {pendingCount}
+              {unreadCount}
             </span>
           )}
         </button>
@@ -185,116 +297,12 @@ export function TicketList({
           !filteredTickets || filteredTickets.length === 0 ? (
             <TicketListEmptyState />
           ) : (
-            filteredTickets.map((ticket) => {
-              const unread = (ticket.unseen_count ?? 0) > 0;
-              const avatarSrc = resolveAvatarUrl(ticket.avatar);
-              const title =
-                ticket.customer_name?.trim() ||
-                ticket.customer_email ||
-                "Unknown sender";
-              const subtitle =
-                ticket.subject?.trim() || ticket.chat_summary || "(no subject)";
-              return (
-                <button
-                  key={ticket.id}
-                  onClick={() => onSelectItem(ticket.id, "ticket")}
-                  className={cn(
-                    "flex w-full cursor-pointer items-center gap-3 rounded-2xl p-0 text-left transition-colors lg:p-3",
-                    selectedItemId === ticket.id
-                      ? "text-[#006BE5] lg:bg-blue-50"
-                      : "hover:text-gray-900 lg:hover:bg-gray-50",
-                  )}
-                >
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-50">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={avatarSrc}
-                      alt="Ticket avatar"
-                      width={36}
-                      height={31}
-                    />
-                  </div>
-                  <div className="min-w-0 flex-1 space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <span
-                        className={cn(
-                          "font-dm-mono truncate text-sm",
-                          unread
-                            ? "font-black text-gray-900"
-                            : "font-semibold text-gray-600",
-                        )}
-                      >
-                        {title}
-                      </span>
-                      {unread && (
-                        <span className="h-2 w-2 shrink-0 rounded-full bg-[#006BE5]"></span>
-                      )}
-                    </div>
-                    <div className="flex items-center justify-between gap-2 overflow-hidden">
-                      <span
-                        className={cn(
-                          "font-stolzl min-w-0 truncate text-xs",
-                          unread ? "font-bold text-gray-600" : "text-gray-400",
-                        )}
-                      >
-                        {subtitle}
-                      </span>
-                      <span className="font-stolzl shrink-0 text-xs text-[#2196F3]">
-                        {formatRelativeTime(ticket.updated_at)}
-                      </span>
-                    </div>
-                  </div>
-                </button>
-              );
-            })
+            filteredTickets.map(renderTicketButton)
           )
         ) : !filteredChats || filteredChats.length === 0 ? (
           <TicketListEmptyState />
         ) : (
-          filteredChats.map((chat) => {
-            const avatarSrc = resolveAvatarUrl(chat.avatar);
-            const sessionLabel = chat.session_id
-              ? chat.session_id.slice(0, 13).toUpperCase()
-              : "UNKNOWN";
-            return (
-              <button
-                key={chat.id}
-                onClick={() => onSelectItem(chat.id, "chat")}
-                className={cn(
-                  "flex w-full cursor-pointer items-center gap-3 rounded-2xl p-0 text-left transition-colors lg:p-3",
-                  selectedItemId === chat.id
-                    ? "text-[#6433CC] lg:bg-[#ECECEC]"
-                    : "hover:text-gray-900 lg:hover:bg-[#ECECEC]",
-                )}
-              >
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-50">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={avatarSrc}
-                    alt="Chat avatar"
-                    width={36}
-                    height={31}
-                  />
-                </div>
-                <div className="min-w-0 flex-1 space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <span className="font-dm-mono truncate text-sm font-semibold text-gray-600">
-                      {sessionLabel}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between gap-2 overflow-hidden">
-                    <span className="font-stolzl min-w-0 truncate text-xs text-gray-400">
-                      {chat.message_count}{" "}
-                      {chat.message_count === 1 ? "message" : "messages"}
-                    </span>
-                    <span className="font-stolzl shrink-0 text-xs text-[#6433CC]">
-                      {formatRelativeTime(chat.updated_at)}
-                    </span>
-                  </div>
-                </div>
-              </button>
-            );
-          })
+          filteredChats.map(renderChatButton)
         )}
       </div>
     </div>

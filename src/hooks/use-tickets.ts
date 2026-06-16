@@ -16,7 +16,6 @@ export function useTickets() {
     queryKey: ["tickets", companyId],
     queryFn: () => ticketsApi.list(companyId!),
     enabled: !!companyId,
-    refetchInterval: 15000,
   });
 }
 
@@ -30,6 +29,7 @@ export function useTicket(ticketId: string | null) {
     enabled: !!companyId && !!ticketId,
     placeholderData: keepPreviousData,
     refetchInterval: 15000,
+    refetchOnWindowFocus: true,
   });
 }
 
@@ -50,6 +50,25 @@ export function useMarkTicketSeen() {
       queryClient.invalidateQueries({
         queryKey: ["tickets", companyId, ticketId],
       });
+    },
+  });
+}
+
+/** Resolve a ticket — backend closes it and emails the customer. */
+export function useResolveTicket() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      companyId,
+      ticketId,
+    }: {
+      companyId: string;
+      ticketId: string;
+    }) => ticketsApi.resolve(companyId, ticketId),
+    onSuccess: (_, { companyId }) => {
+      queryClient.invalidateQueries({ queryKey: ["tickets", companyId] });
+      queryClient.invalidateQueries({ queryKey: ["chats", companyId] });
     },
   });
 }

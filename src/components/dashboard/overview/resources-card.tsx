@@ -1,18 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
 
-import { DevelopmentResourcesDrawer } from "./development-resources-drawer";
+// Development Resources drawer disabled for now — keep for later.
+// import { useState } from "react";
+// import { DevelopmentResourcesDrawer } from "./development-resources-drawer";
 
 export function ResourcesCard() {
-  const [showResources, setShowResources] = useState(false);
-
   return (
     <>
       <button
         type="button"
-        onClick={() => setShowResources(true)}
         className="group flex min-h-[212px] cursor-pointer flex-col items-center justify-center rounded-[20px] bg-white p-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black sm:min-h-[220px] lg:min-h-[250px] lg:rounded-3xl"
       >
         <div className="relative mb-6 flex h-[142px] w-full items-end justify-center overflow-hidden sm:h-[150px] lg:mb-8 lg:h-[160px]">
@@ -76,10 +74,10 @@ export function ResourcesCard() {
         </span>
       </button>
 
-      <DevelopmentResourcesDrawer
+      {/* <DevelopmentResourcesDrawer
         open={showResources}
         onClose={() => setShowResources(false)}
-      />
+      /> */}
     </>
   );
 }

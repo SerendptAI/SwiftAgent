@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/toast";
 import { useGoogleLogin, useSendOtp, useVerifyOtp } from "@/hooks/use-auth";
 
 const OTP_LENGTH = 6;
@@ -14,6 +15,7 @@ const OTP_LENGTH = 6;
 export default function LoginPage() {
   const router = useRouter();
   const t = useTranslations("login");
+  const toast = useToast();
   const { setTheme } = useTheme();
   const googleLogin = useGoogleLogin();
   const sendOtp = useSendOtp();
@@ -31,8 +33,15 @@ export default function LoginPage() {
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [otpError, setOtpError] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const id = setTimeout(() => setResendCooldown((s) => s - 1), 1000);
+    return () => clearTimeout(id);
+  }, [resendCooldown]);
 
   const isValidEmail = (value: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
@@ -59,11 +68,33 @@ export default function LoginPage() {
             return;
           }
           setStep("otp");
+          setResendCooldown(30);
+          // Remind users to check spam — OTP emails are commonly filtered.
+          toast.success(t("checkSpam"));
           // Focus the first OTP input after transition
           setTimeout(() => inputRefs.current[0]?.focus(), 50);
         },
         onError: () => {
           setEmailError(t("otpSendFailed"));
+        },
+      },
+    );
+  };
+
+  const handleResendOtp = () => {
+    if (sendOtp.isPending || resendCooldown > 0) return;
+    sendOtp.mutate(
+      { email: email.trim() },
+      {
+        onSuccess: () => {
+          setOtp(Array(OTP_LENGTH).fill(""));
+          setOtpError("");
+          setResendCooldown(30);
+          toast.success(t("codeResent"));
+          setTimeout(() => inputRefs.current[0]?.focus(), 50);
+        },
+        onError: () => {
+          setOtpError(t("otpSendFailed"));
         },
       },
     );
@@ -176,7 +207,7 @@ export default function LoginPage() {
           {step === "email" ? (
             <div className="w-full">
               <div
-                className={`focus-within:ring-ring/50 relative flex h-11 w-full items-center rounded-md border bg-transparent focus-within:ring-2 ${
+                className={`focus-within:ring-ring/50 relative flex h-11 w-full items-center rounded-md border bg-transparent px-[0.2rem] focus-within:ring-2 ${
                   emailError ? "border-red-500" : "border-black/20"
                 }`}
               >
@@ -235,6 +266,13 @@ export default function LoginPage() {
                 ))}
               </div>
 
+              {/* Spam reminder — OTP emails are commonly filtered. */}
+              {!isVerifying && !otpError && (
+                <p className="font-dm-mono max-w-xs text-center text-xs leading-[1.4] text-[#7E7E7E]">
+                  {t("checkSpam")}
+                </p>
+              )}
+
               {/* Status text */}
               {isVerifying && (
                 <p className="text-muted-foreground text-sm leading-[1.2] tracking-[10%] uppercase">
@@ -247,20 +285,32 @@ export default function LoginPage() {
                 </p>
               )}
 
-              {/* Back to email link */}
+              {/* Resend code + back to email */}
               {!isVerifying && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setStep("email");
-                    setOtp(Array(OTP_LENGTH).fill(""));
-                    setOtpError("");
-                    setIsVerifying(false);
-                  }}
-                  className="text-muted-foreground text-sm leading-[1.2] tracking-[10%] uppercase underline underline-offset-2"
-                >
-                  {t("backToEmail")}
-                </button>
+                <div className="flex items-center gap-3 max-md:flex-col">
+                  <button
+                    type="button"
+                    onClick={handleResendOtp}
+                    disabled={sendOtp.isPending || resendCooldown > 0}
+                    className="text-muted-foreground text-sm leading-[1.2] tracking-[10%] uppercase underline underline-offset-2 disabled:no-underline disabled:opacity-50"
+                  >
+                    {resendCooldown > 0
+                      ? `${t("resendCode")} (${resendCooldown}s)`
+                      : t("resendCode")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setStep("email");
+                      setOtp(Array(OTP_LENGTH).fill(""));
+                      setOtpError("");
+                      setIsVerifying(false);
+                    }}
+                    className="text-muted-foreground text-sm leading-[1.2] tracking-[10%] uppercase underline underline-offset-2"
+                  >
+                    {t("backToEmail")}
+                  </button>
+                </div>
               )}
             </div>
           )}

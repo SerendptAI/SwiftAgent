@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { clearActiveCompany } from "@/store/active-company-store";
+
 export const API_BASE_URL = (
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"
 ).replace(/\/$/, "");
@@ -31,6 +33,7 @@ export function clearAuthTokens() {
   localStorage.removeItem(AUTH_TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
   localStorage.removeItem(AUTH_PROVIDER_KEY);
+  clearActiveCompany();
 }
 
 export function getAuthProvider(): string | null {

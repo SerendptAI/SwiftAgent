@@ -2,7 +2,6 @@
 
 import { Icons } from "@/components/icons";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
-import { useAllSubmissions } from "@/hooks/use-forms";
 import { useTickets } from "@/hooks/use-tickets";
 
 type ChannelKey = "tickets" | "forms" | "mail";
@@ -25,22 +24,23 @@ const CHANNELS: Channel[] = [
     activeIcon: "text-white",
     badgeBg: "bg-red-500",
   },
-  {
-    key: "forms",
-    label: "Forms",
-    icon: Icons.ticketForm,
-    activeBg: "bg-[#F25430]",
-    activeIcon: "text-white",
-    badgeBg: "bg-[#6433CC]",
-  },
-  {
-    key: "mail",
-    label: "Business Emails",
-    icon: Icons.ticketEmail,
-    activeBg: "bg-[#F25430]",
-    activeIcon: "text-white",
-    badgeBg: "bg-[#6433CC]",
-  },
+  // Forms and Business Emails are hidden for now — keep for later.
+  // {
+  //   key: "forms",
+  //   label: "Forms",
+  //   icon: Icons.ticketForm,
+  //   activeBg: "bg-[#F25430]",
+  //   activeIcon: "text-white",
+  //   badgeBg: "bg-[#6433CC]",
+  // },
+  // {
+  //   key: "mail",
+  //   label: "Business Emails",
+  //   icon: Icons.ticketEmail,
+  //   activeBg: "bg-[#F25430]",
+  //   activeIcon: "text-white",
+  //   badgeBg: "bg-[#6433CC]",
+  // },
 ];
 
 interface ChannelNavigatorProps {
@@ -50,10 +50,9 @@ interface ChannelNavigatorProps {
 
 export function ChannelNavigator({ active, onChange }: ChannelNavigatorProps) {
   const { data: tickets } = useTickets();
-  const { data: unreadSubmissions } = useAllSubmissions({ is_read: false });
   const counts: Record<ChannelKey, number> = {
-    tickets: tickets?.length ?? 0,
-    forms: unreadSubmissions?.length ?? 0,
+    tickets: tickets?.filter((t) => (t.unseen_count ?? 0) > 0).length ?? 0,
+    forms: 0,
     mail: 0,
   };
 

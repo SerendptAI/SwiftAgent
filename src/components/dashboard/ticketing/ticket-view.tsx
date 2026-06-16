@@ -2,6 +2,7 @@
 
 import { format } from "date-fns";
 import {
+  Check,
   ChevronDown,
   ChevronRight,
   ExternalLink,
@@ -17,12 +18,14 @@ import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
+import { useToast } from "@/components/ui/toast";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useCurrentUser } from "@/hooks/use-auth";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import {
   useMarkTicketSeen,
   useReplyToTicket,
+  useResolveTicket,
   useTicket,
 } from "@/hooks/use-tickets";
 import { resolveAvatarUrl } from "@/lib/avatar";
@@ -316,10 +319,12 @@ interface TicketViewProps {
 
 export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
   const companyId = useActiveCompanyId();
+  const toast = useToast();
   const { data: ticket, isFetching } = useTicket(ticketId);
   const { data: currentUser } = useCurrentUser();
   const { mutate: markSeen } = useMarkTicketSeen();
   const { mutate: reply, isPending: isSending } = useReplyToTicket();
+  const { mutate: resolveTicket, isPending: isResolving } = useResolveTicket();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -419,6 +424,21 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
   const removeFile = (index: number) => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
     setAttachError(null);
+  };
+
+  const handleResolve = () => {
+    if (!companyId || !ticket || isResolving) return;
+    resolveTicket(
+      { companyId, ticketId: ticket.id },
+      {
+        onSuccess: () => {
+          toast.success("Ticket resolved. The customer has been notified.");
+        },
+        onError: () => {
+          toast.error("Failed to resolve ticket. Please try again.");
+        },
+      },
+    );
   };
 
   const handleSend = (e: React.FormEvent) => {
@@ -638,72 +658,101 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
 
       {/* Reply composer */}
       <div className="border-t border-gray-100 px-4 py-3">
-        {files.length > 0 && (
-          <div className="mb-2 flex flex-wrap gap-1.5">
-            {files.map((file, i) => (
-              <AttachmentCard
-                key={`${file.name}-${i}`}
-                filename={file.name}
-                size={file.size}
-                contentType={file.type}
-                tone="customer"
-                previewUrl={filePreviews[i]}
-                onOpen={
-                  filePreviews[i]
-                    ? () => openPreview(filePreviews[i], file.name, file.type)
-                    : undefined
-                }
-                onRemove={isSending ? undefined : () => removeFile(i)}
-              />
-            ))}
+        {ticket?.status === "resolved" ? (
+          <div className="flex items-center justify-center gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-4 py-2.5">
+            <Check className="h-4 w-4 text-green-500" />
+            <span className="font-dm-mono text-xs font-semibold tracking-wider text-gray-500 uppercase">
+              Ticket resolved
+            </span>
           </div>
-        )}
-        {attachError && (
-          <p className="font-dm-mono mb-2 text-xs text-red-500">
-            {attachError}
-          </p>
-        )}
-        <form
-          onSubmit={handleSend}
-          className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2"
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            onChange={handleFilesSelected}
-            className="hidden"
-          />
-          <input
-            type="text"
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            placeholder="Type a reply..."
-            disabled={isSending}
-            className="font-dm-mono flex-1 bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400 disabled:opacity-60"
-          />
-          <button
-            type="button"
-            aria-label="Attach"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isSending || files.length >= MAX_REPLY_ATTACHMENTS}
-            className="shrink-0 cursor-pointer text-gray-400 transition-colors hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            <Paperclip className="h-4 w-4" />
-          </button>
-          <button
-            type="submit"
-            disabled={!draft.trim() || isSending}
-            aria-label="Send"
-            className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:text-[#006BE5] disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {isSending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Send className="h-4 w-4 -translate-x-px" />
+        ) : (
+          <>
+            {files.length > 0 && (
+              <div className="mb-2 flex flex-wrap gap-1.5">
+                {files.map((file, i) => (
+                  <AttachmentCard
+                    key={`${file.name}-${i}`}
+                    filename={file.name}
+                    size={file.size}
+                    contentType={file.type}
+                    tone="customer"
+                    previewUrl={filePreviews[i]}
+                    onOpen={
+                      filePreviews[i]
+                        ? () =>
+                            openPreview(filePreviews[i], file.name, file.type)
+                        : undefined
+                    }
+                    onRemove={isSending ? undefined : () => removeFile(i)}
+                  />
+                ))}
+              </div>
             )}
-          </button>
-        </form>
+            {attachError && (
+              <p className="font-dm-mono mb-2 text-xs text-red-500">
+                {attachError}
+              </p>
+            )}
+            <div className="flex items-center gap-2">
+              <form
+                onSubmit={handleSend}
+                className="flex flex-1 items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2"
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  onChange={handleFilesSelected}
+                  className="hidden"
+                />
+                <input
+                  type="text"
+                  value={draft}
+                  onChange={(e) => setDraft(e.target.value)}
+                  placeholder="Type a reply..."
+                  disabled={isSending}
+                  className="font-dm-mono flex-1 bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400 disabled:opacity-60"
+                />
+                <button
+                  type="button"
+                  aria-label="Attach"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isSending || files.length >= MAX_REPLY_ATTACHMENTS}
+                  className="shrink-0 cursor-pointer text-gray-400 transition-colors hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  <Paperclip className="h-4 w-4" />
+                </button>
+                <button
+                  type="submit"
+                  disabled={!draft.trim() || isSending}
+                  aria-label="Send"
+                  className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:text-[#006BE5] disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {isSending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="h-4 w-4 -translate-x-px" />
+                  )}
+                </button>
+              </form>
+              {ticket && (
+                <button
+                  type="button"
+                  onClick={handleResolve}
+                  disabled={isResolving}
+                  className="font-dm-mono flex h-10 shrink-0 cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-4 text-xs font-semibold tracking-wider text-white uppercase transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {isResolving ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Check className="h-4 w-4" />
+                  )}
+                  Resolve
+                </button>
+              )}
+            </div>
+          </>
+        )}
       </div>
 
       {preview && (

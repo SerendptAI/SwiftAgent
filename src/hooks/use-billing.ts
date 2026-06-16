@@ -1,4 +1,8 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  type UseQueryOptions,
+} from "@tanstack/react-query";
 
 import { getAccessToken } from "@/lib/api-client";
 import type {
@@ -30,13 +34,29 @@ export function useBillingPlans(timezone?: string) {
 
 // ── Billing Details (per company) ─────────────────────────────────────────────
 
-export function useBillingDetails(companyId: string | null | undefined) {
+export function useBillingDetails(
+  companyId: string | null | undefined,
+  options?: {
+    refetchInterval?: UseQueryOptions<BillingDetails>["refetchInterval"];
+  },
+) {
   return useQuery<BillingDetails>({
     queryKey: ["billingDetails", companyId],
     queryFn: () => getBillingDetails(companyId as string),
     enabled: !!companyId && !!getAccessToken(),
-    staleTime: 60 * 1000,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+    refetchInterval: options?.refetchInterval ?? false,
   });
+}
+
+export function useHasActivePlan(
+  companyId: string | null | undefined,
+): boolean | undefined {
+  const { data } = useBillingDetails(companyId);
+  if (!data) return undefined;
+  const status = data.subscription_status ?? data.status;
+  return data.tier != null && data.tier !== "none" && status === "active";
 }
 
 // ── Create Checkout Session ───────────────────────────────────────────────────

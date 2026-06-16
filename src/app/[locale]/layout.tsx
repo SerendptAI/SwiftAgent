@@ -10,6 +10,7 @@ import { UpgradeModalTrigger } from "@/components/dashboard/upgrade-modal-trigge
 import { ChatbotRouteGuard } from "@/components/landing/chatbot-route-guard";
 import { QueryProvider } from "@/components/query-provider";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ToastProvider } from "@/components/ui/toast";
 // import { ThemeSwitcher } from "@/components/theme-switcher";
 import { routing } from "@/i18n/routing";
 import { fonts } from "@/lib/fonts";
@@ -86,10 +87,12 @@ const RootLayout = async ({
             enableSystem={false}
           >
             <QueryProvider>
-              {children}
-              <Suspense fallback={null}>
-                <UpgradeModalTrigger />
-              </Suspense>
+              <ToastProvider>
+                {children}
+                <Suspense fallback={null}>
+                  <UpgradeModalTrigger />
+                </Suspense>
+              </ToastProvider>
             </QueryProvider>
             <ChatbotRouteGuard />
             {/* <LangSwitcher className="absolute right-5 bottom-16 z-10" />

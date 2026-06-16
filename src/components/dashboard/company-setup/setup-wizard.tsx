@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { useSetActiveCompanyId } from "@/hooks/use-active-company";
 import { useCurrentUser } from "@/hooks/use-auth";
-import { useCompanyQuery } from "@/hooks/use-company";
+import { useCompaniesQuery, useCompanyQuery } from "@/hooks/use-company";
 import { useOnboardingStore } from "@/store/onboarding-store";
 
 import { CompanyIdentityStep } from "./company-identity-step";
@@ -27,16 +27,24 @@ export function SetupWizard() {
   const searchParams = useSearchParams();
   const isNewCompany = searchParams.get("new_company") === "1";
   const didInitializeNewCompanyFlow = useRef(false);
+  const didResumeStep = useRef(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [showCompletion, setShowCompletion] = useState(false);
   const { companyId, setCompanyId, setTypedCompanyName } = useOnboardingStore();
   const { data: user } = useCurrentUser();
+  const { data: companies } = useCompaniesQuery();
   const setActiveCompanyId = useSetActiveCompanyId();
+
+  // Fall back to the company that is still being onboarded — covers the case
+  // where the user reloads (or opens another device) before `user.company_id`
+  // has propagated. The backend is the source of truth, so this resumes the
+  // in-progress company instead of creating a duplicate.
+  const inProgressCompanyId = companies?.find((c) => !c.setup_complete)?.id;
 
   const effectiveCompanyId = isNewCompany
     ? companyId
-    : (user?.company_id ?? companyId);
-  const shouldUpdateExistingCompany = !isNewCompany && !!user?.company_id;
+    : (user?.company_id ?? companyId ?? inProgressCompanyId ?? null);
+  const shouldUpdateExistingCompany = !isNewCompany && !!effectiveCompanyId;
 
   const { data: companyData } = useCompanyQuery(effectiveCompanyId);
 
@@ -52,17 +60,33 @@ export function SetupWizard() {
 
     didInitializeNewCompanyFlow.current = false;
 
-    if (user?.company_id) {
-      setCompanyId(user.company_id);
-      setActiveCompanyId(user.company_id);
+    const resolvedCompanyId = user?.company_id ?? inProgressCompanyId;
+    if (resolvedCompanyId) {
+      setCompanyId(resolvedCompanyId);
+      setActiveCompanyId(resolvedCompanyId);
     }
   }, [
     isNewCompany,
+    inProgressCompanyId,
     setActiveCompanyId,
     setCompanyId,
     setTypedCompanyName,
     user?.company_id,
   ]);
+
+  // Resume at the step the backend recorded so a refresh (on any device) lands
+  // where the user left off instead of restarting at Company Information.
+  useEffect(() => {
+    if (isNewCompany || didResumeStep.current) return;
+    if (companyData && !companyData.setup_complete) {
+      didResumeStep.current = true;
+      const resumeStep = Math.min(
+        Math.max(companyData.onboarding_step ?? 0, 0),
+        1,
+      );
+      setCurrentStep(resumeStep);
+    }
+  }, [isNewCompany, companyData]);
 
   // Sync the fetched company name back to the typed state if they revisit the page
   useEffect(() => {
@@ -106,6 +130,7 @@ export function SetupWizard() {
         {currentStep === 1 && (
           <CompanyIdentityStep
             companyId={effectiveCompanyId}
+            isUpdateMode={shouldUpdateExistingCompany}
             onNext={handleNext}
           />
         )}

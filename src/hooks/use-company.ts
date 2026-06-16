@@ -52,6 +52,10 @@ export function useCompanyMutations() {
   const uploadLogo = useMutation({
     mutationFn: ({ companyId, file }: { companyId: string; file: File }) =>
       companyApi.uploadLogo(companyId, file),
+    onSuccess: (_, { companyId }) => {
+      queryClient.invalidateQueries({ queryKey: ["company", companyId] });
+      queryClient.invalidateQueries({ queryKey: ["companies"] });
+    },
   });
 
   const updateEmailSlug = useMutation({
@@ -72,6 +76,34 @@ export function useInviteMember() {
   return useMutation({
     mutationFn: ({ companyId, email }: { companyId: string; email: string }) =>
       companyApi.inviteMember(companyId, email),
+    onSuccess: (_, { companyId }) => {
+      queryClient.invalidateQueries({
+        queryKey: ["company-members", companyId],
+      });
+    },
+  });
+}
+
+export function useResendInvite() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ companyId, email }: { companyId: string; email: string }) =>
+      companyApi.resendInvite(companyId, email),
+    onSuccess: (_, { companyId }) => {
+      queryClient.invalidateQueries({
+        queryKey: ["company-members", companyId],
+      });
+    },
+  });
+}
+
+export function useRemoveMember() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ companyId, email }: { companyId: string; email: string }) =>
+      companyApi.removeMember(companyId, email),
     onSuccess: (_, { companyId }) => {
       queryClient.invalidateQueries({
         queryKey: ["company-members", companyId],
