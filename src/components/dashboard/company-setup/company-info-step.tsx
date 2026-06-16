@@ -154,7 +154,7 @@ export function CompanyInfoStep({
     try {
       let resolvedCompanyId = companyId;
 
-      if (isUpdateMode && companyId) {
+      if (companyId) {
         await updateCompany.mutateAsync({
           companyId,
           section: "info",
