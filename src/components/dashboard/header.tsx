@@ -93,7 +93,10 @@ export function Header() {
   );
 
   const howToButton = (
-    <div className="flex h-10 cursor-pointer items-center gap-2 rounded-full bg-[#EDEDED] px-1 py-1">
+    <div
+      data-swift-agent-help
+      className="flex h-10 cursor-pointer items-center gap-2 rounded-full bg-[#EDEDED] px-1 py-1"
+    >
       <Icons.Questiondark className="h-8 w-8 rounded-full bg-white p-2 md:mr-2" />
       <span className="font-dm-mono hidden pr-2 text-base font-normal whitespace-nowrap sm:block md:text-lg">
         How to use?

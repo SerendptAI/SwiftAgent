@@ -1,6 +1,5 @@
 import { ProfileCard } from "@/components/dashboard/settings/profile-card";
 import { SettingsNav } from "@/components/dashboard/settings/settings-nav";
-import { SupportChatbot } from "@/components/dashboard/settings/support-chatbot";
 
 export default function SettingsLayout({
   children,
@@ -9,7 +8,6 @@ export default function SettingsLayout({
 }) {
   return (
     <div className="flex h-full min-h-0 max-w-[1536px] flex-col gap-4 pb-6 lg:flex-row lg:gap-12 lg:pb-0">
-      <SupportChatbot />
       {/* Secondary Settings Sidebar */}
       <SettingsNav />
 
