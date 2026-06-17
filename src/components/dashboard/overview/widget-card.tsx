@@ -514,7 +514,11 @@ function ChatbotSettingsSidebar({
     }
 
     try {
-      await Promise.all([
+      console.log("[settings] saving enable_suggested_prompts:", {
+        companyId,
+        enableSuggestedPrompts,
+      });
+      const results = await Promise.all([
         updateConfig.mutateAsync({
           companyId,
           payload: {
@@ -528,13 +532,21 @@ function ChatbotSettingsSidebar({
         updateCompany.mutateAsync({
           companyId,
           section: "identity",
-          payload: {
-            suggested_ai_prompts: cleanedPrompts,
-            enable_suggested_prompts: enableSuggestedPrompts,
-          },
+          payload: { suggested_ai_prompts: cleanedPrompts },
+        }),
+        updateCompany.mutateAsync({
+          companyId,
+          section: "info",
+          payload: { enable_suggested_prompts: enableSuggestedPrompts },
         }),
         ...integrationMutations,
       ]);
+      console.log("[settings] company info update response:", {
+        sent: enableSuggestedPrompts,
+        returned: (results[2] as { enable_suggested_prompts?: boolean })
+          ?.enable_suggested_prompts,
+        full: results[2],
+      });
     } catch (err) {
       console.error("Failed to save sandbox credentials:", err);
       onError?.(
