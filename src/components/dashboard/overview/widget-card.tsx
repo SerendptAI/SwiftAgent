@@ -491,21 +491,21 @@ function ChatbotSettingsSidebar({
           );
         }
       } else if (hasInput) {
-        if (!baseUrl || !apiKey) {
+        if (!baseUrl) {
           onError?.(
-            "The API integration needs a Base URL and API Key before it can be saved.",
+            "The API integration needs a Base URL before it can be saved.",
           );
           return;
         }
         const createPayload: IntegrationCreatePayload = {
           name: API_INTEGRATION_NAME,
           base_url: baseUrl,
-          api_key: apiKey,
           auth_header: authHeader,
           auth_prefix: authPrefix,
           documentation: documentationText,
           documentation_url: documentationUrl,
         };
+        if (apiKey) createPayload.api_key = apiKey;
         if (documentationUrl) documentationIndexing = true;
         integrationMutations.push(createIntegration.mutateAsync(createPayload));
       }
