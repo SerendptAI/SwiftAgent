@@ -62,54 +62,10 @@ export function PaymentSandboxSection() {
 }
 
 // ── API INTEGRATION ──────────────────────────────────────────────────────────
-// One integration = one product API (shared base URL + key) exposing many
-// endpoints, mirroring the backend IntegrationCreate schema.
+// One integration = one product API (shared base URL + key). Agents learn the
+// callable endpoints from the documentation you provide.
 
 export const API_INTEGRATION_NAME = "Product API";
-
-// Optional starting points — the agent reasons over each endpoint's
-// description, so these are just convenience prefills, not required slots.
-export const ENDPOINT_SUGGESTIONS: {
-  label: string;
-  description: string;
-  placeholder: string;
-}[] = [
-  {
-    label: "User / account data",
-    description: "Endpoint that exposes user and account profile data.",
-    placeholder: "/v1/users/{user_id}",
-  },
-  {
-    label: "Transaction history",
-    description: "Endpoint that returns transaction history records.",
-    placeholder: "/v1/transactions",
-  },
-  {
-    label: "Current balance / wallet state",
-    description: "Endpoint that returns the current balance / wallet state.",
-    placeholder: "/v1/wallet/balance",
-  },
-  {
-    label: "Order / service records",
-    description: "Endpoint that returns order or service records.",
-    placeholder: "/v1/orders",
-  },
-  {
-    label: "In-app event logs",
-    description: "Endpoint that exposes in-app event logs.",
-    placeholder: "/v1/events",
-  },
-];
-
-export interface IntegrationEndpointRow {
-  id: string;
-  label: string;
-  path: string;
-  description: string;
-  placeholder?: string;
-  queryParams?: Record<string, string>;
-  headers?: Record<string, string>;
-}
 
 export type DocumentationMode = "url" | "text";
 
@@ -122,7 +78,6 @@ export interface ApiIntegrationValue {
   documentationMode: DocumentationMode;
   documentationUrl: string;
   documentation: string;
-  endpoints: IntegrationEndpointRow[];
 }
 
 export const emptyApiIntegration = (): ApiIntegrationValue => ({
@@ -134,7 +89,6 @@ export const emptyApiIntegration = (): ApiIntegrationValue => ({
   documentationMode: "url",
   documentationUrl: "",
   documentation: "",
-  endpoints: [],
 });
 
 interface ApiIntegrationSectionProps {
@@ -151,43 +105,12 @@ export function ApiIntegrationSection({
   const update = (patch: Partial<ApiIntegrationValue>) =>
     onChange({ ...value, ...patch });
 
-  const updateEndpoint = (
-    index: number,
-    patch: Partial<IntegrationEndpointRow>,
-  ) =>
-    update({
-      endpoints: value.endpoints.map((e, i) =>
-        i === index ? { ...e, ...patch } : e,
-      ),
-    });
-
-  const addEndpoint = (suggestion?: (typeof ENDPOINT_SUGGESTIONS)[number]) =>
-    update({
-      endpoints: [
-        ...value.endpoints,
-        {
-          id: crypto.randomUUID(),
-          label: suggestion?.label ?? "",
-          path: "",
-          description: suggestion?.description ?? "",
-          placeholder: suggestion?.placeholder,
-        },
-      ],
-    });
-
-  const removeEndpoint = (index: number) =>
-    update({ endpoints: value.endpoints.filter((_, i) => i !== index) });
-
-  const availableSuggestions = ENDPOINT_SUGGESTIONS.filter(
-    (s) => !value.endpoints.some((e) => e.label === s.label),
-  );
-
   return (
     <section>
       <h3 className={SECTION_HEADING}>API Integration</h3>
       <p className={SECTION_DESCRIPTION}>
-        Connect your product API once, then map the endpoints agents can call to
-        automate responses.
+        Connect your product API once and share its documentation so agents can
+        call it to automate responses.
       </p>
 
       <div className="space-y-[18px]">
@@ -307,51 +230,6 @@ export function ApiIntegrationSection({
           </div>
         )}
       </div>
-
-      <div className="mt-8">
-        <h4 className="font-stolzl mb-1 text-[16px] text-black">Endpoints</h4>
-        <p className="font-dm-mono mb-4 text-[12px] leading-[1.8] tracking-[1.2px] text-black/50 uppercase">
-          Add the API endpoints agents can call to fetch data. Pick a suggestion
-          or add your own.
-        </p>
-
-        <div className="space-y-3">
-          {value.endpoints.map((endpoint, index) => (
-            <EndpointRow
-              key={endpoint.id}
-              endpoint={endpoint}
-              index={index}
-              onChange={(patch) => updateEndpoint(index, patch)}
-              onRemove={() => removeEndpoint(index)}
-            />
-          ))}
-
-          {availableSuggestions.length > 0 && (
-            <div className="flex flex-wrap gap-2 pt-1">
-              {availableSuggestions.map((suggestion) => (
-                <button
-                  key={suggestion.label}
-                  type="button"
-                  onClick={() => addEndpoint(suggestion)}
-                  className="font-dm-mono flex items-center gap-1 rounded-full border border-black/15 px-3 py-1 text-[11px] tracking-[1px] text-black/60 uppercase transition-colors hover:border-black/40 hover:text-black"
-                >
-                  <Plus className="h-3 w-3" />
-                  {suggestion.label}
-                </button>
-              ))}
-            </div>
-          )}
-
-          <button
-            type="button"
-            onClick={() => addEndpoint()}
-            className="font-dm-mono relative flex w-full items-center justify-center gap-6 rounded-[5px] bg-[#F2B035] px-[10px] py-[10px] text-[14px] tracking-[1.4px] text-black/60 uppercase shadow-[inset_0px_-1px_4px_0px_rgba(0,0,0,0.25)] transition-colors hover:bg-[#E0A030]"
-          >
-            <Plus className="h-5 w-5" />
-            Add custom endpoint
-          </button>
-        </div>
-      </div>
     </section>
   );
 }
@@ -377,60 +255,6 @@ function DocumentationModeButton({
     >
       {children}
     </button>
-  );
-}
-
-function EndpointRow({
-  endpoint,
-  index,
-  onChange,
-  onRemove,
-}: {
-  endpoint: IntegrationEndpointRow;
-  index: number;
-  onChange: (patch: Partial<IntegrationEndpointRow>) => void;
-  onRemove: () => void;
-}) {
-  const nameId = `endpoint-${index}-name`;
-  const pathId = `endpoint-${index}-path`;
-  const descId = `endpoint-${index}-desc`;
-
-  return (
-    <div className="space-y-2 rounded-[5px] border border-black/10 bg-black/[0.02] p-3">
-      <div className="flex items-center justify-between gap-2">
-        <input
-          id={nameId}
-          value={endpoint.label}
-          onChange={(e) => onChange({ label: e.target.value })}
-          placeholder="Endpoint name"
-          className="font-stolzl flex-1 bg-transparent text-[16px] text-black outline-none placeholder:text-black/40"
-        />
-        <button
-          type="button"
-          onClick={onRemove}
-          aria-label="Remove endpoint"
-          className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-black/50 transition-colors hover:bg-black/5 hover:text-black"
-        >
-          <X className="h-3.5 w-3.5" />
-        </button>
-      </div>
-      <input
-        id={pathId}
-        type="text"
-        value={endpoint.path}
-        onChange={(e) => onChange({ path: e.target.value })}
-        placeholder={endpoint.placeholder ?? "/v1/resource"}
-        className={FIELD_INPUT}
-      />
-      <input
-        id={descId}
-        type="text"
-        value={endpoint.description}
-        onChange={(e) => onChange({ description: e.target.value })}
-        placeholder="What this endpoint returns"
-        className={FIELD_INPUT}
-      />
-    </div>
   );
 }
 

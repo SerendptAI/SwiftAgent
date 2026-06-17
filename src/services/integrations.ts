@@ -33,7 +33,7 @@ export type IntegrationCreatePayload = {
   auth_prefix?: string;
   documentation?: string;
   documentation_url?: string;
-  endpoints: APIEndpoint[];
+  endpoints?: APIEndpoint[];
 };
 
 export type IntegrationUpdatePayload = Partial<IntegrationCreatePayload>;

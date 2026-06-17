@@ -23,7 +23,6 @@ import {
 import { useStrollConfig, useUpdateStrollConfig } from "@/hooks/use-stroll";
 import { Link } from "@/i18n/navigation";
 import type {
-  APIEndpoint,
   IntegrationCreatePayload,
   IntegrationUpdatePayload,
 } from "@/services/integrations";
@@ -325,13 +324,6 @@ const AGENT_OPTIONS: AgentOption[] = [
 
 const SIDEBAR_TRANSITION_MS = 300;
 
-const slugifyEndpointName = (label: string) =>
-  label
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "_")
-    .replace(/^_+|_+$/g, "");
-
 function ChatbotSettingsSidebar({
   companyId,
   onClose,
@@ -410,14 +402,6 @@ function ChatbotSettingsSidebar({
           : "url",
       documentationUrl,
       documentation,
-      endpoints: existing.endpoints.map((e) => ({
-        id: e.name || crypto.randomUUID(),
-        label: e.name,
-        path: e.path,
-        description: e.description,
-        queryParams: e.query_params,
-        headers: e.headers,
-      })),
     });
   }, [integrations]);
 
@@ -472,41 +456,12 @@ function ChatbotSettingsSidebar({
         ? ""
         : apiIntegration.documentation.trim();
 
-      const usedNames = new Set<string>();
-      const endpoints: APIEndpoint[] = apiIntegration.endpoints
-        .filter((e) => e.path.trim())
-        .map((e) => {
-          const base = slugifyEndpointName(e.label) || "endpoint";
-          let name = base;
-          for (let n = 2; usedNames.has(name); n++) name = `${base}_${n}`;
-          usedNames.add(name);
-
-          const endpoint: APIEndpoint = {
-            name,
-            path: e.path.trim(),
-            description: e.description.trim() || e.label || name,
-          };
-          if (e.queryParams) endpoint.query_params = e.queryParams;
-          if (e.headers) endpoint.headers = e.headers;
-          return endpoint;
-        });
-
       const hasDocumentation = isUrlMode
         ? documentationUrl.length > 0
         : documentationText.length > 0;
 
       const hasInput =
-        baseUrl.length > 0 ||
-        apiKey.length > 0 ||
-        endpoints.length > 0 ||
-        hasDocumentation;
-
-      if (hasInput && endpoints.length === 0 && !hasDocumentation) {
-        onError?.(
-          "Add at least one endpoint, or provide documentation, for the API integration.",
-        );
-        return;
-      }
+        baseUrl.length > 0 || apiKey.length > 0 || hasDocumentation;
 
       if (apiIntegration.integrationId) {
         if (hasInput) {
@@ -518,7 +473,6 @@ function ChatbotSettingsSidebar({
             base_url: baseUrl,
             auth_header: authHeader,
             auth_prefix: authPrefix,
-            endpoints,
           };
           if (apiKey) payload.api_key = apiKey;
           if (isUrlMode) {
@@ -551,7 +505,6 @@ function ChatbotSettingsSidebar({
           auth_prefix: authPrefix,
           documentation: documentationText,
           documentation_url: documentationUrl,
-          endpoints,
         };
         if (documentationUrl) documentationIndexing = true;
         integrationMutations.push(createIntegration.mutateAsync(createPayload));
