@@ -491,11 +491,20 @@ function ChatbotSettingsSidebar({
           return endpoint;
         });
 
-      const hasInput =
-        baseUrl.length > 0 || apiKey.length > 0 || endpoints.length > 0;
+      const hasDocumentation = isUrlMode
+        ? documentationUrl.length > 0
+        : documentationText.length > 0;
 
-      if (hasInput && endpoints.length === 0) {
-        onError?.("Add at least one endpoint path to the API integration.");
+      const hasInput =
+        baseUrl.length > 0 ||
+        apiKey.length > 0 ||
+        endpoints.length > 0 ||
+        hasDocumentation;
+
+      if (hasInput && endpoints.length === 0 && !hasDocumentation) {
+        onError?.(
+          "Add at least one endpoint, or provide documentation, for the API integration.",
+        );
         return;
       }
 
