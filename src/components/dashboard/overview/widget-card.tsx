@@ -23,7 +23,6 @@ import {
 import { useStrollConfig, useUpdateStrollConfig } from "@/hooks/use-stroll";
 import { Link } from "@/i18n/navigation";
 import type {
-  APIEndpoint,
   IntegrationCreatePayload,
   IntegrationUpdatePayload,
 } from "@/services/integrations";
@@ -265,8 +264,13 @@ export function WidgetCard() {
         <ChatbotSettingsSidebar
           companyId={companyId}
           onClose={() => setIsSettingsOpen(false)}
-          onSaved={() =>
-            setToast({ kind: "success", message: "Settings saved." })
+          onSaved={(opts) =>
+            setToast({
+              kind: "success",
+              message: opts?.indexing
+                ? "Settings saved. Indexing documentation…"
+                : "Settings saved.",
+            })
           }
           onError={(message) => setToast({ kind: "error", message })}
         />
@@ -320,13 +324,6 @@ const AGENT_OPTIONS: AgentOption[] = [
 
 const SIDEBAR_TRANSITION_MS = 300;
 
-const slugifyEndpointName = (label: string) =>
-  label
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "_")
-    .replace(/^_+|_+$/g, "");
-
 function ChatbotSettingsSidebar({
   companyId,
   onClose,
@@ -335,7 +332,7 @@ function ChatbotSettingsSidebar({
 }: {
   companyId: string;
   onClose: () => void;
-  onSaved?: () => void;
+  onSaved?: (opts?: { indexing?: boolean }) => void;
   onError?: (message: string) => void;
 }) {
   const { data: config } = useStrollConfig(companyId || null);
@@ -360,6 +357,7 @@ function ChatbotSettingsSidebar({
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [isShown, setIsShown] = useState(false);
   const [suggestedPrompts, setSuggestedPrompts] = useState<string[]>([]);
+  const [enableSuggestedPrompts, setEnableSuggestedPrompts] = useState(true);
   const [apiIntegration, setApiIntegration] = useState<ApiIntegrationValue>(
     () => emptyApiIntegration(),
   );
@@ -381,6 +379,7 @@ function ChatbotSettingsSidebar({
   useEffect(() => {
     if (!company) return;
     setSuggestedPrompts(company.suggested_ai_prompts ?? []);
+    setEnableSuggestedPrompts(company.enable_suggested_prompts ?? true);
   }, [company]);
 
   useEffect(() => {
@@ -390,20 +389,21 @@ function ChatbotSettingsSidebar({
     const existing = integrations.find((i) => i.name === API_INTEGRATION_NAME);
     if (!existing) return;
 
+    const documentationUrl = existing.documentation_url ?? "";
+    const documentation = existing.documentation ?? "";
     setApiIntegration({
       integrationId: existing.id,
       baseUrl: existing.base_url ?? "",
       apiKey: "",
       authHeader: existing.auth_header || "Authorization",
       authPrefix: existing.auth_prefix || "Bearer",
-      endpoints: existing.endpoints.map((e) => ({
-        id: e.name || crypto.randomUUID(),
-        label: e.name,
-        path: e.path,
-        description: e.description,
-        queryParams: e.query_params,
-        headers: e.headers,
-      })),
+      documentationMode: documentationUrl
+        ? "url"
+        : documentation
+          ? "text"
+          : "url",
+      documentationUrl,
+      documentation,
     });
   }, [integrations]);
 
@@ -443,38 +443,27 @@ function ChatbotSettingsSidebar({
       .filter(Boolean);
 
     const integrationMutations: Promise<unknown>[] = [];
+    let documentationIndexing = false;
     {
       const baseUrl = apiIntegration.baseUrl.trim();
       const apiKey = apiIntegration.apiKey.trim();
       const authHeader = apiIntegration.authHeader.trim() || "Authorization";
       const authPrefix = apiIntegration.authPrefix.trim() || "Bearer";
 
-      const usedNames = new Set<string>();
-      const endpoints: APIEndpoint[] = apiIntegration.endpoints
-        .filter((e) => e.path.trim())
-        .map((e) => {
-          const base = slugifyEndpointName(e.label) || "endpoint";
-          let name = base;
-          for (let n = 2; usedNames.has(name); n++) name = `${base}_${n}`;
-          usedNames.add(name);
+      const isUrlMode = apiIntegration.documentationMode === "url";
+      const documentationUrl = isUrlMode
+        ? apiIntegration.documentationUrl.trim()
+        : "";
+      const documentationText = isUrlMode
+        ? ""
+        : apiIntegration.documentation.trim();
 
-          const endpoint: APIEndpoint = {
-            name,
-            path: e.path.trim(),
-            description: e.description.trim() || e.label || name,
-          };
-          if (e.queryParams) endpoint.query_params = e.queryParams;
-          if (e.headers) endpoint.headers = e.headers;
-          return endpoint;
-        });
+      const hasDocumentation = isUrlMode
+        ? documentationUrl.length > 0
+        : documentationText.length > 0;
 
       const hasInput =
-        baseUrl.length > 0 || apiKey.length > 0 || endpoints.length > 0;
-
-      if (hasInput && endpoints.length === 0) {
-        onError?.("Add at least one endpoint path to the API integration.");
-        return;
-      }
+        baseUrl.length > 0 || apiKey.length > 0 || hasDocumentation;
 
       if (apiIntegration.integrationId) {
         if (hasInput) {
@@ -486,9 +475,16 @@ function ChatbotSettingsSidebar({
             base_url: baseUrl,
             auth_header: authHeader,
             auth_prefix: authPrefix,
-            endpoints,
           };
           if (apiKey) payload.api_key = apiKey;
+          if (isUrlMode) {
+            if (documentationUrl) {
+              payload.documentation_url = documentationUrl;
+              documentationIndexing = true;
+            }
+          } else {
+            payload.documentation = documentationText;
+          }
           integrationMutations.push(
             updateIntegration.mutateAsync({
               integrationId: apiIntegration.integrationId,
@@ -497,21 +493,22 @@ function ChatbotSettingsSidebar({
           );
         }
       } else if (hasInput) {
-        if (!baseUrl || !apiKey) {
+        if (!baseUrl) {
           onError?.(
-            "The API integration needs a Base URL and API Key before it can be saved.",
+            "The API integration needs a Base URL before it can be saved.",
           );
           return;
         }
         const createPayload: IntegrationCreatePayload = {
           name: API_INTEGRATION_NAME,
           base_url: baseUrl,
-          api_key: apiKey,
           auth_header: authHeader,
           auth_prefix: authPrefix,
-          documentation: "",
-          endpoints,
+          documentation: documentationText,
+          documentation_url: documentationUrl,
         };
+        if (apiKey) createPayload.api_key = apiKey;
+        if (documentationUrl) documentationIndexing = true;
         integrationMutations.push(createIntegration.mutateAsync(createPayload));
       }
     }
@@ -531,7 +528,10 @@ function ChatbotSettingsSidebar({
         updateCompany.mutateAsync({
           companyId,
           section: "identity",
-          payload: { suggested_ai_prompts: cleanedPrompts },
+          payload: {
+            suggested_ai_prompts: cleanedPrompts,
+            enable_suggested_prompts: enableSuggestedPrompts,
+          },
         }),
         ...integrationMutations,
       ]);
@@ -544,7 +544,7 @@ function ChatbotSettingsSidebar({
       );
       return;
     }
-    onSaved?.();
+    onSaved?.({ indexing: documentationIndexing });
     closeWithAnimation();
   };
 
@@ -705,6 +705,8 @@ function ChatbotSettingsSidebar({
           <SuggestedQuestionsSection
             value={suggestedPrompts}
             onChange={setSuggestedPrompts}
+            enabled={enableSuggestedPrompts}
+            onEnabledChange={setEnableSuggestedPrompts}
           />
         </div>
 

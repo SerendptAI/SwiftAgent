@@ -62,54 +62,12 @@ export function PaymentSandboxSection() {
 }
 
 // ── API INTEGRATION ──────────────────────────────────────────────────────────
-// One integration = one product API (shared base URL + key) exposing many
-// endpoints, mirroring the backend IntegrationCreate schema.
+// One integration = one product API (shared base URL + key). Agents learn the
+// callable endpoints from the documentation you provide.
 
 export const API_INTEGRATION_NAME = "Product API";
 
-// Optional starting points — the agent reasons over each endpoint's
-// description, so these are just convenience prefills, not required slots.
-export const ENDPOINT_SUGGESTIONS: {
-  label: string;
-  description: string;
-  placeholder: string;
-}[] = [
-  {
-    label: "User / account data",
-    description: "Endpoint that exposes user and account profile data.",
-    placeholder: "/v1/users/{user_id}",
-  },
-  {
-    label: "Transaction history",
-    description: "Endpoint that returns transaction history records.",
-    placeholder: "/v1/transactions",
-  },
-  {
-    label: "Current balance / wallet state",
-    description: "Endpoint that returns the current balance / wallet state.",
-    placeholder: "/v1/wallet/balance",
-  },
-  {
-    label: "Order / service records",
-    description: "Endpoint that returns order or service records.",
-    placeholder: "/v1/orders",
-  },
-  {
-    label: "In-app event logs",
-    description: "Endpoint that exposes in-app event logs.",
-    placeholder: "/v1/events",
-  },
-];
-
-export interface IntegrationEndpointRow {
-  id: string;
-  label: string;
-  path: string;
-  description: string;
-  placeholder?: string;
-  queryParams?: Record<string, string>;
-  headers?: Record<string, string>;
-}
+export type DocumentationMode = "url" | "text";
 
 export interface ApiIntegrationValue {
   integrationId: string | null;
@@ -117,7 +75,9 @@ export interface ApiIntegrationValue {
   apiKey: string;
   authHeader: string;
   authPrefix: string;
-  endpoints: IntegrationEndpointRow[];
+  documentationMode: DocumentationMode;
+  documentationUrl: string;
+  documentation: string;
 }
 
 export const emptyApiIntegration = (): ApiIntegrationValue => ({
@@ -126,7 +86,9 @@ export const emptyApiIntegration = (): ApiIntegrationValue => ({
   apiKey: "",
   authHeader: "Authorization",
   authPrefix: "Bearer",
-  endpoints: [],
+  documentationMode: "url",
+  documentationUrl: "",
+  documentation: "",
 });
 
 interface ApiIntegrationSectionProps {
@@ -143,43 +105,12 @@ export function ApiIntegrationSection({
   const update = (patch: Partial<ApiIntegrationValue>) =>
     onChange({ ...value, ...patch });
 
-  const updateEndpoint = (
-    index: number,
-    patch: Partial<IntegrationEndpointRow>,
-  ) =>
-    update({
-      endpoints: value.endpoints.map((e, i) =>
-        i === index ? { ...e, ...patch } : e,
-      ),
-    });
-
-  const addEndpoint = (suggestion?: (typeof ENDPOINT_SUGGESTIONS)[number]) =>
-    update({
-      endpoints: [
-        ...value.endpoints,
-        {
-          id: crypto.randomUUID(),
-          label: suggestion?.label ?? "",
-          path: "",
-          description: suggestion?.description ?? "",
-          placeholder: suggestion?.placeholder,
-        },
-      ],
-    });
-
-  const removeEndpoint = (index: number) =>
-    update({ endpoints: value.endpoints.filter((_, i) => i !== index) });
-
-  const availableSuggestions = ENDPOINT_SUGGESTIONS.filter(
-    (s) => !value.endpoints.some((e) => e.label === s.label),
-  );
-
   return (
     <section>
       <h3 className={SECTION_HEADING}>API Integration</h3>
       <p className={SECTION_DESCRIPTION}>
-        Connect your product API once, then map the endpoints agents can call to
-        automate responses.
+        Connect your product API once and share its documentation so agents can
+        call it to automate responses.
       </p>
 
       <div className="space-y-[18px]">
@@ -250,104 +181,80 @@ export function ApiIntegrationSection({
       </div>
 
       <div className="mt-8">
-        <h4 className="font-stolzl mb-1 text-[16px] text-black">Endpoints</h4>
+        <h4 className="font-stolzl mb-1 text-[16px] text-black">
+          Documentation
+        </h4>
         <p className="font-dm-mono mb-4 text-[12px] leading-[1.8] tracking-[1.2px] text-black/50 uppercase">
-          Add the API endpoints agents can call to fetch data. Pick a suggestion
-          or add your own.
+          Help agents understand your API. Drop a link to your docs and
+          we&apos;ll index them, or paste the documentation text directly.
         </p>
 
-        <div className="space-y-3">
-          {value.endpoints.map((endpoint, index) => (
-            <EndpointRow
-              key={endpoint.id}
-              endpoint={endpoint}
-              index={index}
-              onChange={(patch) => updateEndpoint(index, patch)}
-              onRemove={() => removeEndpoint(index)}
-            />
-          ))}
-
-          {availableSuggestions.length > 0 && (
-            <div className="flex flex-wrap gap-2 pt-1">
-              {availableSuggestions.map((suggestion) => (
-                <button
-                  key={suggestion.label}
-                  type="button"
-                  onClick={() => addEndpoint(suggestion)}
-                  className="font-dm-mono flex items-center gap-1 rounded-full border border-black/15 px-3 py-1 text-[11px] tracking-[1px] text-black/60 uppercase transition-colors hover:border-black/40 hover:text-black"
-                >
-                  <Plus className="h-3 w-3" />
-                  {suggestion.label}
-                </button>
-              ))}
-            </div>
-          )}
-
-          <button
-            type="button"
-            onClick={() => addEndpoint()}
-            className="font-dm-mono relative flex w-full items-center justify-center gap-6 rounded-[5px] bg-[#F2B035] px-[10px] py-[10px] text-[14px] tracking-[1.4px] text-black/60 uppercase shadow-[inset_0px_-1px_4px_0px_rgba(0,0,0,0.25)] transition-colors hover:bg-[#E0A030]"
+        <div className="mb-4 flex gap-2">
+          <DocumentationModeButton
+            active={value.documentationMode === "url"}
+            onClick={() => update({ documentationMode: "url" })}
           >
-            <Plus className="h-5 w-5" />
-            Add custom endpoint
-          </button>
+            Provide a URL
+          </DocumentationModeButton>
+          <DocumentationModeButton
+            active={value.documentationMode === "text"}
+            onClick={() => update({ documentationMode: "text" })}
+          >
+            Paste text
+          </DocumentationModeButton>
         </div>
+
+        {value.documentationMode === "url" ? (
+          <SettingsField
+            id="integration-documentation-url"
+            label="Documentation URL"
+            value={value.documentationUrl}
+            onChange={(v) => update({ documentationUrl: v })}
+            placeholder="https://docs.yourcompany.com/api"
+          />
+        ) : (
+          <div>
+            <label
+              htmlFor="integration-documentation-text"
+              className={`${FIELD_LABEL} mb-2 block`}
+            >
+              Documentation text
+            </label>
+            <textarea
+              id="integration-documentation-text"
+              value={value.documentation}
+              onChange={(e) => update({ documentation: e.target.value })}
+              placeholder="Paste your API documentation here…"
+              className="font-dm-mono h-[160px] w-full resize-none rounded-[5px] bg-[#EDEDED] px-[10px] py-[10px] text-[14px] text-black outline-none placeholder:text-black/50"
+            />
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
-function EndpointRow({
-  endpoint,
-  index,
-  onChange,
-  onRemove,
+function DocumentationModeButton({
+  active,
+  onClick,
+  children,
 }: {
-  endpoint: IntegrationEndpointRow;
-  index: number;
-  onChange: (patch: Partial<IntegrationEndpointRow>) => void;
-  onRemove: () => void;
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
 }) {
-  const nameId = `endpoint-${index}-name`;
-  const pathId = `endpoint-${index}-path`;
-  const descId = `endpoint-${index}-desc`;
-
   return (
-    <div className="space-y-2 rounded-[5px] border border-black/10 bg-black/[0.02] p-3">
-      <div className="flex items-center justify-between gap-2">
-        <input
-          id={nameId}
-          value={endpoint.label}
-          onChange={(e) => onChange({ label: e.target.value })}
-          placeholder="Endpoint name"
-          className="font-stolzl flex-1 bg-transparent text-[16px] text-black outline-none placeholder:text-black/40"
-        />
-        <button
-          type="button"
-          onClick={onRemove}
-          aria-label="Remove endpoint"
-          className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-black/50 transition-colors hover:bg-black/5 hover:text-black"
-        >
-          <X className="h-3.5 w-3.5" />
-        </button>
-      </div>
-      <input
-        id={pathId}
-        type="text"
-        value={endpoint.path}
-        onChange={(e) => onChange({ path: e.target.value })}
-        placeholder={endpoint.placeholder ?? "/v1/resource"}
-        className={FIELD_INPUT}
-      />
-      <input
-        id={descId}
-        type="text"
-        value={endpoint.description}
-        onChange={(e) => onChange({ description: e.target.value })}
-        placeholder="What this endpoint returns"
-        className={FIELD_INPUT}
-      />
-    </div>
+    <button
+      type="button"
+      onClick={onClick}
+      className={`font-dm-mono flex-1 rounded-[5px] px-3 py-2 text-[12px] tracking-[1px] uppercase transition-colors ${
+        active
+          ? "bg-[#006BE5] text-white"
+          : "bg-[#EDEDED] text-black/60 hover:text-black"
+      }`}
+    >
+      {children}
+    </button>
   );
 }
 
@@ -356,11 +263,15 @@ const SUGGESTION_MAX_LENGTH = 27;
 interface SuggestedQuestionsSectionProps {
   value: string[];
   onChange: (next: string[]) => void;
+  enabled: boolean;
+  onEnabledChange: (next: boolean) => void;
 }
 
 export function SuggestedQuestionsSection({
   value,
   onChange,
+  enabled,
+  onEnabledChange,
 }: SuggestedQuestionsSectionProps) {
   const suggestions = value.length > 0 ? value : ["", ""];
 
@@ -384,7 +295,22 @@ export function SuggestedQuestionsSection({
         that the bot will recommend.
       </p>
 
-      <div className="space-y-[18px]">
+      <div className="mb-6 flex items-center justify-between gap-3">
+        <span className="font-dm-mono text-[12px] tracking-[1.2px] text-black/60 uppercase">
+          Show suggestions in the widget
+        </span>
+        <ToggleSwitch
+          checked={enabled}
+          onChange={onEnabledChange}
+          label="Show suggestions in the widget"
+        />
+      </div>
+
+      <div
+        className={`space-y-[18px] transition-opacity ${
+          enabled ? "" : "opacity-50"
+        }`}
+      >
         {suggestions.map((suggestion, index) => (
           <SuggestionField
             key={index}
@@ -407,6 +333,35 @@ export function SuggestedQuestionsSection({
         </button>
       </div>
     </section>
+  );
+}
+
+function ToggleSwitch({
+  checked,
+  onChange,
+  label,
+}: {
+  checked: boolean;
+  onChange: (next: boolean) => void;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label={label}
+      onClick={() => onChange(!checked)}
+      className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
+        checked ? "bg-[#006BE5]" : "bg-black/20"
+      }`}
+    >
+      <span
+        className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${
+          checked ? "translate-x-[22px]" : "translate-x-[2px]"
+        }`}
+      />
+    </button>
   );
 }
 

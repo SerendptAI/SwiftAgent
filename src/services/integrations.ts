@@ -18,6 +18,7 @@ export interface Integration {
   auth_header: string;
   auth_prefix: string;
   documentation: string;
+  documentation_url: string;
   endpoints: APIEndpoint[];
   active: boolean;
   created_at: string;
@@ -27,11 +28,12 @@ export interface Integration {
 export type IntegrationCreatePayload = {
   name: string;
   base_url: string;
-  api_key: string;
+  api_key?: string;
   auth_header?: string;
   auth_prefix?: string;
-  documentation: string;
-  endpoints: APIEndpoint[];
+  documentation?: string;
+  documentation_url?: string;
+  endpoints?: APIEndpoint[];
 };
 
 export type IntegrationUpdatePayload = Partial<IntegrationCreatePayload>;
