@@ -357,6 +357,7 @@ function ChatbotSettingsSidebar({
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [isShown, setIsShown] = useState(false);
   const [suggestedPrompts, setSuggestedPrompts] = useState<string[]>([]);
+  const [enableSuggestedPrompts, setEnableSuggestedPrompts] = useState(true);
   const [apiIntegration, setApiIntegration] = useState<ApiIntegrationValue>(
     () => emptyApiIntegration(),
   );
@@ -378,6 +379,7 @@ function ChatbotSettingsSidebar({
   useEffect(() => {
     if (!company) return;
     setSuggestedPrompts(company.suggested_ai_prompts ?? []);
+    setEnableSuggestedPrompts(company.enable_suggested_prompts ?? true);
   }, [company]);
 
   useEffect(() => {
@@ -526,7 +528,10 @@ function ChatbotSettingsSidebar({
         updateCompany.mutateAsync({
           companyId,
           section: "identity",
-          payload: { suggested_ai_prompts: cleanedPrompts },
+          payload: {
+            suggested_ai_prompts: cleanedPrompts,
+            enable_suggested_prompts: enableSuggestedPrompts,
+          },
         }),
         ...integrationMutations,
       ]);
@@ -700,6 +705,8 @@ function ChatbotSettingsSidebar({
           <SuggestedQuestionsSection
             value={suggestedPrompts}
             onChange={setSuggestedPrompts}
+            enabled={enableSuggestedPrompts}
+            onEnabledChange={setEnableSuggestedPrompts}
           />
         </div>
 

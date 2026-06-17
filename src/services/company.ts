@@ -24,6 +24,7 @@ export interface Company {
   primary_language: string;
   support_emails: string[];
   suggested_ai_prompts: string[];
+  enable_suggested_prompts: boolean;
   enabled_sources: string[];
   custom_info: string[];
   voice_style: string;

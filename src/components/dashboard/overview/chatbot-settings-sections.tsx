@@ -263,11 +263,15 @@ const SUGGESTION_MAX_LENGTH = 27;
 interface SuggestedQuestionsSectionProps {
   value: string[];
   onChange: (next: string[]) => void;
+  enabled: boolean;
+  onEnabledChange: (next: boolean) => void;
 }
 
 export function SuggestedQuestionsSection({
   value,
   onChange,
+  enabled,
+  onEnabledChange,
 }: SuggestedQuestionsSectionProps) {
   const suggestions = value.length > 0 ? value : ["", ""];
 
@@ -291,7 +295,22 @@ export function SuggestedQuestionsSection({
         that the bot will recommend.
       </p>
 
-      <div className="space-y-[18px]">
+      <div className="mb-6 flex items-center justify-between gap-3">
+        <span className="font-dm-mono text-[12px] tracking-[1.2px] text-black/60 uppercase">
+          Show suggestions in the widget
+        </span>
+        <ToggleSwitch
+          checked={enabled}
+          onChange={onEnabledChange}
+          label="Show suggestions in the widget"
+        />
+      </div>
+
+      <div
+        className={`space-y-[18px] transition-opacity ${
+          enabled ? "" : "opacity-50"
+        }`}
+      >
         {suggestions.map((suggestion, index) => (
           <SuggestionField
             key={index}
@@ -314,6 +333,35 @@ export function SuggestedQuestionsSection({
         </button>
       </div>
     </section>
+  );
+}
+
+function ToggleSwitch({
+  checked,
+  onChange,
+  label,
+}: {
+  checked: boolean;
+  onChange: (next: boolean) => void;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label={label}
+      onClick={() => onChange(!checked)}
+      className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
+        checked ? "bg-[#006BE5]" : "bg-black/20"
+      }`}
+    >
+      <span
+        className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${
+          checked ? "translate-x-[22px]" : "translate-x-[2px]"
+        }`}
+      />
+    </button>
   );
 }
 
