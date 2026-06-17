@@ -265,8 +265,13 @@ export function WidgetCard() {
         <ChatbotSettingsSidebar
           companyId={companyId}
           onClose={() => setIsSettingsOpen(false)}
-          onSaved={() =>
-            setToast({ kind: "success", message: "Settings saved." })
+          onSaved={(opts) =>
+            setToast({
+              kind: "success",
+              message: opts?.indexing
+                ? "Settings saved. Indexing documentation…"
+                : "Settings saved.",
+            })
           }
           onError={(message) => setToast({ kind: "error", message })}
         />
@@ -335,7 +340,7 @@ function ChatbotSettingsSidebar({
 }: {
   companyId: string;
   onClose: () => void;
-  onSaved?: () => void;
+  onSaved?: (opts?: { indexing?: boolean }) => void;
   onError?: (message: string) => void;
 }) {
   const { data: config } = useStrollConfig(companyId || null);
@@ -390,12 +395,21 @@ function ChatbotSettingsSidebar({
     const existing = integrations.find((i) => i.name === API_INTEGRATION_NAME);
     if (!existing) return;
 
+    const documentationUrl = existing.documentation_url ?? "";
+    const documentation = existing.documentation ?? "";
     setApiIntegration({
       integrationId: existing.id,
       baseUrl: existing.base_url ?? "",
       apiKey: "",
       authHeader: existing.auth_header || "Authorization",
       authPrefix: existing.auth_prefix || "Bearer",
+      documentationMode: documentationUrl
+        ? "url"
+        : documentation
+          ? "text"
+          : "url",
+      documentationUrl,
+      documentation,
       endpoints: existing.endpoints.map((e) => ({
         id: e.name || crypto.randomUUID(),
         label: e.name,
@@ -443,11 +457,20 @@ function ChatbotSettingsSidebar({
       .filter(Boolean);
 
     const integrationMutations: Promise<unknown>[] = [];
+    let documentationIndexing = false;
     {
       const baseUrl = apiIntegration.baseUrl.trim();
       const apiKey = apiIntegration.apiKey.trim();
       const authHeader = apiIntegration.authHeader.trim() || "Authorization";
       const authPrefix = apiIntegration.authPrefix.trim() || "Bearer";
+
+      const isUrlMode = apiIntegration.documentationMode === "url";
+      const documentationUrl = isUrlMode
+        ? apiIntegration.documentationUrl.trim()
+        : "";
+      const documentationText = isUrlMode
+        ? ""
+        : apiIntegration.documentation.trim();
 
       const usedNames = new Set<string>();
       const endpoints: APIEndpoint[] = apiIntegration.endpoints
@@ -489,6 +512,14 @@ function ChatbotSettingsSidebar({
             endpoints,
           };
           if (apiKey) payload.api_key = apiKey;
+          if (isUrlMode) {
+            if (documentationUrl) {
+              payload.documentation_url = documentationUrl;
+              documentationIndexing = true;
+            }
+          } else {
+            payload.documentation = documentationText;
+          }
           integrationMutations.push(
             updateIntegration.mutateAsync({
               integrationId: apiIntegration.integrationId,
@@ -509,9 +540,11 @@ function ChatbotSettingsSidebar({
           api_key: apiKey,
           auth_header: authHeader,
           auth_prefix: authPrefix,
-          documentation: "",
+          documentation: documentationText,
+          documentation_url: documentationUrl,
           endpoints,
         };
+        if (documentationUrl) documentationIndexing = true;
         integrationMutations.push(createIntegration.mutateAsync(createPayload));
       }
     }
@@ -544,7 +577,7 @@ function ChatbotSettingsSidebar({
       );
       return;
     }
-    onSaved?.();
+    onSaved?.({ indexing: documentationIndexing });
     closeWithAnimation();
   };
 

@@ -111,12 +111,17 @@ export interface IntegrationEndpointRow {
   headers?: Record<string, string>;
 }
 
+export type DocumentationMode = "url" | "text";
+
 export interface ApiIntegrationValue {
   integrationId: string | null;
   baseUrl: string;
   apiKey: string;
   authHeader: string;
   authPrefix: string;
+  documentationMode: DocumentationMode;
+  documentationUrl: string;
+  documentation: string;
   endpoints: IntegrationEndpointRow[];
 }
 
@@ -126,6 +131,9 @@ export const emptyApiIntegration = (): ApiIntegrationValue => ({
   apiKey: "",
   authHeader: "Authorization",
   authPrefix: "Bearer",
+  documentationMode: "url",
+  documentationUrl: "",
+  documentation: "",
   endpoints: [],
 });
 
@@ -250,6 +258,57 @@ export function ApiIntegrationSection({
       </div>
 
       <div className="mt-8">
+        <h4 className="font-stolzl mb-1 text-[16px] text-black">
+          Documentation
+        </h4>
+        <p className="font-dm-mono mb-4 text-[12px] leading-[1.8] tracking-[1.2px] text-black/50 uppercase">
+          Help agents understand your API. Drop a link to your docs and
+          we&apos;ll index them, or paste the documentation text directly.
+        </p>
+
+        <div className="mb-4 flex gap-2">
+          <DocumentationModeButton
+            active={value.documentationMode === "url"}
+            onClick={() => update({ documentationMode: "url" })}
+          >
+            Provide a URL
+          </DocumentationModeButton>
+          <DocumentationModeButton
+            active={value.documentationMode === "text"}
+            onClick={() => update({ documentationMode: "text" })}
+          >
+            Paste text
+          </DocumentationModeButton>
+        </div>
+
+        {value.documentationMode === "url" ? (
+          <SettingsField
+            id="integration-documentation-url"
+            label="Documentation URL"
+            value={value.documentationUrl}
+            onChange={(v) => update({ documentationUrl: v })}
+            placeholder="https://docs.yourcompany.com/api"
+          />
+        ) : (
+          <div>
+            <label
+              htmlFor="integration-documentation-text"
+              className={`${FIELD_LABEL} mb-2 block`}
+            >
+              Documentation text
+            </label>
+            <textarea
+              id="integration-documentation-text"
+              value={value.documentation}
+              onChange={(e) => update({ documentation: e.target.value })}
+              placeholder="Paste your API documentation here…"
+              className="font-dm-mono h-[160px] w-full resize-none rounded-[5px] bg-[#EDEDED] px-[10px] py-[10px] text-[14px] text-black outline-none placeholder:text-black/50"
+            />
+          </div>
+        )}
+      </div>
+
+      <div className="mt-8">
         <h4 className="font-stolzl mb-1 text-[16px] text-black">Endpoints</h4>
         <p className="font-dm-mono mb-4 text-[12px] leading-[1.8] tracking-[1.2px] text-black/50 uppercase">
           Add the API endpoints agents can call to fetch data. Pick a suggestion
@@ -294,6 +353,30 @@ export function ApiIntegrationSection({
         </div>
       </div>
     </section>
+  );
+}
+
+function DocumentationModeButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`font-dm-mono flex-1 rounded-[5px] px-3 py-2 text-[12px] tracking-[1px] uppercase transition-colors ${
+        active
+          ? "bg-[#006BE5] text-white"
+          : "bg-[#EDEDED] text-black/60 hover:text-black"
+      }`}
+    >
+      {children}
+    </button>
   );
 }
 
