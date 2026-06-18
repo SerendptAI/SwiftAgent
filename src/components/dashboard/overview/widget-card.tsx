@@ -572,7 +572,7 @@ function ChatbotSettingsSidebar({
             <ChevronLeft className="h-4 w-4" />
             Back
           </button>
-          <CollapsibleSection title="Select Agents">
+          <CollapsibleSection title="Select Agents" defaultOpen>
             <p className="font-dm-mono mb-5 text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase">
               Which agents are allowed to work in this chatbot
             </p>
@@ -608,7 +608,7 @@ function ChatbotSettingsSidebar({
             </ul>
           </CollapsibleSection>
 
-          <CollapsibleSection title="Sandbox">
+          <CollapsibleSection title="Sandbox" defaultOpen>
             <p className="font-dm-mono mb-5 text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase">
               Please create a sandbox account and share the login details for
               Agent 047
