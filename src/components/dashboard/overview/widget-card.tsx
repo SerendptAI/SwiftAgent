@@ -33,6 +33,7 @@ import {
   API_INTEGRATION_NAME,
   ApiIntegrationSection,
   type ApiIntegrationValue,
+  CollapsibleSection,
   emptyApiIntegration,
   PaymentSandboxSection,
   SuggestedQuestionsSection,
@@ -571,10 +572,7 @@ function ChatbotSettingsSidebar({
             <ChevronLeft className="h-4 w-4" />
             Back
           </button>
-          <section>
-            <h3 className="font-greed-narrow mb-3 text-[34px] leading-[0.95] font-medium tracking-[-0.68px] text-black uppercase">
-              Select Agents
-            </h3>
+          <CollapsibleSection title="Select Agents">
             <p className="font-dm-mono mb-5 text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase">
               Which agents are allowed to work in this chatbot
             </p>
@@ -608,12 +606,9 @@ function ChatbotSettingsSidebar({
                 );
               })}
             </ul>
-          </section>
+          </CollapsibleSection>
 
-          <section>
-            <h3 className="font-greed-narrow mb-3 text-[34px] leading-[0.95] font-medium tracking-[-0.68px] text-black uppercase">
-              Sandbox
-            </h3>
+          <CollapsibleSection title="Sandbox">
             <p className="font-dm-mono mb-5 text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase">
               Please create a sandbox account and share the login details for
               Agent 047
@@ -695,7 +690,7 @@ function ChatbotSettingsSidebar({
                 </div>
               )}
             </div>
-          </section>
+          </CollapsibleSection>
 
           <PaymentSandboxSection />
           <ApiIntegrationSection
