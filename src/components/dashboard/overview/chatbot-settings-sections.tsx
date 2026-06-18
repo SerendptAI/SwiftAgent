@@ -16,6 +16,39 @@ const FIELD_LABEL = "font-stolzl text-[16px] text-black";
 const FIELD_INPUT =
   "font-dm-mono w-full rounded-[5px] bg-[#EDEDED] pl-[10px] pr-[37px] py-[10px] text-[14px] text-black outline-none placeholder:text-black/50";
 
+// ── COLLAPSIBLE SECTION ──────────────────────────────────────────────────────
+
+export function CollapsibleSection({
+  title,
+  children,
+  defaultOpen = false,
+}: {
+  title: string;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+
+  return (
+    <section>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between gap-3 text-left"
+      >
+        <h3 className={SECTION_HEADING}>{title}</h3>
+        <ChevronDown
+          className={`h-6 w-6 shrink-0 text-black transition-transform ${
+            open ? "rotate-180" : ""
+          }`}
+        />
+      </button>
+      {open && children}
+    </section>
+  );
+}
+
 // ── PAYMENT SANDBOX ────────────────────────────────────────────────────────
 
 export function PaymentSandboxSection() {
@@ -24,8 +57,7 @@ export function PaymentSandboxSection() {
   const [password, setPassword] = useState("");
 
   return (
-    <section>
-      <h3 className={SECTION_HEADING}>Payment Sandbox</h3>
+    <CollapsibleSection title="Payment Sandbox">
       <p className={SECTION_DESCRIPTION}>
         Please set up a sandbox account for our agent and provide the login
         details for Agent 047. This will enable Agent have view-only access to
@@ -57,7 +89,7 @@ export function PaymentSandboxSection() {
           placeholder="*********"
         />
       </div>
-    </section>
+    </CollapsibleSection>
   );
 }
 
@@ -106,8 +138,7 @@ export function ApiIntegrationSection({
     onChange({ ...value, ...patch });
 
   return (
-    <section>
-      <h3 className={SECTION_HEADING}>API Integration</h3>
+    <CollapsibleSection title="API Integration">
       <p className={SECTION_DESCRIPTION}>
         Connect your product API once and share its documentation so agents can
         call it to automate responses.
@@ -230,7 +261,7 @@ export function ApiIntegrationSection({
           </div>
         )}
       </div>
-    </section>
+    </CollapsibleSection>
   );
 }
 
@@ -288,8 +319,7 @@ export function SuggestedQuestionsSection({
   };
 
   return (
-    <section>
-      <h3 className={SECTION_HEADING}>Suggested Questions</h3>
+    <CollapsibleSection title="Suggested Questions">
       <p className={SECTION_DESCRIPTION}>
         Here you can set the most frequently asked questions from your customers
         that the bot will recommend.
@@ -332,7 +362,7 @@ export function SuggestedQuestionsSection({
           Add a new suggestion
         </button>
       </div>
-    </section>
+    </CollapsibleSection>
   );
 }
 
