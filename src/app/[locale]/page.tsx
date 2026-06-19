@@ -6,9 +6,11 @@ import { DashboardSection } from "@/components/landing/dashboard-section";
 import { FeaturesSection } from "@/components/landing/features-section";
 import { HeroSection } from "@/components/landing/hero-section";
 import { HomepageChatbot } from "@/components/landing/homepage-chatbot";
+import { LiveInHoursBanner } from "@/components/landing/live-in-hours-banner";
 import { MostUsedFeaturesSection } from "@/components/landing/most-used-features-section";
 import { PricingSection } from "@/components/landing/pricing-section";
 import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provider";
+import { TrustedBySection } from "@/components/landing/trusted-by-section";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -82,10 +84,13 @@ export default function HomePage() {
       />
       <main>
         <HeroSection />
-        <AboutSection />
-        <FeaturesSection />
-        <DashboardSection />
-        <MostUsedFeaturesSection />
+        <TrustedBySection />
+        <LiveInHoursBanner />
+
+        {/*<AboutSection />*/}
+        {/*<FeaturesSection />*/}
+        {/*<DashboardSection />*/}
+        {/*<MostUsedFeaturesSection />*/}
         <PricingSection />
         <ContactSection />
       </main>

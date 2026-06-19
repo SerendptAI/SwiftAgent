@@ -8,4 +8,4 @@ export const NAV_LINKS = [
 ] as const;
 
 /** Copyright notice */
-export const COPYRIGHT_TEXT = "© 2026 SerendptAI (swiftagents.org)";
+export const COPYRIGHT_TEXT = "©COPYRIGHT@SWIFTAGENTS.ORG";

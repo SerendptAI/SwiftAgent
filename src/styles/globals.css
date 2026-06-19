@@ -342,3 +342,23 @@ body {
     animation: none;
   }
 }
+
+@keyframes logos-scroll-right {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+.animate-marquee {
+  animation: logos-scroll-right 20s linear infinite;
+  will-change: transform;
+}
+
+@keyframes arrows-scroll-forward {
+  from { transform: translateX(calc(-1 * var(--arrow-set-width, 1436px))); }
+  to   { transform: translateX(0); }
+}
+
+.animate-arrows {
+  animation: arrows-scroll-forward 8s linear infinite;
+  will-change: transform;
+}

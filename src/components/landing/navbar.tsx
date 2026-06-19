@@ -9,6 +9,7 @@ import { useCurrentUser } from "@/hooks/use-auth";
 import { cn, getProfileImage } from "@/lib/utils";
 
 import { Icons } from "../icons";
+import { Button } from "../ui/button";
 import { isLandingNavLinkActive, LANDING_NAV_LINKS } from "./nav-links";
 import { NavigationMenu } from "./navigation-menu";
 
@@ -43,7 +44,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
           ref={ref}
           className={
             className ??
-            "fixed top-[30px] right-0 left-0 z-50 mx-auto flex h-[70px] w-[92%] items-center justify-between border border-black bg-white px-4 md:top-[52px] md:grid md:h-[80px] md:w-[90%] md:grid-cols-[auto_1fr_auto] md:gap-4 md:px-8"
+            "fixed top-[30px] right-0 left-0 z-100 mx-auto flex h-[70px] w-[92%] items-center justify-between border border-black bg-white px-4 md:top-[52px] md:grid md:h-[80px] md:w-[90%] md:grid-cols-[auto_1fr_auto] md:gap-4 md:px-8"
           }
         >
           {/* Logo */}
@@ -136,12 +137,14 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                 </span>
               </Link>
             ) : (
-              <Link
-                href="/en/login"
-                className="font-dm-mono hidden w-full max-w-[220px] items-center justify-center rounded-lg border border-black bg-white px-8 py-3 text-base font-medium tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-black hover:text-white md:flex"
+              <Button
+                variant="outline"
+                size="lg"
+                className="hidden max-w-[220px] md:flex"
+                asChild
               >
-                LOGIN
-              </Link>
+                <Link href="/en/login">LOGIN</Link>
+              </Button>
             )}
           </div>
         </nav>
