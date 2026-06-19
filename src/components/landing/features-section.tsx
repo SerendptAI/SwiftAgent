@@ -23,21 +23,21 @@ const AGENTS: Agent[] = [
     name: "AGENT 047",
     video: "/videos/Agent 047.mp4",
     description:
-      "AGENT 047 POSSESSES THE CAPABILITY TO LOCATE ANY FEATURE WITHIN A DASHBOARD FOR USERS, REGARDLESS OF THE DASHBOARD'S COMPLEXITY. THIS AGENT IS AWARE OF THE PRECISE LOCATION OF EACH FEATURE AND CAN PROVIDE DETAILED DIRECTIONS ALONG WITH SCREENSHOTS UPON REQUEST.",
+      "Agent 047 possesses the capability to locate any feature within a dashboard for users, regardless of the dashboard's complexity. This agent is aware of the precise location of each feature and can provide detailed directions along with screenshots upon request.",
   },
   {
     id: "007",
     name: "AGENT 007",
     video: "/videos/Agent 007.mp4",
     description:
-      "AGENT 007 HAS THE ABILITY TO THOROUGHLY SEARCH AN ENTIRE WEBSITE TO RETRIEVE INFORMATION FOR CUSTOMERS WHEN THE ANSWER IS NOT AVAILABLE IN ITS DATABASE.",
+      "Agent 007 has the ability to thoroughly search an entire website to retrieve information for customers when the answer is not available in its database.",
   },
   {
     id: "626",
     name: "AGENT 626",
     video: "/videos/Agent 626.mp4",
     description:
-      "AGENT 626 POSSESSES THE CAPABILITY TO ANALYZE CRYPTOCURRENCY TRANSACTIONS VIA HASHCODES AND INFORM USERS OF ANY POTENTIAL ISSUES THAT MAY ARISE DURING THE TRANSACTION PROCESS.",
+      "Agent 626 possesses the capability to analyze cryptocurrency transactions via hashcodes and inform users of any potential issues that may arise during the transaction process.",
   },
 ];
 
@@ -46,7 +46,7 @@ const AGENT_001: Agent = {
   name: "AGENT 001",
   video: "/videos/Agent 001.mp4",
   description:
-    "AGENT 001 REVIEWS BANK RECORDS AND UPDATES CUSTOMERS ON PAYMENT STATUSES, INCLUDING REFUND PROCESSES, BANK ACKNOWLEDGMENTS, AND ANY PAYMENT ISSUES.",
+    "Agent 001 reviews bank records and updates customers on payment statuses, including refund processes, bank acknowledgments, and any payment issues.",
 };
 
 // ─── Agent Video — loads only when scrolled into view ─────────
@@ -82,7 +82,7 @@ function AgentVideo({ src }: { src: string }) {
       muted
       playsInline
       preload="none"
-      className="h-auto w-full object-cover"
+      className="aspect-420/496 h-auto w-full object-cover object-center"
     />
   );
 }
@@ -92,17 +92,17 @@ function AgentCard({ agent }: { agent: Agent }) {
   return (
     <div className="flex flex-col gap-4 max-md:mb-6">
       {/* Agent name */}
-      <h3 className="font-dm-mono -mt-4.5 text-[24px] font-normal tracking-[0.2em] text-[#666666] uppercase md:mb-3 md:ml-10 md:text-3xl">
+      <h3 className="font-dm-mono text-xl font-normal tracking-[0.2em] text-black/40 uppercase md:mb-2 md:text-2xl lg:text-3xl xl:text-4xl">
         {agent.name}
       </h3>
 
       {/* Agent video */}
-      <div className="overflow-hidden">
+      <div className="flex aspect-420/496 items-center justify-center overflow-hidden">
         <AgentVideo src={agent.video} />
       </div>
 
       {/* Agent description */}
-      <p className="font-dm-mono text-sm leading-[1.8] tracking-[0.08em] text-black/70 uppercase">
+      <p className="font-dm-mono w-[90%] text-sm leading-relaxed tracking-[8%] text-black/80 uppercase md:text-base">
         {agent.description}
       </p>
     </div>
@@ -171,21 +171,21 @@ export function FeaturesSection() {
     <section
       ref={sectionRef}
       id="agents"
-      className="relative overflow-hidden bg-white"
+      className="relative flex overflow-hidden bg-white px-6 pt-44 pb-12 md:px-10 md:pt-50 lg:px-16 lg:pt-56"
     >
-      <div className="relative mx-auto max-w-7xl px-6 py-16 md:px-14 md:py-24">
+      <div className="relative mx-auto max-w-360">
         {/* ── Section header ── */}
         <div
           ref={headerRef}
-          className="mb-12 flex flex-col items-center gap-4 text-center"
+          className="mb-10 flex flex-col gap-4 md:mb-14 lg:mb-18"
         >
           {/* Label */}
-          <span className="font-dm-mono text-xs tracking-[0.25em] text-black/50 uppercase">
+          <span className="font-dm-mono text-base leading-[1.2] tracking-[10%] text-gray-400 uppercase md:text-lg lg:text-xl">
             OUR AI AGENTS
           </span>
 
           {/* Headline */}
-          <h2 className="font-greed-narrow max-w-3xl text-4xl leading-[1.1] font-black tracking-tight text-black uppercase md:text-6xl lg:text-7xl">
+          <h2 className="font-greed-narrow w-full max-w-2xl text-4xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase md:text-5xl lg:text-[66px]">
             OUR AGENTS ACCOMPLISH DIFFERENT FUNCTIONS
           </h2>
         </div>
@@ -204,33 +204,33 @@ export function FeaturesSection() {
           {/* Segment 1 — line1 (\): descending from upper-left */}
           <div className="absolute" style={{ left: "25%", top: 0 }}>
             <Image
-              src="/images/lines/line1.svg"
+              src="/images/lines/line1.png"
               alt=""
               width={208}
               height={182}
-              className="h-[182px] w-[208px]"
+              className="h-[182px] w-[208px] object-contain"
             />
           </div>
 
           {/* Segment 2 — line3 (/): ascending from lower-left to upper-right */}
           <div className="absolute" style={{ left: "48%", top: "8px" }}>
             <Image
-              src="/images/lines/line2.svg"
+              src="/images/lines/line2.png"
               alt=""
               width={109}
               height={166}
-              className="h-[166px] w-[109px]"
+              className="h-[166px] w-[109px] object-contain"
             />
           </div>
 
           {/* Segment 3 — line2 (\): steep descent from upper area */}
           <div className="absolute" style={{ left: "76%", top: 20 }}>
             <Image
-              src="/images/lines/line3.svg"
+              src="/images/lines/line3.png"
               alt=""
               width={79}
               height={182}
-              className="h-[182px] w-[79px]"
+              className="h-[182px] w-[79px] object-contain"
             />
           </div>
         </div>
@@ -241,7 +241,7 @@ export function FeaturesSection() {
           className="mt-16 flex flex-col justify-between gap-8 lg:flex-row lg:gap-12"
         >
           {/* Agent 001 card */}
-          <div className="w-full lg:w-[35%]">
+          <div className="w-full lg:-mt-18 lg:w-[35%]">
             <AgentCard agent={AGENT_001} />
           </div>
 
@@ -256,14 +256,14 @@ export function FeaturesSection() {
             </h3>
             <div className="absolute bottom-30 -left-20">
               <Image
-                src="/images/lines/line4.svg"
+                src="/images/lines/line4.png"
                 alt=""
                 width={230}
                 height={154}
-                className="h-[154px] w-[230px]"
+                className="h-[154px] w-[230px] object-contain"
               />
             </div>
-            <div className="absolute top-15 right-10">
+            <div className="absolute top-19 right-30">
               <BriggsAnimation className="h-[124px] w-[150px]" />
             </div>
           </div>

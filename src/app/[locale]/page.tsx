@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 
-import { AboutSection } from "@/components/landing/about-section";
 import { ContactSection } from "@/components/landing/contact-section";
-import { DashboardSection } from "@/components/landing/dashboard-section";
-import { FeaturesSection } from "@/components/landing/features-section";
 import { HeroSection } from "@/components/landing/hero-section";
 import { HomepageChatbot } from "@/components/landing/homepage-chatbot";
+import { HowItWorksSection } from "@/components/landing/how-it-works-section";
+import { IndustriesSection } from "@/components/landing/industries-section";
 import { LiveInHoursBanner } from "@/components/landing/live-in-hours-banner";
-import { MostUsedFeaturesSection } from "@/components/landing/most-used-features-section";
+import { PlatformsSection } from "@/components/landing/platforms-section";
 import { PricingSection } from "@/components/landing/pricing-section";
 import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provider";
 import { TrustedBySection } from "@/components/landing/trusted-by-section";
@@ -86,11 +85,9 @@ export default function HomePage() {
         <HeroSection />
         <TrustedBySection />
         <LiveInHoursBanner />
-
-        {/*<AboutSection />*/}
-        {/*<FeaturesSection />*/}
-        {/*<DashboardSection />*/}
-        {/*<MostUsedFeaturesSection />*/}
+        <HowItWorksSection />
+        <PlatformsSection />
+        <IndustriesSection />
         <PricingSection />
         <ContactSection />
       </main>

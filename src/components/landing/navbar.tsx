@@ -44,7 +44,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
           ref={ref}
           className={
             className ??
-            "fixed top-[30px] right-0 left-0 z-100 mx-auto flex h-[70px] w-[92%] items-center justify-between border border-black bg-white px-4 md:top-[52px] md:grid md:h-[80px] md:w-[90%] md:grid-cols-[auto_1fr_auto] md:gap-4 md:px-8"
+            "fixed top-6 right-0 left-0 z-100 mx-auto flex h-18 w-[92%] items-center justify-between border border-black bg-white px-4 md:top-[52px] md:grid md:h-[80px] md:w-[90%] md:grid-cols-[auto_1fr_auto] md:gap-4 md:px-8"
           }
         >
           {/* Logo */}
