@@ -49,16 +49,10 @@ function formatBytes(bytes?: number | null): string {
   return `${i === 0 ? value : value.toFixed(1)} ${units[i]}`;
 }
 
-/**
- * Strip the SDK signature prefix (`sw_<sha256>_`) the backend prepends to stored
- * filenames, leaving the original name for display. The signature is kept on the
- * raw value for internal matching; only the visible name is cleaned.
- */
 function stripFileSignature(filename: string): string {
   return filename.replace(/^sw_[a-f0-9]{64}_/i, "");
 }
 
-/** Shorten a filename to `max` chars, keeping the extension (e.g. "long-invo….pdf"). */
 function truncateFilename(filename: string, max = 22): string {
   if (filename.length <= max) return filename;
   const dot = filename.lastIndexOf(".");
@@ -87,11 +81,6 @@ function detectFileKind(
   return "file";
 }
 
-/**
- * Object URLs for files attached during this session, keyed by name+size.
- * The backend streams attachments out via email without storing them, so this
- * is the only way a just-sent attachment can stay viewable in the thread.
- */
 const attachmentPreviewCache = new Map<string, string>();
 
 function previewKey(filename: string, size?: number | null): string {
