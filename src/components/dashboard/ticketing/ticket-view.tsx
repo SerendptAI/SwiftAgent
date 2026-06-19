@@ -49,6 +49,15 @@ function formatBytes(bytes?: number | null): string {
   return `${i === 0 ? value : value.toFixed(1)} ${units[i]}`;
 }
 
+/**
+ * Strip the SDK signature prefix (`sw_<sha256>_`) the backend prepends to stored
+ * filenames, leaving the original name for display. The signature is kept on the
+ * raw value for internal matching; only the visible name is cleaned.
+ */
+function stripFileSignature(filename: string): string {
+  return filename.replace(/^sw_[a-f0-9]{64}_/i, "");
+}
+
 /** Shorten a filename to `max` chars, keeping the extension (e.g. "long-invo….pdf"). */
 function truncateFilename(filename: string, max = 22): string {
   if (filename.length <= max) return filename;
@@ -119,6 +128,7 @@ function AttachmentCard({
   onRemove?: () => void;
 }) {
   const kind = detectFileKind(filename, contentType);
+  const displayName = stripFileSignature(filename);
   const thumbnail =
     kind === "image" && previewUrl ? previewUrl : FILE_THUMBNAILS[kind];
   const sizeLabel = formatBytes(size);
@@ -151,10 +161,10 @@ function AttachmentCard({
   const text = (
     <span className="flex min-w-0 flex-col text-left">
       <span
-        title={filename}
+        title={displayName}
         className="max-w-[150px] truncate text-xs font-medium"
       >
-        {truncateFilename(filename)}
+        {truncateFilename(displayName)}
       </span>
       {sizeLabel && <span className="text-[10px] opacity-60">{sizeLabel}</span>}
     </span>
@@ -169,7 +179,7 @@ function AttachmentCard({
     <button
       type="button"
       onClick={onOpen}
-      title={`Preview ${filename}`}
+      title={`Preview ${displayName}`}
       className="flex min-w-0 flex-1 cursor-pointer items-center gap-2 text-left"
     >
       {preview}
@@ -194,7 +204,7 @@ function AttachmentCard({
       {onRemove && (
         <button
           type="button"
-          aria-label={`Remove ${filename}`}
+          aria-label={`Remove ${displayName}`}
           onClick={onRemove}
           className="shrink-0 cursor-pointer opacity-50 transition-opacity hover:opacity-100"
         >
@@ -228,12 +238,13 @@ function AttachmentPreviewModal({
   }, [onClose]);
 
   const { url, filename, kind } = preview;
+  const displayName = stripFileSignature(filename);
 
   return (
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={`Preview of ${filename}`}
+      aria-label={`Preview of ${displayName}`}
       className="fixed inset-0 z-[10000] flex flex-col p-3 sm:p-6"
     >
       <button
@@ -245,7 +256,7 @@ function AttachmentPreviewModal({
       <div className="relative mx-auto flex h-full w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-xl">
         <div className="flex items-center justify-between gap-3 border-b border-gray-100 px-4 py-3">
           <span className="font-dm-mono truncate text-sm font-medium text-gray-900">
-            {filename}
+            {displayName}
           </span>
           <div className="flex shrink-0 items-center gap-1">
             <a
@@ -272,13 +283,13 @@ function AttachmentPreviewModal({
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={url}
-              alt={filename}
+              alt={displayName}
               className="max-h-full max-w-full object-contain"
             />
           ) : (
             <iframe
               src={url}
-              title={filename}
+              title={displayName}
               className="h-full w-full border-0"
             />
           )}
