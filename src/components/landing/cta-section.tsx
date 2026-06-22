@@ -40,7 +40,13 @@ export function CtaSection({ variant = "light" }: CtaSectionProps) {
             <Button variant="outline" size="lg" asChild>
               <Link href="/contact">BOOK A DEMO</Link>
             </Button>
-            <Button size="lg" asChild>
+            <Button
+              size="lg"
+              className={cn({
+                "border-transparent": isGreen,
+              })}
+              asChild
+            >
               <Link href="/signup">GET STARTED</Link>
             </Button>
           </div>

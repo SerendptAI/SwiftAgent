@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 
+import { ContactSection } from "@/components/landing/contact-section";
 import { CtaSection } from "@/components/landing/cta-section";
 import { Navbar } from "@/components/landing/navbar";
+import { ProductsSection } from "@/components/landing/products-section";
 import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provider";
 import { siteConfig } from "@/lib/site-config";
 
@@ -18,12 +20,10 @@ export default function ProductsPage() {
   return (
     <SmoothScrollProvider>
       <main>
-        <div className="relative bg-white">
-          <Navbar />
-          <div className="pt-40 md:pt-48">
-            <CtaSection variant="green" />
-          </div>
-        </div>
+        <Navbar />
+        <ProductsSection />
+        <CtaSection variant="green" />
+        <ContactSection />
       </main>
     </SmoothScrollProvider>
   );

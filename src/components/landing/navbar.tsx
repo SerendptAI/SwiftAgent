@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 
 import { useCurrentUser } from "@/hooks/use-auth";
 import { cn, getProfileImage } from "@/lib/utils";
@@ -20,6 +20,10 @@ interface NavbarProps {
 export const Navbar = forwardRef<HTMLElement, NavbarProps>(
   ({ className }, ref) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [productsOpen, setProductsOpen] = useState(false);
+    const productsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(
+      null,
+    );
     const [hash, setHash] = useState("");
     const [isMounted, setIsMounted] = useState(false);
     const pathname = usePathname();
@@ -70,6 +74,85 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                   pathname,
                   hash,
                 );
+
+                if (link.label === "PRODUCTS") {
+                  return (
+                    <div
+                      key={link.href}
+                      className="relative h-full"
+                      onMouseEnter={() => {
+                        if (productsCloseTimer.current)
+                          clearTimeout(productsCloseTimer.current);
+                        setProductsOpen(true);
+                      }}
+                      onMouseLeave={() => {
+                        productsCloseTimer.current = setTimeout(
+                          () => setProductsOpen(false),
+                          200,
+                        );
+                      }}
+                    >
+                      <Link
+                        href={link.href}
+                        aria-current={isActive ? "page" : undefined}
+                        className={cn(
+                          "font-dm-mono flex h-full items-center gap-1.5 text-sm tracking-[0.2em] text-black uppercase transition-opacity hover:opacity-60",
+                          isActive
+                            ? "font-medium hover:opacity-100"
+                            : "font-normal",
+                        )}
+                      >
+                        {link.label}
+                        <Icons.NavChevronDown />
+                      </Link>
+
+                      {/* Dropdown panel */}
+                      <div
+                        className={cn(
+                          "absolute top-12.5 -left-6.5 z-50 w-78.5 border border-black bg-white px-6 pt-2 pb-9 transition-all duration-200",
+                          productsOpen
+                            ? "pointer-events-auto translate-y-0 opacity-100"
+                            : "pointer-events-none -translate-y-1 opacity-0",
+                        )}
+                      >
+                        {/* Panel header */}
+                        <div className="mb-4 flex items-center justify-between">
+                          <span className="font-greed-narrow text-[30px] leading-[1.34] font-medium tracking-[-2%] uppercase">
+                            PRODUCTS
+                          </span>
+                          <Icons.NavChevronDown className="size-6" />
+                        </div>
+
+                        {/* Preview image */}
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src="/images/product-dropdown.svg"
+                          alt="Swift Agents product preview"
+                          className="mb-6 h-25 w-full object-cover"
+                          style={{ aspectRatio: "265 / 100" }}
+                        />
+
+                        {/* Links */}
+                        <div className="flex flex-col gap-4">
+                          <Link
+                            href="/products"
+                            className="font-dm-mono text-base leading-[1.83] tracking-[10%] text-black/80 uppercase hover:text-black"
+                          >
+                            DOWNLOAD THE <br /> SWIFT AGENTS APP
+                            <Icons.ArrowUpRight className="ml-3 inline-block size-5.5" />
+                          </Link>
+                          <Link
+                            href="/products#sdks"
+                            className="font-dm-mono text-base leading-[1.83] tracking-[10%] text-black/80 uppercase hover:text-black"
+                          >
+                            USE OUR SDKS
+                            <Icons.ArrowUpRight className="ml-3 inline-block size-5.5" />
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
 
                 return (
                   <Link
