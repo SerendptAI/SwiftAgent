@@ -36,6 +36,7 @@ import {
   CollapsibleSection,
   emptyApiIntegration,
   PaymentSandboxSection,
+  RouteToHumanSection,
   SuggestedQuestionsSection,
 } from "./chatbot-settings-sections";
 
@@ -359,6 +360,7 @@ function ChatbotSettingsSidebar({
   const [isShown, setIsShown] = useState(false);
   const [suggestedPrompts, setSuggestedPrompts] = useState<string[]>([]);
   const [enableSuggestedPrompts, setEnableSuggestedPrompts] = useState(true);
+  const [routeToHuman, setRouteToHuman] = useState(false);
   const [apiIntegration, setApiIntegration] = useState<ApiIntegrationValue>(
     () => emptyApiIntegration(),
   );
@@ -381,6 +383,7 @@ function ChatbotSettingsSidebar({
     if (!company) return;
     setSuggestedPrompts(company.suggested_ai_prompts ?? []);
     setEnableSuggestedPrompts(company.enable_suggested_prompts ?? true);
+    setRouteToHuman(company.route_to_human ?? false);
   }, [company]);
 
   useEffect(() => {
@@ -528,10 +531,11 @@ function ChatbotSettingsSidebar({
         }),
         updateCompany.mutateAsync({
           companyId,
-          section: "identity",
+          section: "info",
           payload: {
             suggested_ai_prompts: cleanedPrompts,
             enable_suggested_prompts: enableSuggestedPrompts,
+            route_to_human: routeToHuman,
           },
         }),
         ...integrationMutations,
@@ -548,6 +552,12 @@ function ChatbotSettingsSidebar({
     onSaved?.({ indexing: documentationIndexing });
     closeWithAnimation();
   };
+
+  const isSaving =
+    updateConfig.isPending ||
+    updateCompany.isPending ||
+    createIntegration.isPending ||
+    updateIntegration.isPending;
 
   return (
     <div className="fixed inset-0 z-50 flex">
@@ -572,6 +582,10 @@ function ChatbotSettingsSidebar({
             <ChevronLeft className="h-4 w-4" />
             Back
           </button>
+          <RouteToHumanSection
+            value={routeToHuman}
+            onChange={setRouteToHuman}
+          />
           <CollapsibleSection title="Select Agents" defaultOpen>
             <p className="font-dm-mono mb-5 text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase">
               Which agents are allowed to work in this chatbot
@@ -708,20 +722,10 @@ function ChatbotSettingsSidebar({
         <div className="border-t border-gray-100 px-4 py-4 sm:px-6">
           <button
             onClick={handleSave}
-            disabled={
-              updateConfig.isPending ||
-              updateCompany.isPending ||
-              createIntegration.isPending ||
-              updateIntegration.isPending
-            }
+            disabled={isSaving}
             className="font-dm-mono w-full cursor-pointer rounded-[8px] bg-[#006BE5] py-3 text-center text-sm tracking-wider text-white uppercase shadow-[-3px_4px_0px_0px_#000000] transition-all hover:bg-[#0055B8] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-1px_2px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {updateConfig.isPending ||
-            updateCompany.isPending ||
-            createIntegration.isPending ||
-            updateIntegration.isPending
-              ? "Saving…"
-              : "Save & Close"}
+            {isSaving ? "Saving…" : "Save & Close"}
           </button>
         </div>
       </aside>
