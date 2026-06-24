@@ -25,6 +25,7 @@ export interface Company {
   support_emails: string[];
   suggested_ai_prompts: string[];
   enable_suggested_prompts: boolean;
+  route_to_human: boolean;
   enabled_sources: string[];
   custom_info: string[];
   voice_style: string;

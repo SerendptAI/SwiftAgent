@@ -289,6 +289,35 @@ function DocumentationModeButton({
   );
 }
 
+export function RouteToHumanSection({
+  value,
+  onChange,
+}: {
+  value: boolean;
+  onChange: (next: boolean) => void;
+}) {
+  return (
+    <CollapsibleSection title="Route to Human" defaultOpen>
+      <p className={SECTION_DESCRIPTION}>
+        Turn off the AI agent and send every widget chat straight to your human
+        support team. Customers are asked for their email and a support ticket
+        is opened automatically.
+      </p>
+
+      <div className="flex items-center justify-between gap-3">
+        <span className="font-dm-mono text-[12px] tracking-[1.2px] text-black/60 uppercase">
+          Route all chats to my support team
+        </span>
+        <ToggleSwitch
+          checked={value}
+          onChange={onChange}
+          label="Route all chats to my support team"
+        />
+      </div>
+    </CollapsibleSection>
+  );
+}
+
 const SUGGESTION_MAX_LENGTH = 27;
 
 interface SuggestedQuestionsSectionProps {
@@ -366,7 +395,7 @@ export function SuggestedQuestionsSection({
   );
 }
 
-function ToggleSwitch({
+export function ToggleSwitch({
   checked,
   onChange,
   label,
