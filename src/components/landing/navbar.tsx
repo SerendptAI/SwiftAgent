@@ -3,12 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 
 import { useCurrentUser } from "@/hooks/use-auth";
 import { cn, getProfileImage } from "@/lib/utils";
 
 import { Icons } from "../icons";
+import { Button } from "../ui/button";
 import { isLandingNavLinkActive, LANDING_NAV_LINKS } from "./nav-links";
 import { NavigationMenu } from "./navigation-menu";
 
@@ -19,6 +20,10 @@ interface NavbarProps {
 export const Navbar = forwardRef<HTMLElement, NavbarProps>(
   ({ className }, ref) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [productsOpen, setProductsOpen] = useState(false);
+    const productsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(
+      null,
+    );
     const [hash, setHash] = useState("");
     const [isMounted, setIsMounted] = useState(false);
     const pathname = usePathname();
@@ -43,7 +48,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
           ref={ref}
           className={
             className ??
-            "fixed top-[30px] right-0 left-0 z-50 mx-auto flex h-[70px] w-[92%] items-center justify-between border border-black bg-white px-4 md:top-[52px] md:grid md:h-[80px] md:w-[90%] md:grid-cols-[auto_1fr_auto] md:gap-4 md:px-8"
+            "fixed top-6 right-0 left-0 z-100 mx-auto flex h-18 w-[92%] items-center justify-between border border-black bg-white px-4 md:top-[52px] md:grid md:h-[80px] md:w-[90%] md:grid-cols-[auto_1fr_auto] md:gap-4 md:px-8"
           }
         >
           {/* Logo */}
@@ -69,6 +74,85 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                   pathname,
                   hash,
                 );
+
+                if (link.label === "PRODUCTS") {
+                  return (
+                    <div
+                      key={link.href}
+                      className="relative h-full"
+                      onMouseEnter={() => {
+                        if (productsCloseTimer.current)
+                          clearTimeout(productsCloseTimer.current);
+                        setProductsOpen(true);
+                      }}
+                      onMouseLeave={() => {
+                        productsCloseTimer.current = setTimeout(
+                          () => setProductsOpen(false),
+                          200,
+                        );
+                      }}
+                    >
+                      <Link
+                        href={link.href}
+                        aria-current={isActive ? "page" : undefined}
+                        className={cn(
+                          "font-dm-mono flex h-full items-center gap-1.5 text-sm tracking-[0.2em] text-black uppercase transition-opacity hover:opacity-60",
+                          isActive
+                            ? "font-medium hover:opacity-100"
+                            : "font-normal",
+                        )}
+                      >
+                        {link.label}
+                        <Icons.NavChevronDown />
+                      </Link>
+
+                      {/* Dropdown panel */}
+                      <div
+                        className={cn(
+                          "absolute top-12.5 -left-6.5 z-50 w-78.5 border border-black bg-white px-6 pt-2 pb-9 transition-all duration-200",
+                          productsOpen
+                            ? "pointer-events-auto translate-y-0 opacity-100"
+                            : "pointer-events-none -translate-y-1 opacity-0",
+                        )}
+                      >
+                        {/* Panel header */}
+                        <div className="mb-4 flex items-center justify-between">
+                          <span className="font-greed-narrow text-[30px] leading-[1.34] font-medium tracking-[-2%] uppercase">
+                            PRODUCTS
+                          </span>
+                          <Icons.NavChevronDown className="size-6" />
+                        </div>
+
+                        {/* Preview image */}
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src="/images/product-dropdown.svg"
+                          alt="Swift Agents product preview"
+                          className="mb-6 h-25 w-full object-cover"
+                          style={{ aspectRatio: "265 / 100" }}
+                        />
+
+                        {/* Links */}
+                        <div className="flex flex-col gap-4">
+                          <Link
+                            href="/products"
+                            className="font-dm-mono text-base leading-[1.83] tracking-[10%] text-black/80 uppercase hover:text-black"
+                          >
+                            DOWNLOAD THE <br /> SWIFT AGENTS APP
+                            <Icons.ArrowUpRight className="ml-3 inline-block size-5.5" />
+                          </Link>
+                          <Link
+                            href="/products#sdks"
+                            className="font-dm-mono text-base leading-[1.83] tracking-[10%] text-black/80 uppercase hover:text-black"
+                          >
+                            USE OUR SDKS
+                            <Icons.ArrowUpRight className="ml-3 inline-block size-5.5" />
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
 
                 return (
                   <Link
@@ -136,12 +220,14 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                 </span>
               </Link>
             ) : (
-              <Link
-                href="/en/login"
-                className="font-dm-mono hidden w-full max-w-[220px] items-center justify-center rounded-lg border border-black bg-white px-8 py-3 text-base font-medium tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-black hover:text-white md:flex"
+              <Button
+                variant="outline"
+                size="lg"
+                className="hidden max-w-[220px] md:flex"
+                asChild
               >
-                LOGIN
-              </Link>
+                <Link href="/en/login">LOGIN</Link>
+              </Button>
             )}
           </div>
         </nav>

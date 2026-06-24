@@ -4,13 +4,13 @@ import { Copy, Info } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
+import { useCreateOnlineForm, useUpdateForm } from "@/hooks/use-forms";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
+import { isValidHttpUrl } from "@/lib/validation";
+import type { Form } from "@/services/forms";
+import { getFormEmbedCode } from "@/services/forms";
 
 const DRAWER_TRANSITION_MS = 520;
-const EMBED_CODE =
-  '<script src="https://swiftagents.org/chat-widget.js"></script> <div id="chat-widget"></div> <style>#chat-widget { position: fixed; bottom:</style>';
-const API_KEY = "SDPK-272XXXXXXXXXXXXXXXXXXXX";
-const PUBLIC_KEY = "SDPK-272XXXXXXXXXXXXXXXXXXXX";
 
 type OnlineFormStep = "form" | "security";
 type OnlineFormInformationErrors = {
@@ -18,103 +18,143 @@ type OnlineFormInformationErrors = {
   formTitle?: string;
 };
 
-function isValidHttpUrl(value: string) {
-  try {
-    const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:";
-  } catch {
-    return false;
-  }
-}
-
 export function OnlineFormDrawer({
   open,
   onClose,
   onSuccess,
+  mode = "create",
+  editForm,
 }: {
   open: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (form: Form) => void;
+  mode?: "create" | "edit";
+  editForm?: Form;
 }) {
+  const isEdit = mode === "edit";
   const [isMounted, setIsMounted] = useState(open);
   const [isClosing, setIsClosing] = useState(false);
   const [activeStep, setActiveStep] = useState<OnlineFormStep>("form");
+  const [formImage, setFormImage] = useState("");
+  const [formTitle, setFormTitle] = useState("");
+  const [errors, setErrors] = useState<OnlineFormInformationErrors>({});
+  const [createdForm, setCreatedForm] = useState<Form | null>(null);
   const closeTimeoutRef = useRef<number | null>(null);
+  const createForm = useCreateOnlineForm();
+  const updateForm = useUpdateForm();
+  const isPending = isEdit ? updateForm.isPending : createForm.isPending;
+  const isError = isEdit ? updateForm.isError : createForm.isError;
   useScrollLock(isMounted);
 
   const closeDrawer = useCallback(() => {
-    if (closeTimeoutRef.current) {
-      window.clearTimeout(closeTimeoutRef.current);
-    }
-
+    if (closeTimeoutRef.current) window.clearTimeout(closeTimeoutRef.current);
     setIsClosing(true);
     closeTimeoutRef.current = window.setTimeout(() => {
       setActiveStep("form");
+      setFormImage("");
+      setFormTitle("");
+      setErrors({});
+      setCreatedForm(null);
       setIsMounted(false);
       onClose();
       closeTimeoutRef.current = null;
     }, DRAWER_TRANSITION_MS);
   }, [onClose]);
 
-  const completeCreation = useCallback(() => {
-    if (closeTimeoutRef.current) {
-      window.clearTimeout(closeTimeoutRef.current);
+  const completeCreation = useCallback(
+    (form: Form) => {
+      if (closeTimeoutRef.current) window.clearTimeout(closeTimeoutRef.current);
+      setIsClosing(true);
+      closeTimeoutRef.current = window.setTimeout(() => {
+        setActiveStep("form");
+        setFormImage("");
+        setFormTitle("");
+        setErrors({});
+        setCreatedForm(null);
+        setIsMounted(false);
+        onClose();
+        onSuccess(form);
+        closeTimeoutRef.current = null;
+      }, DRAWER_TRANSITION_MS);
+    },
+    [onClose, onSuccess],
+  );
+
+  const handleContinue = () => {
+    const nextErrors: OnlineFormInformationErrors = {};
+
+    if (!isValidHttpUrl(formImage.trim())) {
+      nextErrors.formImage = "Enter a valid image link";
+    }
+    if (!formTitle.trim()) {
+      nextErrors.formTitle = "Enter a form title";
     }
 
-    setIsClosing(true);
-    closeTimeoutRef.current = window.setTimeout(() => {
-      setActiveStep("form");
-      setIsMounted(false);
-      onClose();
-      onSuccess();
-      closeTimeoutRef.current = null;
-    }, DRAWER_TRANSITION_MS);
-  }, [onClose, onSuccess]);
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) return;
+
+    if (isEdit && editForm) {
+      updateForm.mutate(
+        {
+          formId: editForm.id,
+          payload: {
+            form_image: formImage.trim(),
+            form_title: formTitle.trim(),
+          },
+        },
+        { onSuccess: (form) => completeCreation(form) },
+      );
+    } else {
+      createForm.mutate(
+        { form_image: formImage.trim(), form_title: formTitle.trim() },
+        {
+          onSuccess: (form) => {
+            setCreatedForm(form);
+            setActiveStep("security");
+          },
+        },
+      );
+    }
+  };
 
   useEffect(() => {
     if (!open) return;
-
     if (closeTimeoutRef.current) {
       window.clearTimeout(closeTimeoutRef.current);
       closeTimeoutRef.current = null;
     }
-
     setIsMounted(true);
     setIsClosing(false);
     setActiveStep("form");
+    setFormImage(isEdit ? (editForm?.form_image ?? "") : "");
+    setFormTitle(isEdit ? (editForm?.form_title ?? "") : "");
+    setErrors({});
+    setCreatedForm(null);
   }, [open]);
 
   useEffect(() => {
     return () => {
-      if (closeTimeoutRef.current) {
-        window.clearTimeout(closeTimeoutRef.current);
-      }
+      if (closeTimeoutRef.current) window.clearTimeout(closeTimeoutRef.current);
     };
   }, []);
 
   useEffect(() => {
     if (open) return;
-
     setIsClosing(true);
-    const timeout = window.setTimeout(() => {
-      setIsMounted(false);
-    }, DRAWER_TRANSITION_MS);
-
+    const timeout = window.setTimeout(
+      () => setIsMounted(false),
+      DRAWER_TRANSITION_MS,
+    );
     return () => window.clearTimeout(timeout);
   }, [open]);
 
   useEffect(() => {
     if (!isMounted) return;
-
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") closeDrawer();
     };
-
     window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [closeDrawer, isMounted]);
 
   if (!isMounted) return null;
@@ -167,7 +207,7 @@ export function OnlineFormDrawer({
               id="online-form-title"
               className="font-greed-narrow text-center text-[30px] leading-[0.95] font-medium tracking-[-0.02em] text-black uppercase md:text-[34px]"
             >
-              Create New Online Form
+              {isEdit ? "Edit Online Form" : "Create New Online Form"}
             </h2>
 
             <p className="font-dm-mono mt-6 w-full max-w-290 rounded-xl bg-[#EDEDED] px-4 py-3 text-center text-[11px] leading-[1.45] font-normal tracking-[0.12em] text-black/45 uppercase md:mt-14 md:rounded-2xl md:px-8 md:py-4 md:text-sm md:leading-[1.35] md:tracking-[0.18em]">
@@ -176,7 +216,7 @@ export function OnlineFormDrawer({
               to have a functioning contact form
             </p>
 
-            <OnlineFormProgress activeStep={activeStep} />
+            {!isEdit && <OnlineFormProgress activeStep={activeStep} />}
 
             <div
               className={`mt-8 w-full md:mt-28 ${
@@ -185,10 +225,27 @@ export function OnlineFormDrawer({
             >
               {activeStep === "form" ? (
                 <OnlineFormInformation
-                  onContinue={() => setActiveStep("security")}
+                  formImage={formImage}
+                  formTitle={formTitle}
+                  errors={errors}
+                  isLoading={isPending}
+                  isEdit={isEdit}
+                  apiError={
+                    isError
+                      ? `Failed to ${isEdit ? "update" : "create"} form. Please try again.`
+                      : undefined
+                  }
+                  onFormImageChange={setFormImage}
+                  onFormTitleChange={setFormTitle}
+                  onContinue={handleContinue}
                 />
               ) : (
-                <OnlineFormSecurity onSaveAndExit={completeCreation} />
+                <OnlineFormSecurity
+                  formId={createdForm?.id ?? ""}
+                  onSaveAndExit={() => {
+                    if (createdForm) completeCreation(createdForm);
+                  }}
+                />
               )}
             </div>
           </div>
@@ -222,29 +279,27 @@ function OnlineFormProgress({ activeStep }: { activeStep: OnlineFormStep }) {
   );
 }
 
-function OnlineFormInformation({ onContinue }: { onContinue: () => void }) {
-  const [formImage, setFormImage] = useState("");
-  const [formTitle, setFormTitle] = useState("");
-  const [errors, setErrors] = useState<OnlineFormInformationErrors>({});
-
-  const handleContinue = () => {
-    const nextErrors: OnlineFormInformationErrors = {};
-
-    if (!isValidHttpUrl(formImage.trim())) {
-      nextErrors.formImage = "Enter a valid image link";
-    }
-
-    if (!formTitle.trim()) {
-      nextErrors.formTitle = "Enter a form title";
-    }
-
-    setErrors(nextErrors);
-
-    if (Object.keys(nextErrors).length === 0) {
-      onContinue();
-    }
-  };
-
+function OnlineFormInformation({
+  formImage,
+  formTitle,
+  errors,
+  isLoading,
+  isEdit,
+  apiError,
+  onFormImageChange,
+  onFormTitleChange,
+  onContinue,
+}: {
+  formImage: string;
+  formTitle: string;
+  errors: OnlineFormInformationErrors;
+  isLoading: boolean;
+  isEdit?: boolean;
+  apiError?: string;
+  onFormImageChange: (value: string) => void;
+  onFormTitleChange: (value: string) => void;
+  onContinue: () => void;
+}) {
   return (
     <div className="space-y-5 md:space-y-7">
       <label className="block">
@@ -255,7 +310,7 @@ function OnlineFormInformation({ onContinue }: { onContinue: () => void }) {
         <input
           type="text"
           value={formImage}
-          onChange={(event) => setFormImage(event.target.value)}
+          onChange={(e) => onFormImageChange(e.target.value)}
           placeholder="https://website.com"
           aria-invalid={Boolean(errors.formImage)}
           className={`font-dm-mono h-11 w-full rounded-md border-0 bg-[#EDEDED] px-4 text-sm font-normal tracking-[0.08em] text-black uppercase outline-none placeholder:text-black/35 focus:ring-2 md:h-10 md:text-base ${
@@ -277,7 +332,7 @@ function OnlineFormInformation({ onContinue }: { onContinue: () => void }) {
         <input
           type="text"
           value={formTitle}
-          onChange={(event) => setFormTitle(event.target.value)}
+          onChange={(e) => onFormTitleChange(e.target.value)}
           placeholder="NG BALLERZ FORM"
           aria-invalid={Boolean(errors.formTitle)}
           className={`font-dm-mono h-11 w-full rounded-md border-0 bg-[#EDEDED] px-4 text-sm font-normal tracking-[0.08em] text-black uppercase outline-none placeholder:text-black/35 focus:ring-2 md:h-10 md:text-base ${
@@ -291,12 +346,25 @@ function OnlineFormInformation({ onContinue }: { onContinue: () => void }) {
         )}
       </label>
 
+      {apiError && (
+        <p className="font-dm-mono text-xs font-normal tracking-[0.08em] text-[#F25430] uppercase">
+          {apiError}
+        </p>
+      )}
+
       <button
         type="button"
-        onClick={handleContinue}
-        className="font-dm-mono mt-8 h-11 w-full cursor-pointer rounded-lg bg-[#006BE5] text-sm font-normal tracking-[0.08em] text-white uppercase shadow-[-3px_5px_0px_0px_#000000] transition-colors hover:bg-[#005fca] md:mt-14 md:h-10 md:text-base"
+        onClick={onContinue}
+        disabled={isLoading}
+        className="font-dm-mono mt-8 h-11 w-full cursor-pointer rounded-lg bg-[#006BE5] text-sm font-normal tracking-[0.08em] text-white uppercase shadow-[-3px_5px_0px_0px_#000000] transition-colors hover:bg-[#005fca] disabled:cursor-not-allowed disabled:opacity-60 md:mt-14 md:h-10 md:text-base"
       >
-        Continue
+        {isLoading
+          ? isEdit
+            ? "Saving..."
+            : "Creating..."
+          : isEdit
+            ? "Save Changes"
+            : "Continue"}
       </button>
     </div>
   );
@@ -317,7 +385,15 @@ function CopyButton({ value, label }: { value: string; label: string }) {
   );
 }
 
-function OnlineFormSecurity({ onSaveAndExit }: { onSaveAndExit: () => void }) {
+function OnlineFormSecurity({
+  formId,
+  onSaveAndExit,
+}: {
+  formId: string;
+  onSaveAndExit: () => void;
+}) {
+  const embedCode = getFormEmbedCode(formId);
+
   return (
     <div className="flex flex-col justify-center">
       <div className="grid gap-5 md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] md:gap-8">
@@ -326,26 +402,18 @@ function OnlineFormSecurity({ onSaveAndExit }: { onSaveAndExit: () => void }) {
             Copy this to your code base
           </h3>
           <div className="font-dm-mono min-h-28 overflow-auto rounded-lg bg-[#F4F1EC] p-4 text-[10px] leading-[1.45] font-normal tracking-[0.1em] whitespace-pre-wrap text-black/40 uppercase md:h-full md:p-6 md:text-xs md:leading-[1.35] md:tracking-[0.12em]">
-            {EMBED_CODE}
+            {embedCode}
           </div>
         </section>
 
         <section className="flex flex-col">
           <h3 className="font-dm-mono mb-3 max-w-125 text-sm leading-[1.25] font-bold tracking-[0.04em] text-black uppercase md:mb-5 md:text-lg md:leading-[1.18]">
-            Copy this(you can find this later in swiftagents.org/forms/keys)
+            Copy this (you can find this later in swiftagents.org/forms/keys)
           </h3>
           <div className="font-dm-mono flex min-h-28 flex-col justify-center rounded-lg bg-[#F4F1EC] p-4 text-[10px] leading-[1.8] font-normal tracking-[0.1em] text-black/40 uppercase md:h-full md:p-6 md:text-xs md:tracking-[0.12em]">
             <div className="flex min-w-0 items-center gap-3">
-              <span className="min-w-0 flex-1 truncate">
-                API Key: {API_KEY}
-              </span>
-              <CopyButton value={API_KEY} label="Copy API key" />
-            </div>
-            <div className="flex min-w-0 items-center gap-3">
-              <span className="min-w-0 flex-1 truncate">
-                Public Key: {PUBLIC_KEY}
-              </span>
-              <CopyButton value={PUBLIC_KEY} label="Copy public key" />
+              <span className="min-w-0 flex-1 truncate">Form ID: {formId}</span>
+              <CopyButton value={formId} label="Copy form ID" />
             </div>
           </div>
         </section>

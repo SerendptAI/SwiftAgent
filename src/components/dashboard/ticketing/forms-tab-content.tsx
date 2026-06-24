@@ -13,39 +13,20 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import { FormCreationSuccessModal } from "@/components/dashboard/ticketing/form-creation-success-modal";
+import { FormDeleteModal } from "@/components/dashboard/ticketing/form-delete-modal";
 import { OnlineFormDrawer } from "@/components/dashboard/ticketing/online-form-drawer";
 import { WebsiteFormDrawer } from "@/components/dashboard/ticketing/website-form-drawer";
+import {
+  useDeleteForm,
+  useForms,
+  useFormSubmissions,
+  useMarkSubmissionRead,
+} from "@/hooks/use-forms";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
-
-interface FormsEmptyStateProps {
-  lines: string[];
-  variant: "list" | "detail";
-}
+import type { Form, Submission } from "@/services/forms";
 
 type FormSubmissionStatus = "unread" | "read";
 type FormType = "website" | "online";
-
-interface FormSubmission {
-  name: string;
-  preview: string;
-  time: string;
-  avatar: string;
-  email: string;
-  interest: string;
-  message: string;
-  receivedAt: string;
-  status: FormSubmissionStatus;
-}
-
-interface MockForm {
-  name: string;
-  type: FormType;
-  pages?: {
-    path: string;
-    submissions: FormSubmission[];
-  }[];
-  submissions: FormSubmission[];
-}
 
 const FORM_TYPE_META: Record<
   FormType,
@@ -63,124 +44,75 @@ const FORM_TYPE_META: Record<
   },
 };
 
-const MOCK_FORMS: MockForm[] = [
-  {
-    name: "NG Ballerz Form",
-    type: "online",
-    submissions: [
-      {
-        name: "John Doe",
-        preview: "Good day, i lost my...",
-        time: "4:13pm",
-        avatar: "/images/chats/newimg1.svg",
-        email: "johndoe@zvask.com",
-        interest: "Partnership",
-        message: "I would love a partnership with y'all, thanks a lot",
-        receivedAt: "2:33pm 02/04/2026",
-        status: "unread",
-      },
-      {
-        name: "Jane Austin",
-        preview: "Good day, i lost my...",
-        time: "4:13pm",
-        avatar: "/images/chats/newimg4.svg",
-        email: "janeaustin@zvask.com",
-        interest: "Support",
-        message: "I need help with a form submission from the contact page",
-        receivedAt: "2:41pm 02/04/2026",
-        status: "unread",
-      },
-      {
-        name: "Jane Jackson",
-        preview: "Good day, i lost my...",
-        time: "4:13pm",
-        avatar: "/images/chats/newimg.svg",
-        email: "janejackson@zvask.com",
-        interest: "Volunteer",
-        message: "I would like to volunteer for upcoming community programs",
-        receivedAt: "3:02pm 02/04/2026",
-        status: "read",
-      },
-    ],
-  },
-  {
-    name: "https://serendptai.com",
-    type: "website",
-    submissions: [],
-    pages: [
-      {
-        path: "/contact-us",
-        submissions: [
-          {
-            name: "Ayo Martins",
-            preview: "Hello, I want pricing...",
-            time: "3:25pm",
-            avatar: "/images/chats/newimg2.svg",
-            email: "ayo@serendptai.com",
-            interest: "Pricing",
-            message: "Hello, I want pricing details for a website form setup",
-            receivedAt: "3:25pm 02/05/2026",
-            status: "unread",
-          },
-          {
-            name: "Kemi Rhodes",
-            preview: "I need help with setup...",
-            time: "2:55pm",
-            avatar: "/images/chats/newimg.svg",
-            email: "kemi@serendptai.com",
-            interest: "Setup",
-            message: "I need help with setup for our contact workflow",
-            receivedAt: "2:55pm 02/05/2026",
-            status: "read",
-          },
-        ],
-      },
-      {
-        path: "/submission",
-        submissions: [
-          {
-            name: "Mina Cole",
-            preview: "Can I book a demo...",
-            time: "3:12pm",
-            avatar: "/images/chats/newimg3.svg",
-            email: "mina@serendptai.com",
-            interest: "Demo",
-            message: "Can I book a demo for the web assistant this week?",
-            receivedAt: "3:12pm 02/05/2026",
-            status: "unread",
-          },
-          {
-            name: "Tobi Green",
-            preview: "The submitted form...",
-            time: "1:48pm",
-            avatar: "/images/chats/newimg3.svg",
-            email: "tobi@serendptai.com",
-            interest: "Submission",
-            message: "The submitted form needs a confirmation email",
-            receivedAt: "1:48pm 02/05/2026",
-            status: "read",
-          },
-        ],
-      },
-      {
-        path: "/volunteer",
-        submissions: [
-          {
-            name: "Lara Stone",
-            preview: "I would like to help...",
-            time: "12:10pm",
-            avatar: "/images/chats/newimg4.svg",
-            email: "lara@serendptai.com",
-            interest: "Volunteer",
-            message: "I would like to help with volunteer coordination",
-            receivedAt: "12:10pm 02/05/2026",
-            status: "unread",
-          },
-        ],
-      },
-    ],
-  },
-];
+function getFormDisplayName(form: Form): string {
+  return form.form_title ?? form.website_link ?? form.id;
+}
+
+function getSubmissionDisplayName(submission: Submission): string {
+  const data = submission.data;
+  for (const key of [
+    "name",
+    "Name",
+    "full_name",
+    "fullName",
+    "firstName",
+    "first_name",
+    "username",
+  ]) {
+    const val = data[key];
+    if (typeof val === "string" && val.trim()) return val.trim();
+  }
+  return submission.visitor_id
+    ? `Visitor ${submission.visitor_id.slice(0, 6)}`
+    : "Anonymous";
+}
+
+function getSubmissionPreview(submission: Submission): string {
+  for (const val of Object.values(submission.data)) {
+    if (typeof val === "string" && val.trim()) return val.trim();
+  }
+  return "—";
+}
+
+function formatSubmissionTime(isoString: string): string {
+  try {
+    return new Date(isoString).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } catch {
+    return "";
+  }
+}
+
+function formatSubmissionReceivedAt(isoString: string): string {
+  try {
+    const d = new Date(isoString);
+    const time = d.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    const date = d.toLocaleDateString([], {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+    return `${time} ${date}`;
+  } catch {
+    return isoString;
+  }
+}
+
+function SubmissionAvatar({ name }: { name: string }) {
+  const initial = name.charAt(0).toUpperCase() || "?";
+  return (
+    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#EDEDED] lg:h-[52px] lg:w-[52px]">
+      <span className="font-dm-mono text-base font-bold text-black/60 uppercase lg:text-lg">
+        {initial}
+      </span>
+    </div>
+  );
+}
 
 function PendingIcon({ className }: { className?: string }) {
   return (
@@ -317,22 +249,25 @@ function StatusControls({
   );
 }
 
-function EmptyStateTopControls({ variant }: { variant: "list" | "detail" }) {
-  if (variant === "list") {
-    return <InboxHeader />;
-  }
-
-  return (
-    <div className="absolute top-4 right-4 left-4 z-10 sm:top-7 sm:right-8 sm:left-8">
-      <StatusControls activeStatus="unread" onStatusChange={() => undefined} />
-    </div>
-  );
-}
-
-function FormsEmptyState({ lines, variant }: FormsEmptyStateProps) {
+function FormsEmptyState({
+  lines,
+  variant,
+}: {
+  lines: string[];
+  variant: "list" | "detail";
+}) {
   return (
     <div className="relative w-full overflow-hidden lg:h-full lg:rounded-3xl lg:bg-white lg:shadow-sm">
-      <EmptyStateTopControls variant={variant} />
+      {variant === "list" ? (
+        <InboxHeader />
+      ) : (
+        <div className="absolute top-4 right-4 left-4 z-10 sm:top-7 sm:right-8 sm:left-8">
+          <StatusControls
+            activeStatus="unread"
+            onStatusChange={() => undefined}
+          />
+        </div>
+      )}
       <EmptyStateCenter lines={lines} />
     </div>
   );
@@ -373,13 +308,19 @@ function CreateFormMenu({ onSelect }: { onSelect: (type: FormType) => void }) {
 }
 
 function FormsToolbar({
-  selectedFormIndex,
+  forms,
+  selectedFormId,
   onSelectForm,
+  onDelete,
+  onEdit,
   onCreateWebsiteForm,
   onCreateOnlineForm,
 }: {
-  selectedFormIndex: number;
-  onSelectForm: (index: number) => void;
+  forms: Form[];
+  selectedFormId: string | null;
+  onSelectForm: (id: string) => void;
+  onDelete: () => void;
+  onEdit: () => void;
   onCreateWebsiteForm: () => void;
   onCreateOnlineForm: () => void;
 }) {
@@ -387,19 +328,17 @@ function FormsToolbar({
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
   const formDropdownRef = useRef<HTMLDivElement>(null);
   const createDropdownRef = useRef<HTMLDivElement>(null);
-  const selectedForm = MOCK_FORMS[selectedFormIndex] ?? null;
+  const selectedForm = forms.find((f) => f.id === selectedFormId) ?? null;
   useScrollLock(isFormMenuOpen || isCreateMenuOpen);
 
   const handleCreateForm = (type: FormType) => {
     setIsCreateMenuOpen(false);
     setIsFormMenuOpen(false);
-
     if (type === "website") {
       onCreateWebsiteForm();
-      return;
+    } else {
+      onCreateOnlineForm();
     }
-
-    onCreateOnlineForm();
   };
 
   useEffect(() => {
@@ -417,7 +356,6 @@ function FormsToolbar({
         setIsCreateMenuOpen(false);
       }
     }
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -431,14 +369,18 @@ function FormsToolbar({
       >
         <button
           type="button"
-          className="font-dm-mono flex h-12 min-w-0 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#6433CC] px-3 text-xs font-normal tracking-[0.12em] text-white uppercase transition-colors hover:bg-[#572bb5] lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
+          onClick={onDelete}
+          disabled={!selectedForm}
+          className="font-dm-mono flex h-12 min-w-0 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#6433CC] px-3 text-xs font-normal tracking-[0.12em] text-white uppercase transition-colors hover:bg-[#572bb5] disabled:cursor-not-allowed disabled:opacity-50 lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
         >
           <Trash2 className="h-4 w-4 shrink-0 lg:h-5 lg:w-5" />
           <span className="truncate">Delete</span>
         </button>
         <button
           type="button"
-          className="font-dm-mono flex h-12 min-w-0 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#F25430] px-3 text-xs font-normal tracking-[0.12em] text-white uppercase transition-colors hover:bg-[#d94526] lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
+          onClick={onEdit}
+          disabled={!selectedForm}
+          className="font-dm-mono flex h-12 min-w-0 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#F25430] px-3 text-xs font-normal tracking-[0.12em] text-white uppercase transition-colors hover:bg-[#d94526] disabled:cursor-not-allowed disabled:opacity-50 lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
         >
           <Pencil className="h-4 w-4 shrink-0 lg:h-5 lg:w-5" />
           <span className="truncate">Edit</span>
@@ -498,7 +440,9 @@ function FormsToolbar({
               />
             )}
             <span className="font-dm-mono min-w-0 flex-1 truncate text-xs font-normal tracking-[0.1em] text-black uppercase lg:text-base lg:tracking-[0.18em]">
-              {selectedForm?.name ?? "Create a new form"}
+              {selectedForm
+                ? getFormDisplayName(selectedForm)
+                : "Create a new form"}
             </span>
             <ChevronDown
               className={`h-3.5 w-3.5 shrink-0 text-black transition-transform duration-200 lg:h-4 lg:w-4 ${isFormMenuOpen ? "rotate-180" : ""}`}
@@ -508,17 +452,17 @@ function FormsToolbar({
 
         {isFormMenuOpen && (
           <div className="animate-in fade-in slide-in-from-top-2 absolute right-0 left-0 z-[70] mt-3 duration-200 sm:right-4 sm:left-auto sm:w-[calc(100%-7.5rem)] sm:min-w-[300px]">
-            {MOCK_FORMS.length === 0 ? (
+            {forms.length === 0 ? (
               <CreateFormMenu onSelect={handleCreateForm} />
             ) : (
               <div className="font-dm-mono rounded-xl bg-white px-2 py-1.5 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] lg:px-3 lg:py-2">
-                {MOCK_FORMS.map((form, index) => (
+                {forms.map((form) => (
                   <button
-                    key={form.name}
+                    key={form.id}
                     type="button"
                     className="flex h-10 w-full cursor-pointer items-center gap-2 px-2 text-left transition-colors hover:bg-gray-50 lg:h-12 lg:gap-3 lg:px-3"
                     onClick={() => {
-                      onSelectForm(index);
+                      onSelectForm(form.id);
                       setIsFormMenuOpen(false);
                     }}
                   >
@@ -530,7 +474,7 @@ function FormsToolbar({
                       className="h-[18px] w-[18px] shrink-0 lg:h-[23px] lg:w-[23px]"
                     />
                     <span className="min-w-0 flex-1 truncate text-xs font-normal tracking-[0.1em] text-black uppercase lg:text-base lg:tracking-[0.18em]">
-                      {form.name}
+                      {getFormDisplayName(form)}
                     </span>
                   </button>
                 ))}
@@ -543,51 +487,24 @@ function FormsToolbar({
   );
 }
 
-function FormPageTabs({
-  pages,
-  activePageIndex,
-  onSelectPage,
-}: {
-  pages: NonNullable<MockForm["pages"]>;
-  activePageIndex: number;
-  onSelectPage: (index: number) => void;
-}) {
-  return (
-    <div className="scrollbar-none flex h-11 min-w-0 items-center gap-3 overflow-x-auto">
-      {pages.map((page, index) => (
-        <button
-          key={page.path}
-          type="button"
-          onClick={() => onSelectPage(index)}
-          className={`font-dm-mono h-11 min-w-[132px] cursor-pointer rounded-lg px-4 text-sm font-normal tracking-[0.12em] uppercase shadow-sm sm:text-base ${
-            index === activePageIndex
-              ? "bg-[#006BE5] text-white"
-              : "border border-[#EDEDED] bg-white text-black"
-          }`}
-        >
-          <span className="block truncate">{page.path}</span>
-        </button>
-      ))}
-    </div>
-  );
-}
-
 function SubmissionNameDropdown({
   allSubmissions,
-  selectedIndex,
+  selectedId,
   onSelect,
   formType,
 }: {
-  allSubmissions: FormSubmission[];
-  selectedIndex: number | null;
-  onSelect: (index: number) => void;
+  allSubmissions: Submission[];
+  selectedId: string | null;
+  onSelect: (id: string) => void;
   formType: FormType;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   useScrollLock(isOpen);
   const selected =
-    selectedIndex === null ? null : allSubmissions[selectedIndex] || null;
+    selectedId === null
+      ? null
+      : (allSubmissions.find((s) => s.id === selectedId) ?? null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -598,7 +515,6 @@ function SubmissionNameDropdown({
         setIsOpen(false);
       }
     }
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -621,7 +537,7 @@ function SubmissionNameDropdown({
           className="h-[23px] w-[23px] shrink-0"
         />
         <span className="font-dm-mono min-w-0 flex-1 truncate text-base font-normal tracking-[0.12em] text-black uppercase">
-          {selected.name}
+          {getSubmissionDisplayName(selected)}
         </span>
         <ChevronDown
           className={`h-4 w-4 shrink-0 text-black transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
@@ -630,17 +546,19 @@ function SubmissionNameDropdown({
 
       {isOpen && (
         <div className="animate-in fade-in slide-in-from-top-1 absolute left-0 z-30 mt-2 w-full rounded-xl border border-[#EDEDED] bg-white p-2 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] duration-200 sm:w-56">
-          {allSubmissions.map((submission, index) => (
+          {allSubmissions.map((submission) => (
             <button
-              key={submission.name}
+              key={submission.id}
               type="button"
               className="font-dm-mono flex h-10 w-full cursor-pointer items-center rounded-lg px-3 text-left text-sm font-normal tracking-[0.12em] text-black uppercase transition-colors hover:bg-gray-50"
               onClick={() => {
-                onSelect(index);
+                onSelect(submission.id);
                 setIsOpen(false);
               }}
             >
-              <span className="truncate">{submission.name}</span>
+              <span className="truncate">
+                {getSubmissionDisplayName(submission)}
+              </span>
             </button>
           ))}
         </div>
@@ -651,19 +569,21 @@ function SubmissionNameDropdown({
 
 function FormSubmissionDetail({
   allSubmissions,
-  selectedIndex,
+  selectedId,
   onSelect,
   formType,
   hideTitle = false,
 }: {
-  allSubmissions: FormSubmission[];
-  selectedIndex: number | null;
-  onSelect: (index: number) => void;
+  allSubmissions: Submission[];
+  selectedId: string | null;
+  onSelect: (id: string) => void;
   formType: FormType;
   hideTitle?: boolean;
 }) {
   const selected =
-    selectedIndex === null ? null : allSubmissions[selectedIndex] || null;
+    selectedId === null
+      ? null
+      : (allSubmissions.find((s) => s.id === selectedId) ?? null);
 
   if (!selected) {
     return (
@@ -685,29 +605,32 @@ function FormSubmissionDetail({
       <div className={hideTitle ? "" : "mt-5 sm:mt-6"}>
         <SubmissionNameDropdown
           allSubmissions={allSubmissions}
-          selectedIndex={selectedIndex}
+          selectedId={selectedId}
           onSelect={onSelect}
           formType={formType}
         />
       </div>
 
       <p className="font-dm-mono mt-6 text-xs font-normal tracking-[0.14em] text-black/60 uppercase sm:mt-8 sm:text-sm sm:tracking-[0.18em]">
-        Recieved at {selected.receivedAt}
+        Received at {formatSubmissionReceivedAt(selected.submitted_at)}
       </p>
 
       <div className="font-dm-mono mt-7 space-y-4 text-base leading-[1.45] font-normal tracking-[-0.02em] text-black uppercase sm:mt-10 sm:space-y-7 sm:text-2xl sm:leading-[1.32]">
-        <p>
-          <span className="font-bold">Name:</span> {selected.name}
-        </p>
-        <p>
-          <span className="font-bold">Email:</span> {selected.email}
-        </p>
-        <p>
-          <span className="font-bold">Interest:</span> {selected.interest}
-        </p>
-        <p className="max-w-[620px]">
-          <span className="font-bold">Message:</span> {selected.message}
-        </p>
+        {Object.entries(selected.data).map(([key, value]) => (
+          <p key={key}>
+            <span className="font-bold">
+              {key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}:
+            </span>{" "}
+            {typeof value === "string"
+              ? value
+              : typeof value === "number" || typeof value === "boolean"
+                ? String(value)
+                : JSON.stringify(value)}
+          </p>
+        ))}
+        {Object.keys(selected.data).length === 0 && (
+          <p className="text-black/40">No submission data</p>
+        )}
       </div>
     </div>
   );
@@ -715,23 +638,20 @@ function FormSubmissionDetail({
 
 function FormSubmissionList({
   submissions,
-  selectedIndex,
+  selectedId,
   onSelect,
   activeStatus,
   onStatusChange,
 }: {
-  submissions: FormSubmission[];
-  selectedIndex: number | null;
-  onSelect: (index: number) => void;
+  submissions: Submission[];
+  selectedId: string | null;
+  onSelect: (id: string) => void;
   activeStatus: FormSubmissionStatus;
   onStatusChange: (status: FormSubmissionStatus) => void;
 }) {
-  const visibleSubmissions = submissions
-    .map((submission, index) => ({
-      ...submission,
-      index,
-    }))
-    .filter((submission) => submission.status === activeStatus);
+  const visibleSubmissions = submissions.filter(
+    (s) => s.is_read === (activeStatus === "read"),
+  );
 
   return (
     <div className="relative w-full overflow-hidden lg:h-full lg:rounded-3xl lg:bg-white lg:shadow-sm">
@@ -745,35 +665,33 @@ function FormSubmissionList({
       <div className="scrollbar-none overflow-y-auto pt-2 lg:h-full lg:px-9 lg:pt-28">
         <div className="space-y-4">
           {visibleSubmissions.map((submission) => {
-            const isSelected = submission.index === selectedIndex;
+            const isSelected = submission.id === selectedId;
+            const displayName = getSubmissionDisplayName(submission);
+            const preview = getSubmissionPreview(submission);
+            const time = formatSubmissionTime(submission.submitted_at);
+
             return (
               <button
-                key={submission.name}
+                key={submission.id}
                 type="button"
-                onClick={() => onSelect(submission.index)}
+                onClick={() => onSelect(submission.id)}
                 className={`flex w-full cursor-pointer items-center gap-3 rounded-[19px] p-0 text-left transition-colors lg:h-[82px] lg:gap-4 lg:px-5 ${
                   isSelected
                     ? "text-[#006BE5] lg:bg-[#006BE5] lg:text-white"
                     : "text-black lg:bg-[#FBFBFB] lg:hover:bg-[#F6F6F6]"
                 }`}
               >
-                <Image
-                  src={submission.avatar}
-                  alt=""
-                  width={52}
-                  height={52}
-                  className="h-11 w-11 shrink-0 rounded-full lg:h-[52px] lg:w-[52px]"
-                />
+                <SubmissionAvatar name={displayName} />
                 <div className="min-w-0 flex-1">
                   <div className="font-dm-mono truncate text-base font-normal tracking-[0.08em] uppercase">
-                    {submission.name}
+                    {displayName}
                   </div>
                   <div
                     className={`font-stolzl mt-1 truncate text-sm ${
                       isSelected ? "text-white/80" : "text-[#9B9B9B]"
                     }`}
                   >
-                    {submission.preview}
+                    {preview}
                   </div>
                 </div>
                 <span
@@ -781,11 +699,16 @@ function FormSubmissionList({
                     isSelected ? "text-white" : "text-[#6433CC]"
                   }`}
                 >
-                  {submission.time}
+                  {time}
                 </span>
               </button>
             );
           })}
+          {visibleSubmissions.length === 0 && (
+            <p className="font-dm-mono py-8 text-center text-sm tracking-widest text-black/40 uppercase">
+              No {activeStatus} submissions
+            </p>
+          )}
         </div>
       </div>
     </div>
@@ -793,70 +716,125 @@ function FormSubmissionList({
 }
 
 export function FormsTabContent() {
-  const [selectedSubmissionIndex, setSelectedSubmissionIndex] = useState<
-    number | null
+  const [selectedSubmissionId, setSelectedSubmissionId] = useState<
+    string | null
   >(null);
   const [isMobileDetail, setIsMobileDetail] = useState(false);
-  const [selectedFormIndex, setSelectedFormIndex] = useState(0);
-  const [selectedPageIndex, setSelectedPageIndex] = useState(0);
+  const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
   const [activeStatus, setActiveStatus] =
     useState<FormSubmissionStatus>("unread");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [isWebsiteFormDrawerOpen, setIsWebsiteFormDrawerOpen] = useState(false);
   const [isOnlineFormDrawerOpen, setIsOnlineFormDrawerOpen] = useState(false);
   const [successForm, setSuccessForm] = useState<{
     type: FormType;
     name: string;
   } | null>(null);
-  const selectedForm = MOCK_FORMS[selectedFormIndex] ?? null;
-  const selectedFormType = selectedForm?.type ?? "website";
-  const selectedFormPages = selectedForm?.pages ?? [];
-  const isWebsiteForm = selectedFormType === "website";
-  const selectedFormSubmissions =
-    isWebsiteForm && selectedFormPages.length > 0
-      ? (selectedFormPages[selectedPageIndex]?.submissions ?? [])
-      : (selectedForm?.submissions ?? []);
+
+  const { data: forms = [] } = useForms();
+  const deleteForm = useDeleteForm();
+  const { mutate: markSubmissionRead } = useMarkSubmissionRead();
+
+  useEffect(() => {
+    if (forms.length > 0 && !selectedFormId) {
+      setSelectedFormId(forms[0].id);
+    }
+  }, [forms, selectedFormId]);
+
+  const selectedForm = forms.find((f) => f.id === selectedFormId) ?? null;
+  const selectedFormType: FormType = selectedForm?.type ?? "website";
+
+  const { data: submissions = [] } = useFormSubmissions(
+    selectedForm?.id ?? null,
+  );
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 1023px)");
     const updateMatch = () => setIsMobileDetail(mediaQuery.matches);
-
     updateMatch();
     mediaQuery.addEventListener("change", updateMatch);
     return () => mediaQuery.removeEventListener("change", updateMatch);
   }, []);
 
-  useScrollLock(selectedSubmissionIndex !== null && isMobileDetail);
+  useScrollLock(selectedSubmissionId !== null && isMobileDetail);
 
-  const handleSelectForm = (index: number) => {
-    setSelectedFormIndex(index);
-    setSelectedPageIndex(0);
-    setSelectedSubmissionIndex(null);
-  };
+  useEffect(() => {
+    if (!selectedSubmissionId) return;
+    const submission = submissions.find((s) => s.id === selectedSubmissionId);
+    if (submission && !submission.is_read) {
+      markSubmissionRead(selectedSubmissionId);
+    }
+  }, [selectedSubmissionId, submissions, markSubmissionRead]);
 
-  const handleSelectPage = (index: number) => {
-    setSelectedPageIndex(index);
-    setSelectedSubmissionIndex(null);
+  const handleSelectForm = (id: string) => {
+    setSelectedFormId(id);
+    setSelectedSubmissionId(null);
   };
 
   const handleStatusChange = (status: FormSubmissionStatus) => {
     setActiveStatus(status);
-    setSelectedSubmissionIndex(null);
+    setSelectedSubmissionId(null);
+  };
+
+  const handleEdit = () => {
+    if (!selectedForm) return;
+    setIsEditMode(true);
+    if (selectedForm.type === "website") {
+      setIsWebsiteFormDrawerOpen(true);
+    } else {
+      setIsOnlineFormDrawerOpen(true);
+    }
+  };
+
+  const handleDelete = () => {
+    if (!selectedForm) return;
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!selectedFormId) return;
+    deleteForm.mutate(selectedFormId, {
+      onSuccess: () => {
+        setIsDeleteModalOpen(false);
+        setSelectedFormId(null);
+        setSelectedSubmissionId(null);
+      },
+    });
+  };
+
+  const handleWebsiteFormSuccess = (form: Form) => {
+    if (isEditMode) {
+      setIsEditMode(false);
+    } else {
+      setSelectedFormId(form.id);
+      setSuccessForm({ type: form.type, name: form.website_link ?? form.id });
+    }
+  };
+
+  const handleOnlineFormSuccess = (form: Form) => {
+    if (isEditMode) {
+      setIsEditMode(false);
+    } else {
+      setSelectedFormId(form.id);
+      setSuccessForm({ type: form.type, name: form.form_title ?? form.id });
+    }
   };
 
   const inboxDetail = (
     <FormSubmissionDetail
-      allSubmissions={selectedFormSubmissions}
-      selectedIndex={selectedSubmissionIndex}
-      onSelect={setSelectedSubmissionIndex}
+      allSubmissions={submissions}
+      selectedId={selectedSubmissionId}
+      onSelect={setSelectedSubmissionId}
       formType={selectedFormType}
     />
   );
 
   const mobileInboxDetail = (
     <FormSubmissionDetail
-      allSubmissions={selectedFormSubmissions}
-      selectedIndex={selectedSubmissionIndex}
-      onSelect={setSelectedSubmissionIndex}
+      allSubmissions={submissions}
+      selectedId={selectedSubmissionId}
+      onSelect={setSelectedSubmissionId}
       formType={selectedFormType}
       hideTitle
     />
@@ -865,8 +843,11 @@ export function FormsTabContent() {
   return (
     <div className="flex min-w-0 flex-1 flex-col gap-4 lg:gap-8">
       <FormsToolbar
-        selectedFormIndex={selectedFormIndex}
+        forms={forms}
+        selectedFormId={selectedFormId}
         onSelectForm={handleSelectForm}
+        onDelete={handleDelete}
+        onEdit={handleEdit}
         onCreateWebsiteForm={() => setIsWebsiteFormDrawerOpen(true)}
         onCreateOnlineForm={() => setIsOnlineFormDrawerOpen(true)}
       />
@@ -875,25 +856,19 @@ export function FormsTabContent() {
           {inboxDetail}
         </div>
         <div className="flex min-w-0 flex-col gap-5 lg:col-span-5 lg:gap-8">
-          {isWebsiteForm && selectedFormPages.length > 0 && (
-            <FormPageTabs
-              pages={selectedFormPages}
-              activePageIndex={selectedPageIndex}
-              onSelectPage={handleSelectPage}
-            />
-          )}
           <div className="min-h-0 flex-1">
             <FormSubmissionList
-              submissions={selectedFormSubmissions}
-              selectedIndex={selectedSubmissionIndex}
-              onSelect={setSelectedSubmissionIndex}
+              submissions={submissions}
+              selectedId={selectedSubmissionId}
+              onSelect={setSelectedSubmissionId}
               activeStatus={activeStatus}
               onStatusChange={handleStatusChange}
             />
           </div>
         </div>
       </div>
-      {selectedSubmissionIndex !== null && isMobileDetail && (
+
+      {selectedSubmissionId !== null && isMobileDetail && (
         <div className="fixed inset-0 z-10000 bg-black/45 lg:hidden">
           <section className="animate-in slide-in-from-right ml-auto flex h-full w-full max-w-[520px] flex-col bg-white shadow-[-20px_0_70px_rgba(0,0,0,0.18)] duration-300">
             <div className="flex h-14 shrink-0 items-center justify-between border-b border-gray-100 px-4">
@@ -903,7 +878,7 @@ export function FormsTabContent() {
               <button
                 type="button"
                 aria-label="Close inbox"
-                onClick={() => setSelectedSubmissionIndex(null)}
+                onClick={() => setSelectedSubmissionId(null)}
                 className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-[#F6F6F6] text-gray-700 transition-colors hover:bg-gray-100"
               >
                 <X className="h-4 w-4" />
@@ -915,31 +890,39 @@ export function FormsTabContent() {
           </section>
         </div>
       )}
+
       <WebsiteFormDrawer
         open={isWebsiteFormDrawerOpen}
-        onClose={() => setIsWebsiteFormDrawerOpen(false)}
-        onSuccess={() =>
-          setSuccessForm({
-            type: "website",
-            name: "https://serendptai.com",
-          })
-        }
+        onClose={() => {
+          setIsWebsiteFormDrawerOpen(false);
+          setIsEditMode(false);
+        }}
+        onSuccess={handleWebsiteFormSuccess}
+        mode={isEditMode ? "edit" : "create"}
+        editForm={isEditMode ? (selectedForm ?? undefined) : undefined}
       />
       <OnlineFormDrawer
         open={isOnlineFormDrawerOpen}
-        onClose={() => setIsOnlineFormDrawerOpen(false)}
-        onSuccess={() =>
-          setSuccessForm({
-            type: "online",
-            name: "NG Ballerz Form",
-          })
-        }
+        onClose={() => {
+          setIsOnlineFormDrawerOpen(false);
+          setIsEditMode(false);
+        }}
+        onSuccess={handleOnlineFormSuccess}
+        mode={isEditMode ? "edit" : "create"}
+        editForm={isEditMode ? (selectedForm ?? undefined) : undefined}
       />
       <FormCreationSuccessModal
         open={successForm !== null}
         formIcon={FORM_TYPE_META[successForm?.type ?? "website"].icon}
         formName={successForm?.name ?? ""}
         onClose={() => setSuccessForm(null)}
+      />
+      <FormDeleteModal
+        open={isDeleteModalOpen}
+        form={selectedForm}
+        isDeleting={deleteForm.isPending}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
       />
     </div>
   );

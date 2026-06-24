@@ -2,71 +2,14 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
+import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 
 import { Navbar } from "./navbar";
+
 gsap.registerPlugin(ScrollTrigger);
-
-const HEADLINE_BADGES = [
-  // Row 1
-  [
-    {
-      words: ["LIVE CHAT", "LIVE CHAT", "LIVE CHAT"],
-      bg: "#6433CC",
-      text: "#7F9FFF",
-    },
-    { label: "+", plain: true },
-    {
-      words: ["TICKETING", "TICKETING", "TICKETING"],
-      bg: "#F25430",
-      text: "#F6F4EF",
-    },
-  ],
-  // Row 2
-  [
-    {
-      words: ["FORMS", "FORMS", "FORMS"],
-      bg: "#F2B035",
-      text: "black",
-    },
-    { label: "+", plain: true },
-    {
-      words: ["EMAILS", "EMAILS", "EMAILS"],
-      bg: "#7F9FFF",
-      text: "#FFFFFF",
-    },
-  ],
-];
-
-// Mobile layout: stacked vertically with different arrangement
-const MOBILE_BADGES = [
-  {
-    words: ["LIVE CHAT", "LIVE CHAT", "LIVE CHAT"],
-    bg: "#6433CC",
-    text: "#7F9FFF",
-    fullWidth: true,
-  },
-  {
-    words: ["TICKETING", "TICKETING", "TICKETING"],
-    bg: "#F25430",
-    text: "#F6F4EF",
-    fullWidth: true,
-  },
-  {
-    words: ["FORMS", "FORMS", "FORMS"],
-    bg: "#F2B035",
-    text: "black",
-    fullWidth: false,
-  },
-  {
-    words: ["EMAILS", "EMAILS", "EMAILS"],
-    bg: "#7F9FFF",
-    text: "#FFFFFF",
-    fullWidth: false,
-  },
-];
 
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -74,19 +17,10 @@ export function HeroSection() {
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLElement>(null);
-  const illustrationRef = useRef<HTMLDivElement>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % 3);
-    }, 2600);
-    return () => clearInterval(interval);
-  }, []);
+  const imageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Nav entrance
       gsap.from(navRef.current, {
         y: -40,
         opacity: 0,
@@ -96,18 +30,31 @@ export function HeroSection() {
         clearProps: "all",
       });
 
-      // Badge stagger entrance
-      if (headlineRef.current) {
-        gsap.from(headlineRef.current.querySelectorAll(".hero-badge"), {
-          y: 60,
+      if (imageRef.current) {
+        gsap.from(imageRef.current, {
+          y: 80,
           opacity: 0,
-          scale: 0.8,
-          stagger: 0.1,
-          duration: 0.8,
-          ease: "back.out(1.5)",
+          duration: 1,
+          ease: "power3.out",
           delay: 0.4,
-          clearProps: "transform,opacity",
+          clearProps: "all",
         });
+      }
+
+      if (headlineRef.current) {
+        gsap.from(
+          headlineRef.current.querySelectorAll(".hero-badge, .hero-text"),
+          {
+            y: 50,
+            opacity: 0,
+            scale: 0.9,
+            stagger: 0.08,
+            duration: 0.7,
+            ease: "back.out(1.5)",
+            delay: 0.5,
+            clearProps: "transform,opacity",
+          },
+        );
       }
 
       gsap.from(subtitleRef.current, {
@@ -115,7 +62,7 @@ export function HeroSection() {
         opacity: 0,
         duration: 0.9,
         ease: "power3.out",
-        delay: 1.2,
+        delay: 1.1,
         clearProps: "all",
       });
 
@@ -126,19 +73,7 @@ export function HeroSection() {
           stagger: 0.15,
           duration: 0.7,
           ease: "power3.out",
-          delay: 1.5,
-          clearProps: "all",
-        });
-      }
-
-      // Illustration entrance
-      if (illustrationRef.current) {
-        gsap.from(illustrationRef.current, {
-          x: 80,
-          opacity: 0,
-          duration: 1,
-          ease: "power3.out",
-          delay: 0.6,
+          delay: 1.4,
           clearProps: "all",
         });
       }
@@ -148,192 +83,70 @@ export function HeroSection() {
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative min-h-screen overflow-hidden bg-white"
-    >
+    <section ref={sectionRef} className="relative overflow-hidden bg-white">
       {/* Navigation */}
       <Navbar ref={navRef} />
 
-      {/* Hero Content — Two Column Layout */}
-      <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-col items-center px-6 pt-35 pb-12 md:flex-row md:items-center md:justify-between md:px-12 md:pt-42 md:pb-16 lg:px-16 lg:pt-56">
-        {/* Left Column */}
-        <div className="flex w-full flex-col md:w-[55%] lg:w-[50%]">
-          {/* Pill Badge Headline — Desktop */}
+      {/* Hero Content */}
+      <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-col-reverse pt-26 md:flex-row md:items-start md:gap-0 md:pt-32 lg:pt-48">
+        {/* Left Column — hero image, no border radius */}
+        <div
+          ref={imageRef}
+          className="aspect-508/664 w-full max-w-127 overflow-hidden"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/Agents/AGENT_047.png"
+            alt="SwiftAgent chat interface on mobile"
+            className="h-full w-full object-contain"
+          />
+        </div>
+
+        {/* Right Column — Headline + subtitle + CTAs */}
+        <div className="flex w-full flex-col justify-center px-6 py-12 md:w-[58%] md:px-10 md:py-0 lg:w-[55%] lg:px-16">
           <div
             ref={headlineRef}
-            className="hidden flex-col gap-5 md:flex md:gap-6"
+            className="font-greed-narrow flex flex-col gap-4 text-3xl leading-1.5 font-medium tracking-[-2%] uppercase md:gap-6 md:text-4xl lg:text-[65px]"
           >
-            {HEADLINE_BADGES.map((row, rowIdx) => (
-              <div
-                key={rowIdx}
-                className="flex flex-wrap items-center gap-3 md:gap-4"
+            {/* Row 1: CUSTOMER SUPPORT */}
+            <div className="flex flex-wrap items-center gap-4 md:gap-6">
+              <span
+                className="hero-badge inline-flex items-center rounded-3xl px-3 py-5 text-white md:rounded-4xl md:px-4 md:py-10"
+                style={{ backgroundColor: "#03A84E" }}
               >
-                {row.map((badge, i) => {
-                  if ("plain" in badge && badge.plain) {
-                    return (
-                      <span
-                        key={i}
-                        className="font-dm-mono text-2xl font-light text-gray-400 md:text-3xl lg:text-4xl"
-                      >
-                        {badge.label}
-                      </span>
-                    );
-                  }
-
-                  const b = badge as {
-                    words: string[];
-                    bg: string;
-                    text: string;
-                  };
-
-                  return (
-                    <span
-                      key={i}
-                      className="hero-badge font-greed-narrow relative inline-flex items-center justify-center overflow-hidden rounded-2xl px-6 py-3 text-3xl leading-none tracking-tight uppercase transition-all duration-1000 ease-in-out select-none md:rounded-4xl md:px-8 md:py-4 md:text-4xl lg:text-5xl"
-                      style={{
-                        backgroundColor: b.bg,
-                        color: b.text,
-                      }}
-                    >
-                      {b.words.map((word, wIdx) => {
-                        const isActive = wIdx === currentIndex;
-                        return (
-                          <span
-                            key={wIdx}
-                            className="absolute inset-x-0 mx-auto text-center whitespace-nowrap transition-opacity duration-1000 ease-in-out"
-                            style={{
-                              opacity: isActive ? 1 : 0,
-                              visibility: isActive ? "visible" : "hidden",
-                            }}
-                          >
-                            {word}
-                          </span>
-                        );
-                      })}
-                      <span className="invisible whitespace-nowrap">
-                        {b.words.reduce((longest, current) =>
-                          current.length > longest.length ? current : longest,
-                        )}
-                      </span>
-                    </span>
-                  );
-                })}
-              </div>
-            ))}
-          </div>
-
-          {/* Pill Badge Headline — Mobile */}
-          <div className="flex flex-col items-start gap-3 md:hidden">
-            {/* LIVE CHAT — full width */}
-            <span
-              className="hero-badge font-greed-narrow relative flex w-[75%] items-center justify-center overflow-hidden rounded-2xl px-6 py-3 text-3xl leading-none tracking-tight uppercase select-none"
-              style={{ backgroundColor: "#6433CC", color: "#7F9FFF" }}
-            >
-              {MOBILE_BADGES[0].words.map((word, wIdx) => {
-                const isActive = wIdx === currentIndex;
-                return (
-                  <span
-                    key={wIdx}
-                    className="absolute inset-x-0 mx-auto text-center whitespace-nowrap transition-opacity duration-1000 ease-in-out"
-                    style={{
-                      opacity: isActive ? 1 : 0,
-                      visibility: isActive ? "visible" : "hidden",
-                    }}
-                  >
-                    {word}
-                  </span>
-                );
-              })}
-              <span className="invisible whitespace-nowrap">LIVE CHAT</span>
-            </span>
-
-            {/* + */}
-            <span className="font-dm-mono w-full text-center text-2xl font-light text-gray-400">
-              +
-            </span>
-
-            {/* TICKETING — full width */}
-            <span
-              className="hero-badge font-greed-narrow relative flex w-full items-center justify-center overflow-hidden rounded-2xl px-6 py-3 text-4xl leading-none tracking-tight uppercase select-none"
-              style={{ backgroundColor: "#F25430", color: "#F6F4EF" }}
-            >
-              {MOBILE_BADGES[1].words.map((word, wIdx) => {
-                const isActive = wIdx === currentIndex;
-                return (
-                  <span
-                    key={wIdx}
-                    className="absolute inset-x-0 mx-auto text-center whitespace-nowrap transition-opacity duration-1000 ease-in-out"
-                    style={{
-                      opacity: isActive ? 1 : 0,
-                      visibility: isActive ? "visible" : "hidden",
-                    }}
-                  >
-                    {word}
-                  </span>
-                );
-              })}
-              <span className="invisible whitespace-nowrap">TICKETING</span>
-            </span>
-
-            {/* + + row */}
-            <div className="flex w-full items-center justify-around px-2">
-              <span className="font-dm-mono text-2xl font-light text-gray-400">
-                +
+                CUSTOMER
               </span>
-              <span className="font-dm-mono text-2xl font-light text-gray-400">
-                +
+              <span
+                className="hero-badge font-greed-narrow inline-flex items-center rounded-3xl px-3 py-5 text-white md:rounded-4xl md:px-4 md:py-10"
+                style={{ backgroundColor: "#F25430" }}
+              >
+                SUPPORT
               </span>
             </div>
 
-            {/* FORMS + EMAILS row */}
-            <div className="flex w-full items-center gap-2">
-              <span
-                className="hero-badge font-greed-narrow relative inline-flex flex-1 items-center justify-center overflow-hidden rounded-2xl px-6 py-3 text-3xl leading-none tracking-tight uppercase select-none"
-                style={{ backgroundColor: "#F2B035", color: "black" }}
-              >
-                {MOBILE_BADGES[2].words.map((word, wIdx) => {
-                  const isActive = wIdx === currentIndex;
-                  return (
-                    <span
-                      key={wIdx}
-                      className="absolute inset-x-0 mx-auto text-center whitespace-nowrap transition-opacity duration-1000 ease-in-out"
-                      style={{
-                        opacity: isActive ? 1 : 0,
-                        visibility: isActive ? "visible" : "hidden",
-                      }}
-                    >
-                      {word}
-                    </span>
-                  );
-                })}
-                <span className="invisible whitespace-nowrap">FORMS</span>
+            {/* Row 2: THAT DOESN'T SCALE */}
+            <div className="flex flex-wrap items-center gap-4 md:gap-6">
+              <span className="hero-text font-greed-narrow text-black">
+                THAT DOESN&apos;T
               </span>
-
-              <span className="font-dm-mono text-2xl font-light text-gray-400">
-                +
-              </span>
-
               <span
-                className="hero-badge font-greed-narrow relative inline-flex flex-1 items-center justify-center overflow-hidden rounded-2xl px-6 py-3 text-3xl leading-none tracking-tight uppercase select-none"
-                style={{ backgroundColor: "#7F9FFF", color: "#FFFFFF" }}
+                className="hero-badge font-greed-narrow inline-flex items-center rounded-3xl px-3 py-5 text-black md:rounded-4xl md:px-4 md:py-10"
+                style={{ backgroundColor: "#F2B035" }}
               >
-                {MOBILE_BADGES[3].words.map((word, wIdx) => {
-                  const isActive = wIdx === currentIndex;
-                  return (
-                    <span
-                      key={wIdx}
-                      className="absolute inset-x-0 mx-auto text-center whitespace-nowrap transition-opacity duration-1000 ease-in-out"
-                      style={{
-                        opacity: isActive ? 1 : 0,
-                        visibility: isActive ? "visible" : "hidden",
-                      }}
-                    >
-                      {word}
-                    </span>
-                  );
-                })}
-                <span className="invisible whitespace-nowrap">EMAILS</span>
+                SCALE
+              </span>
+            </div>
+
+            {/* Row 3: YOUR HEADCOUNT */}
+            <div className="flex flex-wrap items-center gap-4 md:gap-6">
+              <span className="hero-text font-greed-narrow text-black">
+                YOUR
+              </span>
+              <span
+                className="hero-badge font-greed-narrow inline-flex items-center rounded-3xl px-3 py-5 text-white md:rounded-4xl md:px-4 md:py-10"
+                style={{ backgroundColor: "#7F9FFF" }}
+              >
+                HEADCOUNT
               </span>
             </div>
           </div>
@@ -341,35 +154,24 @@ export function HeroSection() {
           {/* Subtitle */}
           <p
             ref={subtitleRef}
-            className="font-stolzl mt-8 max-w-xl text-[14px] leading-relaxed text-gray-600 md:mt-12 md:text-base lg:text-lg"
+            className="font-stolzl mt-8 max-w-xl text-sm leading-relaxed text-black md:mt-10 md:text-base"
           >
-            Our AI Chatbot understands your startup, managing inquiries
-            efficiently and providing support. It addresses issues, answers
-            questions, and evolves to enhance satisfaction.
+            Swift Agents automates your customer conversations so your team
+            handles less, and your customers wait less.
           </p>
 
-          {/* CTA Button */}
-          <div ref={ctaRef} className="mt-8 md:mt-12">
-            <Link
-              href="/signup"
-              className="font-dm-mono inline-flex w-full items-center justify-center rounded-xl border border-white bg-black px-10 py-4 text-sm font-bold tracking-[0.2em] text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-800 sm:w-auto sm:min-w-[340px]"
-            >
-              GET STARTED
-            </Link>
+          {/* CTAs */}
+          <div
+            ref={ctaRef}
+            className="mt-8 flex flex-wrap gap-2 sm:gap-4 md:mt-10 md:gap-6 lg:gap-8"
+          >
+            <Button variant="outline" size="lg" asChild>
+              <Link href="/contact">BOOK A DEMO</Link>
+            </Button>
+            <Button size="lg" asChild>
+              <Link href="/signup">GET STARTED</Link>
+            </Button>
           </div>
-        </div>
-
-        {/* Right Column — Illustration */}
-        <div
-          ref={illustrationRef}
-          className="mt-12 flex w-full items-end justify-center md:mt-0 md:max-h-[calc(100vh-14rem)] md:w-[45%] lg:w-[45%]"
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/Newright.svg"
-            alt="AI Agent at desk illustration"
-            className="h-auto w-[80%] max-w-[500px] object-contain md:max-h-full md:w-full"
-          />
         </div>
       </div>
     </section>
