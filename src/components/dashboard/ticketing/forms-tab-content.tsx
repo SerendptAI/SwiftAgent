@@ -25,8 +25,6 @@ import {
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import type { Form, Submission } from "@/services/forms";
 
-// ── Helpers ────────────────────────────────────────────────────────────────────
-
 type FormSubmissionStatus = "unread" | "read";
 type FormType = "website" | "online";
 
@@ -104,8 +102,6 @@ function formatSubmissionReceivedAt(isoString: string): string {
     return isoString;
   }
 }
-
-// ── Sub-components ─────────────────────────────────────────────────────────────
 
 function SubmissionAvatar({ name }: { name: string }) {
   const initial = name.charAt(0).toUpperCase() || "?";
@@ -491,9 +487,6 @@ function FormsToolbar({
   );
 }
 
-// Page tabs UI kept for future backend support — path grouping not yet in API
-// function FormPageTabs({ ... }) { ... }
-
 function SubmissionNameDropdown({
   allSubmissions,
   selectedId,
@@ -722,8 +715,6 @@ function FormSubmissionList({
   );
 }
 
-// ── Main Component ─────────────────────────────────────────────────────────────
-
 export function FormsTabContent() {
   const [selectedSubmissionId, setSelectedSubmissionId] = useState<
     string | null
@@ -743,9 +734,8 @@ export function FormsTabContent() {
 
   const { data: forms = [] } = useForms();
   const deleteForm = useDeleteForm();
-  const markRead = useMarkSubmissionRead();
+  const { mutate: markSubmissionRead } = useMarkSubmissionRead();
 
-  // Auto-select first form when the list loads
   useEffect(() => {
     if (forms.length > 0 && !selectedFormId) {
       setSelectedFormId(forms[0].id);
@@ -769,15 +759,13 @@ export function FormsTabContent() {
 
   useScrollLock(selectedSubmissionId !== null && isMobileDetail);
 
-  // Mark submission as read when opened
   useEffect(() => {
     if (!selectedSubmissionId) return;
     const submission = submissions.find((s) => s.id === selectedSubmissionId);
     if (submission && !submission.is_read) {
-      markRead.mutate(selectedSubmissionId);
+      markSubmissionRead(selectedSubmissionId);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedSubmissionId]);
+  }, [selectedSubmissionId, submissions, markSubmissionRead]);
 
   const handleSelectForm = (id: string) => {
     setSelectedFormId(id);
@@ -868,17 +856,6 @@ export function FormsTabContent() {
           {inboxDetail}
         </div>
         <div className="flex min-w-0 flex-col gap-5 lg:col-span-5 lg:gap-8">
-          {/* Page tabs (URL path grouping) — commented out pending backend support.
-              The API does not yet return a page/path field on submissions.
-              When available, restore FormPageTabs here using selectedFormPages
-              and wire onSelectPage to reset selectedSubmissionId. */}
-          {/* {isWebsiteForm && selectedFormPages.length > 0 && (
-            <FormPageTabs
-              pages={selectedFormPages}
-              activePageIndex={selectedPageIndex}
-              onSelectPage={handleSelectPage}
-            />
-          )} */}
           <div className="min-h-0 flex-1">
             <FormSubmissionList
               submissions={submissions}

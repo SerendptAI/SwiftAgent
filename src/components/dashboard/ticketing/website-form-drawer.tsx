@@ -6,7 +6,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Icons } from "@/components/icons";
 import { useCreateWebsiteForm, useUpdateForm } from "@/hooks/use-forms";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
+import { isValidEmail, isValidHttpUrl } from "@/lib/validation";
 import type { Form } from "@/services/forms";
+import { getFormEmbedCode } from "@/services/forms";
 
 const DRAWER_TRANSITION_MS = 520;
 
@@ -15,19 +17,6 @@ type WebsiteInformationErrors = {
   websiteLink?: string;
   alertEmail?: string;
 };
-
-function isValidHttpUrl(value: string) {
-  try {
-    const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:";
-  } catch {
-    return false;
-  }
-}
-
-function isValidEmail(value: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-}
 
 export function WebsiteFormDrawer({
   open,
@@ -406,7 +395,7 @@ function SecurityInformationForm({
   formId: string;
   onSaveAndExit: () => void;
 }) {
-  const embedCode = `<script src="https://swiftagents.org/chat-widget.js"></script>\n<div id="swift-form" data-form-id="${formId}"></div>`;
+  const embedCode = getFormEmbedCode(formId);
 
   return (
     <div className="flex flex-col justify-center">

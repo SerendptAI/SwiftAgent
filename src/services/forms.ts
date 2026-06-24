@@ -1,8 +1,6 @@
 import { apiClient } from "@/lib/api-client";
 import { publicApiClient } from "@/lib/public-api-client";
 
-// ── Types ──────────────────────────────────────────────────────────────────────
-
 export type FormType = "website" | "online";
 
 export interface Form {
@@ -59,7 +57,13 @@ export interface SubmissionListParams {
   limit?: number;
 }
 
-// ── Authenticated API ──────────────────────────────────────────────────────────
+export function getFormEmbedCode(formId: string): string {
+  return `<script src="https://swiftagents.org/chat-widget.js"></script>\n<div id="swift-form" data-form-id="${formId}"></div>`;
+}
+
+function unwrapList<T>(data: T[] | { items: T[] }): T[] {
+  return Array.isArray(data) ? data : data.items;
+}
 
 export const formsApi = {
   createWebsiteForm: async (
@@ -93,7 +97,7 @@ export const formsApi = {
       `/api/v1/forms/${encodeURIComponent(companyId)}`,
       { params: { skip, limit } },
     );
-    return Array.isArray(data) ? data : data.items;
+    return unwrapList(data);
   },
 
   getById: async (companyId: string, formId: string): Promise<Form> => {
@@ -121,8 +125,6 @@ export const formsApi = {
     );
   },
 
-  // ── Submissions ──────────────────────────────────────────────────────────────
-
   listAllSubmissions: async (
     companyId: string,
     params: SubmissionListParams = {},
@@ -133,7 +135,7 @@ export const formsApi = {
     >(`/api/v1/forms/${encodeURIComponent(companyId)}/submissions/all`, {
       params: { ...(is_read != null && { is_read }), skip, limit },
     });
-    return Array.isArray(data) ? data : data.items;
+    return unwrapList(data);
   },
 
   listFormSubmissions: async (
@@ -148,7 +150,7 @@ export const formsApi = {
       `/api/v1/forms/${encodeURIComponent(companyId)}/${encodeURIComponent(formId)}/submissions`,
       { params: { ...(is_read != null && { is_read }), skip, limit } },
     );
-    return Array.isArray(data) ? data : data.items;
+    return unwrapList(data);
   },
 
   getSubmission: async (
@@ -171,8 +173,6 @@ export const formsApi = {
     return data;
   },
 };
-
-// ── Public (unauthenticated) API ───────────────────────────────────────────────
 
 export const publicFormsApi = {
   /** Used by the embedded widget or external site to render form fields. No auth required. */

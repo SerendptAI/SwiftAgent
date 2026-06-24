@@ -6,7 +6,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Icons } from "@/components/icons";
 import { useCreateOnlineForm, useUpdateForm } from "@/hooks/use-forms";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
+import { isValidHttpUrl } from "@/lib/validation";
 import type { Form } from "@/services/forms";
+import { getFormEmbedCode } from "@/services/forms";
 
 const DRAWER_TRANSITION_MS = 520;
 
@@ -15,15 +17,6 @@ type OnlineFormInformationErrors = {
   formImage?: string;
   formTitle?: string;
 };
-
-function isValidHttpUrl(value: string) {
-  try {
-    const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:";
-  } catch {
-    return false;
-  }
-}
 
 export function OnlineFormDrawer({
   open,
@@ -399,7 +392,7 @@ function OnlineFormSecurity({
   formId: string;
   onSaveAndExit: () => void;
 }) {
-  const embedCode = `<script src="https://swiftagents.org/chat-widget.js"></script>\n<div id="swift-form" data-form-id="${formId}"></div>`;
+  const embedCode = getFormEmbedCode(formId);
 
   return (
     <div className="flex flex-col justify-center">

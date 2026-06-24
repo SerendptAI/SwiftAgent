@@ -12,8 +12,6 @@ import type {
 } from "@/services/forms";
 import { formsApi, publicFormsApi } from "@/services/forms";
 
-// ── Forms ──────────────────────────────────────────────────────────────────────
-
 export function useForms() {
   const companyId = useActiveCompanyId();
 
@@ -91,8 +89,6 @@ export function useDeleteForm() {
   });
 }
 
-// ── Submissions ────────────────────────────────────────────────────────────────
-
 export function useAllSubmissions(params: SubmissionListParams = {}) {
   const companyId = useActiveCompanyId();
 
@@ -134,7 +130,6 @@ export function useMarkSubmissionRead() {
     mutationFn: (submissionId: string) =>
       formsApi.markSubmissionRead(companyId!, submissionId),
     onSuccess: (updatedSubmission) => {
-      // Invalidate list queries and seed the detail cache with the fresh data.
       queryClient.invalidateQueries({ queryKey: ["submissions", companyId] });
       queryClient.setQueryData(
         ["submissions", companyId, "detail", updatedSubmission.id],
@@ -143,8 +138,6 @@ export function useMarkSubmissionRead() {
     },
   });
 }
-
-// ── Public ─────────────────────────────────────────────────────────────────────
 
 export function usePublishedForm(formId: string | null) {
   return useQuery<Form>({
