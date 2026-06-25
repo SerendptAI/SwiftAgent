@@ -18,7 +18,7 @@ export function CtaSection({ variant = "light" }: CtaSectionProps) {
         )}
       >
         {/* Left — copy */}
-        <div className="relative z-10 flex flex-col pt-15 pb-12 md:w-120 md:pb-15 lg:w-[55%] lg:px-16 lg:pt-11 lg:pb-19">
+        <div className="relative z-10 flex flex-col pt-8 pb-12 md:w-120 md:pb-15 lg:w-[55%] lg:px-16 lg:pt-11 lg:pb-19">
           <h2
             className={cn(
               "font-greed-narrow mb-3 text-4xl leading-[1.34] font-medium tracking-[-2%] uppercase md:text-5xl lg:min-w-120 lg:text-[66px]",
@@ -36,13 +36,13 @@ export function CtaSection({ variant = "light" }: CtaSectionProps) {
             Your team wants less repetitive work. Swift Agents delivers both.
           </p>
 
-          <div className="flex w-full max-w-107.5 flex-wrap gap-4 sm:grid sm:grid-cols-2 md:gap-8">
-            <Button variant="outline" size="lg" asChild>
-              <Link href="/contact">BOOK A DEMO</Link>
+          <div className="xs:max-w-107.5 flex w-full flex-wrap gap-4 sm:grid sm:grid-cols-2 md:gap-8">
+            <Button variant="outline" size="lg" className="w-full" asChild>
+              <Link href="/demo">BOOK A DEMO</Link>
             </Button>
             <Button
               size="lg"
-              className={cn({
+              className={cn("w-full", {
                 "border-transparent": isGreen,
               })}
               asChild
@@ -62,12 +62,12 @@ export function CtaSection({ variant = "light" }: CtaSectionProps) {
           />
         </div>
 
-        {/* Mobile image — inline, no rotation */}
+        {/* Mobile image */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/images/cta-mobile.svg"
           alt="SwiftAgent chat preview"
-          className="mt-6 w-full max-w-120 lg:hidden"
+          className="-mt-12 w-full max-w-120 translate-y-24 rotate-10 lg:hidden"
         />
       </div>
     </section>

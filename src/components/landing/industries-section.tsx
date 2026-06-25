@@ -32,7 +32,7 @@ export function IndustriesSection() {
     <section className="w-full bg-white px-6 py-16 md:px-10 md:py-20 lg:px-16 lg:py-26">
       <div className="mx-auto max-w-360">
         {/* Header */}
-        <div className="mb-10 md:mb-14">
+        <div className="mb-10 text-center md:mb-14 md:text-left">
           <p className="font-dm-mono mb-4 text-xs tracking-[0.2em] text-gray-500 uppercase md:text-sm">
             BUILT FOR YOUR INDUSTRY
           </p>
