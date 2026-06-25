@@ -1,5 +1,38 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+
+function AutoPlayVideo({
+  src,
+  className,
+}: {
+  src: string;
+  className?: string;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = true;
+    video.play().catch(() => {});
+  }, []);
+
+  return (
+    <video
+      ref={videoRef}
+      src={src}
+      autoPlay
+      loop
+      muted
+      playsInline
+      className={className}
+    />
+  );
+}
 
 function StoreButton({
   href,
@@ -41,10 +74,8 @@ export function ProductsSection() {
 
           {/* Image left, copy bottom-aligned right */}
           <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:gap-16">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/products/swift-agents-app.svg"
-              alt="Swift Agents mobile app"
+            <AutoPlayVideo
+              src="/videos/products/swift-agents-app.mp4"
               className="aspect-571/701 w-full object-cover lg:w-[45%]"
             />
 
@@ -81,10 +112,8 @@ export function ProductsSection() {
 
           {/* Copy top-aligned left, image right — on mobile: image first, then copy */}
           <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/products/swift-agents-sdk.svg"
-              alt="Swift Agents SDK preview"
+            <AutoPlayVideo
+              src="/videos/products/swift-agents-sdk.mp4"
               className="aspect-571/701 w-full object-cover lg:order-last lg:w-[55%]"
             />
 
@@ -101,7 +130,7 @@ export function ProductsSection() {
 
               <div className="mt-2">
                 <StoreButton
-                  href="#"
+                  href="/signup"
                   className="flex w-fit max-w-81.5 items-center justify-center text-center sm:w-full"
                 >
                   GET STARTED

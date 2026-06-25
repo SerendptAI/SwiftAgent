@@ -18,6 +18,14 @@ export function HeroSection() {
   const ctaRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (heroVideoRef.current) {
+      heroVideoRef.current.muted = true;
+      heroVideoRef.current.play().catch(() => {});
+    }
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -94,11 +102,14 @@ export function HeroSection() {
           ref={imageRef}
           className="aspect-508/664 w-full overflow-hidden lg:max-w-127"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/images/Agents/AGENT_047.png"
-            alt="SwiftAgent chat interface on mobile"
-            className="h-full w-full object-contain"
+          <video
+            ref={heroVideoRef}
+            src="/videos/hero-section.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="h-full w-full object-cover"
           />
         </div>
 

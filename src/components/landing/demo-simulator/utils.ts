@@ -1,4 +1,5 @@
 export const CURRENCIES = [
+  { code: "NGN", symbol: "₦" },
   { code: "USD", symbol: "$" },
   { code: "EUR", symbol: "€" },
   { code: "GBP", symbol: "£" },

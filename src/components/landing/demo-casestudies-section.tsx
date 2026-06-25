@@ -219,7 +219,7 @@ export function DemoCaseStudiesSection() {
           HOW SWIFT AGENTS CAN HELP YOUR BUSINESS
         </p>
         <h2 className="font-greed-narrow mb-10 text-4xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase sm:text-5xl md:mb-6 md:text-[56px] lg:text-[66px]">
-          CASESTUDIES
+          CASE STUDIES
         </h2>
 
         {/* Company tabs */}
