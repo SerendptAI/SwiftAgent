@@ -2084,7 +2084,7 @@ export const Icons = {
       <path
         d="M1 1L6 6L11 1"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

@@ -1,8 +1,15 @@
+export const PRODUCTS_DROPDOWN_LINKS = [
+  // { label: "OUR PRODUCTS", href: "/products", arrow: false },
+  { label: "DOWNLOAD THE SWIFT AGENTS APP", href: "/products", arrow: true },
+  { label: "USE OUR SDKS", href: "/products#sdks", arrow: true },
+] as const;
+
 export const LANDING_NAV_LINKS = [
   { label: "HOME", href: "/" },
   { label: "AGENTS", href: "/agents" },
   { label: "PRODUCTS", href: "/products" },
   { label: "EARN", href: "/refer" },
+  { label: "DEMO", href: "/demo" },
   { label: "PRICING", href: "/#pricing" },
 ] as const;
 

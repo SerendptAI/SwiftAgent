@@ -43,7 +43,7 @@ export function LiveInHoursBanner() {
     <section className="w-full bg-white">
       <div
         ref={containerRef}
-        className="relative h-[70px] w-full overflow-hidden md:h-[100px] lg:h-[126px]"
+        className="relative h-17.5 w-full overflow-hidden md:h-25 lg:h-31.5"
       >
         <div
           className="animate-arrows absolute top-0 left-0 flex h-full"

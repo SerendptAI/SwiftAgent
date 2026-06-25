@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -10,7 +10,7 @@ const STEPS = [
     title: "CONNECT YOUR\nKNOWLEDGE",
     description:
       "Upload your docs, FAQs, and website content. SwiftAgents indexes everything in minutes.",
-    image: "/images/how-it-works/1.svg",
+    video: "/videos/how-it-works/01-connect-your-knowledge.mp4",
     accent: "#F2B035",
   },
   {
@@ -18,7 +18,7 @@ const STEPS = [
     title: "TRAIN ON YOUR\nBUSINESS",
     description:
       "SwiftAgents learns your products, workflows, and policies so it can respond like your best support rep",
-    image: "/images/how-it-works/2.svg",
+    video: "/videos/how-it-works/02-train-on-your-business.mp4",
     accent: "#03A84E",
   },
   {
@@ -26,10 +26,47 @@ const STEPS = [
     title: "GO LIVE",
     description:
       "Start resolving customer inquiries across every support channel. Hours, not weeks.",
-    image: "/images/how-it-works/3.svg",
+    video: "/videos/how-it-works/03-go-live.mp4",
     accent: "#F25430",
   },
 ];
+
+function StepVideo({ src }: { src: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            video.load();
+            video.play().catch(() => {});
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.25 },
+    );
+
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <video
+      ref={videoRef}
+      src={src}
+      loop
+      muted
+      playsInline
+      preload="none"
+      className="h-full w-full object-cover object-top"
+    />
+  );
+}
 
 export function HowItWorksSection() {
   const [activeStep, setActiveStep] = useState(0);
@@ -50,7 +87,7 @@ export function HowItWorksSection() {
         </div>
 
         {/* Two-column layout */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-[460px_1fr] md:gap-4 lg:gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_1fr] md:items-stretch md:gap-4 lg:grid-cols-[460px_1fr] lg:gap-6">
           {/* Left — step cards */}
           <div className="flex flex-col gap-3">
             {STEPS.map((step, i) => (
@@ -63,53 +100,49 @@ export function HowItWorksSection() {
                     : undefined
                 }
                 className={cn(
-                  "cursor-default border border-black px-6 py-8 text-black transition-colors duration-200",
+                  "cursor-default border border-black px-4 py-6 text-black transition-colors duration-200 md:px-5 md:py-7 lg:px-6 lg:py-8",
                   activeStep === i &&
-                    "md:border-transparent md:bg-[var(--step-accent)] md:text-white",
+                    "md:border-transparent md:bg-(--step-accent) md:text-white",
                 )}
               >
-                <div className="mb-4 flex items-start gap-4 md:gap-8">
-                  <span className="font-greed-narrow h-fit shrink-0 text-4xl leading-none font-medium tracking-[-2%] uppercase md:text-5xl lg:text-[66px]">
+                <div className="mb-4 flex items-start gap-4 md:gap-5 lg:gap-8">
+                  <span className="font-greed-narrow h-fit shrink-0 text-4xl leading-none font-medium tracking-[-2%] uppercase md:text-[40px] lg:text-[66px]">
                     {step.number}
                   </span>
-                  <span className="font-dm-mono text-2xl leading-normal font-medium tracking-[10%] whitespace-pre-line uppercase md:text-[30px]">
+                  <span className="font-dm-mono text-xl leading-normal font-medium tracking-[10%] whitespace-pre-line uppercase md:text-2xl lg:text-[30px]">
                     {step.title}
                   </span>
                 </div>
 
                 <p
                   className={cn(
-                    "font-stolzl text-base leading-normal tracking-[2%] text-gray-600 md:text-lg",
+                    "font-stolzl text-sm leading-normal tracking-[2%] text-gray-600 md:text-base lg:text-lg",
                     activeStep === i && "md:text-gray-100",
                   )}
                 >
                   {step.description}
                 </p>
 
-                {/* Mobile-only image — shown below description */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={step.image}
-                  alt={`Step ${step.number} illustration`}
-                  className="mt-6 w-full object-cover md:hidden"
-                />
+                {/* Mobile-only video — shown below description */}
+                <div className="mt-6 w-full md:hidden">
+                  <StepVideo src={step.video} />
+                </div>
               </div>
             ))}
           </div>
 
-          {/* Right — illustration panel */}
-          <div className="relative hidden overflow-hidden md:block">
+          {/* Right — video panel (desktop only) */}
+          <div className="relative hidden h-full min-h-0 overflow-hidden md:block">
             {STEPS.map((step, i) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <div
                 key={i}
-                src={step.image}
-                alt={`Step ${step.number} illustration`}
                 className={cn(
-                  "absolute inset-0 h-full w-full object-cover transition-opacity duration-300",
+                  "absolute inset-0 h-full w-full transition-opacity duration-300",
                   activeStep === i ? "opacity-100" : "opacity-0",
                 )}
-              />
+              >
+                <StepVideo src={step.video} />
+              </div>
             ))}
           </div>
         </div>
