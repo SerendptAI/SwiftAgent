@@ -61,6 +61,7 @@ function AgentVideo({ src }: { src: string }) {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
+            video.muted = true;
             video.load();
             video.play().catch(() => {});
             observer.disconnect();
