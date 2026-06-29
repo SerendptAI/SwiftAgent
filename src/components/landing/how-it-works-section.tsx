@@ -31,7 +31,7 @@ const STEPS = [
   },
 ];
 
-function StepVideo({ src }: { src: string }) {
+function StepVideo({ src, className }: { src: string; className?: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -64,7 +64,7 @@ function StepVideo({ src }: { src: string }) {
       muted
       playsInline
       preload="none"
-      className="h-full w-full object-cover object-top"
+      className={cn("h-full w-full object-cover object-top", className)}
     />
   );
 }
@@ -133,16 +133,22 @@ export function HowItWorksSection() {
           </div>
 
           {/* Right — video panel (desktop only) */}
-          <div className="relative hidden h-full min-h-0 overflow-hidden md:block">
+          <div
+            className="relative hidden h-full min-h-0 overflow-hidden transition-colors duration-200 md:block"
+            style={{ backgroundColor: STEPS[activeStep].accent }}
+          >
             {STEPS.map((step, i) => (
               <div
                 key={i}
                 className={cn(
-                  "absolute inset-0 h-full w-full transition-opacity duration-300",
+                  "absolute inset-x-0 bottom-0 flex justify-center transition-opacity duration-300",
                   activeStep === i ? "opacity-100" : "opacity-0",
                 )}
               >
-                <StepVideo src={step.video} />
+                <StepVideo
+                  src={step.video}
+                  className="h-auto w-[85%] object-contain object-bottom"
+                />
               </div>
             ))}
           </div>
