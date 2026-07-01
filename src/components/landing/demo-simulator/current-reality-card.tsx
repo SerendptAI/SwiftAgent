@@ -26,30 +26,30 @@ export function CurrentRealityCard({
       </h3>
 
       <div className="font-stolzl mb-8 divide-y divide-black/37 border-b border-black/37 text-sm leading-normal tracking-[2%] text-black/80 sm:text-base">
-        <div className="flex flex-col gap-0.5 py-4 pl-2.5 md:flex-row md:items-center md:justify-between md:pr-4">
-          <span>Monthly conversations</span>
-          <span className="mt-1 text-lg font-medium sm:mt-0 sm:text-base md:w-18 md:font-normal">
+        <div className="flex flex-col gap-0.5 py-4 pl-2.5 md:flex-row md:items-center md:justify-between md:gap-2 md:pr-4">
+          <span className="md:min-w-0 md:flex-1">Monthly conversations</span>
+          <span className="mt-1 shrink-0 text-lg font-medium whitespace-nowrap sm:mt-0 sm:text-base md:font-normal">
             {fmtInt(monthlyConvos)}
           </span>
         </div>
 
-        <div className="flex flex-col gap-0.5 py-4 pl-2.5 md:flex-row md:items-center md:justify-between md:pr-4">
-          <span>Monthly support tickets</span>
-          <span className="mt-1 text-lg font-medium sm:mt-0 sm:text-base md:w-18 md:font-normal">
+        <div className="flex flex-col gap-0.5 py-4 pl-2.5 md:flex-row md:items-center md:justify-between md:gap-2 md:pr-4">
+          <span className="md:min-w-0 md:flex-1">Monthly support tickets</span>
+          <span className="mt-1 shrink-0 text-lg font-medium whitespace-nowrap sm:mt-0 sm:text-base md:font-normal">
             {fmtInt(monthlyConvos)}
           </span>
         </div>
 
-        <div className="flex flex-col gap-0.5 py-4 pl-2.5 md:flex-row md:items-center md:justify-between md:pr-4">
-          <span>Human agents required</span>
-          <span className="mt-1 text-lg font-medium sm:mt-0 sm:text-base md:w-18 md:font-normal">
+        <div className="flex flex-col gap-0.5 py-4 pl-2.5 md:flex-row md:items-center md:justify-between md:gap-2 md:pr-4">
+          <span className="md:min-w-0 md:flex-1">Human agents required</span>
+          <span className="mt-1 shrink-0 text-lg font-medium whitespace-nowrap sm:mt-0 sm:text-base md:font-normal">
             {fmtDec(totalAgentsNeeded)}
           </span>
         </div>
 
-        <div className="flex flex-col gap-0.5 py-4 pl-2.5 md:flex-row md:items-center md:justify-between md:pr-4">
-          <span>Monthly team cost</span>
-          <span className="mt-1 text-lg font-medium sm:mt-0 sm:text-base md:w-18 md:font-normal">
+        <div className="flex flex-col gap-0.5 py-4 pl-2.5 md:flex-row md:items-center md:justify-between md:gap-2 md:pr-4">
+          <span className="md:min-w-0 md:flex-1">Monthly team cost</span>
+          <span className="mt-1 shrink-0 text-lg font-medium whitespace-nowrap sm:mt-0 sm:text-base md:font-normal">
             {fmtMoney(currentMonthlyCost, sym)}
           </span>
         </div>

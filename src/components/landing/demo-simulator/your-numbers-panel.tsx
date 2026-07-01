@@ -1,7 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 
+import { cn } from "@/lib/utils";
+
 import { NumberInput } from "./number-input";
-import { BENCHMARK } from "./utils";
+import { BENCHMARK, type CurrencyCode } from "./utils";
 
 export interface YourNumbersPanelProps {
   monthlyConvos: number;
@@ -12,6 +14,8 @@ export interface YourNumbersPanelProps {
   setCostPerAgent: (v: number) => void;
   repetitiveRate: number;
   setRepetitiveRate: (v: number) => void;
+  sym: string;
+  currency: CurrencyCode;
 }
 
 export function YourNumbersPanel({
@@ -23,7 +27,10 @@ export function YourNumbersPanel({
   setCostPerAgent,
   repetitiveRate,
   setRepetitiveRate,
+  sym,
+  currency,
 }: YourNumbersPanelProps) {
+  const isNGN = currency === "NGN";
   return (
     <div className="relative isolate grid min-h-71 overflow-hidden bg-[#03A84E] px-6 pt-8 pb-32 md:px-10 lg:px-14 lg:pb-12">
       <img
@@ -42,8 +49,22 @@ export function YourNumbersPanel({
           YOUR NUMBERS
         </p>
 
-        <div className="grid grid-cols-1 gap-6 md:gap-8 xl:grid-cols-[2fr_1fr] xl:gap-12">
-          <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-3 xl:grid-cols-[250px_250px_250px] xl:gap-12">
+        <div
+          className={cn(
+            "grid grid-cols-1 gap-6 md:gap-8",
+            isNGN
+              ? "xl:grid-cols-[2.5fr_1fr]"
+              : "xl:grid-cols-[2fr_1fr] xl:gap-12",
+          )}
+        >
+          <div
+            className={cn(
+              "grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-3",
+              isNGN
+                ? "xl:grid-cols-[2fr_2fr_2.5fr] xl:gap-6"
+                : "xl:grid-cols-[250px_250px_250px] xl:gap-12",
+            )}
+          >
             <div>
               <p className="font-dm-mono mb-2.5 text-sm leading-normal font-medium tracking-[10%] text-white/50 uppercase md:text-base">
                 MONTHLY CONVERSATIONS
@@ -76,6 +97,7 @@ export function YourNumbersPanel({
                 value={costPerAgent}
                 onChange={setCostPerAgent}
                 suffix="/HUMAN AGENTS"
+                prefix={sym}
                 width="w-16"
               />
             </div>
@@ -93,11 +115,12 @@ export function YourNumbersPanel({
               max={100}
               value={repetitiveRate}
               onChange={(e) => setRepetitiveRate(Number(e.target.value))}
-              className="h-2 w-full cursor-grab rounded-full border border-black active:cursor-grabbing [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border [&::-moz-range-thumb]:border-black [&::-moz-range-thumb]:bg-white [&::-webkit-slider-thumb]:h-2 [&::-webkit-slider-thumb]:w-2 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-black [&::-webkit-slider-thumb]:bg-[#F2B035]"
+              className="h-2 w-full cursor-grab rounded-full border border-black active:cursor-grabbing [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border [&::-moz-range-thumb]:border-black [&::-moz-range-thumb]:bg-white [&::-moz-range-track]:h-2 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:border-none [&::-moz-range-track]:bg-transparent [&::-webkit-slider-runnable-track]:h-2 [&::-webkit-slider-runnable-track]:appearance-none [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-transparent [&::-webkit-slider-thumb]:mt-[-6px] [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-black [&::-webkit-slider-thumb]:bg-white"
               style={{
                 appearance: "none",
                 WebkitAppearance: "none",
-                background: `linear-gradient(to right, #F2B035 ${repetitiveRate}%, rgba(255,255,255) ${repetitiveRate}%)`,
+                MozAppearance: "none",
+                background: `linear-gradient(to right, #F2B035 calc(${repetitiveRate}% - ${repetitiveRate / 100} * 20px + 10px), rgba(255,255,255) 0)`,
               }}
             />
           </div>

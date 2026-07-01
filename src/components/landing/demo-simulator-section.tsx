@@ -10,18 +10,23 @@ import {
   BENCHMARK,
   CURRENCIES,
   type CurrencyCode,
+  EXCHANGE_RATES,
 } from "./demo-simulator/utils";
 import { YourNumbersPanel } from "./demo-simulator/your-numbers-panel";
 
 export function DemoSimulatorSection() {
   const [monthlyConvos, setMonthlyConvos] = useState(8000);
   const [teamSize, setTeamSize] = useState(6);
-  const [costPerAgent, setCostPerAgent] = useState(4500);
+  // Source of truth is always USD; other currencies are derived from it.
+  const [costPerAgentUsd, setCostPerAgentUsd] = useState(4500);
   const [repetitiveRate, setRepetitiveRate] = useState(65);
   const [currency, setCurrency] = useState<CurrencyCode>("USD");
   const [currencyOpen, setCurrencyOpen] = useState(false);
 
   const sym = CURRENCIES.find((c) => c.code === currency)?.symbol ?? "$";
+  const rate = EXCHANGE_RATES[currency];
+  const costPerAgent = Math.ceil(costPerAgentUsd * rate);
+  const setCostPerAgent = (v: number) => setCostPerAgentUsd(v / rate);
 
   const ticketsAutomated = Math.round(monthlyConvos * (repetitiveRate / 100));
   const fteAvoided = ticketsAutomated / BENCHMARK;
@@ -52,6 +57,8 @@ export function DemoSimulatorSection() {
         setCostPerAgent={setCostPerAgent}
         repetitiveRate={repetitiveRate}
         setRepetitiveRate={setRepetitiveRate}
+        sym={sym}
+        currency={currency}
       />
       <FteAvoidedPanel
         fteAvoided={fteAvoided}
