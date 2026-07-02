@@ -271,7 +271,10 @@ export function FooterSection() {
             reserved.
           </div>
           <div className="flex gap-6 text-sm opacity-60">
-            <Link href="/" className="transition-opacity hover:opacity-100">
+            <Link
+              href="/privacy-policy"
+              className="transition-opacity hover:opacity-100"
+            >
               Privacy Policy
             </Link>
             <Link href="/" className="transition-opacity hover:opacity-100">
