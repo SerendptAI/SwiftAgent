@@ -14,6 +14,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { FormCreationSuccessModal } from "@/components/dashboard/ticketing/form-creation-success-modal";
 import { FormsDeleteManager } from "@/components/dashboard/ticketing/forms-delete-manager";
+import { FormsEditManager } from "@/components/dashboard/ticketing/forms-edit-manager";
 import { MessagesEmptyState } from "@/components/dashboard/ticketing/messages-empty-state";
 import { OnlineFormDrawer } from "@/components/dashboard/ticketing/online-form-drawer";
 import { WebsiteFormDrawer } from "@/components/dashboard/ticketing/website-form-drawer";
@@ -357,7 +358,7 @@ function FormsToolbar({
         <button
           type="button"
           onClick={onEdit}
-          disabled={!selectedForm}
+          disabled={forms.length === 0}
           className="font-dm-mono flex h-12 min-w-0 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#F25430] px-3 text-xs font-normal tracking-[0.12em] text-white uppercase transition-colors hover:bg-[#d94526] disabled:cursor-not-allowed disabled:opacity-50 lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
         >
           <Pencil className="h-4 w-4 shrink-0 lg:h-5 lg:w-5" />
@@ -702,7 +703,7 @@ export function FormsTabContent() {
   const [activeStatus, setActiveStatus] =
     useState<FormSubmissionStatus>("unread");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
+  const [isEditManagerOpen, setIsEditManagerOpen] = useState(false);
   const [isWebsiteFormDrawerOpen, setIsWebsiteFormDrawerOpen] = useState(false);
   const [isOnlineFormDrawerOpen, setIsOnlineFormDrawerOpen] = useState(false);
   const [successForm, setSuccessForm] = useState<{
@@ -759,13 +760,7 @@ export function FormsTabContent() {
   };
 
   const handleEdit = () => {
-    if (!selectedForm) return;
-    setIsEditMode(true);
-    if (selectedForm.type === "website") {
-      setIsWebsiteFormDrawerOpen(true);
-    } else {
-      setIsOnlineFormDrawerOpen(true);
-    }
+    setIsEditManagerOpen(true);
   };
 
   const handleDelete = () => {
@@ -803,21 +798,13 @@ export function FormsTabContent() {
   };
 
   const handleWebsiteFormSuccess = (form: Form) => {
-    if (isEditMode) {
-      setIsEditMode(false);
-    } else {
-      setSelectedFormId(form.id);
-      setSuccessForm({ type: form.type, name: form.website_link ?? form.id });
-    }
+    setSelectedFormId(form.id);
+    setSuccessForm({ type: form.type, name: form.website_link ?? form.id });
   };
 
   const handleOnlineFormSuccess = (form: Form) => {
-    if (isEditMode) {
-      setIsEditMode(false);
-    } else {
-      setSelectedFormId(form.id);
-      setSuccessForm({ type: form.type, name: form.form_title ?? form.id });
-    }
+    setSelectedFormId(form.id);
+    setSuccessForm({ type: form.type, name: form.form_title ?? form.id });
   };
 
   const inboxDetail = (
@@ -892,23 +879,15 @@ export function FormsTabContent() {
 
       <WebsiteFormDrawer
         open={isWebsiteFormDrawerOpen}
-        onClose={() => {
-          setIsWebsiteFormDrawerOpen(false);
-          setIsEditMode(false);
-        }}
+        onClose={() => setIsWebsiteFormDrawerOpen(false)}
         onSuccess={handleWebsiteFormSuccess}
-        mode={isEditMode ? "edit" : "create"}
-        editForm={isEditMode ? (selectedForm ?? undefined) : undefined}
+        mode="create"
       />
       <OnlineFormDrawer
         open={isOnlineFormDrawerOpen}
-        onClose={() => {
-          setIsOnlineFormDrawerOpen(false);
-          setIsEditMode(false);
-        }}
+        onClose={() => setIsOnlineFormDrawerOpen(false)}
         onSuccess={handleOnlineFormSuccess}
-        mode={isEditMode ? "edit" : "create"}
-        editForm={isEditMode ? (selectedForm ?? undefined) : undefined}
+        mode="create"
       />
       <FormCreationSuccessModal
         open={successForm !== null}
@@ -924,6 +903,12 @@ export function FormsTabContent() {
         onClose={() => setIsDeleteModalOpen(false)}
         onDeleteForms={handleDeleteForms}
         onDeleteSubmissions={handleDeleteSubmissions}
+      />
+      <FormsEditManager
+        open={isEditManagerOpen}
+        forms={forms}
+        submissions={allSubmissions}
+        onClose={() => setIsEditManagerOpen(false)}
       />
     </div>
   );

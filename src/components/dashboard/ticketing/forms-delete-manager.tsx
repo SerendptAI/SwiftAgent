@@ -1,11 +1,21 @@
 "use client";
 
-import { ChevronRight, FileText, Globe, X } from "lucide-react";
+import { ChevronRight, FileText, Globe } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import type { Form, Submission } from "@/services/forms";
 import { getFormDisplayName, getSubmissionDisplayName } from "@/services/forms";
+
+import {
+  derivePageForms,
+  derivePages,
+  deriveWebsites,
+  formatDate,
+  groupSubmissionsByForm,
+  hostLabel,
+} from "./forms-hierarchy";
+import { ActionLink, CountPill, ManagerShell, Row } from "./forms-manager-ui";
 
 type Step =
   | { name: "websites" }
@@ -14,138 +24,40 @@ type Step =
   | { name: "entries"; origin: string; path: string; formId: string };
 
 type Pending =
-  | { kind: "website"; label: string; formIds: string[] }
-  | { kind: "page"; label: string; formIds: string[] }
-  | { kind: "form"; label: string; formIds: string[] }
-  | { kind: "entry"; label: string; submissionIds: string[] }
-  | { kind: "allEntries"; label: string; submissionIds: string[] };
+  | { kind: "forms"; label: string; formIds: string[] }
+  | { kind: "submissions"; label: string; submissionIds: string[] };
 
-const CRUMB_LEVEL: Record<Step["name"], number> = {
+const LEVEL: Record<Step["name"], 0 | 1 | 2> = {
   websites: 0,
   pages: 1,
   forms: 2,
   entries: 2,
 };
 
-function urlParts(link?: string): { origin: string; path: string } | null {
-  if (!link) return null;
-  try {
-    const url = new URL(link.includes("://") ? link : `https://${link}`);
-    const path = url.pathname.replace(/\/+$/, "") || "/";
-    return { origin: url.origin, path };
-  } catch {
-    return null;
-  }
-}
-
-function hostLabel(origin: string): string {
-  return origin.replace(/^https?:\/\//, "");
-}
-
-function formatDate(iso?: string): string {
-  if (!iso) return "-";
-  const d = new Date(iso);
-  return Number.isNaN(d.getTime())
-    ? "-"
-    : d.toLocaleDateString("en-US", {
-        month: "2-digit",
-        day: "2-digit",
-        year: "numeric",
-      });
-}
-
-interface WebsiteGroup {
-  origin: string;
-  forms: Form[];
-  entryCount: number;
-}
-
-interface PageGroup {
-  path: string;
-  forms: Form[];
-  entryCount: number;
-}
-
-function CountPill({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="font-dm-mono rounded-md bg-[#F3F3F3] px-2 py-0.5 text-[11px] tracking-wide text-black/55 uppercase">
-      {children}
-    </span>
-  );
-}
-
-function DeleteAllLink({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="font-dm-mono cursor-pointer text-[13px] font-medium tracking-[0.04em] text-[#F25430] uppercase transition-opacity hover:opacity-70"
-    >
-      Delete all
-    </button>
-  );
-}
-
-function Crumb({
-  icon,
-  label,
-  active,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  active: boolean;
-}) {
-  return (
-    <span
-      className={`font-dm-mono flex items-center gap-1.5 text-[13px] tracking-[0.06em] uppercase ${
-        active ? "font-semibold text-black" : "text-black/35"
-      }`}
-    >
-      {icon}
-      {label}
-    </span>
-  );
-}
-
-function Row({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex items-center justify-between gap-3 border-b border-[#F0F0F0] py-3.5 last:border-b-0">
-      {children}
-    </div>
-  );
-}
+const DELETE_COLOR = "text-[#F25430]";
 
 function ConfirmDialog({
-  pending,
+  label,
   isDeleting,
   onCancel,
   onConfirm,
 }: {
-  pending: Pending;
+  label: string;
   isDeleting: boolean;
   onCancel: () => void;
   onConfirm: () => void;
 }) {
   return (
     <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/30 px-6">
-      <div className="w-full max-w-[400px] overflow-hidden rounded-2xl bg-white shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
-        <div className="flex flex-col items-center gap-2 border-b border-dashed border-[#E5E5E5] bg-[#FAFAFA] px-6 py-8 text-center">
-          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#FDEEE9]">
-            <X className="h-5 w-5 text-[#F25430]" />
-          </span>
-        </div>
-        <div className="px-6 py-6">
-          <h3 className="font-dm-mono text-2xl font-bold tracking-[-0.01em] text-black">
-            Are you sure?
-          </h3>
-          <p className="font-dm-mono mt-2 text-sm text-black/60">
-            {pending.label}
-          </p>
-          <p className="font-dm-mono mt-3 text-[13px] text-[#F25430]">
-            This action is permanent and cannot be undone.
-          </p>
-        </div>
-        <div className="flex justify-end gap-3 border-t border-[#EDEDED] px-6 py-4">
+      <div className="w-full max-w-[420px] rounded-2xl bg-white px-6 py-6 shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
+        <h3 className="font-dm-mono text-2xl font-bold tracking-[-0.01em] text-black">
+          Delete?
+        </h3>
+        <p className="font-dm-mono mt-2 text-sm text-black/60">{label}</p>
+        <p className="font-dm-mono mt-3 text-[13px] text-[#F25430]">
+          Are you sure you want to delete this? This action is permanent.
+        </p>
+        <div className="mt-6 flex justify-end gap-3">
           <button
             type="button"
             onClick={onCancel}
@@ -158,11 +70,41 @@ function ConfirmDialog({
             type="button"
             onClick={onConfirm}
             disabled={isDeleting}
-            className="font-dm-mono cursor-pointer rounded-lg bg-[#F25430] px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-[#d94526] disabled:cursor-not-allowed disabled:opacity-60"
+            className="font-dm-mono cursor-pointer rounded-lg bg-[#F25430] px-6 py-2 text-sm font-medium text-white uppercase transition-colors hover:bg-[#d94526] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isDeleting ? "Deleting..." : "Delete"}
           </button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function SuccessDialog() {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-white px-6">
+      <div className="flex flex-col items-center gap-3 text-center">
+        <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#E9F9EE]">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            className="h-7 w-7 text-[#1DB954]"
+          >
+            <path
+              d="M5 12.5l4 4L19 7"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+        <h3 className="font-dm-mono text-xl font-bold tracking-[-0.01em] text-black">
+          Deletion Successful
+        </h3>
+        <p className="font-dm-mono text-[12px] tracking-[0.1em] text-black/40 uppercase">
+          Closing automatically...
+        </p>
       </div>
     </div>
   );
@@ -189,6 +131,7 @@ export function FormsDeleteManager({
 }: FormsDeleteManagerProps) {
   const [step, setStep] = useState<Step>({ name: "websites" });
   const [pending, setPending] = useState<Pending | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   useScrollLock(open);
 
@@ -196,6 +139,7 @@ export function FormsDeleteManager({
     if (open) {
       setStep({ name: "websites" });
       setPending(null);
+      setShowSuccess(false);
     }
   }, [open]);
 
@@ -210,75 +154,55 @@ export function FormsDeleteManager({
     return () => window.removeEventListener("keydown", onKey);
   }, [open, isDeleting, pending, onClose]);
 
-  const submissionsByForm = useMemo(() => {
-    const map = new Map<string, Submission[]>();
-    for (const s of submissions) {
-      const list = map.get(s.form_id);
-      if (list) list.push(s);
-      else map.set(s.form_id, [s]);
-    }
-    return map;
-  }, [submissions]);
+  useEffect(() => {
+    if (!showSuccess) return;
+    const id = window.setTimeout(onClose, 1600);
+    return () => window.clearTimeout(id);
+  }, [showSuccess, onClose]);
 
-  const websites = useMemo<WebsiteGroup[]>(() => {
-    const map = new Map<string, WebsiteGroup>();
-    for (const form of forms) {
-      const parts = urlParts(form.website_link);
-      if (!parts) continue;
-      const group = map.get(parts.origin) ?? {
-        origin: parts.origin,
-        forms: [],
-        entryCount: 0,
-      };
-      group.forms.push(form);
-      group.entryCount += submissionsByForm.get(form.id)?.length ?? 0;
-      map.set(parts.origin, group);
-    }
-    return [...map.values()].sort((a, b) => b.forms.length - a.forms.length);
-  }, [forms, submissionsByForm]);
-
-  const pages = useMemo<PageGroup[]>(() => {
-    if (step.name === "websites") return [];
-    const origin = "origin" in step ? step.origin : "";
-    const map = new Map<string, PageGroup>();
-    for (const form of forms) {
-      const parts = urlParts(form.website_link);
-      if (!parts || parts.origin !== origin) continue;
-      const group = map.get(parts.path) ?? {
-        path: parts.path,
-        forms: [],
-        entryCount: 0,
-      };
-      group.forms.push(form);
-      group.entryCount += submissionsByForm.get(form.id)?.length ?? 0;
-      map.set(parts.path, group);
-    }
-    return [...map.values()].sort((a, b) => b.entryCount - a.entryCount);
-  }, [forms, submissionsByForm, step]);
-
-  const pageForms = useMemo<Form[]>(() => {
-    if (step.name !== "forms" && step.name !== "entries") return [];
-    return forms.filter((form) => {
-      const parts = urlParts(form.website_link);
-      return parts?.origin === step.origin && parts.path === step.path;
-    });
-  }, [forms, step]);
+  const submissionsByForm = useMemo(
+    () => groupSubmissionsByForm(submissions),
+    [submissions],
+  );
+  const websites = useMemo(
+    () => deriveWebsites(forms, submissionsByForm),
+    [forms, submissionsByForm],
+  );
+  const pages = useMemo(
+    () =>
+      step.name === "websites"
+        ? []
+        : derivePages(forms, submissionsByForm, step.origin),
+    [forms, submissionsByForm, step],
+  );
+  const pageForms = useMemo(
+    () =>
+      step.name === "forms" || step.name === "entries"
+        ? derivePageForms(forms, step.origin, step.path)
+        : [],
+    [forms, step],
+  );
 
   if (!open) return null;
 
-  const level = CRUMB_LEVEL[step.name];
+  const handleCrumb = (target: 0 | 1) => {
+    if (target === 0) setStep({ name: "websites" });
+    else if (target === 1 && step.name !== "websites")
+      setStep({ name: "pages", origin: step.origin });
+  };
 
   const confirmPending = async () => {
     if (!pending) return;
-    if (pending.kind === "entry" || pending.kind === "allEntries") {
+    if (pending.kind === "submissions") {
       await onDeleteSubmissions(pending.submissionIds);
     } else {
       await onDeleteForms(pending.formIds);
     }
     setPending(null);
+    setShowSuccess(true);
   };
 
-  const renderBody = () => {
+  const body = (() => {
     if (step.name === "websites") {
       return (
         <>
@@ -309,10 +233,12 @@ export function FormsDeleteManager({
                     </span>
                   </button>
                   <div className="flex shrink-0 items-center gap-3">
-                    <DeleteAllLink
+                    <ActionLink
+                      label="Delete all"
+                      colorClass={DELETE_COLOR}
                       onClick={() =>
                         setPending({
-                          kind: "website",
+                          kind: "forms",
                           label: `All forms on ${hostLabel(site.origin)}`,
                           formIds: site.forms.map((f) => f.id),
                         })
@@ -365,10 +291,12 @@ export function FormsDeleteManager({
                   </span>
                 </button>
                 <div className="flex shrink-0 items-center gap-3">
-                  <DeleteAllLink
+                  <ActionLink
+                    label="Delete all"
+                    colorClass={DELETE_COLOR}
                     onClick={() =>
                       setPending({
-                        kind: "page",
+                        kind: "forms",
                         label: `All forms on ${page.path}`,
                         formIds: page.forms.map((f) => f.id),
                       })
@@ -431,10 +359,12 @@ export function FormsDeleteManager({
                     </span>
                   </button>
                   <div className="flex shrink-0 items-center gap-3">
-                    <DeleteAllLink
+                    <ActionLink
+                      label="Delete all"
+                      colorClass={DELETE_COLOR}
                       onClick={() =>
                         setPending({
-                          kind: "form",
+                          kind: "forms",
                           label: `${getFormDisplayName(form)} on ${step.path}`,
                           formIds: [form.id],
                         })
@@ -450,7 +380,7 @@ export function FormsDeleteManager({
             type="button"
             onClick={() =>
               setPending({
-                kind: "page",
+                kind: "forms",
                 label: `All forms on ${step.path}`,
                 formIds: pageForms.map((f) => f.id),
               })
@@ -496,10 +426,12 @@ export function FormsDeleteManager({
                     </span>
                   </div>
                 </div>
-                <DeleteAllLink
+                <ActionLink
+                  label="Delete"
+                  colorClass={DELETE_COLOR}
                   onClick={() =>
                     setPending({
-                      kind: "entry",
+                      kind: "submissions",
                       label: `Entry from ${getSubmissionDisplayName(entry)}`,
                       submissionIds: [entry.id],
                     })
@@ -514,7 +446,7 @@ export function FormsDeleteManager({
             type="button"
             onClick={() =>
               setPending({
-                kind: "allEntries",
+                kind: "submissions",
                 label: `All entries for ${form ? getFormDisplayName(form) : "this form"}`,
                 submissionIds: entries.map((e) => e.id),
               })
@@ -526,103 +458,29 @@ export function FormsDeleteManager({
         ) : null}
       </>
     );
-  };
+  })();
 
   return (
-    <div
-      className="fixed inset-0 z-10000 flex items-center justify-center px-6"
-      role="presentation"
-    >
-      <button
-        type="button"
-        aria-label="Close delete manager"
-        className="absolute inset-0 cursor-pointer bg-black/40"
-        onClick={isDeleting ? undefined : onClose}
-        disabled={isDeleting}
-      />
-
-      <section
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="forms-delete-title"
-        className="relative flex w-full max-w-[560px] flex-col overflow-hidden rounded-2xl bg-white shadow-[0_24px_80px_rgba(0,0,0,0.18)]"
-      >
-        <div className="flex items-center justify-between px-6 pt-5 pb-4">
-          <h2
-            id="forms-delete-title"
-            className="font-dm-mono text-2xl font-bold tracking-[-0.01em] text-black"
-          >
-            Delete
-          </h2>
-          <button
-            type="button"
-            aria-label="Close"
-            onClick={onClose}
-            disabled={isDeleting}
-            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-black/50 transition-colors hover:bg-gray-100 disabled:opacity-50"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-
-        <div className="flex items-center gap-3 border-b border-[#EDEDED] px-6 pb-3">
-          <button
-            type="button"
-            onClick={() => setStep({ name: "websites" })}
-            className="cursor-pointer"
-          >
-            <Crumb
-              icon={<Globe className="h-4 w-4" />}
-              label="Website"
-              active={level === 0}
-            />
-          </button>
-          <span className="text-black/25">→</span>
-          <button
-            type="button"
-            disabled={step.name === "websites"}
-            onClick={() =>
-              step.name !== "websites" &&
-              setStep({ name: "pages", origin: step.origin })
-            }
-            className="cursor-pointer disabled:cursor-default"
-          >
-            <Crumb
-              icon={<FileText className="h-4 w-4" />}
-              label="Page"
-              active={level === 1}
-            />
-          </button>
-          <span className="text-black/25">→</span>
-          <Crumb
-            icon={<FileText className="h-4 w-4" />}
-            label="Form"
-            active={level === 2}
-          />
-        </div>
-
-        <div className="px-6 py-6">{renderBody()}</div>
-
-        <div className="flex justify-end border-t border-[#EDEDED] px-6 py-4">
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={isDeleting}
-            className="font-dm-mono cursor-pointer rounded-lg border border-[#E5E5E5] px-5 py-2 text-sm text-black/70 transition-colors hover:bg-gray-50 disabled:opacity-60"
-          >
-            Cancel
-          </button>
-        </div>
-
-        {pending ? (
+    <ManagerShell
+      title="Delete"
+      level={LEVEL[step.name]}
+      isBusy={isDeleting || showSuccess}
+      onClose={onClose}
+      onCrumb={handleCrumb}
+      overlay={
+        showSuccess ? (
+          <SuccessDialog />
+        ) : pending ? (
           <ConfirmDialog
-            pending={pending}
+            label={pending.label}
             isDeleting={isDeleting}
             onCancel={() => setPending(null)}
             onConfirm={confirmPending}
           />
-        ) : null}
-      </section>
-    </div>
+        ) : undefined
+      }
+    >
+      {body}
+    </ManagerShell>
   );
 }
