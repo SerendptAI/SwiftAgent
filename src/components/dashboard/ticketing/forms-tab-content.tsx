@@ -243,9 +243,17 @@ function FormsEmptyState({
   );
 }
 
-function CreateFormMenu({ onSelect }: { onSelect: (type: FormType) => void }) {
+function CreateFormMenu({
+  onSelect,
+  widthClass = "w-[430px]",
+}: {
+  onSelect: (type: FormType) => void;
+  widthClass?: string;
+}) {
   return (
-    <div className="font-dm-mono w-[430px] max-w-[calc(100vw-2rem)] rounded-xl bg-white px-2 py-1.5 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] lg:max-w-[calc(100vw-3rem)] lg:px-3 lg:py-2">
+    <div
+      className={`font-dm-mono ${widthClass} max-w-[calc(100vw-2rem)] rounded-xl bg-white px-2 py-1.5 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] lg:max-w-[calc(100vw-3rem)] lg:px-3 lg:py-2`}
+    >
       {(["website", "online"] as FormType[]).map((type, index) => {
         const meta = FORM_TYPE_META[type];
         return (
@@ -423,7 +431,7 @@ function FormsToolbar({
         {isFormMenuOpen && (
           <div className="animate-in fade-in slide-in-from-top-2 absolute right-0 left-0 z-[70] mt-3 duration-200 sm:right-4 sm:left-auto sm:w-[calc(100%-7.5rem)] sm:min-w-[300px]">
             {forms.length === 0 ? (
-              <CreateFormMenu onSelect={handleCreateForm} />
+              <CreateFormMenu onSelect={handleCreateForm} widthClass="w-full" />
             ) : (
               <div className="font-dm-mono rounded-xl bg-white px-2 py-1.5 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] lg:px-3 lg:py-2">
                 {forms.map((form) => (
