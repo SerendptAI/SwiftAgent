@@ -88,6 +88,19 @@ export function useDeleteForm() {
   });
 }
 
+export function useDeleteSubmission() {
+  const queryClient = useQueryClient();
+  const companyId = useActiveCompanyId();
+
+  return useMutation({
+    mutationFn: (submissionId: string) =>
+      formsApi.deleteSubmission(companyId!, submissionId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["submissions", companyId] });
+    },
+  });
+}
+
 export function useAllSubmissions(params: SubmissionListParams = {}) {
   const companyId = useActiveCompanyId();
 

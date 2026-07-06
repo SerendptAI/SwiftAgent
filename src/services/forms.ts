@@ -66,6 +66,24 @@ export function getFormDisplayName(form: Form): string {
   return form.form_title ?? form.website_link ?? form.id;
 }
 
+export function getSubmissionDisplayName(submission: Submission): string {
+  for (const key of [
+    "name",
+    "Name",
+    "full_name",
+    "fullName",
+    "firstName",
+    "first_name",
+    "username",
+  ]) {
+    const val = submission.data[key];
+    if (typeof val === "string" && val.trim()) return val.trim();
+  }
+  return submission.visitor_id
+    ? `Visitor ${submission.visitor_id.slice(0, 6)}`
+    : "Anonymous";
+}
+
 export const formsApi = {
   createWebsiteForm: async (
     companyId: string,
@@ -172,6 +190,15 @@ export const formsApi = {
       `/api/v1/forms/${encodeURIComponent(companyId)}/submissions/${encodeURIComponent(submissionId)}/read`,
     );
     return data;
+  },
+
+  deleteSubmission: async (
+    companyId: string,
+    submissionId: string,
+  ): Promise<void> => {
+    await apiClient.delete(
+      `/api/v1/forms/${encodeURIComponent(companyId)}/submissions/${encodeURIComponent(submissionId)}`,
+    );
   },
 };
 

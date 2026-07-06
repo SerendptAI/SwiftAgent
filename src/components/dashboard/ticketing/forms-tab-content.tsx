@@ -13,19 +13,21 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import { FormCreationSuccessModal } from "@/components/dashboard/ticketing/form-creation-success-modal";
-import { FormDeleteModal } from "@/components/dashboard/ticketing/form-delete-modal";
+import { FormsDeleteManager } from "@/components/dashboard/ticketing/forms-delete-manager";
 import { MessagesEmptyState } from "@/components/dashboard/ticketing/messages-empty-state";
 import { OnlineFormDrawer } from "@/components/dashboard/ticketing/online-form-drawer";
 import { WebsiteFormDrawer } from "@/components/dashboard/ticketing/website-form-drawer";
 import {
+  useAllSubmissions,
   useDeleteForm,
+  useDeleteSubmission,
   useForms,
   useFormSubmissions,
   useMarkSubmissionRead,
 } from "@/hooks/use-forms";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import type { Form, Submission } from "@/services/forms";
-import { getFormDisplayName } from "@/services/forms";
+import { getFormDisplayName, getSubmissionDisplayName } from "@/services/forms";
 
 type FormSubmissionStatus = "unread" | "read";
 type FormType = "website" | "online";
@@ -45,25 +47,6 @@ const FORM_TYPE_META: Record<
     textColor: "text-[#F25430]",
   },
 };
-
-function getSubmissionDisplayName(submission: Submission): string {
-  const data = submission.data;
-  for (const key of [
-    "name",
-    "Name",
-    "full_name",
-    "fullName",
-    "firstName",
-    "first_name",
-    "username",
-  ]) {
-    const val = data[key];
-    if (typeof val === "string" && val.trim()) return val.trim();
-  }
-  return submission.visitor_id
-    ? `Visitor ${submission.visitor_id.slice(0, 6)}`
-    : "Anonymous";
-}
 
 function getSubmissionPreview(submission: Submission): string {
   for (const val of Object.values(submission.data)) {
@@ -357,7 +340,7 @@ function FormsToolbar({
         <button
           type="button"
           onClick={onDelete}
-          disabled={!selectedForm}
+          disabled={forms.length === 0}
           className="font-dm-mono flex h-12 min-w-0 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#6433CC] px-3 text-xs font-normal tracking-[0.12em] text-white uppercase transition-colors hover:bg-[#572bb5] disabled:cursor-not-allowed disabled:opacity-50 lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
         >
           <Trash2 className="h-4 w-4 shrink-0 lg:h-5 lg:w-5" />
@@ -720,7 +703,10 @@ export function FormsTabContent() {
   } | null>(null);
 
   const { data: forms = [] } = useForms();
+  const { data: allSubmissions = [] } = useAllSubmissions();
   const deleteForm = useDeleteForm();
+  const deleteSubmission = useDeleteSubmission();
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const { mutate: markSubmissionRead } = useMarkSubmissionRead();
 
   useEffect(() => {
@@ -775,19 +761,37 @@ export function FormsTabContent() {
   };
 
   const handleDelete = () => {
-    if (!selectedForm) return;
     setIsDeleteModalOpen(true);
   };
 
-  const handleConfirmDelete = () => {
-    if (!selectedFormId) return;
-    deleteForm.mutate(selectedFormId, {
-      onSuccess: () => {
-        setIsDeleteModalOpen(false);
+  const handleDeleteForms = async (formIds: string[]) => {
+    setIsBulkDeleting(true);
+    try {
+      await Promise.all(formIds.map((id) => deleteForm.mutateAsync(id)));
+      if (selectedFormId && formIds.includes(selectedFormId)) {
         setSelectedFormId(null);
         setSelectedSubmissionId(null);
-      },
-    });
+      }
+    } finally {
+      setIsBulkDeleting(false);
+    }
+  };
+
+  const handleDeleteSubmissions = async (submissionIds: string[]) => {
+    setIsBulkDeleting(true);
+    try {
+      await Promise.all(
+        submissionIds.map((id) => deleteSubmission.mutateAsync(id)),
+      );
+      if (
+        selectedSubmissionId &&
+        submissionIds.includes(selectedSubmissionId)
+      ) {
+        setSelectedSubmissionId(null);
+      }
+    } finally {
+      setIsBulkDeleting(false);
+    }
   };
 
   const handleWebsiteFormSuccess = (form: Form) => {
@@ -904,12 +908,14 @@ export function FormsTabContent() {
         formName={successForm?.name ?? ""}
         onClose={() => setSuccessForm(null)}
       />
-      <FormDeleteModal
+      <FormsDeleteManager
         open={isDeleteModalOpen}
-        form={selectedForm}
-        isDeleting={deleteForm.isPending}
+        forms={forms}
+        submissions={allSubmissions}
+        isDeleting={isBulkDeleting}
         onClose={() => setIsDeleteModalOpen(false)}
-        onConfirm={handleConfirmDelete}
+        onDeleteForms={handleDeleteForms}
+        onDeleteSubmissions={handleDeleteSubmissions}
       />
     </div>
   );
