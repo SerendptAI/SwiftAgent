@@ -5,15 +5,12 @@ import { useEffect } from "react";
 
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import type { Form } from "@/services/forms";
+import { getFormDisplayName } from "@/services/forms";
 
 const FORM_TYPE_ICON: Record<string, string> = {
   website: "/images/icons/internet-www.svg",
   online: "/images/icons/sticky-notepad.svg",
 };
-
-function getFormDisplayName(form: Form): string {
-  return form.form_title ?? form.website_link ?? form.id;
-}
 
 interface FormDeleteModalProps {
   open: boolean;

@@ -6,9 +6,9 @@ import {
   isToday,
   isYesterday,
 } from "date-fns";
-import Image from "next/image";
 import { useState } from "react";
 
+import { MessagesEmptyState } from "@/components/dashboard/ticketing/messages-empty-state";
 import { Loader } from "@/components/loader";
 import { useChat, useResolvedChats } from "@/hooks/use-conversations";
 import { useTicket, useTickets } from "@/hooks/use-tickets";
@@ -25,22 +25,11 @@ interface TicketListProps {
 
 function TicketListEmptyState() {
   return (
-    <div className="flex h-full w-full items-center justify-center">
-      <div className="flex flex-col items-center gap-8 text-center">
-        <Image
-          src="/images/email-mailbox-open.svg"
-          alt=""
-          width={66}
-          height={66}
-          className="aspect-66/66 w-full max-w-[66px]"
-        />
-        <p className="font-dm-mono text-center text-sm leading-[1.39] font-normal tracking-widest text-black/60 uppercase">
-          NOTHING HERE FOR
-          <br />
-          NOW
-        </p>
-      </div>
-    </div>
+    <MessagesEmptyState className="flex h-full w-full items-center justify-center">
+      NOTHING HERE FOR
+      <br />
+      NOW
+    </MessagesEmptyState>
   );
 }
 

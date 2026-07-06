@@ -17,7 +17,6 @@ export function DashboardSection() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Text stagger
       if (textRef.current) {
         gsap.from(textRef.current.children, {
           scrollTrigger: {
@@ -32,7 +31,6 @@ export function DashboardSection() {
         });
       }
 
-      // Image float in
       if (imageRef.current) {
         gsap.from(imageRef.current, {
           scrollTrigger: {
@@ -46,7 +44,6 @@ export function DashboardSection() {
         });
       }
 
-      // Button pop
       if (btnRef.current) {
         gsap.from(btnRef.current, {
           scrollTrigger: {
@@ -86,7 +83,6 @@ export function DashboardSection() {
             </h2>
           </div>
 
-          {/* GET STARTED button */}
           <Link
             ref={btnRef}
             href="/signup"

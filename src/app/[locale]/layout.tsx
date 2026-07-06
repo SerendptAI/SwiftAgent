@@ -6,12 +6,10 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { Suspense } from "react";
 
 import { UpgradeModalTrigger } from "@/components/dashboard/upgrade-modal-trigger";
-// import { LangSwitcher } from "@/components/lang-switcher";
 import { ChatbotRouteGuard } from "@/components/landing/chatbot-route-guard";
 import { QueryProvider } from "@/components/query-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ToastProvider } from "@/components/ui/toast";
-// import { ThemeSwitcher } from "@/components/theme-switcher";
 import { routing } from "@/i18n/routing";
 import { fonts } from "@/lib/fonts";
 import { siteConfig } from "@/lib/site-config";
@@ -95,8 +93,6 @@ const RootLayout = async ({
               </ToastProvider>
             </QueryProvider>
             <ChatbotRouteGuard />
-            {/* <LangSwitcher className="absolute right-5 bottom-16 z-10" />
-            <ThemeSwitcher className="absolute right-5 bottom-5 z-10" /> */}
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

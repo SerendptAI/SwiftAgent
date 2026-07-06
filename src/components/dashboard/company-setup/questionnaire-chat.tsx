@@ -195,7 +195,6 @@ function buildQuestions(type: CompanyType | null): QuestionDef[] {
 export function QuestionnaireChat({
   companyId,
   companyName,
-  logoUrl,
   initialEmailSlug,
 }: {
   companyId: string | null;
@@ -264,14 +263,12 @@ export function QuestionnaireChat({
   const handleSelectOption = (option: string) => {
     const questionDef = questions[currentStep];
 
-    // Mark selection in current entry
     setEntries((prev) =>
       prev.map((entry, i) =>
         i === currentStep ? { ...entry, selected: option } : entry,
       ),
     );
 
-    // Determine branching for company_type
     let nextQuestions = questions;
     if (questionDef?.id === "company_type") {
       const type: CompanyType = option.includes("SAAS") ? "saas" : "crypto";

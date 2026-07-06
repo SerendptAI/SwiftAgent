@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
+import { useInViewAutoplay } from "@/hooks/use-in-view-autoplay";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
@@ -41,29 +42,7 @@ function PlatformVideo({
   src: string;
   className?: string;
 }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            video.muted = true;
-            video.load();
-            video.play().catch(() => {});
-            observer.disconnect();
-          }
-        });
-      },
-      { threshold: 0.25 },
-    );
-
-    observer.observe(video);
-    return () => observer.disconnect();
-  }, []);
+  const videoRef = useInViewAutoplay();
 
   return (
     <video
@@ -84,11 +63,9 @@ export function PlatformsSection() {
   return (
     <section className="w-full bg-white px-6 py-16 md:px-10 md:py-20 lg:px-16">
       <div className="mx-auto max-w-360">
-        {/* ── Mobile accordion ── */}
         <div className="flex flex-col gap-4 bg-[#D9D9D9] px-3 py-4 md:hidden">
           {PLATFORMS.map((p, i) => (
             <div key={p.id}>
-              {/* Tab header */}
               <button
                 onClick={() => setActive(i)}
                 className={cn(
@@ -125,9 +102,7 @@ export function PlatformsSection() {
           ))}
         </div>
 
-        {/* ── Desktop tab layout ── */}
         <div className="hidden flex-col items-center md:flex">
-          {/* Tab switcher */}
           <div className="scrollbar-none mb-14 w-auto overflow-x-auto">
             <div className="inline-flex min-w-0 items-center bg-[#D9D9D9] p-1.5">
               {PLATFORMS.map((p, i) => (
@@ -148,12 +123,10 @@ export function PlatformsSection() {
             </div>
           </div>
 
-          {/* Description */}
           <p className="font-stolzl mb-8 max-w-235 text-center text-sm leading-relaxed md:mb-12 md:text-base">
             {PLATFORMS[active].description}
           </p>
 
-          {/* CTAs */}
           <div className="mb-10 flex max-w-107.5 flex-wrap justify-center gap-4 md:grid md:grid-cols-2 md:gap-8">
             <Button variant="outline" size="lg" asChild>
               <Link href="/demo">BOOK A DEMO</Link>
@@ -163,7 +136,6 @@ export function PlatformsSection() {
             </Button>
           </div>
 
-          {/* Platform video */}
           <div className="relative w-full overflow-hidden">
             {PLATFORMS.map((p, i) => (
               <div

@@ -52,7 +52,6 @@ export default function InvitePage() {
 
   return (
     <div className="relative flex min-h-screen w-full items-start justify-center overflow-hidden bg-[#6433CC] pt-32">
-      {/* ── Corner SVG decorations ─────────────────────────────── */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/images/Referrals/referral1.svg"
@@ -68,9 +67,7 @@ export default function InvitePage() {
         aria-hidden="true"
       />
 
-      {/* ── Main card ────────────────────────────────────────────── */}
       <div className="relative z-10 flex flex-col items-center gap-6 px-4 text-center">
-        {/* Logo */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/images/logo_white.svg"
@@ -78,18 +75,15 @@ export default function InvitePage() {
           className="h-16 w-16"
         />
 
-        {/* Heading */}
         <h1 className="font-greed-narrow text-3xl font-bold text-white">
           Enter your referral code
         </h1>
 
-        {/* Subtitle */}
         <p className="font-dm-mono max-w-lg text-sm tracking-widest text-white/80 uppercase">
           Swift Agents is invite-only for now, but we plan to open it to the
           public soon!
         </p>
 
-        {/* Form */}
         <form
           onSubmit={handleSubmit}
           className="flex w-full max-w-xl flex-col gap-3"
@@ -142,7 +136,6 @@ export default function InvitePage() {
             </button>
           </div>
 
-          {/* Inline error */}
           {error && (
             <p className="font-dm-mono animate-in fade-in slide-in-from-top-1 text-center text-sm text-red-200 duration-200">
               {error}

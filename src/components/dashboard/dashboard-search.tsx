@@ -9,8 +9,6 @@ import { useAllChatDetails, useChats } from "@/hooks/use-conversations";
 import { useRouter } from "@/i18n/navigation";
 import { resolveAvatarUrl } from "@/lib/avatar";
 
-// ── Section definitions ─────────────────────────────────────────────────────
-
 interface SearchResult {
   id: string;
   text: string;
@@ -88,8 +86,6 @@ function truncateAroundMatch(text: string, query: string, maxLen = 60): string {
   return snippet;
 }
 
-// ── Component ───────────────────────────────────────────────────────────────
-
 export function DashboardSearch() {
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -103,7 +99,6 @@ export function DashboardSearch() {
   const { data: chats } = useChats();
   const chatDetails = useAllChatDetails();
 
-  // Close on click outside (check both input container and portalled dropdown)
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       const target = e.target as Node;
@@ -121,7 +116,6 @@ export function DashboardSearch() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Close on Escape
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
@@ -133,14 +127,12 @@ export function DashboardSearch() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // Build search results
   const sections: SectionResult[] = (() => {
     if (!query.trim()) return [];
     const q = query.trim().toLowerCase();
 
     const results: SectionResult[] = [];
 
-    // Home
     const homeResults: SearchResult[] = [];
     for (const item of STATIC_CONTENT.Home) {
       if (item.toLowerCase().includes(q)) {
@@ -154,7 +146,6 @@ export function DashboardSearch() {
     }
     results.push({ name: "Home", results: homeResults });
 
-    // Ticketing - search through chat sessions and message content
     const ticketResults: SearchResult[] = [];
     if (chats) {
       for (let ci = 0; ci < chats.length; ci++) {
@@ -163,7 +154,6 @@ export function DashboardSearch() {
         const detail = chatDetails[ci]?.data;
         const messages = detail?.messages ?? [];
 
-        // Search in message content
         const matchedMessage = messages.find((m) =>
           m.content.toLowerCase().includes(q),
         );
@@ -198,7 +188,6 @@ export function DashboardSearch() {
     }
     results.push({ name: "Ticketing", results: ticketResults });
 
-    // Billing
     const billingResults: SearchResult[] = [];
     for (const item of STATIC_CONTENT.Billing) {
       if (item.toLowerCase().includes(q)) {
@@ -212,7 +201,6 @@ export function DashboardSearch() {
     }
     results.push({ name: "Billing", results: billingResults });
 
-    // Settings
     const settingsResults: SearchResult[] = [];
     const SETTINGS_ROUTES: Record<string, string> = {
       "Personal Email Address": "/dashboard/settings",
@@ -237,7 +225,6 @@ export function DashboardSearch() {
         });
       }
     }
-    // Also search user profile data
     if (user?.email && user.email.toLowerCase().includes(q)) {
       settingsResults.push({
         id: "settings-email",

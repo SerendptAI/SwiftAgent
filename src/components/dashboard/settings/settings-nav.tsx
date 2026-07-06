@@ -1,7 +1,5 @@
 "use client";
 
-import { KeyRound } from "lucide-react";
-
 import { NavItem } from "@/components/dashboard/nav-item";
 import { Icons } from "@/components/icons";
 

@@ -129,7 +129,6 @@ export function CompanyInfoStep({
 
   const typedName = watch("name");
 
-  // Sync the typed name to the global Zustand store in real-time
   useEffect(() => {
     setTypedCompanyName(typedName || "");
   }, [typedName, setTypedCompanyName]);
@@ -142,7 +141,6 @@ export function CompanyInfoStep({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Default-select the current company or the first one
   useEffect(() => {
     if (companies.length > 0 && !selectedCompany) {
       const current = companies.find((c) => c.id === companyId);
@@ -190,7 +188,6 @@ export function CompanyInfoStep({
     }
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (

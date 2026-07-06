@@ -36,6 +36,7 @@ import {
 } from "@/services/tickets";
 
 import { MessageMarkdown } from "./message-markdown";
+import { MessagesEmptyState } from "./messages-empty-state";
 
 /** Format a byte count as a human-readable size (e.g. "1.0 MB"). */
 function formatBytes(bytes?: number | null): string {
@@ -288,29 +289,6 @@ function AttachmentPreviewModal({
   );
 }
 
-function MessageEmptyState() {
-  return (
-    <div className="flex min-h-[420px] w-full items-center justify-center rounded-[20px] bg-white px-4 pb-20 shadow-sm lg:h-full lg:rounded-3xl lg:pb-0">
-      <div className="flex flex-col items-center gap-8 text-center">
-        <Image
-          src="/images/email-mailbox-open.svg"
-          alt=""
-          width={66}
-          height={66}
-          className="aspect-[66/66] w-full max-w-[66px]"
-        />
-        <p className="font-dm-mono text-center text-sm leading-[1.39] font-normal tracking-[0.1em] text-black/60 uppercase">
-          NOTHING HERE FOR NOW,
-          <br />
-          WHEN YOU GET MESSAGES THEY’LL
-          <br />
-          APPEAR HERE
-        </p>
-      </div>
-    </div>
-  );
-}
-
 interface TicketViewProps {
   ticketId: string;
   className?: string;
@@ -373,7 +351,15 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
   }, [ticket, companyId, markSeen]);
 
   if (!ticket && !isFetching) {
-    return <MessageEmptyState />;
+    return (
+      <MessagesEmptyState className="flex min-h-[420px] w-full items-center justify-center rounded-[20px] bg-white px-4 pb-20 shadow-sm lg:h-full lg:rounded-3xl lg:pb-0">
+        NOTHING HERE FOR NOW,
+        <br />
+        WHEN YOU GET MESSAGES THEY’LL
+        <br />
+        APPEAR HERE
+      </MessagesEmptyState>
+    );
   }
 
   const messages = ticket?.messages ?? [];
@@ -476,7 +462,6 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
 
   const body = (
     <>
-      {/* Header */}
       <div className="flex items-center justify-between border-b border-gray-100 px-4 py-4 sm:px-6">
         <div className="flex min-w-0 items-center gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gray-50">
@@ -568,7 +553,6 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
         </div>
       )}
 
-      {/* Messages */}
       <div className="scrollbar-none flex-1 space-y-4 overflow-y-auto px-4 py-4 sm:px-6">
         {headerTime && (
           <div className="flex items-center justify-center">
@@ -656,7 +640,6 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Reply composer */}
       <div className="border-t border-gray-100 px-4 py-3">
         {ticket?.status === "resolved" ? (
           <div className="flex items-center justify-center gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-4 py-2.5">

@@ -96,7 +96,6 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
     setIsOpen(false);
   }
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -112,7 +111,6 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
 
   return (
     <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-[20px] bg-white p-2 shadow-sm md:rounded-3xl">
-      {/* Company Selector Dropdown */}
       <div ref={dropdownRef} className="relative min-w-0 flex-1 sm:flex-none">
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -131,7 +129,6 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
           )}
         </button>
 
-        {/* Backdrop overlay */}
         {isOpen && (
           <button
             type="button"
@@ -141,7 +138,6 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
           />
         )}
 
-        {/* Dropdown Menu */}
         {isOpen && (
           <div className="animate-in fade-in slide-in-from-top-2 font-dm-mono absolute left-0 z-[70] mt-2 w-[min(calc(100vw-2rem),20rem)] rounded-2xl border border-gray-100 bg-white p-3 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] duration-200">
             {companies.map((company) => {
@@ -193,7 +189,6 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
         )}
       </div>
 
-      {/* Right-side actions */}
       {actions && <div className="flex items-center gap-3">{actions}</div>}
 
       <UpgradePlanModal

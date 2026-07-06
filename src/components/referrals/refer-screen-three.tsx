@@ -15,7 +15,6 @@ type FormScreen = "founder" | "you";
 type FieldName =
   | "founderName"
   | "companyName"
-  | "companyOther"
   | "founderPosition"
   | "founderPhone"
   | "founderEmail"
@@ -53,7 +52,6 @@ const inputClass =
 const initialValues: FormValues = {
   founderName: "",
   companyName: "",
-  companyOther: "",
   founderPosition: "",
   founderPhone: "",
   founderEmail: "",
@@ -116,9 +114,6 @@ function validateField(name: FieldName, value: string) {
       return "";
     case "companyName":
       if (!trimmed) return "Company name is required.";
-      return "";
-    case "companyOther":
-      if (trimmed && trimmed.length < 2) return "Enter a valid company name.";
       return "";
     case "founderPosition":
       if (!trimmed) return "Founder position is required.";

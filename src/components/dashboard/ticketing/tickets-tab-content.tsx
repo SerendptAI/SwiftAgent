@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import { ChatView } from "@/components/dashboard/ticketing/chat-view";
+import { MessagesEmptyState } from "@/components/dashboard/ticketing/messages-empty-state";
 import type { TicketKind } from "@/components/dashboard/ticketing/ticket-list";
 import { TicketList } from "@/components/dashboard/ticketing/ticket-list";
 import { TicketView } from "@/components/dashboard/ticketing/ticket-view";
@@ -19,29 +19,6 @@ interface TicketsTabContentProps {
   onClearSelection: () => void;
   onSelectItem: (id: string, kind: TicketKind) => void;
   searchQuery?: string;
-}
-
-function MessageEmptyState() {
-  return (
-    <div className="flex min-h-[420px] w-full items-center justify-center rounded-[20px] bg-white px-4 pb-20 shadow-sm lg:h-full lg:rounded-3xl lg:pb-0">
-      <div className="flex flex-col items-center gap-8 text-center">
-        <Image
-          src="/images/email-mailbox-open.svg"
-          alt=""
-          width={66}
-          height={66}
-          className="aspect-[66/66] w-full max-w-[66px]"
-        />
-        <p className="font-dm-mono text-center text-sm leading-[1.39] font-normal tracking-[0.1em] text-black/60 uppercase">
-          NOTHING HERE FOR NOW,
-          <br />
-          WHEN YOU GET MESSAGES THEY&apos;LL
-          <br />
-          APPEAR HERE
-        </p>
-      </div>
-    </div>
-  );
 }
 
 export function TicketsTabContent({
@@ -70,7 +47,13 @@ export function TicketsTabContent({
       <ChatView ticketId={selection.id} />
     )
   ) : (
-    <MessageEmptyState />
+    <MessagesEmptyState className="flex min-h-[420px] w-full items-center justify-center rounded-[20px] bg-white px-4 pb-20 shadow-sm lg:h-full lg:rounded-3xl lg:pb-0">
+      NOTHING HERE FOR NOW,
+      <br />
+      WHEN YOU GET MESSAGES THEY&apos;LL
+      <br />
+      APPEAR HERE
+    </MessagesEmptyState>
   );
 
   const mobileConversation = selection ? (

@@ -7,48 +7,6 @@
 const cache = new Map<string, { code: string; expiresAt: number }>();
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 
-interface IpApiResponse {
-  status: "success" | "fail";
-  countryCode?: string;
-}
-
-/**
- * Look up the country code for a single IP address.
- * Returns a 2-letter country code (e.g. "NG", "US") or "" on failure.
- */
-export async function getCountryByIp(ip: string): Promise<string> {
-  // Check cache first
-  const cached = cache.get(ip);
-  if (cached && cached.expiresAt > Date.now()) {
-    return cached.code;
-  }
-
-  try {
-    const res = await fetch(
-      `http://ip-api.com/json/${ip}?fields=status,countryCode`,
-      {
-        signal: AbortSignal.timeout(3000),
-      },
-    );
-
-    if (!res.ok) return "";
-
-    const data: IpApiResponse = await res.json();
-
-    if (data.status === "success" && data.countryCode) {
-      cache.set(ip, {
-        code: data.countryCode,
-        expiresAt: Date.now() + CACHE_TTL_MS,
-      });
-      return data.countryCode;
-    }
-
-    return "";
-  } catch {
-    return "";
-  }
-}
-
 /**
  * Batch-resolve country codes for multiple IPs.
  * ip-api.com supports batch requests (up to 100 IPs per call).

@@ -73,7 +73,6 @@ export function YourNumbersPanel({
                 value={monthlyConvos}
                 onChange={setMonthlyConvos}
                 suffix="CONVOS"
-                width="w-20"
               />
             </div>
 
@@ -85,7 +84,6 @@ export function YourNumbersPanel({
                 value={teamSize}
                 onChange={setTeamSize}
                 suffix="HUMAN AGENTS"
-                width="w-10"
               />
             </div>
 
@@ -98,7 +96,6 @@ export function YourNumbersPanel({
                 onChange={setCostPerAgent}
                 suffix="/HUMAN AGENTS"
                 prefix={sym}
-                width="w-16"
               />
             </div>
           </div>

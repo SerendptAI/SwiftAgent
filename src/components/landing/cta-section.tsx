@@ -17,7 +17,6 @@ export function CtaSection({ variant = "light" }: CtaSectionProps) {
           isGreen ? "bg-[#03A84E]" : "bg-[#F2EFE9]",
         )}
       >
-        {/* Left — copy */}
         <div className="relative z-10 flex flex-col pt-8 pb-12 md:w-120 md:pb-15 lg:w-[55%] lg:px-16 lg:pt-11 lg:pb-19">
           <h2
             className={cn(
@@ -52,7 +51,6 @@ export function CtaSection({ variant = "light" }: CtaSectionProps) {
           </div>
         </div>
 
-        {/* Right — phone mockup */}
         <div className="absolute right-0 bottom-0 hidden h-full items-end overflow-hidden lg:flex lg:w-[48%]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -62,7 +60,6 @@ export function CtaSection({ variant = "light" }: CtaSectionProps) {
           />
         </div>
 
-        {/* Mobile image */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/images/cta-mobile.svg"

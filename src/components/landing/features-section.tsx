@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 import BriggsAnimation from "@/components/briggs-face-animation";
+import { useInViewAutoplay } from "@/hooks/use-in-view-autoplay";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -51,29 +52,7 @@ const AGENT_001: Agent = {
 
 // ─── Agent Video — loads only when scrolled into view ─────────
 function AgentVideo({ src }: { src: string }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            video.muted = true;
-            video.load();
-            video.play().catch(() => {});
-            observer.disconnect();
-          }
-        });
-      },
-      { threshold: 0.25 },
-    );
-
-    observer.observe(video);
-    return () => observer.disconnect();
-  }, []);
+  const videoRef = useInViewAutoplay();
 
   return (
     <video
@@ -92,17 +71,14 @@ function AgentVideo({ src }: { src: string }) {
 function AgentCard({ agent }: { agent: Agent }) {
   return (
     <div className="flex flex-col gap-4 max-md:mb-6">
-      {/* Agent name */}
       <h3 className="font-dm-mono text-xl font-normal tracking-[0.2em] text-black/40 uppercase md:mb-2 md:text-2xl lg:text-3xl xl:text-4xl">
         {agent.name}
       </h3>
 
-      {/* Agent video */}
       <div className="flex aspect-420/496 items-center justify-center overflow-hidden">
         <AgentVideo src={agent.video} />
       </div>
 
-      {/* Agent description */}
       <p className="font-dm-mono w-[90%] text-sm leading-relaxed tracking-[8%] text-black/80 uppercase md:text-base">
         {agent.description}
       </p>
@@ -119,7 +95,6 @@ export function FeaturesSection() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Header entrance
       if (headerRef.current) {
         gsap.from(headerRef.current.children, {
           scrollTrigger: {
@@ -134,7 +109,6 @@ export function FeaturesSection() {
         });
       }
 
-      // Agent cards stagger
       if (gridRef.current) {
         gsap.from(gridRef.current.children, {
           scrollTrigger: {
@@ -149,7 +123,6 @@ export function FeaturesSection() {
         });
       }
 
-      // Bottom row entrance
       if (bottomRef.current) {
         gsap.from(bottomRef.current.children, {
           scrollTrigger: {
@@ -180,12 +153,10 @@ export function FeaturesSection() {
           ref={headerRef}
           className="mb-10 flex flex-col gap-4 md:mb-14 lg:mb-18"
         >
-          {/* Label */}
           <span className="font-dm-mono text-base leading-[1.2] tracking-[10%] text-gray-400 uppercase md:text-lg lg:text-xl">
             OUR AI AGENTS
           </span>
 
-          {/* Headline */}
           <h2 className="font-greed-narrow w-full max-w-2xl text-4xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase md:text-5xl lg:text-[66px]">
             OUR AGENTS ACCOMPLISH DIFFERENT FUNCTIONS
           </h2>

@@ -214,7 +214,6 @@ export function DemoCaseStudiesSection() {
   return (
     <section className="w-full px-6 py-16 md:px-10 md:py-20 lg:px-16 lg:py-26">
       <div className="mx-auto max-w-360">
-        {/* Header */}
         <p className="font-dm-mono mb-4 text-base leading-[1.2] tracking-[10%] text-black/60 uppercase md:text-lg">
           HOW SWIFT AGENTS CAN HELP YOUR BUSINESS
         </p>
@@ -222,7 +221,6 @@ export function DemoCaseStudiesSection() {
           CASE STUDIES
         </h2>
 
-        {/* Company tabs */}
         <div className="mb-10 flex gap-4 overflow-x-auto pb-2 [scrollbar-width:none] md:mb-14 lg:mb-18 lg:gap-6 [&::-webkit-scrollbar]:hidden">
           {CASE_STUDIES.map((cs) => (
             <button
@@ -247,18 +245,14 @@ export function DemoCaseStudiesSection() {
           ))}
         </div>
 
-        {/* Case study content */}
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12 xl:gap-18">
-          {/* Left — app mockup */}
           <img
             src={active.mockup}
             alt={`${active.name} app screenshot`}
             className="aspect-571/701 w-full object-cover"
           />
 
-          {/* Right — details */}
           <div className="flex flex-col justify-start">
-            {/* Company name + share */}
             <div className="mb-6 flex items-center gap-6">
               <h3 className="font-greed-narrow text-4xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase sm:text-5xl md:text-[56px] lg:text-[66px]">
                 {active.name}
@@ -271,13 +265,11 @@ export function DemoCaseStudiesSection() {
               </button>
             </div>
 
-            {/* Description */}
             <div
               className="font-stolzl mb-8 text-sm leading-[1.66] tracking-[2%] text-black/80 md:text-base lg:text-lg"
               dangerouslySetInnerHTML={{ __html: active.description }}
             />
 
-            {/* Use cases */}
             <p className="font-dm-mono mb-7 text-base leading-[1.2] font-medium tracking-[10%] text-black uppercase md:text-lg">
               HOW WE HELP?
             </p>

@@ -1,5 +1,4 @@
 export const PRODUCTS_DROPDOWN_LINKS = [
-  // { label: "OUR PRODUCTS", href: "/products", arrow: false },
   { label: "DOWNLOAD THE SWIFT AGENTS APP", href: "/products", arrow: true },
   { label: "USE OUR SDKS", href: "/products#sdks", arrow: true },
 ] as const;

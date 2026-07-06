@@ -5,10 +5,8 @@ import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { Icons } from "@/components/icons";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
-import { useGoogleLogin, useSendOtp, useVerifyOtp } from "@/hooks/use-auth";
+import { useSendOtp, useVerifyOtp } from "@/hooks/use-auth";
 
 const OTP_LENGTH = 6;
 
@@ -17,7 +15,6 @@ export default function LoginPage() {
   const t = useTranslations("login");
   const toast = useToast();
   const { setTheme } = useTheme();
-  const googleLogin = useGoogleLogin();
   const sendOtp = useSendOtp();
   const verifyOtp = useVerifyOtp();
 
@@ -46,11 +43,6 @@ export default function LoginPage() {
   const isValidEmail = (value: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 
-  const handleGoogleLogin = () => {
-    googleLogin.mutate("en");
-  };
-
-  // Send OTP to email
   const handleSendOtp = async () => {
     if (!isValidEmail(email)) {
       setEmailError(t("invalidEmail"));
@@ -100,7 +92,6 @@ export default function LoginPage() {
     );
   };
 
-  // Verify OTP when all digits are filled
   const handleVerifyOtp = useCallback(
     async (code: string) => {
       setIsVerifying(true);
@@ -112,18 +103,9 @@ export default function LoginPage() {
           onSuccess: () => {
             router.push("/en/dashboard");
           },
-          onError: (error: unknown) => {
+          onError: () => {
             setIsVerifying(false);
-            const status =
-              error &&
-              typeof error === "object" &&
-              "response" in error &&
-              (error as { response?: { status?: number } }).response?.status;
-            if (status === 400) {
-              setOtpError(t("incorrectOtp"));
-            } else {
-              setOtpError(t("incorrectOtp"));
-            }
+            setOtpError(t("incorrectOtp"));
           },
         },
       );
@@ -131,9 +113,7 @@ export default function LoginPage() {
     [email, verifyOtp, router, t],
   );
 
-  // Handle individual OTP digit input
   const handleOtpChange = (index: number, value: string) => {
-    // Only allow digits
     const digit = value.replace(/\D/g, "").slice(-1);
     const newOtp = [...otp];
     newOtp[index] = digit;
@@ -151,7 +131,6 @@ export default function LoginPage() {
     }
   };
 
-  // Handle paste into OTP inputs
   const handleOtpPaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
     const pasted = e.clipboardData
@@ -167,17 +146,14 @@ export default function LoginPage() {
     setOtp(newOtp);
     setOtpError("");
 
-    // Focus the next empty input or the last one
     const nextEmpty = newOtp.findIndex((d) => d === "");
     inputRefs.current[nextEmpty === -1 ? OTP_LENGTH - 1 : nextEmpty]?.focus();
 
-    // Auto-submit if full
     if (pasted.length === OTP_LENGTH) {
       handleVerifyOtp(pasted);
     }
   };
 
-  // Handle backspace navigation
   const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
@@ -243,7 +219,6 @@ export default function LoginPage() {
             </div>
           ) : (
             <div className="flex flex-col items-center gap-14">
-              {/* OTP Input Boxes */}
               <div className="flex items-center gap-2" onPaste={handleOtpPaste}>
                 {otp.map((digit, index) => (
                   <input
@@ -273,7 +248,6 @@ export default function LoginPage() {
                 </p>
               )}
 
-              {/* Status text */}
               {isVerifying && (
                 <p className="text-muted-foreground text-sm leading-[1.2] tracking-[10%] uppercase">
                   {t("signingIn")}
@@ -285,7 +259,6 @@ export default function LoginPage() {
                 </p>
               )}
 
-              {/* Resend code + back to email */}
               {!isVerifying && (
                 <div className="flex items-center gap-3 max-md:flex-col">
                   <button

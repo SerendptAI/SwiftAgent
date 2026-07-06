@@ -7,10 +7,9 @@ import type {
   Form,
   Submission,
   SubmissionListParams,
-  SubmitFormPayload,
   UpdateFormPayload,
 } from "@/services/forms";
-import { formsApi, publicFormsApi } from "@/services/forms";
+import { formsApi } from "@/services/forms";
 
 export function useForms() {
   const companyId = useActiveCompanyId();
@@ -112,16 +111,6 @@ export function useFormSubmissions(
   });
 }
 
-export function useSubmission(submissionId: string | null) {
-  const companyId = useActiveCompanyId();
-
-  return useQuery<Submission>({
-    queryKey: ["submissions", companyId, "detail", submissionId],
-    queryFn: () => formsApi.getSubmission(companyId!, submissionId!),
-    enabled: !!companyId && !!submissionId,
-  });
-}
-
 export function useMarkSubmissionRead() {
   const queryClient = useQueryClient();
   const companyId = useActiveCompanyId();
@@ -136,26 +125,5 @@ export function useMarkSubmissionRead() {
         updatedSubmission,
       );
     },
-  });
-}
-
-export function usePublishedForm(formId: string | null) {
-  return useQuery<Form>({
-    queryKey: ["publicForm", formId],
-    queryFn: () => publicFormsApi.getPublishedForm(formId!),
-    enabled: !!formId,
-    staleTime: 5 * 60 * 1000,
-  });
-}
-
-export function useSubmitForm() {
-  return useMutation({
-    mutationFn: ({
-      formId,
-      payload,
-    }: {
-      formId: string;
-      payload: SubmitFormPayload;
-    }) => publicFormsApi.submit(formId, payload),
   });
 }

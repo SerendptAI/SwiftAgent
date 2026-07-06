@@ -27,7 +27,6 @@ interface KnowledgeSourcesStepProps {
   companyId?: string | null;
   isUpdateMode?: boolean;
   onNext?: () => void;
-  onBack?: () => void;
   footerAction?: React.ReactNode;
 }
 
@@ -134,8 +133,6 @@ export function KnowledgeSourcesStep({
         </div>
       </div>
 
-      {/* Upload Sections */}
-      {/* Upload Sections */}
       <div className="space-y-6">
         {companyType === "saas" ? (
           <>

@@ -1,5 +1,6 @@
 import { apiClient } from "@/lib/api-client";
 import { publicApiClient } from "@/lib/public-api-client";
+import { unwrapList } from "@/lib/unwrap-list";
 
 export type FormType = "website" | "online";
 
@@ -61,8 +62,8 @@ export function getFormEmbedCode(formId: string): string {
   return `<script src="https://swiftagents.org/chat-widget.js"></script>\n<div id="swift-form" data-form-id="${formId}"></div>`;
 }
 
-function unwrapList<T>(data: T[] | { items: T[] }): T[] {
-  return Array.isArray(data) ? data : data.items;
+export function getFormDisplayName(form: Form): string {
+  return form.form_title ?? form.website_link ?? form.id;
 }
 
 export const formsApi = {

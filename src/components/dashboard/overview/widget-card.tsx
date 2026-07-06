@@ -87,7 +87,6 @@ export function WidgetCard() {
     }
   }, [searchParams, pathname, router, hasActivePlan, showUpgrade]);
 
-  // Close mode dropdown on outside click
   const modeDropdownRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!modeDropdownOpen) return;
@@ -126,7 +125,6 @@ export function WidgetCard() {
       {isOpen ? (
         <div className="relative">
           <div className="relative">
-            {/* Top bar with notch cutout */}
             <div className="absolute top-0 right-0 left-0 z-10 flex h-[48px] items-center gap-2 pr-3 sm:gap-4 sm:pr-0">
               <div
                 className="bg-muted h-full rounded-br-md pr-4"
@@ -193,7 +191,6 @@ export function WidgetCard() {
             </div>
 
             <div className="rounded-[20px] border border-gray-100 bg-white px-4 pt-16 pb-5 shadow-sm md:rounded-md md:px-5">
-              {/* Code snippet */}
               <div className="relative">
                 <pre
                   className={`font-stolzl max-h-48 overflow-auto rounded-lg bg-[#F6F6F6] p-3 text-[11px] leading-relaxed break-all whitespace-pre-wrap text-gray-700 sm:p-4 sm:text-[13px] ${
@@ -240,7 +237,6 @@ export function WidgetCard() {
                 </p>
               )}
 
-              {/* Copy button */}
               <button
                 onClick={handleCopy}
                 disabled={!codeSnippet || locked}
