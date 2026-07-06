@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
+import { useInViewAutoplay } from "@/hooks/use-in-view-autoplay";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
@@ -41,29 +42,7 @@ function PlatformVideo({
   src: string;
   className?: string;
 }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            video.muted = true;
-            video.load();
-            video.play().catch(() => {});
-            observer.disconnect();
-          }
-        });
-      },
-      { threshold: 0.25 },
-    );
-
-    observer.observe(video);
-    return () => observer.disconnect();
-  }, []);
+  const videoRef = useInViewAutoplay();
 
   return (
     <video

@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 import BriggsAnimation from "@/components/briggs-face-animation";
+import { useInViewAutoplay } from "@/hooks/use-in-view-autoplay";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -51,29 +52,7 @@ const AGENT_001: Agent = {
 
 // ─── Agent Video — loads only when scrolled into view ─────────
 function AgentVideo({ src }: { src: string }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            video.muted = true;
-            video.load();
-            video.play().catch(() => {});
-            observer.disconnect();
-          }
-        });
-      },
-      { threshold: 0.25 },
-    );
-
-    observer.observe(video);
-    return () => observer.disconnect();
-  }, []);
+  const videoRef = useInViewAutoplay();
 
   return (
     <video

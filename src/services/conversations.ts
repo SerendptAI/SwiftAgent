@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/api-client";
+import { unwrapList } from "@/lib/unwrap-list";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -44,7 +45,7 @@ export const chatsApi = {
     const { data } = await apiClient.get<
       { items: ChatSession[] } | ChatSession[]
     >(`/api/v1/dashboard/${companyId}/chats`, { params: { limit, skip } });
-    return Array.isArray(data) ? data : data.items;
+    return unwrapList(data);
   },
 
   /** Get the full history of a specific chat session. */

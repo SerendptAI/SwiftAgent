@@ -1,6 +1,5 @@
 import { format } from "date-fns";
 import { Check, Maximize2, Minimize2, X } from "lucide-react";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -11,29 +10,7 @@ import { resolveAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
 
 import { MessageMarkdown } from "./message-markdown";
-
-function MessageEmptyState() {
-  return (
-    <div className="flex min-h-[420px] w-full items-center justify-center rounded-[20px] bg-white px-4 pb-20 shadow-sm lg:h-full lg:rounded-3xl lg:pb-0">
-      <div className="flex flex-col items-center gap-8 text-center">
-        <Image
-          src="/images/email-mailbox-open.svg"
-          alt=""
-          width={66}
-          height={66}
-          className="aspect-66/66 w-full max-w-[66px]"
-        />
-        <p className="font-dm-mono text-center text-sm leading-[1.39] font-normal tracking-widest text-black/60 uppercase">
-          NOTHING HERE FOR NOW,
-          <br />
-          WHEN YOU GET MESSAGES THEY’LL
-          <br />
-          APPEAR HERE
-        </p>
-      </div>
-    </div>
-  );
-}
+import { MessagesEmptyState } from "./messages-empty-state";
 
 interface ChatViewProps {
   ticketId: string;
@@ -71,7 +48,15 @@ export function ChatView({ ticketId, className, onClose }: ChatViewProps) {
   }, [chat, companyId, markSeen]);
 
   if (!chat && !isFetching) {
-    return <MessageEmptyState />;
+    return (
+      <MessagesEmptyState className="flex min-h-[420px] w-full items-center justify-center rounded-[20px] bg-white px-4 pb-20 shadow-sm lg:h-full lg:rounded-3xl lg:pb-0">
+        NOTHING HERE FOR NOW,
+        <br />
+        WHEN YOU GET MESSAGES THEY’LL
+        <br />
+        APPEAR HERE
+      </MessagesEmptyState>
+    );
   }
 
   const messages = chat?.messages ?? [];

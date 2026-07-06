@@ -14,6 +14,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { FormCreationSuccessModal } from "@/components/dashboard/ticketing/form-creation-success-modal";
 import { FormDeleteModal } from "@/components/dashboard/ticketing/form-delete-modal";
+import { MessagesEmptyState } from "@/components/dashboard/ticketing/messages-empty-state";
 import { OnlineFormDrawer } from "@/components/dashboard/ticketing/online-form-drawer";
 import { WebsiteFormDrawer } from "@/components/dashboard/ticketing/website-form-drawer";
 import {
@@ -24,6 +25,7 @@ import {
 } from "@/hooks/use-forms";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import type { Form, Submission } from "@/services/forms";
+import { getFormDisplayName } from "@/services/forms";
 
 type FormSubmissionStatus = "unread" | "read";
 type FormType = "website" | "online";
@@ -43,10 +45,6 @@ const FORM_TYPE_META: Record<
     textColor: "text-[#F25430]",
   },
 };
-
-function getFormDisplayName(form: Form): string {
-  return form.form_title ?? form.website_link ?? form.id;
-}
 
 function getSubmissionDisplayName(submission: Submission): string {
   const data = submission.data;
@@ -169,25 +167,14 @@ function ResolvedIcon({ className }: { className?: string }) {
 
 function EmptyStateCenter({ lines }: { lines: string[] }) {
   return (
-    <div className="absolute inset-0 flex items-center justify-center">
-      <div className="flex flex-col items-center gap-8 text-center">
-        <Image
-          src="/images/email-mailbox-open.svg"
-          alt=""
-          width={66}
-          height={66}
-          className="aspect-66/66 w-full max-w-16.5"
-        />
-        <p className="font-dm-mono text-center text-sm leading-[1.39] font-normal tracking-widest text-black/60 uppercase">
-          {lines.map((line, index) => (
-            <span key={line}>
-              {index > 0 && <br />}
-              {line}
-            </span>
-          ))}
-        </p>
-      </div>
-    </div>
+    <MessagesEmptyState className="absolute inset-0 flex items-center justify-center">
+      {lines.map((line, index) => (
+        <span key={line}>
+          {index > 0 && <br />}
+          {line}
+        </span>
+      ))}
+    </MessagesEmptyState>
   );
 }
 

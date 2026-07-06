@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
+import { useInViewAutoplay } from "@/hooks/use-in-view-autoplay";
 import { cn } from "@/lib/utils";
 
 const STEPS = [
@@ -32,29 +33,7 @@ const STEPS = [
 ];
 
 function StepVideo({ src, className }: { src: string; className?: string }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            video.muted = true;
-            video.load();
-            video.play().catch(() => {});
-            observer.disconnect();
-          }
-        });
-      },
-      { threshold: 0.25 },
-    );
-
-    observer.observe(video);
-    return () => observer.disconnect();
-  }, []);
+  const videoRef = useInViewAutoplay();
 
   return (
     <video

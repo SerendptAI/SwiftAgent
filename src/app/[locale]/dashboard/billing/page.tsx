@@ -1,12 +1,12 @@
 "use client";
 
-import { ChevronDown, CreditCard, Plus } from "lucide-react";
+import { ChevronDown, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { CompanyToolbar } from "@/components/dashboard/company-toolbar";
 import { AddCardModal } from "@/components/dashboard/settings/add-card-modal";
 import { CanceledSubscriptionBanner } from "@/components/dashboard/settings/canceled-subscription-banner";
-import { Icons } from "@/components/icons";
+import { CardBrandIcon } from "@/components/dashboard/settings/card-brand-icon";
 import { type Plan, PlanCard } from "@/components/pricing/plan-card";
 import { plansFromBackend } from "@/components/pricing/plans";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
@@ -18,13 +18,6 @@ import {
 import { cn } from "@/lib/utils";
 import type { SavedCard } from "@/services/billing";
 import { useCardStore } from "@/store/card-store";
-
-function CardBrandIcon({ brand }: { brand: string }) {
-  if (brand.toLowerCase() === "mastercard") {
-    return <Icons.mastercard />;
-  }
-  return <CreditCard className="h-4 w-4 text-gray-500" />;
-}
 
 export default function BillingPage() {
   const [showAddCard, setShowAddCard] = useState(false);

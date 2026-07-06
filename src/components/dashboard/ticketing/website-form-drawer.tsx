@@ -1,8 +1,9 @@
 "use client";
 
-import { Copy, Info } from "lucide-react";
+import { Info } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { CopyButton } from "@/components/dashboard/ticketing/copy-button";
 import { Icons } from "@/components/icons";
 import { useCreateWebsiteForm, useUpdateForm } from "@/hooks/use-forms";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
@@ -370,21 +371,6 @@ function WebsiteInformationForm({
             : "Continue"}
       </button>
     </div>
-  );
-}
-
-function CopyButton({ value, label }: { value: string; label: string }) {
-  return (
-    <button
-      type="button"
-      aria-label={label}
-      onClick={() => {
-        void navigator.clipboard?.writeText(value);
-      }}
-      className="inline-flex h-6 w-6 cursor-pointer items-center justify-center text-black/45 transition-colors hover:text-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-    >
-      <Copy className="h-4 w-4" />
-    </button>
   );
 }
 

@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/api-client";
+import { unwrapList } from "@/lib/unwrap-list";
 
 import type { ChatSessionDetail } from "./conversations";
 
@@ -85,7 +86,7 @@ export const ticketsApi = {
     const { data } = await apiClient.get<
       { items: TicketListItem[] } | TicketListItem[]
     >(`/api/v1/email/${companyId}/tickets`, { params: { limit, skip } });
-    return Array.isArray(data) ? data : data.items;
+    return unwrapList(data);
   },
 
   getById: async (companyId: string, ticketId: string): Promise<Ticket> => {
