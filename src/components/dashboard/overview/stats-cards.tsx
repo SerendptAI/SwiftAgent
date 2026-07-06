@@ -116,7 +116,6 @@ function StatCard({
         </div>
       </div>
 
-      {/* Last 7 days trend footer - only for non-action cards with trends */}
       {trend && !action && !isLoading && (
         <div className="font-stolzl flex items-end justify-between">
           <div className="flex w-full items-center justify-between gap-3 text-xs font-medium sm:text-sm">

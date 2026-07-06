@@ -64,7 +64,6 @@ export function ChatView({ ticketId, className, onClose }: ChatViewProps) {
     return () => document.removeEventListener("keydown", onKey);
   }, [isFullscreen]);
 
-  // Mark chat as seen when opened
   useEffect(() => {
     if (chat && !chat.seen && companyId) {
       markSeen({ companyId, chatId: chat.id });
@@ -77,7 +76,6 @@ export function ChatView({ ticketId, className, onClose }: ChatViewProps) {
 
   const messages = chat?.messages ?? [];
 
-  // Try to format the first message timestamp as header
   let headerTime = "";
   if (messages.length > 0 && messages[0].timestamp) {
     try {
@@ -89,7 +87,6 @@ export function ChatView({ ticketId, className, onClose }: ChatViewProps) {
 
   const body = (
     <>
-      {/* Chat Header */}
       <div className="flex items-center justify-between border-b border-gray-100 px-4 py-4 sm:px-6">
         <div className="flex min-w-0 items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-50">
@@ -125,7 +122,6 @@ export function ChatView({ ticketId, className, onClose }: ChatViewProps) {
         </button>
       </div>
 
-      {/* Messages Area (read-only) */}
       <div className="scrollbar-none flex-1 space-y-4 overflow-y-auto px-4 py-4 sm:px-6">
         {headerTime && (
           <div className="flex items-center justify-center">
@@ -182,7 +178,6 @@ export function ChatView({ ticketId, className, onClose }: ChatViewProps) {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Resolved — read-only with optional reopen */}
       <div className="border-t border-gray-100 px-4 py-3">
         <div className="flex items-center justify-center gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-4 py-2.5">
           <Check className="h-4 w-4 text-green-500" />

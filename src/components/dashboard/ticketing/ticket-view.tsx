@@ -476,7 +476,6 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
 
   const body = (
     <>
-      {/* Header */}
       <div className="flex items-center justify-between border-b border-gray-100 px-4 py-4 sm:px-6">
         <div className="flex min-w-0 items-center gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gray-50">
@@ -568,7 +567,6 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
         </div>
       )}
 
-      {/* Messages */}
       <div className="scrollbar-none flex-1 space-y-4 overflow-y-auto px-4 py-4 sm:px-6">
         {headerTime && (
           <div className="flex items-center justify-center">
@@ -656,7 +654,6 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Reply composer */}
       <div className="border-t border-gray-100 px-4 py-3">
         {ticket?.status === "resolved" ? (
           <div className="flex items-center justify-center gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-4 py-2.5">

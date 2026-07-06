@@ -10,6 +10,7 @@ import { useOnboardingStore } from "@/store/onboarding-store";
 
 import { CompanyIdentityStep } from "./company-identity-step";
 import { CompanyInfoStep } from "./company-info-step";
+import { CompletionStep } from "./completion-step";
 import { ProgressBar } from "./progress-bar";
 import { StepIndicator } from "./step-indicator";
 
@@ -20,8 +21,6 @@ const STEPS = [
   "Answer Boundaries",
   "Voice & Conversation",
 ];
-
-import { CompletionStep } from "./completion-step";
 
 export function SetupWizard() {
   const searchParams = useSearchParams();

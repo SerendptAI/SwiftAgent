@@ -63,7 +63,6 @@ export function ProductsSection() {
       className="w-full bg-white px-6 pt-36 pb-16 md:px-10 md:pt-44 md:pb-20 lg:px-16 lg:pt-52 lg:pb-26"
     >
       <div className="mx-auto flex max-w-296 flex-col gap-24 md:gap-32 lg:gap-40">
-        {/* ── Swift Agents App ── */}
         <div>
           <p className="font-dm-mono mb-8 text-base leading-[1.2] tracking-[10%] text-black/60 uppercase md:text-lg">
             OUR PRODUCTS
@@ -72,7 +71,6 @@ export function ProductsSection() {
             SWIFT AGENTS APP
           </h2>
 
-          {/* Image left, copy bottom-aligned right */}
           <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:gap-16">
             <AutoPlayVideo
               src="/videos/products/swift-agents-app.mp4"
@@ -104,7 +102,6 @@ export function ProductsSection() {
           </div>
         </div>
 
-        {/* ── Swift Agents SDK ── */}
         <div id="sdks">
           <h2 className="font-greed-narrow mb-8 text-4xl leading-[1.34] font-medium tracking-[-2%] uppercase md:mb-14 md:text-5xl lg:text-right lg:text-[66px]">
             SWIFT AGENTS SDK

@@ -29,7 +29,6 @@ export function MostUsedFeaturesSection() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Header entrance
       if (headerRef.current) {
         gsap.from(headerRef.current.children, {
           scrollTrigger: {
@@ -44,7 +43,6 @@ export function MostUsedFeaturesSection() {
         });
       }
 
-      // Feature cards stagger
       if (gridRef.current) {
         gsap.from(gridRef.current.children, {
           scrollTrigger: {
@@ -74,12 +72,10 @@ export function MostUsedFeaturesSection() {
           ref={headerRef}
           className="mb-16 flex flex-col items-center gap-4 text-center"
         >
-          {/* Label */}
           <span className="font-dm-mono text-xs tracking-[0.25em] text-black/50 uppercase">
             FEATURES OF SWIFT AGENT
           </span>
 
-          {/* Headline */}
           <h2 className="font-greed-narrow max-w-2xl text-4xl leading-[1.1] font-normal tracking-tight text-black uppercase md:text-5xl lg:text-6xl">
             OUR MOST USED
             <br />
@@ -94,7 +90,6 @@ export function MostUsedFeaturesSection() {
         >
           {FEATURES.map((feature, index) => (
             <div key={index} className="flex flex-col items-center gap-5">
-              {/* Icon */}
               <div className="overflow-hidden rounded-md">
                 <Image
                   src={feature.icon}
@@ -105,7 +100,6 @@ export function MostUsedFeaturesSection() {
                 />
               </div>
 
-              {/* Label */}
               <p className="font-dm-mono text-center text-xs leading-[1.6] tracking-widest text-black/70 uppercase">
                 {feature.label.split("\n").map((line, i) => (
                   <span key={i}>

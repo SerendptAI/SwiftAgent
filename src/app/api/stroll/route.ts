@@ -13,6 +13,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Strip company_id from body — backend expects it in the URL path only
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { company_id: _, ...payload } = body;
 
   const upstream = await fetch(

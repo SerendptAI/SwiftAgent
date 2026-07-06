@@ -44,7 +44,7 @@ export function NavItem({
           isActive
             ? activeColor
               ? {
-                  backgroundColor: `${activeColor}`,
+                  backgroundColor: activeColor,
                   boxShadow: `0 0 0 1.5px ${activeColor}40`,
                   color: "white",
                 }

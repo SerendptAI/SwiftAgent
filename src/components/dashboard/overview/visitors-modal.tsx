@@ -113,7 +113,6 @@ export function VisitorsModal({
         className="relative mx-4 flex max-h-[85vh] w-full max-w-[1000px] flex-col overflow-hidden rounded-3xl bg-white shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="m-4 flex items-center justify-between rounded-md bg-[#F3F3F3] px-6 py-3">
           <h2 className="font-greed-narrow text-3xl font-bold text-gray-900">
             Visitors
@@ -133,9 +132,7 @@ export function VisitorsModal({
           </button>
         </div>
 
-        {/* Body */}
         <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto p-8 md:flex-row">
-          {/* Pie Chart */}
           <div className="flex shrink-0 items-center justify-center md:w-[440px]">
             {countryData.length > 0 ? (
               <PieChart width={420} height={420}>
@@ -164,9 +161,7 @@ export function VisitorsModal({
             )}
           </div>
 
-          {/* Visitor List */}
           <div className="min-h-0 flex-1">
-            {/* Header pills */}
             <div className="font-dm-mono sticky top-0 flex justify-between gap-2 bg-white pb-3">
               <span className="flex-1 rounded-xl border border-gray-200 px-6 py-2 text-center text-sm tracking-wider text-gray-400 uppercase">
                 Visitor
@@ -179,7 +174,6 @@ export function VisitorsModal({
               </span>
             </div>
 
-            {/* Rows */}
             <div className="flex max-h-[340px] flex-col gap-2 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-900 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-200">
               {visitors.map((visitor) => (
                 <div

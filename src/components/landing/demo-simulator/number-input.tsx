@@ -7,7 +7,6 @@ export interface NumberInputProps {
   onChange: (v: number) => void;
   suffix: string;
   prefix?: string;
-  width?: string;
 }
 
 export function NumberInput({

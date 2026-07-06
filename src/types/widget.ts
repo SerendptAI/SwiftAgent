@@ -1,5 +1,3 @@
-export type WidgetTab = "call" | "chat";
-
 export interface NavigationStep {
   step: number;
   page_title: string;

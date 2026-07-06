@@ -15,8 +15,6 @@ import {
 import { getApiErrorMessage } from "@/lib/api-error";
 import { getProfileImage } from "@/lib/utils";
 
-// ── Component ──────────────────────────────────────────────────────────────────
-
 function EditableField({
   id,
   label,

@@ -161,23 +161,6 @@ export async function verifyOtp(
   return data;
 }
 
-// ── Token Refresh ──────────────────────────────────────────────────────────────
-
-interface TokenResponse {
-  access_token: string;
-  refresh_token?: string;
-  token_type: string;
-}
-
-export async function refreshAccessToken(
-  refreshToken: string,
-): Promise<TokenResponse> {
-  const { data } = await apiClient.post<TokenResponse>("/api/v1/auth/refresh", {
-    refresh_token: refreshToken,
-  });
-  return data;
-}
-
 // ── Logout ─────────────────────────────────────────────────────────────────────
 
 export function logout(locale: string = "en") {

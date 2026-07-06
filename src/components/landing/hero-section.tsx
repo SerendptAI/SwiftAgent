@@ -78,7 +78,6 @@ export function HeroSection() {
         gsap.from(ctaRef.current.children, {
           y: 20,
           opacity: 0,
-          // stagger: 0.15,
           duration: 0.7,
           ease: "power3.out",
           delay: 0.6,
@@ -119,7 +118,6 @@ export function HeroSection() {
             ref={headlineRef}
             className="font-greed-narrow flex flex-col gap-6 text-[50px] leading-normal font-medium tracking-[-2%] uppercase md:text-5xl lg:text-[56px] xl:text-[65px]"
           >
-            {/* Row 1 desktop: CUSTOMER + SUPPORT. Mobile: stacked */}
             <div className="xs:flex-row xs:items-center flex flex-col gap-6">
               <span
                 className="hero-badge xs:w-auto xs:justify-start inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
@@ -135,7 +133,6 @@ export function HeroSection() {
               </span>
             </div>
 
-            {/* Row 2 desktop: THAT DOESN'T + SCALE. Mobile: THAT DOESN'T alone */}
             <div className="flex items-center gap-6">
               <span className="hero-text flex gap-4 text-black">
                 <span>THAT</span> <span>DOESN&apos;T</span>
@@ -149,7 +146,6 @@ export function HeroSection() {
               </span>
             </div>
 
-            {/* Mobile only: SCALE + YOUR */}
             <div className="xs:hidden flex items-center gap-6">
               <span
                 className="hero-badge inline-flex h-fit items-center rounded-4xl px-5 text-black"
@@ -160,7 +156,6 @@ export function HeroSection() {
               <span className="hero-badge text-black">YOUR</span>
             </div>
 
-            {/* Row 3 desktop: YOUR + HEADCOUNT. Mobile: HEADCOUNT alone */}
             <div className="flex items-center gap-6">
               <span className="hero-text xs:inline hidden text-black">
                 YOUR

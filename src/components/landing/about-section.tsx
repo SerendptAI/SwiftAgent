@@ -44,7 +44,6 @@ export function AboutSection() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Headline stagger on scroll
       if (headlineRef.current) {
         gsap.from(headlineRef.current.children, {
           scrollTrigger: {
@@ -59,7 +58,6 @@ export function AboutSection() {
         });
       }
 
-      // Left accordion entrance
       if (leftRef.current) {
         gsap.from(leftRef.current, {
           scrollTrigger: {
@@ -85,7 +83,6 @@ export function AboutSection() {
       style={{ backgroundColor: "#6433CC" }}
     >
       <div className="relative mx-auto my-4 flex max-w-[1512px] flex-col p-4">
-        {/* Top-right label */}
         <div className="flex justify-end px-8 pt-8 max-md:hidden md:px-14 md:pt-12">
           <span
             className="font-dm-mono text-base tracking-[0.25em] uppercase"
@@ -95,7 +92,6 @@ export function AboutSection() {
           </span>
         </div>
 
-        {/* Main two-column layout */}
         <div className="flex flex-1 flex-col-reverse lg:flex-row">
           {/* ── Left column: Accordion ── */}
           <div
@@ -106,12 +102,10 @@ export function AboutSection() {
               const isOpen = openId === feature.id;
               return (
                 <div key={feature.id}>
-                  {/* Accordion header */}
                   <button
                     onClick={() => setOpenId(isOpen ? "" : feature.id)}
                     className="flex w-full cursor-pointer items-center gap-3 py-5 text-left transition-opacity hover:opacity-80"
                   >
-                    {/* Icon */}
                     <span
                       className="flex-shrink-0 text-sm"
                       style={{ color: "rgba(255,255,255,0.75)" }}
@@ -119,12 +113,10 @@ export function AboutSection() {
                       {isOpen ? (
                         <Icons.PolygonDown className="size-4" />
                       ) : (
-                        /* Play triangle */
                         <Icons.Polygon className="size-4" />
                       )}
                     </span>
 
-                    {/* Title */}
                     <span
                       className="font-dm-mono text-xl font-normal tracking-[0.2em] uppercase"
                       style={{ color: "rgba(255,255,255,0.9)" }}
@@ -133,7 +125,6 @@ export function AboutSection() {
                     </span>
                   </button>
 
-                  {/* Accordion body */}
                   <div
                     className="overflow-hidden transition-all duration-500 ease-in-out"
                     style={{
@@ -141,7 +132,6 @@ export function AboutSection() {
                       opacity: isOpen ? 1 : 0,
                     }}
                   >
-                    {/* Description text */}
                     <p
                       className="font-dm-mono pb-4 text-[11px] leading-[1.8] tracking-[0.1em] uppercase"
                       style={{ color: "rgba(255,255,255,0.65)" }}
@@ -149,7 +139,6 @@ export function AboutSection() {
                       {feature.description}
                     </p>
 
-                    {/* Image box */}
                     {feature.image && (
                       <div
                         className="mb-6 overflow-hidden rounded-sm"
@@ -176,7 +165,6 @@ export function AboutSection() {
             ref={headlineRef}
             className="flex w-full flex-col items-start justify-start gap-10 pt-4 md:px-8 md:pb-10 lg:w-[55%] lg:items-end lg:gap-14 lg:px-10 lg:pt-6 lg:pb-16 lg:pl-4"
           >
-            {/* Mobile: 2 lines */}
             {(["WHY USE", "SWIFT AGENTS?"] as const).map((word) => (
               <span
                 key={word}
@@ -189,7 +177,6 @@ export function AboutSection() {
                 {word}
               </span>
             ))}
-            {/* Desktop: 3 lines */}
             {(["WHY USE", "SWIFT", "AGENTS?"] as const).map((word) => (
               <span
                 key={word}

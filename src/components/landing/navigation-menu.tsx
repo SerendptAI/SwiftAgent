@@ -47,7 +47,6 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
       return;
 
     if (isOpen) {
-      // Show the overlay
       gsap.set(overlayRef.current, { display: "block" });
       gsap.to(overlayRef.current, {
         autoAlpha: 1,
@@ -55,14 +54,12 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
         ease: "power2.out",
       });
 
-      // Slide the menu down
       gsap.fromTo(
         containerRef.current,
         { y: "-100%", opacity: 0 },
         { y: "0%", opacity: 1, duration: 0.4, ease: "power3.out" },
       );
 
-      // Stagger links in
       gsap.fromTo(
         linksRef.current.children,
         { y: -15, opacity: 0 },
@@ -76,7 +73,6 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
         },
       );
     } else {
-      // Slide the menu up
       gsap.to(containerRef.current, {
         y: "-100%",
         opacity: 0,
