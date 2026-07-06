@@ -1,5 +1,4 @@
 import { apiClient } from "@/lib/api-client";
-import { publicApiClient } from "@/lib/public-api-client";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -34,11 +33,6 @@ export interface DashboardVisitor {
   timestamp: string;
 }
 
-export interface DashboardWidget {
-  company_id: string;
-  embed_code: string;
-}
-
 // ── API Service ────────────────────────────────────────────────────────────────
 
 export const dashboardApi = {
@@ -59,27 +53,5 @@ export const dashboardApi = {
       { baseURL: "", params: { companyId, limit } },
     );
     return data;
-  },
-
-  getWidget: async (companyId: string): Promise<DashboardWidget> => {
-    const { data } = await apiClient.get<DashboardWidget>(
-      `/api/v1/dashboard/${companyId}/widget`,
-    );
-    return data;
-  },
-
-  logVisitor: async (companyId: string, ipAddress: string): Promise<void> => {
-    await apiClient.post(`/api/v1/dashboard/${companyId}/visitors/log`, {
-      ip_address: ipAddress,
-    });
-  },
-};
-
-export const publicDashboardApi = {
-  logVisitor: async (companyId: string, ipAddress: string): Promise<void> => {
-    // Uses the public client so we don't trigger 401 redirects in the widget
-    await publicApiClient.post(`/api/v1/dashboard/${companyId}/visitors/log`, {
-      ip_address: ipAddress,
-    });
   },
 };

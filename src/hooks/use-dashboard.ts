@@ -5,7 +5,6 @@ import {
   dashboardApi,
   DashboardStats,
   DashboardVisitor,
-  DashboardWidget,
 } from "@/services/dashboard";
 
 export function useDashboardStats(initialData?: DashboardStats | null) {
@@ -31,16 +30,5 @@ export function useDashboardVisitors(
     enabled: !!companyId,
     initialData: initialData ?? undefined,
     refetchInterval: 3000,
-  });
-}
-
-export function useDashboardWidget(initialData?: DashboardWidget | null) {
-  const companyId = useActiveCompanyId();
-
-  return useQuery({
-    queryKey: ["dashboard", "widget", companyId],
-    queryFn: () => dashboardApi.getWidget(companyId!),
-    enabled: !!companyId,
-    initialData: initialData ?? undefined,
   });
 }
