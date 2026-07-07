@@ -25,6 +25,7 @@ import {
   useForms,
   useFormSubmissions,
   useMarkSubmissionRead,
+  useUpdateForm,
 } from "@/hooks/use-forms";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import type { Form, Submission } from "@/services/forms";
@@ -715,6 +716,7 @@ export function FormsTabContent() {
   const { data: allSubmissions = [] } = useAllSubmissions();
   const deleteForm = useDeleteForm();
   const deleteSubmission = useDeleteSubmission();
+  const updateForm = useUpdateForm();
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const { mutate: markSubmissionRead } = useMarkSubmissionRead();
 
@@ -795,6 +797,15 @@ export function FormsTabContent() {
     } finally {
       setIsBulkDeleting(false);
     }
+  };
+
+  const handleRenameForm = async (form: Form, nextName: string) => {
+    await updateForm.mutateAsync({
+      formId: form.id,
+      payload: form.form_title
+        ? { form_title: nextName }
+        : { website_link: nextName },
+    });
   };
 
   const handleWebsiteFormSuccess = (form: Form) => {
@@ -908,6 +919,8 @@ export function FormsTabContent() {
         open={isEditManagerOpen}
         forms={forms}
         submissions={allSubmissions}
+        isRenaming={updateForm.isPending}
+        onRenameForm={handleRenameForm}
         onClose={() => setIsEditManagerOpen(false)}
       />
     </div>

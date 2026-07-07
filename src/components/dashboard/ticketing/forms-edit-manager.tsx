@@ -23,7 +23,7 @@ type Step =
   | { name: "pages"; origin: string }
   | { name: "forms"; origin: string; path: string };
 
-type RenameTarget = { kindLabel: string; current: string };
+type RenameTarget = { kindLabel: string; current: string; form?: Form };
 
 const LEVEL: Record<Step["name"], 0 | 1 | 2> = {
   websites: 0,
@@ -35,17 +35,19 @@ const EDIT_COLOR = "text-[#006BE5]";
 
 function RenameDialog({
   target,
+  isSaving,
   onCancel,
   onSave,
 }: {
   target: RenameTarget;
+  isSaving: boolean;
   onCancel: () => void;
   onSave: (next: string) => void;
 }) {
   const [value, setValue] = useState(target.current);
   const inputRef = useRef<HTMLInputElement>(null);
   const trimmed = value.trim();
-  const canSave = trimmed.length > 0 && trimmed !== target.current;
+  const canSave = !isSaving && trimmed.length > 0 && trimmed !== target.current;
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -100,7 +102,8 @@ function RenameDialog({
           <button
             type="button"
             onClick={onCancel}
-            className="font-dm-mono cursor-pointer rounded-lg border border-[#E5E5E5] px-5 py-2 text-sm text-black/70 transition-colors hover:bg-gray-50"
+            disabled={isSaving}
+            className="font-dm-mono cursor-pointer rounded-lg border border-[#E5E5E5] px-5 py-2 text-sm text-black/70 transition-colors hover:bg-gray-50 disabled:opacity-60"
           >
             Cancel
           </button>
@@ -110,7 +113,7 @@ function RenameDialog({
             onClick={() => onSave(trimmed)}
             className="font-dm-mono cursor-pointer rounded-lg bg-[#006BE5] px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-[#005fca] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Save name
+            {isSaving ? "Saving..." : "Save name"}
           </button>
         </div>
       </div>
@@ -122,6 +125,8 @@ interface FormsEditManagerProps {
   open: boolean;
   forms: Form[];
   submissions: Submission[];
+  isRenaming: boolean;
+  onRenameForm: (form: Form, nextName: string) => Promise<void>;
   onClose: () => void;
 }
 
@@ -129,6 +134,8 @@ export function FormsEditManager({
   open,
   forms,
   submissions,
+  isRenaming,
+  onRenameForm,
   onClose,
 }: FormsEditManagerProps) {
   const toast = useToast();
@@ -147,13 +154,13 @@ export function FormsEditManager({
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "Escape") return;
+      if (e.key !== "Escape" || isRenaming) return;
       if (rename) setRename(null);
       else onClose();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, rename, onClose]);
+  }, [open, rename, isRenaming, onClose]);
 
   const submissionsByForm = useMemo(
     () => groupSubmissionsByForm(submissions),
@@ -186,8 +193,17 @@ export function FormsEditManager({
       setStep({ name: "pages", origin: step.origin });
   };
 
-  const saveRename = (next: string) => {
-    const previous = rename?.current;
+  const saveRename = async (next: string) => {
+    if (!rename) return;
+    const previous = rename.current;
+    if (rename.form) {
+      try {
+        await onRenameForm(rename.form, next);
+      } catch {
+        toast.error("Couldn't rename the form. Please try again.");
+        return;
+      }
+    }
     setRename(null);
     toast.success(`Renamed "${previous}" to "${next}".`);
   };
@@ -336,6 +352,7 @@ export function FormsEditManager({
                     setRename({
                       kindLabel: "form",
                       current: getFormDisplayName(form),
+                      form,
                     })
                   }
                 />
@@ -351,13 +368,14 @@ export function FormsEditManager({
     <ManagerShell
       title="Edit name?"
       level={LEVEL[step.name]}
-      isBusy={false}
+      isBusy={isRenaming}
       onClose={onClose}
       onCrumb={handleCrumb}
       overlay={
         rename ? (
           <RenameDialog
             target={rename}
+            isSaving={isRenaming}
             onCancel={() => setRename(null)}
             onSave={saveRename}
           />
