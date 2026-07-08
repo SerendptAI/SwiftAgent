@@ -21,15 +21,21 @@ import { WebsiteFormDrawer } from "@/components/dashboard/ticketing/website-form
 import {
   useAllSubmissions,
   useDeleteForm,
+  useDeletePage,
   useDeleteSubmission,
+  useDeleteWebsite,
   useForms,
   useFormSubmissions,
   useMarkSubmissionRead,
+  useRenamePage,
+  useRenameWebsite,
   useUpdateForm,
 } from "@/hooks/use-forms";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import type { Form, Submission } from "@/services/forms";
 import { getFormDisplayName, getSubmissionDisplayName } from "@/services/forms";
+
+import { urlParts } from "./forms-hierarchy";
 
 type FormSubmissionStatus = "unread" | "read";
 type FormType = "website" | "online";
@@ -716,7 +722,11 @@ export function FormsTabContent() {
   const { data: allSubmissions = [] } = useAllSubmissions();
   const deleteForm = useDeleteForm();
   const deleteSubmission = useDeleteSubmission();
+  const deleteWebsite = useDeleteWebsite();
+  const deletePage = useDeletePage();
   const updateForm = useUpdateForm();
+  const renameWebsite = useRenameWebsite();
+  const renamePage = useRenamePage();
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const { mutate: markSubmissionRead } = useMarkSubmissionRead();
 
@@ -799,12 +809,66 @@ export function FormsTabContent() {
     }
   };
 
+  const deselectIfAffected = (affected: Form[]) => {
+    if (selectedFormId && affected.some((f) => f.id === selectedFormId)) {
+      setSelectedFormId(null);
+      setSelectedSubmissionId(null);
+    }
+  };
+
+  const handleDeleteWebsite = async (origin: string) => {
+    setIsBulkDeleting(true);
+    try {
+      await deleteWebsite.mutateAsync(origin);
+      deselectIfAffected(
+        forms.filter((f) => urlParts(f.website_link)?.origin === origin),
+      );
+    } finally {
+      setIsBulkDeleting(false);
+    }
+  };
+
+  const handleDeletePage = async (origin: string, path: string) => {
+    setIsBulkDeleting(true);
+    try {
+      await deletePage.mutateAsync({ website: origin, page: path });
+      deselectIfAffected(
+        forms.filter((f) => {
+          const parts = urlParts(f.website_link);
+          return parts?.origin === origin && parts.path === path;
+        }),
+      );
+    } finally {
+      setIsBulkDeleting(false);
+    }
+  };
+
   const handleRenameForm = async (form: Form, nextName: string) => {
     await updateForm.mutateAsync({
       formId: form.id,
       payload: form.form_title
         ? { form_title: nextName }
         : { website_link: nextName },
+    });
+  };
+
+  const handleRenameWebsite = async (origin: string, nextName: string) => {
+    const trimmed = nextName.trim();
+    const newWebsite = trimmed.includes("://") ? trimmed : `https://${trimmed}`;
+    await renameWebsite.mutateAsync({ oldWebsite: origin, newWebsite });
+  };
+
+  const handleRenamePage = async (
+    origin: string,
+    oldPath: string,
+    nextName: string,
+  ) => {
+    const trimmed = nextName.trim();
+    const newPage = trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+    await renamePage.mutateAsync({
+      website: origin,
+      oldPage: oldPath,
+      newPage,
     });
   };
 
@@ -914,13 +978,21 @@ export function FormsTabContent() {
         onClose={() => setIsDeleteModalOpen(false)}
         onDeleteForms={handleDeleteForms}
         onDeleteSubmissions={handleDeleteSubmissions}
+        onDeleteWebsite={handleDeleteWebsite}
+        onDeletePage={handleDeletePage}
       />
       <FormsEditManager
         open={isEditManagerOpen}
         forms={forms}
         submissions={allSubmissions}
-        isRenaming={updateForm.isPending}
+        isRenaming={
+          updateForm.isPending ||
+          renameWebsite.isPending ||
+          renamePage.isPending
+        }
         onRenameForm={handleRenameForm}
+        onRenameWebsite={handleRenameWebsite}
+        onRenamePage={handleRenamePage}
         onClose={() => setIsEditManagerOpen(false)}
       />
     </div>

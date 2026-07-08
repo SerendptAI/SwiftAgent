@@ -144,6 +144,47 @@ export const formsApi = {
     );
   },
 
+  renameWebsite: async (
+    companyId: string,
+    oldWebsite: string,
+    newWebsite: string,
+  ): Promise<void> => {
+    await apiClient.put(
+      `/api/v1/forms/${encodeURIComponent(companyId)}/websites/label`,
+      { old_website: oldWebsite, new_website: newWebsite },
+    );
+  },
+
+  renamePage: async (
+    companyId: string,
+    website: string,
+    oldPage: string,
+    newPage: string,
+  ): Promise<void> => {
+    await apiClient.put(
+      `/api/v1/forms/${encodeURIComponent(companyId)}/pages/label`,
+      { website, old_page: oldPage, new_page: newPage },
+    );
+  },
+
+  deleteWebsite: async (companyId: string, website: string): Promise<void> => {
+    await apiClient.delete(
+      `/api/v1/forms/${encodeURIComponent(companyId)}/websites`,
+      { params: { website } },
+    );
+  },
+
+  deletePage: async (
+    companyId: string,
+    website: string,
+    page: string,
+  ): Promise<void> => {
+    await apiClient.delete(
+      `/api/v1/forms/${encodeURIComponent(companyId)}/pages`,
+      { params: { website, page } },
+    );
+  },
+
   listAllSubmissions: async (
     companyId: string,
     params: SubmissionListParams = {},

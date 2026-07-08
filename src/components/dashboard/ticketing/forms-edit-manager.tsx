@@ -23,7 +23,16 @@ type Step =
   | { name: "pages"; origin: string }
   | { name: "forms"; origin: string; path: string };
 
-type RenameTarget = { kindLabel: string; current: string; form?: Form };
+type RenameTarget =
+  | { kind: "website"; kindLabel: string; current: string; origin: string }
+  | {
+      kind: "page";
+      kindLabel: string;
+      current: string;
+      origin: string;
+      path: string;
+    }
+  | { kind: "form"; kindLabel: string; current: string; form: Form };
 
 const LEVEL: Record<Step["name"], 0 | 1 | 2> = {
   websites: 0,
@@ -127,6 +136,12 @@ interface FormsEditManagerProps {
   submissions: Submission[];
   isRenaming: boolean;
   onRenameForm: (form: Form, nextName: string) => Promise<void>;
+  onRenameWebsite: (origin: string, nextName: string) => Promise<void>;
+  onRenamePage: (
+    origin: string,
+    oldPath: string,
+    nextName: string,
+  ) => Promise<void>;
   onClose: () => void;
 }
 
@@ -136,6 +151,8 @@ export function FormsEditManager({
   submissions,
   isRenaming,
   onRenameForm,
+  onRenameWebsite,
+  onRenamePage,
   onClose,
 }: FormsEditManagerProps) {
   const toast = useToast();
@@ -196,13 +213,17 @@ export function FormsEditManager({
   const saveRename = async (next: string) => {
     if (!rename) return;
     const previous = rename.current;
-    if (rename.form) {
-      try {
+    try {
+      if (rename.kind === "form") {
         await onRenameForm(rename.form, next);
-      } catch {
-        toast.error("Couldn't rename the form. Please try again.");
-        return;
+      } else if (rename.kind === "website") {
+        await onRenameWebsite(rename.origin, next);
+      } else {
+        await onRenamePage(rename.origin, rename.path, next);
       }
+    } catch {
+      toast.error(`Couldn't rename the ${rename.kindLabel}. Please try again.`);
+      return;
     }
     setRename(null);
     toast.success(`Renamed "${previous}" to "${next}".`);
@@ -244,8 +265,10 @@ export function FormsEditManager({
                       colorClass={EDIT_COLOR}
                       onClick={() =>
                         setRename({
+                          kind: "website",
                           kindLabel: "website",
                           current: hostLabel(site.origin),
+                          origin: site.origin,
                         })
                       }
                     />
@@ -299,7 +322,13 @@ export function FormsEditManager({
                     label="Edit page name"
                     colorClass={EDIT_COLOR}
                     onClick={() =>
-                      setRename({ kindLabel: "page", current: page.path })
+                      setRename({
+                        kind: "page",
+                        kindLabel: "page",
+                        current: page.path,
+                        origin: step.origin,
+                        path: page.path,
+                      })
                     }
                   />
                   <CountPill>
@@ -350,6 +379,7 @@ export function FormsEditManager({
                   colorClass={EDIT_COLOR}
                   onClick={() =>
                     setRename({
+                      kind: "form",
                       kindLabel: "form",
                       current: getFormDisplayName(form),
                       form,

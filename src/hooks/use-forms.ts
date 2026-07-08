@@ -88,6 +88,72 @@ export function useDeleteForm() {
   });
 }
 
+export function useRenameWebsite() {
+  const queryClient = useQueryClient();
+  const companyId = useActiveCompanyId();
+
+  return useMutation({
+    mutationFn: ({
+      oldWebsite,
+      newWebsite,
+    }: {
+      oldWebsite: string;
+      newWebsite: string;
+    }) => formsApi.renameWebsite(companyId!, oldWebsite, newWebsite),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["forms", companyId] });
+    },
+  });
+}
+
+export function useRenamePage() {
+  const queryClient = useQueryClient();
+  const companyId = useActiveCompanyId();
+
+  return useMutation({
+    mutationFn: ({
+      website,
+      oldPage,
+      newPage,
+    }: {
+      website: string;
+      oldPage: string;
+      newPage: string;
+    }) => formsApi.renamePage(companyId!, website, oldPage, newPage),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["forms", companyId] });
+    },
+  });
+}
+
+export function useDeleteWebsite() {
+  const queryClient = useQueryClient();
+  const companyId = useActiveCompanyId();
+
+  return useMutation({
+    mutationFn: (website: string) =>
+      formsApi.deleteWebsite(companyId!, website),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["forms", companyId] });
+      queryClient.invalidateQueries({ queryKey: ["submissions", companyId] });
+    },
+  });
+}
+
+export function useDeletePage() {
+  const queryClient = useQueryClient();
+  const companyId = useActiveCompanyId();
+
+  return useMutation({
+    mutationFn: ({ website, page }: { website: string; page: string }) =>
+      formsApi.deletePage(companyId!, website, page),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["forms", companyId] });
+      queryClient.invalidateQueries({ queryKey: ["submissions", companyId] });
+    },
+  });
+}
+
 export function useDeleteSubmission() {
   const queryClient = useQueryClient();
   const companyId = useActiveCompanyId();

@@ -24,6 +24,8 @@ type Step =
   | { name: "entries"; origin: string; path: string; formId: string };
 
 type Pending =
+  | { kind: "website"; label: string; origin: string }
+  | { kind: "page"; label: string; origin: string; path: string }
   | { kind: "forms"; label: string; formIds: string[] }
   | { kind: "submissions"; label: string; submissionIds: string[] };
 
@@ -118,6 +120,8 @@ interface FormsDeleteManagerProps {
   onClose: () => void;
   onDeleteForms: (formIds: string[]) => Promise<void>;
   onDeleteSubmissions: (submissionIds: string[]) => Promise<void>;
+  onDeleteWebsite: (origin: string) => Promise<void>;
+  onDeletePage: (origin: string, path: string) => Promise<void>;
 }
 
 export function FormsDeleteManager({
@@ -128,6 +132,8 @@ export function FormsDeleteManager({
   onClose,
   onDeleteForms,
   onDeleteSubmissions,
+  onDeleteWebsite,
+  onDeletePage,
 }: FormsDeleteManagerProps) {
   const [step, setStep] = useState<Step>({ name: "websites" });
   const [pending, setPending] = useState<Pending | null>(null);
@@ -195,6 +201,10 @@ export function FormsDeleteManager({
     if (!pending) return;
     if (pending.kind === "submissions") {
       await onDeleteSubmissions(pending.submissionIds);
+    } else if (pending.kind === "website") {
+      await onDeleteWebsite(pending.origin);
+    } else if (pending.kind === "page") {
+      await onDeletePage(pending.origin, pending.path);
     } else {
       await onDeleteForms(pending.formIds);
     }
@@ -238,9 +248,9 @@ export function FormsDeleteManager({
                       colorClass={DELETE_COLOR}
                       onClick={() =>
                         setPending({
-                          kind: "forms",
+                          kind: "website",
                           label: `All forms on ${hostLabel(site.origin)}`,
-                          formIds: site.forms.map((f) => f.id),
+                          origin: site.origin,
                         })
                       }
                     />
@@ -296,9 +306,10 @@ export function FormsDeleteManager({
                     colorClass={DELETE_COLOR}
                     onClick={() =>
                       setPending({
-                        kind: "forms",
+                        kind: "page",
                         label: `All forms on ${page.path}`,
-                        formIds: page.forms.map((f) => f.id),
+                        origin: step.origin,
+                        path: page.path,
                       })
                     }
                   />
@@ -380,9 +391,10 @@ export function FormsDeleteManager({
             type="button"
             onClick={() =>
               setPending({
-                kind: "forms",
+                kind: "page",
                 label: `All forms on ${step.path}`,
-                formIds: pageForms.map((f) => f.id),
+                origin: step.origin,
+                path: step.path,
               })
             }
             className="font-dm-mono mt-4 cursor-pointer text-[13px] font-medium tracking-[0.04em] text-[#F25430] uppercase transition-opacity hover:opacity-70"
