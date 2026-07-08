@@ -313,7 +313,7 @@ function WebsiteInformationForm({
           type="url"
           value={websiteLink}
           onChange={(e) => onWebsiteLinkChange(e.target.value)}
-          placeholder="https://website.com"
+          placeholder="https://website.com/contact-us"
           aria-invalid={Boolean(errors.websiteLink)}
           className={`font-dm-mono h-11 w-full rounded-md border-0 bg-[#EDEDED] px-4 text-sm font-normal tracking-[0.08em] text-black uppercase outline-none placeholder:text-black/35 focus:ring-2 md:h-10 md:text-base ${
             errors.websiteLink
@@ -321,9 +321,14 @@ function WebsiteInformationForm({
               : "focus:ring-[#6433CC]"
           }`}
         />
-        {errors.websiteLink && (
+        {errors.websiteLink ? (
           <p className="font-dm-mono mt-2 text-xs font-normal tracking-[0.08em] text-[#F25430] uppercase">
             {errors.websiteLink}
+          </p>
+        ) : (
+          <p className="font-dm-mono mt-2 text-xs font-normal tracking-[0.04em] text-black/40">
+            Include the page path (e.g. /contact-us) to group this form under
+            that page.
           </p>
         )}
       </label>
