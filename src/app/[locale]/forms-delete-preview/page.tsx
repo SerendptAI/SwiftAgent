@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { FormsDeleteManager } from "@/components/dashboard/ticketing/forms-delete-manager";
 import { FormsEditManager } from "@/components/dashboard/ticketing/forms-edit-manager";
+import { PageFormTabs } from "@/components/dashboard/ticketing/forms-tab-content";
 import type { Form, FormOverview } from "@/services/forms";
 
 const now = "2026-02-04T14:33:00Z";
@@ -86,8 +87,22 @@ const OVERVIEWS: Record<string, FormOverview> = {
 
 export default function FormsDeletePreviewPage() {
   const [which, setWhich] = useState<"delete" | "edit" | null>("delete");
+  const [pagePath, setPagePath] = useState<string | null>("/contact-us");
+  const [formIdentifier, setFormIdentifier] = useState<string | null>("form-1");
   return (
     <div className="min-h-screen bg-[#F6F6F6] p-10">
+      <div className="mb-8 max-w-[473px]">
+        <PageFormTabs
+          pages={OVERVIEWS.f1.pages}
+          selectedPagePath={pagePath}
+          selectedFormIdentifier={formIdentifier}
+          onSelectPage={(p) => {
+            setPagePath(p);
+            setFormIdentifier(null);
+          }}
+          onSelectFormIdentifier={setFormIdentifier}
+        />
+      </div>
       <div className="flex gap-3">
         <button
           type="button"

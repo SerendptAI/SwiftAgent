@@ -5,11 +5,22 @@ import { useEffect, useState } from "react";
 
 import { usePageFormSubmissions } from "@/hooks/use-forms";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
-import type { Form, FormOverview } from "@/services/forms";
+import type { Form, FormOverview, Submission } from "@/services/forms";
 import { getSubmissionDisplayName } from "@/services/forms";
 
-import { formatDate, hostLabel } from "./forms-hierarchy";
-import { ActionLink, CountPill, ManagerShell, Row } from "./forms-manager-ui";
+import { formatDate, formatDateTime, hostLabel } from "./forms-hierarchy";
+import {
+  ActionLink,
+  CancelButton,
+  CountPill,
+  HintText,
+  ManagerShell,
+  PathChip,
+  PixelTrashIcon,
+  Row,
+  SectionIntro,
+  SolidActionButton,
+} from "./forms-manager-ui";
 
 type Step =
   | { name: "websites" }
@@ -24,16 +35,16 @@ type Step =
     };
 
 type Pending =
-  | { kind: "website"; label: string; form: Form }
-  | { kind: "page"; label: string; formId: string; pagePath: string }
+  | { kind: "website"; path: string; form: Form }
+  | { kind: "page"; path: string; formId: string; pagePath: string }
   | {
       kind: "formGroup";
-      label: string;
+      path: string;
       formId: string;
       pagePath: string;
       formIdentifier: string;
     }
-  | { kind: "submissions"; label: string; submissionIds: string[] };
+  | { kind: "submissions"; path: string; submissionIds: string[] };
 
 const LEVEL: Record<Step["name"], 0 | 1 | 2> = {
   websites: 0,
@@ -44,75 +55,101 @@ const LEVEL: Record<Step["name"], 0 | 1 | 2> = {
 
 const DELETE_COLOR = "text-[#F25430]";
 
-function ConfirmDialog({
+function formSlug(name: string): string {
+  return name.trim().replace(/\s+/g, "-");
+}
+
+function getEntryPreview(entry: Submission): string {
+  if (entry.submitter_preview?.trim()) return entry.submitter_preview.trim();
+  for (const val of Object.values(entry.data)) {
+    if (typeof val === "string" && val.trim()) return val.trim();
+  }
+  return "—";
+}
+
+function ShadowButton({
   label,
-  isDeleting,
-  onCancel,
-  onConfirm,
+  onClick,
+  disabled,
 }: {
   label: string;
+  onClick?: () => void;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`font-dm-mono flex h-[38px] w-full max-w-[378px] items-center justify-center rounded-[8px] bg-[#F25430] text-[14px] font-medium text-white uppercase shadow-[-3px_4px_0px_0px_#000000] ${
+        onClick ? "cursor-pointer transition-colors hover:bg-[#d94526]" : ""
+      } disabled:cursor-not-allowed disabled:opacity-70`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function ConfirmBody({
+  path,
+  isDeleting,
+  onConfirm,
+}: {
+  path: string;
   isDeleting: boolean;
-  onCancel: () => void;
   onConfirm: () => void;
 }) {
   return (
-    <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/30 px-6">
-      <div className="w-full max-w-[420px] rounded-2xl bg-white px-6 py-6 shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
-        <h3 className="font-dm-mono text-2xl font-bold tracking-[-0.01em] text-black">
-          Delete?
-        </h3>
-        <p className="font-dm-mono mt-2 text-sm text-black/60">{label}</p>
-        <p className="font-dm-mono mt-3 text-[13px] text-[#F25430]">
-          Are you sure you want to delete this? This action is permanent.
-        </p>
-        <div className="mt-6 flex justify-end gap-3">
-          <button
-            type="button"
-            onClick={onCancel}
-            disabled={isDeleting}
-            className="font-dm-mono cursor-pointer rounded-lg border border-[#E5E5E5] px-5 py-2 text-sm text-black/70 transition-colors hover:bg-gray-50 disabled:opacity-60"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            onClick={onConfirm}
-            disabled={isDeleting}
-            className="font-dm-mono cursor-pointer rounded-lg bg-[#F25430] px-6 py-2 text-sm font-medium text-white uppercase transition-colors hover:bg-[#d94526] disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {isDeleting ? "Deleting..." : "Delete"}
-          </button>
-        </div>
+    <div className="flex flex-col items-center px-6 pt-14 pb-10">
+      <PixelTrashIcon className="h-[94px] w-[94px] text-black" />
+      <h3 className="font-greed-narrow mt-7 text-center text-[44px] leading-[1.05] font-medium text-black">
+        Are you sure
+        <br />
+        you want to delete
+        <br />
+        this ?
+      </h3>
+      <div className="mt-5">
+        <PathChip>{path}</PathChip>
+      </div>
+      <div className="mt-12 flex w-full justify-center">
+        <ShadowButton
+          label={isDeleting ? "Deleting..." : "Delete"}
+          onClick={onConfirm}
+          disabled={isDeleting}
+        />
       </div>
     </div>
   );
 }
 
-function SuccessDialog() {
+function SuccessBody({ path }: { path: string }) {
   return (
-    <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-white px-6">
-      <div className="flex flex-col items-center gap-3 text-center">
-        <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#E9F9EE]">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            className="h-7 w-7 text-[#1DB954]"
-          >
+    <div className="flex flex-col items-center px-6 pt-14 pb-10">
+      <div className="relative">
+        <PixelTrashIcon className="h-[94px] w-[94px] text-black" />
+        <span className="absolute -top-1 -right-4 flex h-7 w-7 items-center justify-center rounded-full bg-[#F25430]">
+          <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 text-white">
             <path
               d="M5 12.5l4 4L19 7"
               stroke="currentColor"
-              strokeWidth="2.5"
+              strokeWidth="3"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
           </svg>
         </span>
-        <h3 className="font-dm-mono text-xl font-bold tracking-[-0.01em] text-black">
-          Deletion Successful
-        </h3>
-        <p className="font-dm-mono text-[12px] tracking-[0.1em] text-black/40 uppercase">
-          Closing automatically...
-        </p>
+      </div>
+      <h3 className="font-greed-narrow mt-7 text-center text-[44px] leading-[1.05] font-medium text-black">
+        Deletion
+        <br />
+        Successful
+      </h3>
+      <div className="mt-5">
+        <PathChip>{path}</PathChip>
+      </div>
+      <div className="mt-12 flex w-full justify-center">
+        <ShadowButton label="Closing automatically...." />
       </div>
     </div>
   );
@@ -147,7 +184,7 @@ export function FormsDeleteManager({
 }: FormsDeleteManagerProps) {
   const [step, setStep] = useState<Step>({ name: "websites" });
   const [pending, setPending] = useState<Pending | null>(null);
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [successPath, setSuccessPath] = useState<string | null>(null);
 
   useScrollLock(open);
 
@@ -155,7 +192,7 @@ export function FormsDeleteManager({
     if (open) {
       setStep({ name: "websites" });
       setPending(null);
-      setShowSuccess(false);
+      setSuccessPath(null);
     }
   }, [open]);
 
@@ -171,10 +208,10 @@ export function FormsDeleteManager({
   }, [open, isDeleting, pending, onClose]);
 
   useEffect(() => {
-    if (!showSuccess) return;
+    if (!successPath) return;
     const id = window.setTimeout(onClose, 1600);
     return () => window.clearTimeout(id);
-  }, [showSuccess, onClose]);
+  }, [successPath, onClose]);
 
   const websites = forms.filter((f) => f.type === "website" && f.website_link);
   const { data: entries = [] } = usePageFormSubmissions(
@@ -206,28 +243,37 @@ export function FormsDeleteManager({
         pending.formIdentifier,
       );
     }
+    setSuccessPath(pending.path);
     setPending(null);
-    setShowSuccess(true);
   };
 
-  const body = (() => {
+  const stepPath = (() => {
+    if (step.name === "websites") return undefined;
+    const host = hostLabel(step.form.website_link!);
+    if (step.name === "pages") return host;
+    if (step.name === "forms") return `${host}${step.pagePath}`;
+    return `${host}${step.pagePath}/${formSlug(step.formName)}/entries`;
+  })();
+
+  const listBody = (() => {
     if (step.name === "websites") {
       return (
-        <>
-          <p className="font-dm-mono text-sm font-semibold tracking-[0.08em] text-black uppercase">
-            Select a website
-          </p>
-          <p className="font-dm-mono mt-1 text-[13px] text-black/50">
-            Choose the website whose forms you want to manage.
-          </p>
-          <div className="mt-5">
+        <div className="flex flex-col gap-4 p-6">
+          <SectionIntro
+            title="Select a website"
+            sub="Choose the website whose forms you want to manage."
+          />
+          <div className="flex flex-col">
             {websites.length === 0 ? (
-              <p className="font-dm-mono py-6 text-center text-[13px] text-black/40">
+              <p className="font-stolzl py-6 text-center text-[13px] text-[#7E7E7E]">
                 No website forms to manage.
               </p>
             ) : (
               websites.map((site) => {
                 const overview = overviews[site.id];
+                const groupCount = overview
+                  ? overview.pages.reduce((n, p) => n + p.forms.length, 0)
+                  : null;
                 return (
                   <Row key={site.id}>
                     <button
@@ -235,57 +281,54 @@ export function FormsDeleteManager({
                       onClick={() => setStep({ name: "pages", form: site })}
                       className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left"
                     >
-                      <Globe className="h-4 w-4 shrink-0 text-black/60" />
-                      <span className="font-dm-mono min-w-0 truncate text-[15px] tracking-[0.02em] text-black lowercase">
+                      <Globe className="h-4 w-4 shrink-0 text-black" />
+                      <span className="font-dm-mono min-w-0 truncate text-[18px] text-black uppercase">
                         {site.website_link}
                       </span>
                     </button>
-                    <div className="flex shrink-0 items-center gap-3">
+                    <div className="flex shrink-0 items-center gap-4">
                       <ActionLink
                         label="Delete all"
                         colorClass={DELETE_COLOR}
                         onClick={() =>
                           setPending({
                             kind: "website",
-                            label: `All forms on ${hostLabel(site.website_link!)}`,
+                            path: hostLabel(site.website_link!),
                             form: site,
                           })
                         }
                       />
-                      {overview && (
+                      {groupCount !== null && (
                         <CountPill>
-                          {overview.total_entries}{" "}
-                          {overview.total_entries === 1 ? "entry" : "entries"}
+                          {groupCount} {groupCount === 1 ? "form" : "forms"}
                         </CountPill>
                       )}
-                      <ChevronRight className="h-3.5 w-3.5 text-black/40" />
+                      <ChevronRight className="h-3.5 w-3.5 text-black" />
                     </div>
                   </Row>
                 );
               })
             )}
           </div>
-          <p className="font-dm-mono mt-4 text-[13px] text-black/40">
+          <HintText>
             Click a website to view its pages, or &apos;Delete all&apos; to
             remove everything.
-          </p>
-        </>
+          </HintText>
+        </div>
       );
     }
 
     if (step.name === "pages") {
       const pages = overviews[step.form.id]?.pages ?? [];
       return (
-        <>
-          <p className="font-dm-mono text-sm font-semibold tracking-[0.08em] text-black uppercase">
-            Select a page
-          </p>
-          <p className="font-dm-mono mt-1 text-[13px] text-black/50">
-            Pages that have forms on {step.form.website_link}
-          </p>
-          <div className="mt-5">
+        <div className="flex flex-col gap-4 p-6">
+          <SectionIntro
+            title="Select a page"
+            sub={`Pages that have forms on ${step.form.website_link}`}
+          />
+          <div className="flex flex-col">
             {pages.length === 0 ? (
-              <p className="font-dm-mono py-6 text-center text-[13px] text-black/40">
+              <p className="font-stolzl py-6 text-center text-[13px] text-[#7E7E7E]">
                 No pages with forms yet.
               </p>
             ) : (
@@ -302,19 +345,20 @@ export function FormsDeleteManager({
                     }
                     className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left"
                   >
-                    <FileText className="h-4 w-4 shrink-0 text-black/60" />
-                    <span className="font-dm-mono min-w-0 truncate text-[15px] tracking-[0.02em] text-black lowercase">
+                    <FileText className="h-4 w-4 shrink-0 text-black" />
+                    <span className="font-dm-mono min-w-0 truncate text-[18px] text-black lowercase">
                       {page.page_path}
                     </span>
                   </button>
-                  <div className="flex shrink-0 items-center gap-3">
+                  <div className="flex shrink-0 items-center gap-4">
                     <ActionLink
-                      label="Delete all"
+                      label="Delete page"
                       colorClass={DELETE_COLOR}
+                      uppercase={false}
                       onClick={() =>
                         setPending({
                           kind: "page",
-                          label: `All forms on ${page.page_path}`,
+                          path: `${hostLabel(step.form.website_link!)}${page.page_path}`,
                           formId: step.form.id,
                           pagePath: page.page_path,
                         })
@@ -324,17 +368,17 @@ export function FormsDeleteManager({
                       {page.total_entries}{" "}
                       {page.total_entries === 1 ? "entry" : "entries"}
                     </CountPill>
-                    <ChevronRight className="h-3.5 w-3.5 text-black/40" />
+                    <ChevronRight className="h-3.5 w-3.5 text-black" />
                   </div>
                 </Row>
               ))
             )}
           </div>
-          <p className="font-dm-mono mt-4 text-[13px] text-black/40">
+          <HintText>
             Click a page to see its forms, or delete the entire page&apos;s
             forms.
-          </p>
-        </>
+          </HintText>
+        </div>
       );
     }
 
@@ -344,16 +388,17 @@ export function FormsDeleteManager({
           (page) => page.page_path === step.pagePath,
         )?.forms ?? [];
       return (
-        <>
-          <p className="font-dm-mono text-sm font-semibold tracking-[0.08em] text-black uppercase">
-            Forms on this page
-          </p>
-          <p className="font-dm-mono mt-1 text-[13px] text-black/50">
-            Select a form to manage its entries, or delete the entire form.
-          </p>
-          <div className="mt-5">
+        <div className="flex flex-col gap-4 p-6">
+          <SectionIntro
+            title="Forms on this page"
+            sub="Select a form to manage its entries, or delete the entire form."
+          />
+          <div className="flex flex-col gap-3">
             {pageForms.map((group) => (
-              <Row key={group.form_identifier}>
+              <div
+                key={group.form_identifier}
+                className="flex items-center justify-between gap-3 border border-[#EDEDED] p-4"
+              >
                 <button
                   type="button"
                   onClick={() =>
@@ -367,32 +412,34 @@ export function FormsDeleteManager({
                   }
                   className="flex min-w-0 flex-1 cursor-pointer flex-col items-start gap-1 text-left"
                 >
-                  <span className="font-dm-mono truncate text-[15px] font-medium text-black">
+                  <span className="font-dm-mono truncate text-[14px] font-medium text-black">
                     {group.form_name}
                   </span>
-                  <span className="font-dm-mono text-[12px] text-black/45">
+                  <span className="font-stolzl text-[11px] text-[#7E7E7E]">
                     Entries: {group.entries_count}{" "}
-                    {group.entries_count === 1 ? "submission" : "submissions"} ·
+                    {group.entries_count === 1 ? "submission" : "submissions"}
+                  </span>
+                  <span className="font-stolzl text-[11px] text-[#7E7E7E]">
                     Last submission: {formatDate(group.last_submission)}
                   </span>
                 </button>
                 <div className="flex shrink-0 items-center gap-3">
-                  <ActionLink
-                    label="Delete all"
-                    colorClass={DELETE_COLOR}
+                  <SolidActionButton
+                    label="Delete form"
+                    colorClass="bg-[#F25430]"
                     onClick={() =>
                       setPending({
                         kind: "formGroup",
-                        label: `${group.form_name} on ${step.pagePath}`,
+                        path: `${hostLabel(step.form.website_link!)}${step.pagePath}/${formSlug(group.form_name)}`,
                         formId: step.form.id,
                         pagePath: step.pagePath,
                         formIdentifier: group.form_identifier,
                       })
                     }
                   />
-                  <ChevronRight className="h-3.5 w-3.5 text-black/40" />
+                  <ChevronRight className="h-3.5 w-3.5 text-black" />
                 </div>
-              </Row>
+              </div>
             ))}
           </div>
           <button
@@ -400,61 +447,66 @@ export function FormsDeleteManager({
             onClick={() =>
               setPending({
                 kind: "page",
-                label: `All forms on ${step.pagePath}`,
+                path: `${hostLabel(step.form.website_link!)}${step.pagePath}`,
                 formId: step.form.id,
                 pagePath: step.pagePath,
               })
             }
-            className="font-dm-mono mt-4 cursor-pointer text-[13px] font-medium tracking-[0.04em] text-[#F25430] uppercase transition-opacity hover:opacity-70"
+            className="font-dm-mono cursor-pointer text-left text-[13px] font-medium text-[#F25430] uppercase transition-opacity hover:opacity-70"
           >
             Delete all forms on {step.pagePath}
           </button>
-        </>
+        </div>
       );
     }
 
     return (
-      <>
-        <p className="font-dm-mono text-sm font-semibold tracking-[0.08em] text-black uppercase">
-          Entries
-        </p>
-        <p className="font-dm-mono mt-1 text-[13px] text-black/50 lowercase">
-          {hostLabel(step.form.website_link ?? "")}
-          {step.pagePath === "/" ? "" : step.pagePath}/{step.formName}
-        </p>
-        <div className="mt-5">
+      <div className="flex flex-col gap-4 p-6">
+        <SectionIntro
+          title="Entries in this form"
+          sub="Delete individual submissions or clear all at once."
+        />
+        <div className="flex flex-col">
           {entries.length === 0 ? (
-            <p className="font-dm-mono py-6 text-center text-[13px] text-black/40">
+            <p className="font-stolzl py-6 text-center text-[13px] text-[#7E7E7E]">
               No entries for this form.
             </p>
           ) : (
             entries.map((entry) => (
-              <Row key={entry.id}>
+              <div
+                key={entry.id}
+                className="flex items-center justify-between gap-3 border-b border-[#EDEDED] py-3 last:border-b-0"
+              >
                 <div className="flex min-w-0 flex-1 items-center gap-3">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#6433CC] font-sans text-[13px] font-bold text-white">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#6433CC] font-sans text-[13px] font-bold text-white">
                     {getSubmissionDisplayName(entry).charAt(0).toUpperCase()}
                   </span>
-                  <div className="flex min-w-0 flex-col">
+                  <div className="flex min-w-0 flex-col gap-0.5">
                     <span className="font-dm-mono truncate text-[14px] font-medium text-black">
                       {getSubmissionDisplayName(entry)}
                     </span>
-                    <span className="font-dm-mono text-[12px] text-black/45">
-                      {formatDate(entry.submitted_at)}
+                    <span className="font-stolzl truncate text-[12px] text-[#7E7E7E]">
+                      {getEntryPreview(entry)}
+                    </span>
+                    <span className="font-stolzl text-[11px] text-[#7E7E7E]">
+                      {formatDateTime(entry.submitted_at)}
                     </span>
                   </div>
                 </div>
-                <ActionLink
-                  label="Delete"
-                  colorClass={DELETE_COLOR}
+                <button
+                  type="button"
                   onClick={() =>
                     setPending({
                       kind: "submissions",
-                      label: `Entry from ${getSubmissionDisplayName(entry)}`,
+                      path: stepPath!,
                       submissionIds: [entry.id],
                     })
                   }
-                />
-              </Row>
+                  className="font-dm-mono h-7 shrink-0 cursor-pointer rounded-[6px] border border-[#F25430] px-3 text-[11px] font-medium text-[#F25430] uppercase transition-colors hover:bg-[#F25430]/5"
+                >
+                  Delete
+                </button>
+              </div>
             ))
           )}
         </div>
@@ -464,40 +516,68 @@ export function FormsDeleteManager({
             onClick={() =>
               setPending({
                 kind: "submissions",
-                label: `All entries for ${step.formName}`,
+                path: stepPath!,
                 submissionIds: entries.map((e) => e.id),
               })
             }
-            className="font-dm-mono mt-4 cursor-pointer text-[13px] font-medium tracking-[0.04em] text-[#F25430] uppercase transition-opacity hover:opacity-70"
+            className="font-dm-mono cursor-pointer text-left text-[13px] font-medium text-[#F25430] uppercase transition-opacity hover:opacity-70"
           >
-            Delete all entries
+            Delete all entries in {step.formName}
           </button>
         ) : null}
-      </>
+      </div>
     );
   })();
+
+  if (successPath) {
+    return (
+      <ManagerShell
+        title="Delete?"
+        level={LEVEL[step.name]}
+        isBusy
+        onClose={onClose}
+        onCrumb={() => undefined}
+        footer={null}
+      >
+        <SuccessBody path={successPath} />
+      </ManagerShell>
+    );
+  }
+
+  if (pending) {
+    return (
+      <ManagerShell
+        title="Delete?"
+        level={LEVEL[step.name]}
+        isBusy={isDeleting}
+        onClose={onClose}
+        onCrumb={handleCrumb}
+        footer={
+          <CancelButton
+            onClick={() => setPending(null)}
+            disabled={isDeleting}
+          />
+        }
+      >
+        <ConfirmBody
+          path={pending.path}
+          isDeleting={isDeleting}
+          onConfirm={confirmPending}
+        />
+      </ManagerShell>
+    );
+  }
 
   return (
     <ManagerShell
       title="Delete"
       level={LEVEL[step.name]}
-      isBusy={isDeleting || showSuccess}
+      path={stepPath}
+      isBusy={isDeleting}
       onClose={onClose}
       onCrumb={handleCrumb}
-      overlay={
-        showSuccess ? (
-          <SuccessDialog />
-        ) : pending ? (
-          <ConfirmDialog
-            label={pending.label}
-            isDeleting={isDeleting}
-            onCancel={() => setPending(null)}
-            onConfirm={confirmPending}
-          />
-        ) : undefined
-      }
     >
-      {body}
+      {listBody}
     </ManagerShell>
   );
 }

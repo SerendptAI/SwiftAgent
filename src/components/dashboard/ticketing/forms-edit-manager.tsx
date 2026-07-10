@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronRight, FileText, Globe } from "lucide-react";
+import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 
 import { useToast } from "@/components/ui/toast";
@@ -8,7 +9,17 @@ import { useScrollLock } from "@/hooks/use-scroll-lock";
 import type { Form, FormOverview } from "@/services/forms";
 
 import { formatDate, hostLabel } from "./forms-hierarchy";
-import { ActionLink, CountPill, ManagerShell, Row } from "./forms-manager-ui";
+import {
+  ActionLink,
+  CancelButton,
+  CountPill,
+  FormCheckIcon,
+  HintText,
+  ManagerShell,
+  Row,
+  SectionIntro,
+  SolidActionButton,
+} from "./forms-manager-ui";
 
 type Step =
   | { name: "websites" }
@@ -16,21 +27,15 @@ type Step =
   | { name: "forms"; form: Form; pagePath: string };
 
 type RenameTarget =
-  | { kind: "website"; kindLabel: string; current: string; form: Form }
-  | {
-      kind: "page";
-      kindLabel: string;
-      current: string;
-      form: Form;
-      path: string;
-    }
+  | { kind: "website"; current: string; form: Form; meta?: string }
+  | { kind: "page"; current: string; form: Form; path: string; meta?: string }
   | {
       kind: "form";
-      kindLabel: string;
       current: string;
       formId: string;
       pagePath: string;
       formIdentifier: string;
+      meta?: string;
     };
 
 const LEVEL: Record<Step["name"], 0 | 1 | 2> = {
@@ -39,23 +44,89 @@ const LEVEL: Record<Step["name"], 0 | 1 | 2> = {
   forms: 2,
 };
 
-const EDIT_COLOR = "text-[#006BE5]";
+const EDIT_COLOR = "text-[#03A84E]";
 
-function RenameDialog({
+const HELPER_TEXT: Record<RenameTarget["kind"], string> = {
+  website: "This name appears as the website label in your dashboard.",
+  page: "This name appears as the page label in your dashboard.",
+  form: "This name appears as the form title in your dashboard and submissions.",
+};
+
+function targetIcon(kind: RenameTarget["kind"]): ReactNode {
+  if (kind === "website")
+    return <Globe className="h-[18px] w-[18px] shrink-0 text-black" />;
+  if (kind === "page")
+    return <FileText className="h-[18px] w-[18px] shrink-0 text-black" />;
+  return <FormCheckIcon className="h-[18px] w-[18px] shrink-0 text-black" />;
+}
+
+function FieldLabel({ children }: { children: ReactNode }) {
+  return (
+    <p className="font-stolzl text-[11px] font-normal text-[#7E7E7E] uppercase">
+      {children}
+    </p>
+  );
+}
+
+function PreviewCard({
+  icon,
+  name,
+  meta,
+}: {
+  icon: ReactNode;
+  name: string;
+  meta?: string;
+}) {
+  return (
+    <div className="flex w-full flex-col gap-1.5 border border-[#EDEDED] bg-[#F6F6F6] p-3">
+      <div className="flex min-w-0 items-center gap-2">
+        {icon}
+        <span className="font-dm-mono min-w-0 truncate text-[14px] font-medium text-black">
+          {name}
+        </span>
+      </div>
+      {meta && <p className="font-stolzl text-[11px] text-[#7E7E7E]">{meta}</p>}
+    </div>
+  );
+}
+
+function SaveButton({
+  label,
+  onClick,
+  disabled,
+}: {
+  label: string;
+  onClick?: () => void;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`font-dm-mono flex h-9 min-w-[110px] items-center justify-center rounded-[8px] bg-[#03A84E] px-4 text-[13px] font-medium text-white uppercase shadow-[-3px_4px_0px_0px_#000000] ${
+        onClick ? "cursor-pointer transition-colors hover:bg-[#029143]" : ""
+      } disabled:cursor-not-allowed disabled:opacity-50`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function RenameBody({
   target,
-  isSaving,
-  onCancel,
-  onSave,
+  value,
+  onChange,
+  canSave,
+  onSubmit,
 }: {
   target: RenameTarget;
-  isSaving: boolean;
-  onCancel: () => void;
-  onSave: (next: string) => void;
+  value: string;
+  onChange: (value: string) => void;
+  canSave: boolean;
+  onSubmit: () => void;
 }) {
-  const [value, setValue] = useState(target.current);
   const inputRef = useRef<HTMLInputElement>(null);
-  const trimmed = value.trim();
-  const canSave = !isSaving && trimmed.length > 0 && trimmed !== target.current;
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -63,67 +134,38 @@ function RenameDialog({
   }, []);
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/30 px-6">
-      <div className="w-full max-w-[460px] rounded-2xl bg-white px-6 py-6 shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
-        <div className="flex items-center gap-4">
-          <div className="min-w-0 flex-1">
-            <p className="font-dm-mono text-[11px] tracking-[0.1em] text-black/40 uppercase">
-              Current name
-            </p>
-            <p className="font-dm-mono mt-1 truncate text-[15px] font-medium text-black">
-              {target.current}
-            </p>
-          </div>
-          <span className="text-black/25">→</span>
-          <div className="min-w-0 flex-1">
-            <label
-              htmlFor="forms-rename-input"
-              className="font-dm-mono text-[11px] tracking-[0.1em] text-black/40 uppercase"
-            >
-              New name
-            </label>
-            <input
-              id="forms-rename-input"
-              ref={inputRef}
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && canSave) onSave(trimmed);
-              }}
-              className="font-dm-mono mt-1 w-full border-b border-[#E5E5E5] pb-1 text-[15px] font-medium text-black focus:border-[#006BE5] focus:outline-none"
-            />
-          </div>
-        </div>
-
-        <div className="mt-6">
-          <p className="font-dm-mono text-[11px] tracking-[0.1em] text-black/40 uppercase">
-            Preview
-          </p>
-          <div className="mt-2 rounded-xl border border-[#EDEDED] bg-[#F9FAFB] px-4 py-3">
-            <span className="font-dm-mono text-[15px] font-medium text-black">
-              {trimmed || target.current}
-            </span>
-          </div>
-        </div>
-
-        <div className="mt-6 flex justify-end gap-3">
-          <button
-            type="button"
-            onClick={onCancel}
-            disabled={isSaving}
-            className="font-dm-mono cursor-pointer rounded-lg border border-[#E5E5E5] px-5 py-2 text-sm text-black/70 transition-colors hover:bg-gray-50 disabled:opacity-60"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            disabled={!canSave}
-            onClick={() => onSave(trimmed)}
-            className="font-dm-mono cursor-pointer rounded-lg bg-[#006BE5] px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-[#005fca] disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {isSaving ? "Saving..." : "Save name"}
-          </button>
-        </div>
+    <div className="flex flex-col gap-[5px] p-6">
+      <div className="flex flex-col gap-1.5">
+        <FieldLabel>Current name</FieldLabel>
+        <p className="font-dm-mono text-[16px] text-[#7E7E7E] line-through">
+          {target.current}
+        </p>
+      </div>
+      <div className="flex justify-center">
+        <span className="font-dm-mono text-[16px] text-[#C0C0C0]">→</span>
+      </div>
+      <div className="flex flex-col gap-2">
+        <FieldLabel>New name</FieldLabel>
+        <input
+          ref={inputRef}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && canSave) onSubmit();
+          }}
+          className="font-dm-mono h-11 w-full border border-[#EDEDED] bg-white px-3 text-[16px] text-black caret-[#03A84E] outline-none focus:border-[#03A84E]"
+        />
+        <p className="font-stolzl text-[11px] font-normal text-[#7E7E7E]">
+          {HELPER_TEXT[target.kind]}
+        </p>
+      </div>
+      <div className="flex flex-col gap-2.5 py-[25px]">
+        <FieldLabel>Preview</FieldLabel>
+        <PreviewCard
+          icon={targetIcon(target.kind)}
+          name={value.trim() || target.current}
+          meta={target.meta}
+        />
       </div>
     </div>
   );
@@ -162,6 +204,12 @@ export function FormsEditManager({
   const toast = useToast();
   const [step, setStep] = useState<Step>({ name: "websites" });
   const [rename, setRename] = useState<RenameTarget | null>(null);
+  const [renameValue, setRenameValue] = useState("");
+  const [saved, setSaved] = useState<{
+    kind: RenameTarget["kind"];
+    name: string;
+    meta?: string;
+  } | null>(null);
 
   useScrollLock(open);
 
@@ -169,19 +217,27 @@ export function FormsEditManager({
     if (open) {
       setStep({ name: "websites" });
       setRename(null);
+      setRenameValue("");
+      setSaved(null);
     }
   }, [open]);
 
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "Escape" || isRenaming) return;
+      if (e.key !== "Escape" || isRenaming || saved) return;
       if (rename) setRename(null);
       else onClose();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, rename, isRenaming, onClose]);
+  }, [open, rename, saved, isRenaming, onClose]);
+
+  useEffect(() => {
+    if (!saved) return;
+    const id = window.setTimeout(onClose, 1400);
+    return () => window.clearTimeout(id);
+  }, [saved, onClose]);
 
   if (!open) return null;
 
@@ -193,48 +249,69 @@ export function FormsEditManager({
       setStep({ name: "pages", form: step.form });
   };
 
-  const saveRename = async (next: string) => {
-    if (!rename) return;
-    const previous = rename.current;
+  const openRename = (target: RenameTarget) => {
+    setRename(target);
+    setRenameValue(target.current);
+  };
+
+  const trimmedValue = renameValue.trim();
+  const canSave =
+    !isRenaming && trimmedValue.length > 0 && trimmedValue !== rename?.current;
+
+  const saveRename = async () => {
+    if (!rename || !canSave) return;
     try {
       if (rename.kind === "form") {
         await onRenameForm(
           rename.formId,
           rename.pagePath,
           rename.formIdentifier,
-          next,
+          trimmedValue,
         );
       } else if (rename.kind === "page") {
-        await onRenamePage(rename.form, rename.path, next);
+        await onRenamePage(rename.form, rename.path, trimmedValue);
       } else {
-        await onRenameWebsite(rename.form, next);
+        await onRenameWebsite(rename.form, trimmedValue);
       }
     } catch {
-      toast.error(`Couldn't rename the ${rename.kindLabel}. Please try again.`);
+      toast.error(`Couldn't rename the ${rename.kind}. Please try again.`);
       return;
     }
+    setSaved({ kind: rename.kind, name: trimmedValue, meta: rename.meta });
     setRename(null);
-    toast.success(`Renamed "${previous}" to "${next}".`);
   };
 
-  const body = (() => {
+  const stepPath = (() => {
+    if (step.name === "websites") return undefined;
+    const host = hostLabel(step.form.website_link!);
+    return step.name === "pages" ? host : `${host}${step.pagePath}`;
+  })();
+
+  const renamePath = (() => {
+    if (!rename && !saved) return undefined;
+    if (rename?.kind === "page") return hostLabel(rename.form.website_link!);
+    return stepPath;
+  })();
+
+  const listBody = (() => {
     if (step.name === "websites") {
       return (
-        <>
-          <p className="font-dm-mono text-sm font-semibold tracking-[0.08em] text-black uppercase">
-            Select a website
-          </p>
-          <p className="font-dm-mono mt-1 text-[13px] text-black/50">
-            Choose the website whose forms you want to manage.
-          </p>
-          <div className="mt-5">
+        <div className="flex flex-col gap-4 p-6">
+          <SectionIntro
+            title="Select a website"
+            sub="Choose the website whose forms you want to manage."
+          />
+          <div className="flex flex-col">
             {websites.length === 0 ? (
-              <p className="font-dm-mono py-6 text-center text-[13px] text-black/40">
+              <p className="font-stolzl py-6 text-center text-[13px] text-[#7E7E7E]">
                 No website forms to manage.
               </p>
             ) : (
               websites.map((site) => {
                 const overview = overviews[site.id];
+                const groupCount = overview
+                  ? overview.pages.reduce((n, p) => n + p.forms.length, 0)
+                  : null;
                 return (
                   <Row key={site.id}>
                     <button
@@ -242,57 +319,57 @@ export function FormsEditManager({
                       onClick={() => setStep({ name: "pages", form: site })}
                       className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left"
                     >
-                      <Globe className="h-4 w-4 shrink-0 text-black/60" />
-                      <span className="font-dm-mono min-w-0 truncate text-[15px] tracking-[0.02em] text-black lowercase">
+                      <Globe className="h-4 w-4 shrink-0 text-black" />
+                      <span className="font-dm-mono min-w-0 truncate text-[18px] text-black uppercase">
                         {site.website_link}
                       </span>
                     </button>
-                    <div className="flex shrink-0 items-center gap-3">
+                    <div className="flex shrink-0 items-center gap-4">
                       <ActionLink
                         label="Edit name"
                         colorClass={EDIT_COLOR}
                         onClick={() =>
-                          setRename({
+                          openRename({
                             kind: "website",
-                            kindLabel: "website",
                             current: hostLabel(site.website_link!),
                             form: site,
+                            meta:
+                              groupCount !== null
+                                ? `${groupCount} ${groupCount === 1 ? "form" : "forms"}`
+                                : undefined,
                           })
                         }
                       />
-                      {overview && (
+                      {groupCount !== null && (
                         <CountPill>
-                          {overview.total_entries}{" "}
-                          {overview.total_entries === 1 ? "entry" : "entries"}
+                          {groupCount} {groupCount === 1 ? "form" : "forms"}
                         </CountPill>
                       )}
-                      <ChevronRight className="h-3.5 w-3.5 text-black/40" />
+                      <ChevronRight className="h-3.5 w-3.5 text-black" />
                     </div>
                   </Row>
                 );
               })
             )}
           </div>
-          <p className="font-dm-mono mt-4 text-[13px] text-black/40">
+          <HintText>
             Click a website to view its pages, or edit its display name.
-          </p>
-        </>
+          </HintText>
+        </div>
       );
     }
 
     if (step.name === "pages") {
       const pages = overviews[step.form.id]?.pages ?? [];
       return (
-        <>
-          <p className="font-dm-mono text-sm font-semibold tracking-[0.08em] text-black uppercase">
-            Select a page
-          </p>
-          <p className="font-dm-mono mt-1 text-[13px] text-black/50">
-            Pages that have forms on {step.form.website_link}
-          </p>
-          <div className="mt-5">
+        <div className="flex flex-col gap-4 p-6">
+          <SectionIntro
+            title="Select a page"
+            sub={`Pages that have forms on ${step.form.website_link}`}
+          />
+          <div className="flex flex-col">
             {pages.length === 0 ? (
-              <p className="font-dm-mono py-6 text-center text-[13px] text-black/40">
+              <p className="font-stolzl py-6 text-center text-[13px] text-[#7E7E7E]">
                 No pages with forms yet.
               </p>
             ) : (
@@ -309,22 +386,23 @@ export function FormsEditManager({
                     }
                     className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left"
                   >
-                    <FileText className="h-4 w-4 shrink-0 text-black/60" />
-                    <span className="font-dm-mono min-w-0 truncate text-[15px] tracking-[0.02em] text-black lowercase">
+                    <FileText className="h-4 w-4 shrink-0 text-black" />
+                    <span className="font-dm-mono min-w-0 truncate text-[18px] text-black lowercase">
                       {page.page_path}
                     </span>
                   </button>
-                  <div className="flex shrink-0 items-center gap-3">
+                  <div className="flex shrink-0 items-center gap-4">
                     <ActionLink
                       label="Edit page name"
                       colorClass={EDIT_COLOR}
+                      uppercase={false}
                       onClick={() =>
-                        setRename({
+                        openRename({
                           kind: "page",
-                          kindLabel: "page",
                           current: page.page_path,
                           form: step.form,
                           path: page.page_path,
+                          meta: `${page.total_entries} ${page.total_entries === 1 ? "entry" : "entries"}`,
                         })
                       }
                     />
@@ -332,16 +410,16 @@ export function FormsEditManager({
                       {page.total_entries}{" "}
                       {page.total_entries === 1 ? "entry" : "entries"}
                     </CountPill>
-                    <ChevronRight className="h-3.5 w-3.5 text-black/40" />
+                    <ChevronRight className="h-3.5 w-3.5 text-black" />
                   </div>
                 </Row>
               ))
             )}
           </div>
-          <p className="font-dm-mono mt-4 text-[13px] text-black/40">
+          <HintText>
             Click a page to see its forms, or edit the page name.
-          </p>
-        </>
+          </HintText>
+        </div>
       );
     }
 
@@ -350,66 +428,117 @@ export function FormsEditManager({
         (page) => page.page_path === step.pagePath,
       )?.forms ?? [];
     return (
-      <>
-        <p className="font-dm-mono text-sm font-semibold tracking-[0.08em] text-black uppercase">
-          Forms on this page
-        </p>
-        <p className="font-dm-mono mt-1 text-[13px] text-black/50">
-          Select a form to edit its name.
-        </p>
-        <div className="mt-5">
+      <div className="flex flex-col gap-4 p-6">
+        <SectionIntro
+          title="Forms on this page"
+          sub="Select a form to edit its name"
+        />
+        <div className="flex flex-col gap-3">
           {pageForms.map((group) => (
-            <Row key={group.form_identifier}>
+            <div
+              key={group.form_identifier}
+              className="flex items-center justify-between gap-3 border border-[#EDEDED] p-4"
+            >
               <div className="flex min-w-0 flex-1 flex-col items-start gap-1">
-                <span className="font-dm-mono truncate text-[15px] font-medium text-black">
+                <span className="font-dm-mono truncate text-[14px] font-medium text-black">
                   {group.form_name}
                 </span>
-                <span className="font-dm-mono text-[12px] text-black/45">
+                <span className="font-stolzl text-[11px] text-[#7E7E7E]">
                   Entries: {group.entries_count}{" "}
-                  {group.entries_count === 1 ? "submission" : "submissions"} ·
+                  {group.entries_count === 1 ? "submission" : "submissions"}
+                </span>
+                <span className="font-stolzl text-[11px] text-[#7E7E7E]">
                   Last submission: {formatDate(group.last_submission)}
                 </span>
               </div>
-              <ActionLink
+              <SolidActionButton
                 label="Edit form name"
-                colorClass={EDIT_COLOR}
+                colorClass="bg-[#03A84E]"
                 onClick={() =>
-                  setRename({
+                  openRename({
                     kind: "form",
-                    kindLabel: "form",
                     current: group.form_name,
                     formId: step.form.id,
                     pagePath: step.pagePath,
                     formIdentifier: group.form_identifier,
+                    meta: `${group.entries_count} ${group.entries_count === 1 ? "submission" : "submissions"} · Last: ${formatDate(group.last_submission)}`,
                   })
                 }
               />
-            </Row>
+            </div>
           ))}
         </div>
-      </>
+      </div>
     );
   })();
+
+  if (saved) {
+    return (
+      <ManagerShell
+        title="Edit name?"
+        level={LEVEL[step.name]}
+        path={renamePath}
+        isBusy
+        onClose={onClose}
+        onCrumb={() => undefined}
+        footer={<SaveButton label="Saved!" />}
+      >
+        <div className="flex flex-col gap-2.5 p-6">
+          <FieldLabel>New name</FieldLabel>
+          <PreviewCard
+            icon={targetIcon(saved.kind)}
+            name={saved.name}
+            meta={saved.meta}
+          />
+        </div>
+      </ManagerShell>
+    );
+  }
+
+  if (rename) {
+    return (
+      <ManagerShell
+        title="Edit name?"
+        level={LEVEL[step.name]}
+        path={renamePath}
+        isBusy={isRenaming}
+        onClose={onClose}
+        onCrumb={handleCrumb}
+        footer={
+          <div className="flex w-full items-center justify-end gap-4">
+            <CancelButton
+              onClick={() => setRename(null)}
+              disabled={isRenaming}
+            />
+            <SaveButton
+              label={isRenaming ? "Saving..." : "Save name"}
+              onClick={saveRename}
+              disabled={!canSave}
+            />
+          </div>
+        }
+      >
+        <RenameBody
+          target={rename}
+          value={renameValue}
+          onChange={setRenameValue}
+          canSave={canSave}
+          onSubmit={saveRename}
+        />
+      </ManagerShell>
+    );
+  }
 
   return (
     <ManagerShell
       title="Edit name?"
       level={LEVEL[step.name]}
+      path={stepPath}
       isBusy={isRenaming}
       onClose={onClose}
       onCrumb={handleCrumb}
-      overlay={
-        rename ? (
-          <RenameDialog
-            target={rename}
-            isSaving={isRenaming}
-            onCancel={() => setRename(null)}
-            onSave={saveRename}
-          />
-        ) : undefined
-      }
     >
-      {body}
+      {listBody}
     </ManagerShell>
   );
 }

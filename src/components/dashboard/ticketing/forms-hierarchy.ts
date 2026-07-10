@@ -13,3 +13,18 @@ export function formatDate(iso?: string | null): string {
         year: "numeric",
       });
 }
+
+export function formatDateTime(iso?: string | null): string {
+  if (!iso) return "-";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "-";
+  const time = d
+    .toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    })
+    .toLowerCase()
+    .replace(" ", "");
+  return `${formatDate(iso)} at ${time}`;
+}

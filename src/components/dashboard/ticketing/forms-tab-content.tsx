@@ -703,7 +703,7 @@ function FormSubmissionList({
   );
 }
 
-function PageFormTabs({
+export function PageFormTabs({
   pages,
   selectedPagePath,
   selectedFormIdentifier,
@@ -716,56 +716,61 @@ function PageFormTabs({
   onSelectPage: (pagePath: string) => void;
   onSelectFormIdentifier: (formIdentifier: string) => void;
 }) {
-  const activePage =
-    pages.find((page) => page.page_path === selectedPagePath) ?? null;
-
   return (
-    <div className="flex shrink-0 flex-col gap-3">
-      <div className="scrollbar-none flex items-end gap-2 overflow-x-auto">
-        {pages.map((page) => {
-          const isActive = page.page_path === selectedPagePath;
+    <div className="flex shrink-0 flex-wrap items-start gap-3">
+      {pages.map((page) => {
+        const isActive = page.page_path === selectedPagePath;
+        if (!isActive || page.forms.length === 0) {
           return (
             <button
               key={page.page_path}
               type="button"
               onClick={() => onSelectPage(page.page_path)}
-              className={`font-dm-mono h-8 shrink-0 cursor-pointer border-b-4 px-2 text-xs font-normal tracking-[0.08em] whitespace-nowrap uppercase sm:h-9 sm:text-sm ${
+              className={`font-dm-mono flex h-[42px] max-w-[170px] cursor-pointer items-center justify-center rounded-[9px] border border-black/5 px-2.5 text-base tracking-[0.1em] uppercase transition-colors ${
                 isActive
-                  ? "border-[#6433CC] text-black"
-                  : "border-transparent text-black/40 transition-colors hover:text-black"
+                  ? "bg-[#006BE5] font-medium text-white"
+                  : "bg-white font-normal text-black hover:bg-gray-50"
               }`}
               aria-pressed={isActive}
             >
-              {page.page_path}
-              <span className="ml-1.5 text-black/40">
-                ({page.total_entries})
-              </span>
+              <span className="truncate">{page.page_path}</span>
             </button>
           );
-        })}
-      </div>
-      {activePage && activePage.forms.length > 0 && (
-        <div className="scrollbar-none flex gap-2 overflow-x-auto">
-          {activePage.forms.map((group) => {
-            const isActive = group.form_identifier === selectedFormIdentifier;
-            return (
-              <button
-                key={group.form_identifier}
-                type="button"
-                onClick={() => onSelectFormIdentifier(group.form_identifier)}
-                className={`font-dm-mono h-8 shrink-0 cursor-pointer rounded-full px-4 text-xs font-normal tracking-[0.08em] whitespace-nowrap uppercase transition-colors ${
-                  isActive
-                    ? "bg-[#808080] text-white"
-                    : "bg-[#F6F6F6] text-black hover:bg-[#EDEDED]"
-                }`}
-                aria-pressed={isActive}
-              >
-                {group.form_name} ({group.entries_count})
-              </button>
-            );
-          })}
-        </div>
-      )}
+        }
+        return (
+          <div
+            key={page.page_path}
+            className="flex flex-col rounded-[9px] border border-black/5 bg-[#006BE5] p-[9px] pt-0"
+          >
+            <div className="font-dm-mono flex h-[42px] items-center justify-center px-0.5 text-base font-medium tracking-[0.1em] text-white uppercase">
+              <span className="max-w-[152px] truncate">{page.page_path}</span>
+            </div>
+            <div className="flex flex-col gap-2">
+              {page.forms.map((group) => {
+                const isActiveForm =
+                  group.form_identifier === selectedFormIdentifier;
+                return (
+                  <button
+                    key={group.form_identifier}
+                    type="button"
+                    onClick={() =>
+                      onSelectFormIdentifier(group.form_identifier)
+                    }
+                    className={`font-dm-mono flex h-[37px] w-[152px] cursor-pointer items-center justify-center rounded-[9px] border border-black/5 px-2.5 text-xs tracking-[0.1em] uppercase transition-colors ${
+                      isActiveForm
+                        ? "bg-[#F25430] font-medium text-white"
+                        : "bg-white font-normal text-black hover:bg-gray-50"
+                    }`}
+                    aria-pressed={isActiveForm}
+                  >
+                    <span className="truncate">{group.form_name}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -1039,20 +1044,20 @@ export function FormsTabContent() {
         onCreateWebsiteForm={() => setIsWebsiteFormDrawerOpen(true)}
         onCreateOnlineForm={() => setIsOnlineFormDrawerOpen(true)}
       />
-      {hasHierarchy && (
-        <PageFormTabs
-          pages={pages}
-          selectedPagePath={selectedPagePath}
-          selectedFormIdentifier={selectedFormIdentifier}
-          onSelectPage={handleSelectPage}
-          onSelectFormIdentifier={handleSelectFormIdentifier}
-        />
-      )}
       <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:h-[600px] lg:flex-none lg:grid-cols-12 lg:gap-8">
         <div className="hidden min-w-0 lg:col-span-7 lg:block">
           {inboxDetail}
         </div>
-        <div className="flex min-w-0 flex-col gap-5 lg:col-span-5 lg:gap-8">
+        <div className="flex min-w-0 flex-col gap-5 lg:col-span-5 lg:gap-7">
+          {hasHierarchy && (
+            <PageFormTabs
+              pages={pages}
+              selectedPagePath={selectedPagePath}
+              selectedFormIdentifier={selectedFormIdentifier}
+              onSelectPage={handleSelectPage}
+              onSelectFormIdentifier={handleSelectFormIdentifier}
+            />
+          )}
           <div className="min-h-0 flex-1">
             <FormSubmissionList
               submissions={submissions}
