@@ -4,11 +4,11 @@ import { useState } from "react";
 
 import { FormsDeleteManager } from "@/components/dashboard/ticketing/forms-delete-manager";
 import { FormsEditManager } from "@/components/dashboard/ticketing/forms-edit-manager";
-import type { Form, Submission } from "@/services/forms";
+import type { Form, FormOverview } from "@/services/forms";
 
 const now = "2026-02-04T14:33:00Z";
 
-function form(id: string, link: string, title: string): Form {
+function form(id: string, link: string): Form {
   return {
     id,
     company_id: "c1",
@@ -17,36 +17,72 @@ function form(id: string, link: string, title: string): Form {
     created_at: now,
     updated_at: now,
     website_link: link,
-    form_title: title,
   };
 }
 
 const FORMS: Form[] = [
-  form("f1", "https://serendptai.com/contact-us", "Contact Form"),
-  form("f2", "https://serendptai.com/contact-us", "Newsletter Signup"),
-  form("f3", "https://serendptai.com/submission", "Submission Form"),
-  form("f4", "https://serendptai.com/volunteer", "Volunteer Form"),
-  form("f5", "https://ngballerz.com/signup", "Signup Form"),
+  form("f1", "https://serendptai.com"),
+  form("f2", "https://ngballerz.com"),
 ];
 
-function sub(id: string, formId: string, name: string): Submission {
-  return {
-    id,
-    form_id: formId,
-    company_id: "c1",
-    data: { name },
-    is_read: false,
-    visitor_id: "v-" + id,
-    submitted_at: now,
-  };
-}
-
-const SUBMISSIONS: Submission[] = [
-  sub("s1", "f1", "John Doe"),
-  sub("s2", "f1", "Jane Austin"),
-  sub("s3", "f1", "Jane Jackson"),
-  sub("s4", "f3", "Mark Twain"),
-];
+const OVERVIEWS: Record<string, FormOverview> = {
+  f1: {
+    form_id: "f1",
+    website_link: "https://serendptai.com",
+    total_entries: 4,
+    pages: [
+      {
+        page_path: "/contact-us",
+        total_entries: 3,
+        forms: [
+          {
+            form_identifier: "form-1",
+            form_name: "Contact Form",
+            entries_count: 3,
+            last_submission: now,
+          },
+          {
+            form_identifier: "form-2",
+            form_name: "Newsletter Signup",
+            entries_count: 0,
+            last_submission: null,
+          },
+        ],
+      },
+      {
+        page_path: "/volunteer",
+        total_entries: 1,
+        forms: [
+          {
+            form_identifier: "form-1",
+            form_name: "Volunteer Form",
+            entries_count: 1,
+            last_submission: now,
+          },
+        ],
+      },
+    ],
+  },
+  f2: {
+    form_id: "f2",
+    website_link: "https://ngballerz.com",
+    total_entries: 1,
+    pages: [
+      {
+        page_path: "/signup",
+        total_entries: 1,
+        forms: [
+          {
+            form_identifier: "form-1",
+            form_name: "Signup Form",
+            entries_count: 1,
+            last_submission: now,
+          },
+        ],
+      },
+    ],
+  },
+};
 
 export default function FormsDeletePreviewPage() {
   const [which, setWhich] = useState<"delete" | "edit" | null>("delete");
@@ -71,22 +107,21 @@ export default function FormsDeletePreviewPage() {
       <FormsDeleteManager
         open={which === "delete"}
         forms={FORMS}
-        submissions={SUBMISSIONS}
+        overviews={OVERVIEWS}
         isDeleting={false}
         onClose={() => setWhich(null)}
-        onDeleteForms={async () => {}}
-        onDeleteSubmissions={async () => {}}
         onDeleteWebsite={async () => {}}
         onDeletePage={async () => {}}
+        onDeleteFormGroup={async () => {}}
+        onDeleteSubmissions={async () => {}}
       />
       <FormsEditManager
         open={which === "edit"}
         forms={FORMS}
-        submissions={SUBMISSIONS}
+        overviews={OVERVIEWS}
         isRenaming={false}
         onRenameForm={async () => {}}
         onRenameWebsite={async () => {}}
-        onRenamePage={async () => {}}
         onClose={() => setWhich(null)}
       />
     </div>

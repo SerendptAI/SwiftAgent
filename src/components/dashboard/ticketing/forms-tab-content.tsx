@@ -19,23 +19,21 @@ import { MessagesEmptyState } from "@/components/dashboard/ticketing/messages-em
 import { OnlineFormDrawer } from "@/components/dashboard/ticketing/online-form-drawer";
 import { WebsiteFormDrawer } from "@/components/dashboard/ticketing/website-form-drawer";
 import {
-  useAllSubmissions,
-  useDeleteForm,
+  useBulkDeleteSubmissions,
   useDeletePage,
-  useDeleteSubmission,
+  useDeletePageForm,
   useDeleteWebsite,
+  useFormOverviews,
   useForms,
   useFormSubmissions,
   useMarkSubmissionRead,
-  useRenamePage,
-  useRenameWebsite,
+  usePageFormSubmissions,
+  useRenamePageForm,
   useUpdateForm,
 } from "@/hooks/use-forms";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
-import type { Form, Submission } from "@/services/forms";
+import type { Form, OverviewPage, Submission } from "@/services/forms";
 import { getFormDisplayName, getSubmissionDisplayName } from "@/services/forms";
-
-import { urlParts } from "./forms-hierarchy";
 
 type FormSubmissionStatus = "unread" | "read";
 type FormType = "website" | "online";
@@ -57,6 +55,9 @@ const FORM_TYPE_META: Record<
 };
 
 function getSubmissionPreview(submission: Submission): string {
+  if (submission.submitter_preview?.trim()) {
+    return submission.submitter_preview.trim();
+  }
   for (const val of Object.values(submission.data)) {
     if (typeof val === "string" && val.trim()) return val.trim();
   }
@@ -701,12 +702,83 @@ function FormSubmissionList({
   );
 }
 
+function PageFormTabs({
+  pages,
+  selectedPagePath,
+  selectedFormIdentifier,
+  onSelectPage,
+  onSelectFormIdentifier,
+}: {
+  pages: OverviewPage[];
+  selectedPagePath: string | null;
+  selectedFormIdentifier: string | null;
+  onSelectPage: (pagePath: string) => void;
+  onSelectFormIdentifier: (formIdentifier: string) => void;
+}) {
+  const activePage =
+    pages.find((page) => page.page_path === selectedPagePath) ?? null;
+
+  return (
+    <div className="flex shrink-0 flex-col gap-3">
+      <div className="scrollbar-none flex items-end gap-2 overflow-x-auto">
+        {pages.map((page) => {
+          const isActive = page.page_path === selectedPagePath;
+          return (
+            <button
+              key={page.page_path}
+              type="button"
+              onClick={() => onSelectPage(page.page_path)}
+              className={`font-dm-mono h-8 shrink-0 cursor-pointer border-b-4 px-2 text-xs font-normal tracking-[0.08em] whitespace-nowrap uppercase sm:h-9 sm:text-sm ${
+                isActive
+                  ? "border-[#6433CC] text-black"
+                  : "border-transparent text-black/40 transition-colors hover:text-black"
+              }`}
+              aria-pressed={isActive}
+            >
+              {page.page_path}
+              <span className="ml-1.5 text-black/40">
+                ({page.total_entries})
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      {activePage && activePage.forms.length > 0 && (
+        <div className="scrollbar-none flex gap-2 overflow-x-auto">
+          {activePage.forms.map((group) => {
+            const isActive = group.form_identifier === selectedFormIdentifier;
+            return (
+              <button
+                key={group.form_identifier}
+                type="button"
+                onClick={() => onSelectFormIdentifier(group.form_identifier)}
+                className={`font-dm-mono h-8 shrink-0 cursor-pointer rounded-full px-4 text-xs font-normal tracking-[0.08em] whitespace-nowrap uppercase transition-colors ${
+                  isActive
+                    ? "bg-[#808080] text-white"
+                    : "bg-[#F6F6F6] text-black hover:bg-[#EDEDED]"
+                }`}
+                aria-pressed={isActive}
+              >
+                {group.form_name} ({group.entries_count})
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function FormsTabContent() {
   const [selectedSubmissionId, setSelectedSubmissionId] = useState<
     string | null
   >(null);
   const [isMobileDetail, setIsMobileDetail] = useState(false);
   const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
+  const [selectedPagePath, setSelectedPagePath] = useState<string | null>(null);
+  const [selectedFormIdentifier, setSelectedFormIdentifier] = useState<
+    string | null
+  >(null);
   const [activeStatus, setActiveStatus] =
     useState<FormSubmissionStatus>("unread");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -719,14 +791,13 @@ export function FormsTabContent() {
   } | null>(null);
 
   const { data: forms = [] } = useForms();
-  const { data: allSubmissions = [] } = useAllSubmissions();
-  const deleteForm = useDeleteForm();
-  const deleteSubmission = useDeleteSubmission();
+  const overviews = useFormOverviews(forms.map((f) => f.id));
   const deleteWebsite = useDeleteWebsite();
   const deletePage = useDeletePage();
+  const deletePageForm = useDeletePageForm();
+  const bulkDeleteSubmissions = useBulkDeleteSubmissions();
   const updateForm = useUpdateForm();
-  const renameWebsite = useRenameWebsite();
-  const renamePage = useRenamePage();
+  const renamePageForm = useRenamePageForm();
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const { mutate: markSubmissionRead } = useMarkSubmissionRead();
 
@@ -738,10 +809,36 @@ export function FormsTabContent() {
 
   const selectedForm = forms.find((f) => f.id === selectedFormId) ?? null;
   const selectedFormType: FormType = selectedForm?.type ?? "website";
+  const overview = selectedFormId ? overviews.byId[selectedFormId] : undefined;
+  const pages = overview?.pages ?? [];
+  const hasHierarchy = pages.length > 0;
 
-  const { data: submissions = [] } = useFormSubmissions(
-    selectedForm?.id ?? null,
+  useEffect(() => {
+    if (!overview) return;
+    const page =
+      overview.pages.find((p) => p.page_path === selectedPagePath) ??
+      overview.pages[0] ??
+      null;
+    const nextPagePath = page?.page_path ?? null;
+    const group =
+      page?.forms.find((g) => g.form_identifier === selectedFormIdentifier) ??
+      page?.forms[0] ??
+      null;
+    const nextIdentifier = group?.form_identifier ?? null;
+    if (nextPagePath !== selectedPagePath) setSelectedPagePath(nextPagePath);
+    if (nextIdentifier !== selectedFormIdentifier)
+      setSelectedFormIdentifier(nextIdentifier);
+  }, [overview, selectedPagePath, selectedFormIdentifier]);
+
+  const { data: scopedSubmissions = [] } = usePageFormSubmissions(
+    hasHierarchy ? (selectedFormId ?? null) : null,
+    selectedPagePath,
+    selectedFormIdentifier,
   );
+  const { data: flatSubmissions = [] } = useFormSubmissions(
+    hasHierarchy ? null : (selectedForm?.id ?? null),
+  );
+  const submissions = hasHierarchy ? scopedSubmissions : flatSubmissions;
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 1023px)");
@@ -763,6 +860,19 @@ export function FormsTabContent() {
 
   const handleSelectForm = (id: string) => {
     setSelectedFormId(id);
+    setSelectedPagePath(null);
+    setSelectedFormIdentifier(null);
+    setSelectedSubmissionId(null);
+  };
+
+  const handleSelectPage = (pagePath: string) => {
+    setSelectedPagePath(pagePath);
+    setSelectedFormIdentifier(null);
+    setSelectedSubmissionId(null);
+  };
+
+  const handleSelectFormIdentifier = (formIdentifier: string) => {
+    setSelectedFormIdentifier(formIdentifier);
     setSelectedSubmissionId(null);
   };
 
@@ -779,25 +889,10 @@ export function FormsTabContent() {
     setIsDeleteModalOpen(true);
   };
 
-  const handleDeleteForms = async (formIds: string[]) => {
-    setIsBulkDeleting(true);
-    try {
-      await Promise.all(formIds.map((id) => deleteForm.mutateAsync(id)));
-      if (selectedFormId && formIds.includes(selectedFormId)) {
-        setSelectedFormId(null);
-        setSelectedSubmissionId(null);
-      }
-    } finally {
-      setIsBulkDeleting(false);
-    }
-  };
-
   const handleDeleteSubmissions = async (submissionIds: string[]) => {
     setIsBulkDeleting(true);
     try {
-      await Promise.all(
-        submissionIds.map((id) => deleteSubmission.mutateAsync(id)),
-      );
+      await bulkDeleteSubmissions.mutateAsync(submissionIds);
       if (
         selectedSubmissionId &&
         submissionIds.includes(selectedSubmissionId)
@@ -809,66 +904,79 @@ export function FormsTabContent() {
     }
   };
 
-  const deselectIfAffected = (affected: Form[]) => {
-    if (selectedFormId && affected.some((f) => f.id === selectedFormId)) {
-      setSelectedFormId(null);
-      setSelectedSubmissionId(null);
-    }
-  };
-
-  const handleDeleteWebsite = async (origin: string) => {
+  const handleDeleteWebsite = async (form: Form) => {
     setIsBulkDeleting(true);
     try {
-      await deleteWebsite.mutateAsync(origin);
-      deselectIfAffected(
-        forms.filter((f) => urlParts(f.website_link)?.origin === origin),
+      await deleteWebsite.mutateAsync(form.website_link!);
+      const affected = forms.filter(
+        (f) => f.website_link === form.website_link,
       );
+      if (selectedFormId && affected.some((f) => f.id === selectedFormId)) {
+        setSelectedFormId(null);
+        setSelectedPagePath(null);
+        setSelectedFormIdentifier(null);
+        setSelectedSubmissionId(null);
+      }
     } finally {
       setIsBulkDeleting(false);
     }
   };
 
-  const handleDeletePage = async (origin: string, path: string) => {
+  const handleDeletePage = async (formId: string, pagePath: string) => {
     setIsBulkDeleting(true);
     try {
-      await deletePage.mutateAsync({ website: origin, page: path });
-      deselectIfAffected(
-        forms.filter((f) => {
-          const parts = urlParts(f.website_link);
-          return parts?.origin === origin && parts.path === path;
-        }),
-      );
+      await deletePage.mutateAsync({ formId, pagePath });
+      if (selectedFormId === formId && selectedPagePath === pagePath) {
+        setSelectedPagePath(null);
+        setSelectedFormIdentifier(null);
+        setSelectedSubmissionId(null);
+      }
     } finally {
       setIsBulkDeleting(false);
     }
   };
 
-  const handleRenameForm = async (form: Form, nextName: string) => {
-    await updateForm.mutateAsync({
-      formId: form.id,
-      payload: form.form_title
-        ? { form_title: nextName }
-        : { website_link: nextName },
+  const handleDeleteFormGroup = async (
+    formId: string,
+    pagePath: string,
+    formIdentifier: string,
+  ) => {
+    setIsBulkDeleting(true);
+    try {
+      await deletePageForm.mutateAsync({ formId, pagePath, formIdentifier });
+      if (
+        selectedFormId === formId &&
+        selectedPagePath === pagePath &&
+        selectedFormIdentifier === formIdentifier
+      ) {
+        setSelectedFormIdentifier(null);
+        setSelectedSubmissionId(null);
+      }
+    } finally {
+      setIsBulkDeleting(false);
+    }
+  };
+
+  const handleRenameForm = async (
+    formId: string,
+    pagePath: string,
+    formIdentifier: string,
+    nextName: string,
+  ) => {
+    await renamePageForm.mutateAsync({
+      formId,
+      pagePath,
+      formIdentifier,
+      newName: nextName,
     });
   };
 
-  const handleRenameWebsite = async (origin: string, nextName: string) => {
+  const handleRenameWebsite = async (form: Form, nextName: string) => {
     const trimmed = nextName.trim();
     const newWebsite = trimmed.includes("://") ? trimmed : `https://${trimmed}`;
-    await renameWebsite.mutateAsync({ oldWebsite: origin, newWebsite });
-  };
-
-  const handleRenamePage = async (
-    origin: string,
-    oldPath: string,
-    nextName: string,
-  ) => {
-    const trimmed = nextName.trim();
-    const newPage = trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
-    await renamePage.mutateAsync({
-      website: origin,
-      oldPage: oldPath,
-      newPage,
+    await updateForm.mutateAsync({
+      formId: form.id,
+      payload: { website_link: newWebsite },
     });
   };
 
@@ -912,6 +1020,15 @@ export function FormsTabContent() {
         onCreateWebsiteForm={() => setIsWebsiteFormDrawerOpen(true)}
         onCreateOnlineForm={() => setIsOnlineFormDrawerOpen(true)}
       />
+      {hasHierarchy && (
+        <PageFormTabs
+          pages={pages}
+          selectedPagePath={selectedPagePath}
+          selectedFormIdentifier={selectedFormIdentifier}
+          onSelectPage={handleSelectPage}
+          onSelectFormIdentifier={handleSelectFormIdentifier}
+        />
+      )}
       <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:h-[600px] lg:flex-none lg:grid-cols-12 lg:gap-8">
         <div className="hidden min-w-0 lg:col-span-7 lg:block">
           {inboxDetail}
@@ -973,26 +1090,21 @@ export function FormsTabContent() {
       <FormsDeleteManager
         open={isDeleteModalOpen}
         forms={forms}
-        submissions={allSubmissions}
+        overviews={overviews.byId}
         isDeleting={isBulkDeleting}
         onClose={() => setIsDeleteModalOpen(false)}
-        onDeleteForms={handleDeleteForms}
-        onDeleteSubmissions={handleDeleteSubmissions}
         onDeleteWebsite={handleDeleteWebsite}
         onDeletePage={handleDeletePage}
+        onDeleteFormGroup={handleDeleteFormGroup}
+        onDeleteSubmissions={handleDeleteSubmissions}
       />
       <FormsEditManager
         open={isEditManagerOpen}
         forms={forms}
-        submissions={allSubmissions}
-        isRenaming={
-          updateForm.isPending ||
-          renameWebsite.isPending ||
-          renamePage.isPending
-        }
+        overviews={overviews.byId}
+        isRenaming={updateForm.isPending || renamePageForm.isPending}
         onRenameForm={handleRenameForm}
         onRenameWebsite={handleRenameWebsite}
-        onRenamePage={handleRenamePage}
         onClose={() => setIsEditManagerOpen(false)}
       />
     </div>

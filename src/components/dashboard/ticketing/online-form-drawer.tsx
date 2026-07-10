@@ -9,7 +9,6 @@ import { useCreateOnlineForm, useUpdateForm } from "@/hooks/use-forms";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import { isValidHttpUrl } from "@/lib/validation";
 import type { Form } from "@/services/forms";
-import { getFormEmbedCode } from "@/services/forms";
 
 const DRAWER_TRANSITION_MS = 520;
 
@@ -242,7 +241,7 @@ export function OnlineFormDrawer({
                 />
               ) : (
                 <OnlineFormSecurity
-                  formId={createdForm?.id ?? ""}
+                  form={createdForm}
                   onSaveAndExit={() => {
                     if (createdForm) completeCreation(createdForm);
                   }}
@@ -372,14 +371,12 @@ function OnlineFormInformation({
 }
 
 function OnlineFormSecurity({
-  formId,
+  form,
   onSaveAndExit,
 }: {
-  formId: string;
+  form: Form | null;
   onSaveAndExit: () => void;
 }) {
-  const embedCode = getFormEmbedCode(formId);
-
   return (
     <div className="flex flex-col justify-center">
       <div className="grid gap-5 md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] md:gap-8">
@@ -387,19 +384,50 @@ function OnlineFormSecurity({
           <h3 className="font-dm-mono mb-3 max-w-75 text-sm leading-[1.25] font-bold tracking-[0.04em] text-black uppercase md:mb-5 md:text-lg md:leading-[1.18]">
             Copy this to your code base
           </h3>
-          <div className="font-dm-mono min-h-28 overflow-auto rounded-lg bg-[#F4F1EC] p-4 text-[10px] leading-[1.45] font-normal tracking-[0.1em] whitespace-pre-wrap text-black/40 uppercase md:h-full md:p-6 md:text-xs md:leading-[1.35] md:tracking-[0.12em]">
-            {embedCode}
+          <div className="font-dm-mono min-h-28 overflow-auto rounded-lg bg-[#F4F1EC] p-4 text-[10px] leading-[1.45] font-normal tracking-[0.1em] whitespace-pre-wrap text-black/40 md:h-full md:p-6 md:text-xs md:leading-[1.35] md:tracking-[0.12em]">
+            {form?.snippet ?? ""}
           </div>
+          {form?.snippet && (
+            <div className="mt-3 flex justify-end">
+              <CopyButton value={form.snippet} label="Copy snippet" />
+            </div>
+          )}
         </section>
 
         <section className="flex flex-col">
           <h3 className="font-dm-mono mb-3 max-w-125 text-sm leading-[1.25] font-bold tracking-[0.04em] text-black uppercase md:mb-5 md:text-lg md:leading-[1.18]">
             Copy this (you can find this later in swiftagents.org/forms/keys)
           </h3>
-          <div className="font-dm-mono flex min-h-28 flex-col justify-center rounded-lg bg-[#F4F1EC] p-4 text-[10px] leading-[1.8] font-normal tracking-[0.1em] text-black/40 uppercase md:h-full md:p-6 md:text-xs md:tracking-[0.12em]">
+          <div className="font-dm-mono flex min-h-28 flex-col justify-center gap-2 rounded-lg bg-[#F4F1EC] p-4 text-[10px] leading-[1.8] font-normal tracking-[0.1em] text-black/40 md:h-full md:p-6 md:text-xs md:tracking-[0.12em]">
+            {form?.form_url && (
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="min-w-0 flex-1 truncate">
+                  Form URL: {form.form_url}
+                </span>
+                <CopyButton value={form.form_url} label="Copy form URL" />
+              </div>
+            )}
+            {form?.api_key && (
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="min-w-0 flex-1 truncate">
+                  API key: {form.api_key}
+                </span>
+                <CopyButton value={form.api_key} label="Copy API key" />
+              </div>
+            )}
+            {form?.public_key && (
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="min-w-0 flex-1 truncate">
+                  Public key: {form.public_key}
+                </span>
+                <CopyButton value={form.public_key} label="Copy public key" />
+              </div>
+            )}
             <div className="flex min-w-0 items-center gap-3">
-              <span className="min-w-0 flex-1 truncate">Form ID: {formId}</span>
-              <CopyButton value={formId} label="Copy form ID" />
+              <span className="min-w-0 flex-1 truncate">
+                Form ID: {form?.id ?? ""}
+              </span>
+              <CopyButton value={form?.id ?? ""} label="Copy form ID" />
             </div>
           </div>
         </section>

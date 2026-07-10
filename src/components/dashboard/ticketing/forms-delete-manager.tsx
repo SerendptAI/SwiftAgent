@@ -1,32 +1,38 @@
 "use client";
 
 import { ChevronRight, FileText, Globe } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
+import { usePageFormSubmissions } from "@/hooks/use-forms";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
-import type { Form, Submission } from "@/services/forms";
-import { getFormDisplayName, getSubmissionDisplayName } from "@/services/forms";
+import type { Form, FormOverview } from "@/services/forms";
+import { getSubmissionDisplayName } from "@/services/forms";
 
-import {
-  derivePageForms,
-  derivePages,
-  deriveWebsites,
-  formatDate,
-  groupSubmissionsByForm,
-  hostLabel,
-} from "./forms-hierarchy";
+import { formatDate, hostLabel } from "./forms-hierarchy";
 import { ActionLink, CountPill, ManagerShell, Row } from "./forms-manager-ui";
 
 type Step =
   | { name: "websites" }
-  | { name: "pages"; origin: string }
-  | { name: "forms"; origin: string; path: string }
-  | { name: "entries"; origin: string; path: string; formId: string };
+  | { name: "pages"; form: Form }
+  | { name: "forms"; form: Form; pagePath: string }
+  | {
+      name: "entries";
+      form: Form;
+      pagePath: string;
+      formIdentifier: string;
+      formName: string;
+    };
 
 type Pending =
-  | { kind: "website"; label: string; origin: string }
-  | { kind: "page"; label: string; origin: string; path: string }
-  | { kind: "forms"; label: string; formIds: string[] }
+  | { kind: "website"; label: string; form: Form }
+  | { kind: "page"; label: string; formId: string; pagePath: string }
+  | {
+      kind: "formGroup";
+      label: string;
+      formId: string;
+      pagePath: string;
+      formIdentifier: string;
+    }
   | { kind: "submissions"; label: string; submissionIds: string[] };
 
 const LEVEL: Record<Step["name"], 0 | 1 | 2> = {
@@ -115,25 +121,29 @@ function SuccessDialog() {
 interface FormsDeleteManagerProps {
   open: boolean;
   forms: Form[];
-  submissions: Submission[];
+  overviews: Record<string, FormOverview>;
   isDeleting: boolean;
   onClose: () => void;
-  onDeleteForms: (formIds: string[]) => Promise<void>;
+  onDeleteWebsite: (form: Form) => Promise<void>;
+  onDeletePage: (formId: string, pagePath: string) => Promise<void>;
+  onDeleteFormGroup: (
+    formId: string,
+    pagePath: string,
+    formIdentifier: string,
+  ) => Promise<void>;
   onDeleteSubmissions: (submissionIds: string[]) => Promise<void>;
-  onDeleteWebsite: (origin: string) => Promise<void>;
-  onDeletePage: (origin: string, path: string) => Promise<void>;
 }
 
 export function FormsDeleteManager({
   open,
   forms,
-  submissions,
+  overviews,
   isDeleting,
   onClose,
-  onDeleteForms,
-  onDeleteSubmissions,
   onDeleteWebsite,
   onDeletePage,
+  onDeleteFormGroup,
+  onDeleteSubmissions,
 }: FormsDeleteManagerProps) {
   const [step, setStep] = useState<Step>({ name: "websites" });
   const [pending, setPending] = useState<Pending | null>(null);
@@ -166,27 +176,11 @@ export function FormsDeleteManager({
     return () => window.clearTimeout(id);
   }, [showSuccess, onClose]);
 
-  const submissionsByForm = useMemo(
-    () => groupSubmissionsByForm(submissions),
-    [submissions],
-  );
-  const websites = useMemo(
-    () => deriveWebsites(forms, submissionsByForm),
-    [forms, submissionsByForm],
-  );
-  const pages = useMemo(
-    () =>
-      step.name === "websites"
-        ? []
-        : derivePages(forms, submissionsByForm, step.origin),
-    [forms, submissionsByForm, step],
-  );
-  const pageForms = useMemo(
-    () =>
-      step.name === "forms" || step.name === "entries"
-        ? derivePageForms(forms, step.origin, step.path)
-        : [],
-    [forms, step],
+  const websites = forms.filter((f) => f.type === "website" && f.website_link);
+  const { data: entries = [] } = usePageFormSubmissions(
+    open && step.name === "entries" ? step.form.id : null,
+    step.name === "entries" ? step.pagePath : null,
+    step.name === "entries" ? step.formIdentifier : null,
   );
 
   if (!open) return null;
@@ -194,7 +188,7 @@ export function FormsDeleteManager({
   const handleCrumb = (target: 0 | 1) => {
     if (target === 0) setStep({ name: "websites" });
     else if (target === 1 && step.name !== "websites")
-      setStep({ name: "pages", origin: step.origin });
+      setStep({ name: "pages", form: step.form });
   };
 
   const confirmPending = async () => {
@@ -202,11 +196,15 @@ export function FormsDeleteManager({
     if (pending.kind === "submissions") {
       await onDeleteSubmissions(pending.submissionIds);
     } else if (pending.kind === "website") {
-      await onDeleteWebsite(pending.origin);
+      await onDeleteWebsite(pending.form);
     } else if (pending.kind === "page") {
-      await onDeletePage(pending.origin, pending.path);
+      await onDeletePage(pending.formId, pending.pagePath);
     } else {
-      await onDeleteForms(pending.formIds);
+      await onDeleteFormGroup(
+        pending.formId,
+        pending.pagePath,
+        pending.formIdentifier,
+      );
     }
     setPending(null);
     setShowSuccess(true);
@@ -228,40 +226,43 @@ export function FormsDeleteManager({
                 No website forms to manage.
               </p>
             ) : (
-              websites.map((site) => (
-                <Row key={site.origin}>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setStep({ name: "pages", origin: site.origin })
-                    }
-                    className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left"
-                  >
-                    <Globe className="h-4 w-4 shrink-0 text-black/60" />
-                    <span className="font-dm-mono min-w-0 truncate text-[15px] tracking-[0.02em] text-black lowercase">
-                      {site.origin}
-                    </span>
-                  </button>
-                  <div className="flex shrink-0 items-center gap-3">
-                    <ActionLink
-                      label="Delete all"
-                      colorClass={DELETE_COLOR}
-                      onClick={() =>
-                        setPending({
-                          kind: "website",
-                          label: `All forms on ${hostLabel(site.origin)}`,
-                          origin: site.origin,
-                        })
-                      }
-                    />
-                    <CountPill>
-                      {site.forms.length}{" "}
-                      {site.forms.length === 1 ? "form" : "forms"}
-                    </CountPill>
-                    <ChevronRight className="h-3.5 w-3.5 text-black/40" />
-                  </div>
-                </Row>
-              ))
+              websites.map((site) => {
+                const overview = overviews[site.id];
+                return (
+                  <Row key={site.id}>
+                    <button
+                      type="button"
+                      onClick={() => setStep({ name: "pages", form: site })}
+                      className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left"
+                    >
+                      <Globe className="h-4 w-4 shrink-0 text-black/60" />
+                      <span className="font-dm-mono min-w-0 truncate text-[15px] tracking-[0.02em] text-black lowercase">
+                        {site.website_link}
+                      </span>
+                    </button>
+                    <div className="flex shrink-0 items-center gap-3">
+                      <ActionLink
+                        label="Delete all"
+                        colorClass={DELETE_COLOR}
+                        onClick={() =>
+                          setPending({
+                            kind: "website",
+                            label: `All forms on ${hostLabel(site.website_link!)}`,
+                            form: site,
+                          })
+                        }
+                      />
+                      {overview && (
+                        <CountPill>
+                          {overview.total_entries}{" "}
+                          {overview.total_entries === 1 ? "entry" : "entries"}
+                        </CountPill>
+                      )}
+                      <ChevronRight className="h-3.5 w-3.5 text-black/40" />
+                    </div>
+                  </Row>
+                );
+              })
             )}
           </div>
           <p className="font-dm-mono mt-4 text-[13px] text-black/40">
@@ -273,54 +274,61 @@ export function FormsDeleteManager({
     }
 
     if (step.name === "pages") {
+      const pages = overviews[step.form.id]?.pages ?? [];
       return (
         <>
           <p className="font-dm-mono text-sm font-semibold tracking-[0.08em] text-black uppercase">
             Select a page
           </p>
           <p className="font-dm-mono mt-1 text-[13px] text-black/50">
-            Pages that have forms on {step.origin}
+            Pages that have forms on {step.form.website_link}
           </p>
           <div className="mt-5">
-            {pages.map((page) => (
-              <Row key={page.path}>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setStep({
-                      name: "forms",
-                      origin: step.origin,
-                      path: page.path,
-                    })
-                  }
-                  className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left"
-                >
-                  <FileText className="h-4 w-4 shrink-0 text-black/60" />
-                  <span className="font-dm-mono min-w-0 truncate text-[15px] tracking-[0.02em] text-black lowercase">
-                    {page.path}
-                  </span>
-                </button>
-                <div className="flex shrink-0 items-center gap-3">
-                  <ActionLink
-                    label="Delete all"
-                    colorClass={DELETE_COLOR}
+            {pages.length === 0 ? (
+              <p className="font-dm-mono py-6 text-center text-[13px] text-black/40">
+                No pages with forms yet.
+              </p>
+            ) : (
+              pages.map((page) => (
+                <Row key={page.page_path}>
+                  <button
+                    type="button"
                     onClick={() =>
-                      setPending({
-                        kind: "page",
-                        label: `All forms on ${page.path}`,
-                        origin: step.origin,
-                        path: page.path,
+                      setStep({
+                        name: "forms",
+                        form: step.form,
+                        pagePath: page.page_path,
                       })
                     }
-                  />
-                  <CountPill>
-                    {page.entryCount}{" "}
-                    {page.entryCount === 1 ? "entry" : "entries"}
-                  </CountPill>
-                  <ChevronRight className="h-3.5 w-3.5 text-black/40" />
-                </div>
-              </Row>
-            ))}
+                    className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left"
+                  >
+                    <FileText className="h-4 w-4 shrink-0 text-black/60" />
+                    <span className="font-dm-mono min-w-0 truncate text-[15px] tracking-[0.02em] text-black lowercase">
+                      {page.page_path}
+                    </span>
+                  </button>
+                  <div className="flex shrink-0 items-center gap-3">
+                    <ActionLink
+                      label="Delete all"
+                      colorClass={DELETE_COLOR}
+                      onClick={() =>
+                        setPending({
+                          kind: "page",
+                          label: `All forms on ${page.page_path}`,
+                          formId: step.form.id,
+                          pagePath: page.page_path,
+                        })
+                      }
+                    />
+                    <CountPill>
+                      {page.total_entries}{" "}
+                      {page.total_entries === 1 ? "entry" : "entries"}
+                    </CountPill>
+                    <ChevronRight className="h-3.5 w-3.5 text-black/40" />
+                  </div>
+                </Row>
+              ))
+            )}
           </div>
           <p className="font-dm-mono mt-4 text-[13px] text-black/40">
             Click a page to see its forms, or delete the entire page&apos;s
@@ -331,6 +339,10 @@ export function FormsDeleteManager({
     }
 
     if (step.name === "forms") {
+      const pageForms =
+        overviews[step.form.id]?.pages.find(
+          (page) => page.page_path === step.pagePath,
+        )?.forms ?? [];
       return (
         <>
           <p className="font-dm-mono text-sm font-semibold tracking-[0.08em] text-black uppercase">
@@ -340,82 +352,75 @@ export function FormsDeleteManager({
             Select a form to manage its entries, or delete the entire form.
           </p>
           <div className="mt-5">
-            {pageForms.map((form) => {
-              const formSubs = submissionsByForm.get(form.id) ?? [];
-              const last = formSubs
-                .map((s) => s.submitted_at)
-                .sort()
-                .at(-1);
-              return (
-                <Row key={form.id}>
-                  <button
-                    type="button"
+            {pageForms.map((group) => (
+              <Row key={group.form_identifier}>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setStep({
+                      name: "entries",
+                      form: step.form,
+                      pagePath: step.pagePath,
+                      formIdentifier: group.form_identifier,
+                      formName: group.form_name,
+                    })
+                  }
+                  className="flex min-w-0 flex-1 cursor-pointer flex-col items-start gap-1 text-left"
+                >
+                  <span className="font-dm-mono truncate text-[15px] font-medium text-black">
+                    {group.form_name}
+                  </span>
+                  <span className="font-dm-mono text-[12px] text-black/45">
+                    Entries: {group.entries_count}{" "}
+                    {group.entries_count === 1 ? "submission" : "submissions"} ·
+                    Last submission: {formatDate(group.last_submission)}
+                  </span>
+                </button>
+                <div className="flex shrink-0 items-center gap-3">
+                  <ActionLink
+                    label="Delete all"
+                    colorClass={DELETE_COLOR}
                     onClick={() =>
-                      setStep({
-                        name: "entries",
-                        origin: step.origin,
-                        path: step.path,
-                        formId: form.id,
+                      setPending({
+                        kind: "formGroup",
+                        label: `${group.form_name} on ${step.pagePath}`,
+                        formId: step.form.id,
+                        pagePath: step.pagePath,
+                        formIdentifier: group.form_identifier,
                       })
                     }
-                    className="flex min-w-0 flex-1 cursor-pointer flex-col items-start gap-1 text-left"
-                  >
-                    <span className="font-dm-mono truncate text-[15px] font-medium text-black">
-                      {getFormDisplayName(form)}
-                    </span>
-                    <span className="font-dm-mono text-[12px] text-black/45">
-                      Entries: {formSubs.length}{" "}
-                      {formSubs.length === 1 ? "submission" : "submissions"} ·
-                      Last submission: {formatDate(last)}
-                    </span>
-                  </button>
-                  <div className="flex shrink-0 items-center gap-3">
-                    <ActionLink
-                      label="Delete all"
-                      colorClass={DELETE_COLOR}
-                      onClick={() =>
-                        setPending({
-                          kind: "forms",
-                          label: `${getFormDisplayName(form)} on ${step.path}`,
-                          formIds: [form.id],
-                        })
-                      }
-                    />
-                    <ChevronRight className="h-3.5 w-3.5 text-black/40" />
-                  </div>
-                </Row>
-              );
-            })}
+                  />
+                  <ChevronRight className="h-3.5 w-3.5 text-black/40" />
+                </div>
+              </Row>
+            ))}
           </div>
           <button
             type="button"
             onClick={() =>
               setPending({
                 kind: "page",
-                label: `All forms on ${step.path}`,
-                origin: step.origin,
-                path: step.path,
+                label: `All forms on ${step.pagePath}`,
+                formId: step.form.id,
+                pagePath: step.pagePath,
               })
             }
             className="font-dm-mono mt-4 cursor-pointer text-[13px] font-medium tracking-[0.04em] text-[#F25430] uppercase transition-opacity hover:opacity-70"
           >
-            Delete all forms on {step.path}
+            Delete all forms on {step.pagePath}
           </button>
         </>
       );
     }
 
-    const form = pageForms.find((f) => f.id === step.formId);
-    const entries = submissionsByForm.get(step.formId) ?? [];
     return (
       <>
         <p className="font-dm-mono text-sm font-semibold tracking-[0.08em] text-black uppercase">
           Entries
         </p>
         <p className="font-dm-mono mt-1 text-[13px] text-black/50 lowercase">
-          {hostLabel(step.origin)}
-          {step.path === "/" ? "" : step.path}/
-          {form ? getFormDisplayName(form) : ""}
+          {hostLabel(step.form.website_link ?? "")}
+          {step.pagePath === "/" ? "" : step.pagePath}/{step.formName}
         </p>
         <div className="mt-5">
           {entries.length === 0 ? (
@@ -459,7 +464,7 @@ export function FormsDeleteManager({
             onClick={() =>
               setPending({
                 kind: "submissions",
-                label: `All entries for ${form ? getFormDisplayName(form) : "this form"}`,
+                label: `All entries for ${step.formName}`,
                 submissionIds: entries.map((e) => e.id),
               })
             }

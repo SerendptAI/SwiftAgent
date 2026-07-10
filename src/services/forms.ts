@@ -15,6 +15,11 @@ export interface Form {
   alert_email?: string;
   form_image?: string;
   form_title?: string;
+  form_url?: string;
+  /** Full secrets — only present on the create/regenerate responses. */
+  api_key?: string;
+  public_key?: string;
+  snippet?: string;
 }
 
 export interface Submission {
@@ -23,8 +28,43 @@ export interface Submission {
   company_id: string;
   data: Record<string, unknown>;
   is_read: boolean;
-  visitor_id: string;
+  visitor_id?: string;
   submitted_at: string;
+  submitter_name?: string;
+  submitter_preview?: string;
+}
+
+export interface OverviewFormGroup {
+  form_identifier: string;
+  form_name: string;
+  entries_count: number;
+  last_submission?: string | null;
+}
+
+export interface OverviewPage {
+  page_path: string;
+  total_entries: number;
+  forms: OverviewFormGroup[];
+}
+
+export interface FormOverview {
+  form_id: string;
+  website_link?: string;
+  total_entries: number;
+  pages: OverviewPage[];
+}
+
+export interface FormKeys {
+  form_id: string;
+  api_key_prefix: string;
+  public_key_prefix: string;
+  snippet: string;
+}
+
+export interface RegeneratedFormKeys {
+  api_key: string;
+  public_key: string;
+  snippet: string;
 }
 
 export interface CreateWebsiteFormPayload {
@@ -58,15 +98,13 @@ export interface SubmissionListParams {
   limit?: number;
 }
 
-export function getFormEmbedCode(formId: string): string {
-  return `<script src="https://swiftagents.org/chat-widget.js"></script>\n<div id="swift-form" data-form-id="${formId}"></div>`;
-}
-
 export function getFormDisplayName(form: Form): string {
   return form.form_title ?? form.website_link ?? form.id;
 }
 
 export function getSubmissionDisplayName(submission: Submission): string {
+  if (submission.submitter_name?.trim())
+    return submission.submitter_name.trim();
   for (const key of [
     "name",
     "Name",
@@ -84,13 +122,16 @@ export function getSubmissionDisplayName(submission: Submission): string {
     : "Anonymous";
 }
 
+const BASE = "/api/v1/auth/forms";
+const enc = encodeURIComponent;
+
 export const formsApi = {
   createWebsiteForm: async (
     companyId: string,
     payload: CreateWebsiteFormPayload,
   ): Promise<Form> => {
     const { data } = await apiClient.post<Form>(
-      `/api/v1/forms/${encodeURIComponent(companyId)}/website-forms`,
+      `${BASE}/${enc(companyId)}/website-forms`,
       payload,
     );
     return data;
@@ -101,7 +142,7 @@ export const formsApi = {
     payload: CreateOnlineFormPayload,
   ): Promise<Form> => {
     const { data } = await apiClient.post<Form>(
-      `/api/v1/forms/${encodeURIComponent(companyId)}/online-forms`,
+      `${BASE}/${enc(companyId)}/online-forms`,
       payload,
     );
     return data;
@@ -113,7 +154,7 @@ export const formsApi = {
     limit: number = 50,
   ): Promise<Form[]> => {
     const { data } = await apiClient.get<Form[] | { items: Form[] }>(
-      `/api/v1/forms/${encodeURIComponent(companyId)}`,
+      `${BASE}/${enc(companyId)}`,
       { params: { skip, limit } },
     );
     return unwrapList(data);
@@ -121,7 +162,7 @@ export const formsApi = {
 
   getById: async (companyId: string, formId: string): Promise<Form> => {
     const { data } = await apiClient.get<Form>(
-      `/api/v1/forms/${encodeURIComponent(companyId)}/${encodeURIComponent(formId)}`,
+      `${BASE}/${enc(companyId)}/${enc(formId)}`,
     );
     return data;
   },
@@ -132,70 +173,91 @@ export const formsApi = {
     payload: UpdateFormPayload,
   ): Promise<Form> => {
     const { data } = await apiClient.put<Form>(
-      `/api/v1/forms/${encodeURIComponent(companyId)}/${encodeURIComponent(formId)}`,
+      `${BASE}/${enc(companyId)}/${enc(formId)}`,
       payload,
     );
     return data;
   },
 
   delete: async (companyId: string, formId: string): Promise<void> => {
-    await apiClient.delete(
-      `/api/v1/forms/${encodeURIComponent(companyId)}/${encodeURIComponent(formId)}`,
-    );
+    await apiClient.delete(`${BASE}/${enc(companyId)}/${enc(formId)}`);
   },
 
-  renameWebsite: async (
+  getOverview: async (
     companyId: string,
-    oldWebsite: string,
-    newWebsite: string,
-  ): Promise<void> => {
-    await apiClient.put(
-      `/api/v1/forms/${encodeURIComponent(companyId)}/websites/label`,
-      { old_website: oldWebsite, new_website: newWebsite },
+    formId: string,
+  ): Promise<FormOverview> => {
+    const { data } = await apiClient.get<FormOverview>(
+      `${BASE}/${enc(companyId)}/${enc(formId)}/overview`,
     );
+    return data;
   },
 
-  renamePage: async (
+  getKeys: async (companyId: string, formId: string): Promise<FormKeys> => {
+    const { data } = await apiClient.get<FormKeys>(
+      `${BASE}/${enc(companyId)}/${enc(formId)}/keys`,
+    );
+    return data;
+  },
+
+  regenerateKeys: async (
     companyId: string,
-    website: string,
-    oldPage: string,
-    newPage: string,
+    formId: string,
+  ): Promise<RegeneratedFormKeys> => {
+    const { data } = await apiClient.post<RegeneratedFormKeys>(
+      `${BASE}/${enc(companyId)}/${enc(formId)}/keys/regenerate`,
+      {},
+    );
+    return data;
+  },
+
+  renamePageForm: async (
+    companyId: string,
+    formId: string,
+    pagePath: string,
+    formIdentifier: string,
+    newName: string,
   ): Promise<void> => {
     await apiClient.put(
-      `/api/v1/forms/${encodeURIComponent(companyId)}/pages/label`,
-      { website, old_page: oldPage, new_page: newPage },
+      `${BASE}/${enc(companyId)}/${enc(formId)}/pages/${enc(pagePath)}/forms/${enc(formIdentifier)}/rename`,
+      { new_name: newName },
     );
   },
 
   deleteWebsite: async (companyId: string, website: string): Promise<void> => {
-    await apiClient.delete(
-      `/api/v1/forms/${encodeURIComponent(companyId)}/websites`,
-      { params: { website } },
-    );
+    await apiClient.delete(`${BASE}/${enc(companyId)}/websites`, {
+      params: { website },
+    });
   },
 
   deletePage: async (
     companyId: string,
-    website: string,
-    page: string,
+    formId: string,
+    pagePath: string,
   ): Promise<void> => {
     await apiClient.delete(
-      `/api/v1/forms/${encodeURIComponent(companyId)}/pages`,
-      { params: { website, page } },
+      `${BASE}/${enc(companyId)}/${enc(formId)}/pages/${enc(pagePath)}`,
     );
   },
 
-  listAllSubmissions: async (
+  deletePageForm: async (
     companyId: string,
-    params: SubmissionListParams = {},
-  ): Promise<Submission[]> => {
-    const { is_read, skip = 0, limit = 50 } = params;
-    const { data } = await apiClient.get<
-      Submission[] | { items: Submission[] }
-    >(`/api/v1/forms/${encodeURIComponent(companyId)}/submissions/all`, {
-      params: { ...(is_read != null && { is_read }), skip, limit },
+    formId: string,
+    pagePath: string,
+    formIdentifier: string,
+  ): Promise<void> => {
+    await apiClient.delete(
+      `${BASE}/${enc(companyId)}/${enc(formId)}/pages/${enc(pagePath)}/forms/${enc(formIdentifier)}`,
+    );
+  },
+
+  bulkDeleteSubmissions: async (
+    companyId: string,
+    submissionIds: string[],
+  ): Promise<void> => {
+    await apiClient.delete(`${BASE}/${enc(companyId)}/submissions/bulk`, {
+      data: { submission_ids: submissionIds },
     });
-    return unwrapList(data);
   },
 
   listFormSubmissions: async (
@@ -206,9 +268,25 @@ export const formsApi = {
     const { is_read, skip = 0, limit = 50 } = params;
     const { data } = await apiClient.get<
       Submission[] | { items: Submission[] }
+    >(`${BASE}/${enc(companyId)}/${enc(formId)}/submissions`, {
+      params: { ...(is_read != null && { is_read }), skip, limit },
+    });
+    return unwrapList(data);
+  },
+
+  listPageFormSubmissions: async (
+    companyId: string,
+    formId: string,
+    pagePath: string,
+    formIdentifier: string,
+    params: SubmissionListParams = {},
+  ): Promise<Submission[]> => {
+    const { skip = 0, limit = 50 } = params;
+    const { data } = await apiClient.get<
+      Submission[] | { items: Submission[] }
     >(
-      `/api/v1/forms/${encodeURIComponent(companyId)}/${encodeURIComponent(formId)}/submissions`,
-      { params: { ...(is_read != null && { is_read }), skip, limit } },
+      `${BASE}/${enc(companyId)}/${enc(formId)}/pages/${enc(pagePath)}/forms/${enc(formIdentifier)}/submissions`,
+      { params: { skip, limit } },
     );
     return unwrapList(data);
   },
@@ -218,7 +296,7 @@ export const formsApi = {
     submissionId: string,
   ): Promise<Submission> => {
     const { data } = await apiClient.get<Submission>(
-      `/api/v1/forms/${encodeURIComponent(companyId)}/submissions/${encodeURIComponent(submissionId)}`,
+      `${BASE}/${enc(companyId)}/submissions/${enc(submissionId)}`,
     );
     return data;
   },
@@ -228,18 +306,9 @@ export const formsApi = {
     submissionId: string,
   ): Promise<Submission> => {
     const { data } = await apiClient.put<Submission>(
-      `/api/v1/forms/${encodeURIComponent(companyId)}/submissions/${encodeURIComponent(submissionId)}/read`,
+      `${BASE}/${enc(companyId)}/submissions/${enc(submissionId)}/read`,
     );
     return data;
-  },
-
-  deleteSubmission: async (
-    companyId: string,
-    submissionId: string,
-  ): Promise<void> => {
-    await apiClient.delete(
-      `/api/v1/forms/${encodeURIComponent(companyId)}/submissions/${encodeURIComponent(submissionId)}`,
-    );
   },
 };
 
@@ -247,7 +316,7 @@ export const publicFormsApi = {
   /** Used by the embedded widget or external site to render form fields. No auth required. */
   getPublishedForm: async (formId: string): Promise<Form> => {
     const { data } = await publicApiClient.get<Form>(
-      `/api/v1/public/forms/${encodeURIComponent(formId)}`,
+      `/api/v1/public/forms/${enc(formId)}`,
     );
     return data;
   },
@@ -258,7 +327,7 @@ export const publicFormsApi = {
     payload: SubmitFormPayload,
   ): Promise<Submission> => {
     const { data } = await publicApiClient.post<Submission>(
-      `/api/v1/public/forms/${encodeURIComponent(formId)}/submit`,
+      `/api/v1/public/forms/${enc(formId)}/submit`,
       payload,
     );
     return data;

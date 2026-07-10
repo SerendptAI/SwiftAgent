@@ -1,38 +1,30 @@
 "use client";
 
 import { ChevronRight, FileText, Globe } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useToast } from "@/components/ui/toast";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
-import type { Form, Submission } from "@/services/forms";
-import { getFormDisplayName } from "@/services/forms";
+import type { Form, FormOverview } from "@/services/forms";
 
-import {
-  derivePageForms,
-  derivePages,
-  deriveWebsites,
-  formatDate,
-  groupSubmissionsByForm,
-  hostLabel,
-} from "./forms-hierarchy";
+import { formatDate, hostLabel } from "./forms-hierarchy";
 import { ActionLink, CountPill, ManagerShell, Row } from "./forms-manager-ui";
 
 type Step =
   | { name: "websites" }
-  | { name: "pages"; origin: string }
-  | { name: "forms"; origin: string; path: string };
+  | { name: "pages"; form: Form }
+  | { name: "forms"; form: Form; pagePath: string };
 
 type RenameTarget =
-  | { kind: "website"; kindLabel: string; current: string; origin: string }
+  | { kind: "website"; kindLabel: string; current: string; form: Form }
   | {
-      kind: "page";
+      kind: "form";
       kindLabel: string;
       current: string;
-      origin: string;
-      path: string;
-    }
-  | { kind: "form"; kindLabel: string; current: string; form: Form };
+      formId: string;
+      pagePath: string;
+      formIdentifier: string;
+    };
 
 const LEVEL: Record<Step["name"], 0 | 1 | 2> = {
   websites: 0,
@@ -133,13 +125,13 @@ function RenameDialog({
 interface FormsEditManagerProps {
   open: boolean;
   forms: Form[];
-  submissions: Submission[];
+  overviews: Record<string, FormOverview>;
   isRenaming: boolean;
-  onRenameForm: (form: Form, nextName: string) => Promise<void>;
-  onRenameWebsite: (origin: string, nextName: string) => Promise<void>;
-  onRenamePage: (
-    origin: string,
-    oldPath: string,
+  onRenameWebsite: (form: Form, nextName: string) => Promise<void>;
+  onRenameForm: (
+    formId: string,
+    pagePath: string,
+    formIdentifier: string,
     nextName: string,
   ) => Promise<void>;
   onClose: () => void;
@@ -148,11 +140,10 @@ interface FormsEditManagerProps {
 export function FormsEditManager({
   open,
   forms,
-  submissions,
+  overviews,
   isRenaming,
-  onRenameForm,
   onRenameWebsite,
-  onRenamePage,
+  onRenameForm,
   onClose,
 }: FormsEditManagerProps) {
   const toast = useToast();
@@ -179,35 +170,14 @@ export function FormsEditManager({
     return () => window.removeEventListener("keydown", onKey);
   }, [open, rename, isRenaming, onClose]);
 
-  const submissionsByForm = useMemo(
-    () => groupSubmissionsByForm(submissions),
-    [submissions],
-  );
-  const websites = useMemo(
-    () => deriveWebsites(forms, submissionsByForm),
-    [forms, submissionsByForm],
-  );
-  const pages = useMemo(
-    () =>
-      step.name === "websites"
-        ? []
-        : derivePages(forms, submissionsByForm, step.origin),
-    [forms, submissionsByForm, step],
-  );
-  const pageForms = useMemo(
-    () =>
-      step.name === "forms"
-        ? derivePageForms(forms, step.origin, step.path)
-        : [],
-    [forms, step],
-  );
-
   if (!open) return null;
+
+  const websites = forms.filter((f) => f.type === "website" && f.website_link);
 
   const handleCrumb = (target: 0 | 1) => {
     if (target === 0) setStep({ name: "websites" });
     else if (target === 1 && step.name !== "websites")
-      setStep({ name: "pages", origin: step.origin });
+      setStep({ name: "pages", form: step.form });
   };
 
   const saveRename = async (next: string) => {
@@ -215,11 +185,14 @@ export function FormsEditManager({
     const previous = rename.current;
     try {
       if (rename.kind === "form") {
-        await onRenameForm(rename.form, next);
-      } else if (rename.kind === "website") {
-        await onRenameWebsite(rename.origin, next);
+        await onRenameForm(
+          rename.formId,
+          rename.pagePath,
+          rename.formIdentifier,
+          next,
+        );
       } else {
-        await onRenamePage(rename.origin, rename.path, next);
+        await onRenameWebsite(rename.form, next);
       }
     } catch {
       toast.error(`Couldn't rename the ${rename.kindLabel}. Please try again.`);
@@ -245,41 +218,44 @@ export function FormsEditManager({
                 No website forms to manage.
               </p>
             ) : (
-              websites.map((site) => (
-                <Row key={site.origin}>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setStep({ name: "pages", origin: site.origin })
-                    }
-                    className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left"
-                  >
-                    <Globe className="h-4 w-4 shrink-0 text-black/60" />
-                    <span className="font-dm-mono min-w-0 truncate text-[15px] tracking-[0.02em] text-black lowercase">
-                      {site.origin}
-                    </span>
-                  </button>
-                  <div className="flex shrink-0 items-center gap-3">
-                    <ActionLink
-                      label="Edit name"
-                      colorClass={EDIT_COLOR}
-                      onClick={() =>
-                        setRename({
-                          kind: "website",
-                          kindLabel: "website",
-                          current: hostLabel(site.origin),
-                          origin: site.origin,
-                        })
-                      }
-                    />
-                    <CountPill>
-                      {site.forms.length}{" "}
-                      {site.forms.length === 1 ? "form" : "forms"}
-                    </CountPill>
-                    <ChevronRight className="h-3.5 w-3.5 text-black/40" />
-                  </div>
-                </Row>
-              ))
+              websites.map((site) => {
+                const overview = overviews[site.id];
+                return (
+                  <Row key={site.id}>
+                    <button
+                      type="button"
+                      onClick={() => setStep({ name: "pages", form: site })}
+                      className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left"
+                    >
+                      <Globe className="h-4 w-4 shrink-0 text-black/60" />
+                      <span className="font-dm-mono min-w-0 truncate text-[15px] tracking-[0.02em] text-black lowercase">
+                        {site.website_link}
+                      </span>
+                    </button>
+                    <div className="flex shrink-0 items-center gap-3">
+                      <ActionLink
+                        label="Edit name"
+                        colorClass={EDIT_COLOR}
+                        onClick={() =>
+                          setRename({
+                            kind: "website",
+                            kindLabel: "website",
+                            current: hostLabel(site.website_link!),
+                            form: site,
+                          })
+                        }
+                      />
+                      {overview && (
+                        <CountPill>
+                          {overview.total_entries}{" "}
+                          {overview.total_entries === 1 ? "entry" : "entries"}
+                        </CountPill>
+                      )}
+                      <ChevronRight className="h-3.5 w-3.5 text-black/40" />
+                    </div>
+                  </Row>
+                );
+              })
             )}
           </div>
           <p className="font-dm-mono mt-4 text-[13px] text-black/40">
@@ -290,63 +266,61 @@ export function FormsEditManager({
     }
 
     if (step.name === "pages") {
+      const pages = overviews[step.form.id]?.pages ?? [];
       return (
         <>
           <p className="font-dm-mono text-sm font-semibold tracking-[0.08em] text-black uppercase">
             Select a page
           </p>
           <p className="font-dm-mono mt-1 text-[13px] text-black/50">
-            Pages that have forms on {step.origin}
+            Pages that have forms on {step.form.website_link}
           </p>
           <div className="mt-5">
-            {pages.map((page) => (
-              <Row key={page.path}>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setStep({
-                      name: "forms",
-                      origin: step.origin,
-                      path: page.path,
-                    })
-                  }
-                  className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left"
-                >
-                  <FileText className="h-4 w-4 shrink-0 text-black/60" />
-                  <span className="font-dm-mono min-w-0 truncate text-[15px] tracking-[0.02em] text-black lowercase">
-                    {page.path}
-                  </span>
-                </button>
-                <div className="flex shrink-0 items-center gap-3">
-                  <ActionLink
-                    label="Edit page name"
-                    colorClass={EDIT_COLOR}
+            {pages.length === 0 ? (
+              <p className="font-dm-mono py-6 text-center text-[13px] text-black/40">
+                No pages with forms yet.
+              </p>
+            ) : (
+              pages.map((page) => (
+                <Row key={page.page_path}>
+                  <button
+                    type="button"
                     onClick={() =>
-                      setRename({
-                        kind: "page",
-                        kindLabel: "page",
-                        current: page.path,
-                        origin: step.origin,
-                        path: page.path,
+                      setStep({
+                        name: "forms",
+                        form: step.form,
+                        pagePath: page.page_path,
                       })
                     }
-                  />
-                  <CountPill>
-                    {page.entryCount}{" "}
-                    {page.entryCount === 1 ? "entry" : "entries"}
-                  </CountPill>
-                  <ChevronRight className="h-3.5 w-3.5 text-black/40" />
-                </div>
-              </Row>
-            ))}
+                    className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left"
+                  >
+                    <FileText className="h-4 w-4 shrink-0 text-black/60" />
+                    <span className="font-dm-mono min-w-0 truncate text-[15px] tracking-[0.02em] text-black lowercase">
+                      {page.page_path}
+                    </span>
+                  </button>
+                  <div className="flex shrink-0 items-center gap-3">
+                    <CountPill>
+                      {page.total_entries}{" "}
+                      {page.total_entries === 1 ? "entry" : "entries"}
+                    </CountPill>
+                    <ChevronRight className="h-3.5 w-3.5 text-black/40" />
+                  </div>
+                </Row>
+              ))
+            )}
           </div>
           <p className="font-dm-mono mt-4 text-[13px] text-black/40">
-            Click a page to see its forms, or edit the page name.
+            Click a page to see its forms.
           </p>
         </>
       );
     }
 
+    const pageForms =
+      overviews[step.form.id]?.pages.find(
+        (page) => page.page_path === step.pagePath,
+      )?.forms ?? [];
     return (
       <>
         <p className="font-dm-mono text-sm font-semibold tracking-[0.08em] text-black uppercase">
@@ -356,39 +330,34 @@ export function FormsEditManager({
           Select a form to edit its name.
         </p>
         <div className="mt-5">
-          {pageForms.map((form) => {
-            const formSubs = submissionsByForm.get(form.id) ?? [];
-            const last = formSubs
-              .map((s) => s.submitted_at)
-              .sort()
-              .at(-1);
-            return (
-              <Row key={form.id}>
-                <div className="flex min-w-0 flex-1 flex-col items-start gap-1">
-                  <span className="font-dm-mono truncate text-[15px] font-medium text-black">
-                    {getFormDisplayName(form)}
-                  </span>
-                  <span className="font-dm-mono text-[12px] text-black/45">
-                    Entries: {formSubs.length}{" "}
-                    {formSubs.length === 1 ? "submission" : "submissions"} ·
-                    Last submission: {formatDate(last)}
-                  </span>
-                </div>
-                <ActionLink
-                  label="Edit form name"
-                  colorClass={EDIT_COLOR}
-                  onClick={() =>
-                    setRename({
-                      kind: "form",
-                      kindLabel: "form",
-                      current: getFormDisplayName(form),
-                      form,
-                    })
-                  }
-                />
-              </Row>
-            );
-          })}
+          {pageForms.map((group) => (
+            <Row key={group.form_identifier}>
+              <div className="flex min-w-0 flex-1 flex-col items-start gap-1">
+                <span className="font-dm-mono truncate text-[15px] font-medium text-black">
+                  {group.form_name}
+                </span>
+                <span className="font-dm-mono text-[12px] text-black/45">
+                  Entries: {group.entries_count}{" "}
+                  {group.entries_count === 1 ? "submission" : "submissions"} ·
+                  Last submission: {formatDate(group.last_submission)}
+                </span>
+              </div>
+              <ActionLink
+                label="Edit form name"
+                colorClass={EDIT_COLOR}
+                onClick={() =>
+                  setRename({
+                    kind: "form",
+                    kindLabel: "form",
+                    current: group.form_name,
+                    formId: step.form.id,
+                    pagePath: step.pagePath,
+                    formIdentifier: group.form_identifier,
+                  })
+                }
+              />
+            </Row>
+          ))}
         </div>
       </>
     );
