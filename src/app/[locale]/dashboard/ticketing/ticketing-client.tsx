@@ -15,7 +15,7 @@ import { Icons } from "@/components/icons";
 import { useResolvedChats } from "@/hooks/use-conversations";
 
 function getChannelFromTabParam(tab: string | null): ChannelKey | null {
-  if (tab === "tickets") return tab;
+  if (tab === "tickets" || tab === "forms") return tab;
   return null;
 }
 

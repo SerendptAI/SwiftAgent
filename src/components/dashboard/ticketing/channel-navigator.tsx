@@ -24,15 +24,15 @@ const CHANNELS: Channel[] = [
     activeIcon: "text-white",
     badgeBg: "bg-red-500",
   },
-  // Forms and Business Emails are hidden for now — keep for later.
-  // {
-  //   key: "forms",
-  //   label: "Forms",
-  //   icon: Icons.ticketForm,
-  //   activeBg: "bg-[#F25430]",
-  //   activeIcon: "text-white",
-  //   badgeBg: "bg-[#6433CC]",
-  // },
+  {
+    key: "forms",
+    label: "Forms",
+    icon: Icons.ticketForm,
+    activeBg: "bg-[#F25430]",
+    activeIcon: "text-white",
+    badgeBg: "bg-[#6433CC]",
+  },
+  // Business Emails is hidden for now — keep for later.
   // {
   //   key: "mail",
   //   label: "Business Emails",
