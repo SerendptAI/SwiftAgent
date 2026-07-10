@@ -28,8 +28,9 @@ import {
   useFormSubmissions,
   useMarkSubmissionRead,
   usePageFormSubmissions,
+  useRenamePage,
   useRenamePageForm,
-  useUpdateForm,
+  useRenameWebsite,
 } from "@/hooks/use-forms";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import type { Form, OverviewPage, Submission } from "@/services/forms";
@@ -796,7 +797,8 @@ export function FormsTabContent() {
   const deletePage = useDeletePage();
   const deletePageForm = useDeletePageForm();
   const bulkDeleteSubmissions = useBulkDeleteSubmissions();
-  const updateForm = useUpdateForm();
+  const renameWebsite = useRenameWebsite();
+  const renamePage = useRenamePage();
   const renamePageForm = useRenamePageForm();
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const { mutate: markSubmissionRead } = useMarkSubmissionRead();
@@ -974,10 +976,27 @@ export function FormsTabContent() {
   const handleRenameWebsite = async (form: Form, nextName: string) => {
     const trimmed = nextName.trim();
     const newWebsite = trimmed.includes("://") ? trimmed : `https://${trimmed}`;
-    await updateForm.mutateAsync({
-      formId: form.id,
-      payload: { website_link: newWebsite },
+    await renameWebsite.mutateAsync({
+      oldWebsite: form.website_link!,
+      newWebsite,
     });
+  };
+
+  const handleRenamePage = async (
+    form: Form,
+    oldPath: string,
+    nextName: string,
+  ) => {
+    const trimmed = nextName.trim();
+    const newPage = trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+    await renamePage.mutateAsync({
+      website: form.website_link!,
+      oldPage: oldPath,
+      newPage,
+    });
+    if (selectedFormId === form.id && selectedPagePath === oldPath) {
+      setSelectedPagePath(newPage);
+    }
   };
 
   const handleWebsiteFormSuccess = (form: Form) => {
@@ -1102,9 +1121,14 @@ export function FormsTabContent() {
         open={isEditManagerOpen}
         forms={forms}
         overviews={overviews.byId}
-        isRenaming={updateForm.isPending || renamePageForm.isPending}
+        isRenaming={
+          renameWebsite.isPending ||
+          renamePage.isPending ||
+          renamePageForm.isPending
+        }
         onRenameForm={handleRenameForm}
         onRenameWebsite={handleRenameWebsite}
+        onRenamePage={handleRenamePage}
         onClose={() => setIsEditManagerOpen(false)}
       />
     </div>

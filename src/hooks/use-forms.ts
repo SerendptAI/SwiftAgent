@@ -182,6 +182,50 @@ export function useRenamePageForm() {
   });
 }
 
+export function useRenameWebsite() {
+  const queryClient = useQueryClient();
+  const companyId = useActiveCompanyId();
+
+  return useMutation({
+    mutationFn: ({
+      oldWebsite,
+      newWebsite,
+    }: {
+      oldWebsite: string;
+      newWebsite: string;
+    }) => formsApi.renameWebsite(companyId!, oldWebsite, newWebsite),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["forms", companyId] });
+      queryClient.invalidateQueries({
+        queryKey: ["forms-overview", companyId],
+      });
+    },
+  });
+}
+
+export function useRenamePage() {
+  const queryClient = useQueryClient();
+  const companyId = useActiveCompanyId();
+
+  return useMutation({
+    mutationFn: ({
+      website,
+      oldPage,
+      newPage,
+    }: {
+      website: string;
+      oldPage: string;
+      newPage: string;
+    }) => formsApi.renamePage(companyId!, website, oldPage, newPage),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["forms", companyId] });
+      queryClient.invalidateQueries({
+        queryKey: ["forms-overview", companyId],
+      });
+    },
+  });
+}
+
 export function useDeleteWebsite() {
   const queryClient = useQueryClient();
   const companyId = useActiveCompanyId();

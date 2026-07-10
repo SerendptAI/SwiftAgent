@@ -122,7 +122,7 @@ export function getSubmissionDisplayName(submission: Submission): string {
     : "Anonymous";
 }
 
-const BASE = "/api/v1/auth/forms";
+const BASE = "/api/v1/forms";
 const enc = encodeURIComponent;
 
 export const formsApi = {
@@ -222,6 +222,30 @@ export const formsApi = {
       `${BASE}/${enc(companyId)}/${enc(formId)}/pages/${enc(pagePath)}/forms/${enc(formIdentifier)}/rename`,
       { new_name: newName },
     );
+  },
+
+  renameWebsite: async (
+    companyId: string,
+    oldWebsite: string,
+    newWebsite: string,
+  ): Promise<void> => {
+    await apiClient.put(`${BASE}/${enc(companyId)}/websites/label`, {
+      old_website: oldWebsite,
+      new_website: newWebsite,
+    });
+  },
+
+  renamePage: async (
+    companyId: string,
+    website: string,
+    oldPage: string,
+    newPage: string,
+  ): Promise<void> => {
+    await apiClient.put(`${BASE}/${enc(companyId)}/pages/label`, {
+      website,
+      old_page: oldPage,
+      new_page: newPage,
+    });
   },
 
   deleteWebsite: async (companyId: string, website: string): Promise<void> => {

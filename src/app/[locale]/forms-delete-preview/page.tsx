@@ -122,6 +122,7 @@ export default function FormsDeletePreviewPage() {
         isRenaming={false}
         onRenameForm={async () => {}}
         onRenameWebsite={async () => {}}
+        onRenamePage={async () => {}}
         onClose={() => setWhich(null)}
       />
     </div>

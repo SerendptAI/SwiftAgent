@@ -18,6 +18,13 @@ type Step =
 type RenameTarget =
   | { kind: "website"; kindLabel: string; current: string; form: Form }
   | {
+      kind: "page";
+      kindLabel: string;
+      current: string;
+      form: Form;
+      path: string;
+    }
+  | {
       kind: "form";
       kindLabel: string;
       current: string;
@@ -128,6 +135,11 @@ interface FormsEditManagerProps {
   overviews: Record<string, FormOverview>;
   isRenaming: boolean;
   onRenameWebsite: (form: Form, nextName: string) => Promise<void>;
+  onRenamePage: (
+    form: Form,
+    oldPath: string,
+    nextName: string,
+  ) => Promise<void>;
   onRenameForm: (
     formId: string,
     pagePath: string,
@@ -143,6 +155,7 @@ export function FormsEditManager({
   overviews,
   isRenaming,
   onRenameWebsite,
+  onRenamePage,
   onRenameForm,
   onClose,
 }: FormsEditManagerProps) {
@@ -191,6 +204,8 @@ export function FormsEditManager({
           rename.formIdentifier,
           next,
         );
+      } else if (rename.kind === "page") {
+        await onRenamePage(rename.form, rename.path, next);
       } else {
         await onRenameWebsite(rename.form, next);
       }
@@ -300,6 +315,19 @@ export function FormsEditManager({
                     </span>
                   </button>
                   <div className="flex shrink-0 items-center gap-3">
+                    <ActionLink
+                      label="Edit page name"
+                      colorClass={EDIT_COLOR}
+                      onClick={() =>
+                        setRename({
+                          kind: "page",
+                          kindLabel: "page",
+                          current: page.page_path,
+                          form: step.form,
+                          path: page.page_path,
+                        })
+                      }
+                    />
                     <CountPill>
                       {page.total_entries}{" "}
                       {page.total_entries === 1 ? "entry" : "entries"}
@@ -311,7 +339,7 @@ export function FormsEditManager({
             )}
           </div>
           <p className="font-dm-mono mt-4 text-[13px] text-black/40">
-            Click a page to see its forms.
+            Click a page to see its forms, or edit the page name.
           </p>
         </>
       );
