@@ -283,7 +283,7 @@ function CreateFormMenu({
               className="h-[18px] w-[18px] shrink-0 lg:h-[23px] lg:w-[23px]"
             />
             <span
-              className={`min-w-0 flex-1 text-xs font-normal tracking-[0.1em] whitespace-nowrap uppercase lg:text-base lg:tracking-[0.18em] ${meta.textColor}`}
+              className={`min-w-0 flex-1 truncate text-xs font-normal tracking-[0.1em] uppercase lg:text-base lg:tracking-[0.18em] ${meta.textColor}`}
             >
               {meta.label}
             </span>
@@ -439,7 +439,7 @@ function FormsToolbar({
         </div>
 
         {isFormMenuOpen && (
-          <div className="animate-in fade-in slide-in-from-top-2 absolute right-0 left-0 z-[70] mt-3 duration-200 sm:right-4 sm:left-auto sm:w-[calc(100%-7.5rem)] sm:min-w-[300px]">
+          <div className="animate-in fade-in slide-in-from-top-2 absolute right-0 left-0 z-[70] mt-3 duration-200 sm:right-4 sm:left-auto sm:w-[calc(100%-7.5rem)] sm:min-w-90">
             {forms.length === 0 ? (
               <CreateFormMenu onSelect={handleCreateForm} widthClass="w-full" />
             ) : (
