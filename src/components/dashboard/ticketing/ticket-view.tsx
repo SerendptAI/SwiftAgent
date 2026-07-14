@@ -103,10 +103,10 @@ function BubbleTail({ side }: { side: "customer" | "agent" }) {
       aria-hidden="true"
       fill="currentColor"
       className={cn(
-        "absolute bottom-0 h-[28px] w-[24px]",
+        "absolute bottom-[-11px] h-[28px] w-[24px]",
         side === "customer"
-          ? "left-[-10px] -scale-x-100 text-[#F2F4F5]"
-          : "right-[-10px] text-[#F2F8FF]",
+          ? "left-[-8px] -scale-x-100 text-[#F2F4F5]"
+          : "right-[-8px] text-[#F2F8FF]",
       )}
     >
       <path d="M0 0V4C0 12 4 18 10 22C16 26 22 28 24 28C20 26 16 22 13 18C10 14 8 8 8 0H0Z" />
