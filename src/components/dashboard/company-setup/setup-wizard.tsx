@@ -13,6 +13,7 @@ import { CompanyInfoStep } from "./company-info-step";
 import { CompletionStep } from "./completion-step";
 import { ProgressBar } from "./progress-bar";
 import { StepIndicator } from "./step-indicator";
+import { WebsiteIntroStep } from "./website-intro-step";
 
 const STEPS = [
   "Company Information",
@@ -29,7 +30,14 @@ export function SetupWizard() {
   const didResumeStep = useRef(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [showCompletion, setShowCompletion] = useState(false);
-  const { companyId, setCompanyId, setTypedCompanyName } = useOnboardingStore();
+  const [websiteIntroDone, setWebsiteIntroDone] = useState(false);
+  const {
+    companyId,
+    setCompanyId,
+    setTypedCompanyName,
+    setWebsiteUrl,
+    setScrapedData,
+  } = useOnboardingStore();
   const { data: user } = useCurrentUser();
   const { data: companies } = useCompaniesQuery();
   const setActiveCompanyId = useSetActiveCompanyId();
@@ -53,6 +61,8 @@ export function SetupWizard() {
         didInitializeNewCompanyFlow.current = true;
         setCompanyId(null);
         setTypedCompanyName("");
+        setWebsiteUrl("");
+        setScrapedData(null);
       }
       return;
     }
@@ -70,6 +80,8 @@ export function SetupWizard() {
     setActiveCompanyId,
     setCompanyId,
     setTypedCompanyName,
+    setWebsiteUrl,
+    setScrapedData,
     user?.company_id,
   ]);
 
@@ -93,6 +105,11 @@ export function SetupWizard() {
       setTypedCompanyName(companyData.name);
     }
   }, [companyData?.name, setTypedCompanyName]);
+
+  // Only brand-new companies get the website intro; resuming an in-progress
+  // company (or waiting on the user fetch) goes straight to the form.
+  const showWebsiteIntro =
+    !websiteIntroDone && (isNewCompany || (!!user && !effectiveCompanyId));
 
   const handleNext = () => {
     if (currentStep === 1) {
@@ -118,14 +135,17 @@ export function SetupWizard() {
           />
         </div>
 
-        {currentStep === 0 && (
-          <CompanyInfoStep
-            companyId={effectiveCompanyId}
-            isUpdateMode={shouldUpdateExistingCompany}
-            onNext={handleNext}
-            setCompanyId={setCompanyId}
-          />
-        )}
+        {currentStep === 0 &&
+          (showWebsiteIntro ? (
+            <WebsiteIntroStep onDone={() => setWebsiteIntroDone(true)} />
+          ) : (
+            <CompanyInfoStep
+              companyId={effectiveCompanyId}
+              isUpdateMode={shouldUpdateExistingCompany}
+              onNext={handleNext}
+              setCompanyId={setCompanyId}
+            />
+          ))}
         {currentStep === 1 && (
           <CompanyIdentityStep
             companyId={effectiveCompanyId}
