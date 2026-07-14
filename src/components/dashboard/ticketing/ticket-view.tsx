@@ -95,6 +95,25 @@ function getPreviewUrl(
   return attachmentPreviewCache.get(previewKey(filename, size));
 }
 
+/** iMessage-style tail hanging off a bubble's bottom outer corner. */
+function BubbleTail({ side }: { side: "customer" | "agent" }) {
+  return (
+    <svg
+      viewBox="0 0 24 28"
+      aria-hidden="true"
+      fill="currentColor"
+      className={cn(
+        "absolute bottom-0 h-[28px] w-[24px]",
+        side === "customer"
+          ? "left-[-10px] -scale-x-100 text-[#F2F4F5]"
+          : "right-[-10px] text-[#F2F8FF]",
+      )}
+    >
+      <path d="M0 0V4C0 12 4 18 10 22C16 26 22 28 24 28C20 26 16 22 13 18C10 14 8 8 8 0H0Z" />
+    </svg>
+  );
+}
+
 /**
  * A file attachment shown in a message bubble. Uses a proper PDF/Word
  * thumbnail when available, and opens a preview in a new tab when the file
@@ -593,14 +612,15 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
               )}
               <div
                 className={cn(
-                  "max-w-[85%] px-4 py-3 text-sm leading-relaxed [overflow-wrap:anywhere]",
+                  "relative max-w-[85%] px-4 py-3 text-sm leading-relaxed [overflow-wrap:anywhere]",
                   isCustomer
-                    ? "rounded-2xl rounded-bl-sm bg-[#F2F4F5] text-[#303437]"
+                    ? "rounded-2xl bg-[#F2F4F5] text-[#303437]"
                     : isLong || (message.attachments?.length ?? 0) > 0
-                      ? "rounded-2xl rounded-br-sm bg-[#F2F8FF] text-[#006BE5]"
+                      ? "rounded-2xl bg-[#F2F8FF] text-[#006BE5]"
                       : "rounded-full bg-[#F2F8FF] text-[#006BE5]",
                 )}
               >
+                <BubbleTail side={isCustomer ? "customer" : "agent"} />
                 {body && <MessageMarkdown text={body} />}
                 {message.attachments && message.attachments.length > 0 && (
                   <div className={cn("flex flex-wrap gap-1.5", body && "mt-2")}>
