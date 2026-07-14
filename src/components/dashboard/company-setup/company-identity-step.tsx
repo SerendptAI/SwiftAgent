@@ -84,8 +84,14 @@ export function CompanyIdentityStep({
 
   const scrapedData = useOnboardingStore((state) => state.scrapedData);
 
+  // Prefill from the website-intro scrape; only fills fields left empty.
+  // The company record already exists by this step, so isUpdateMode alone
+  // can't distinguish onboarding from the settings editor — setup_complete
+  // can. The guard also waits for companyData so the update-mode reset
+  // above can't wipe the prefill afterwards.
   useEffect(() => {
-    if (isUpdateMode || !scrapedData) return;
+    if (!scrapedData) return;
+    if (isUpdateMode && companyData?.setup_complete !== false) return;
     reset((current) => ({
       ...current,
       description: current.description || scrapedData.description || "",
@@ -99,7 +105,7 @@ export function CompanyIdentityStep({
         matchOptionValue(LANGUAGE_OPTIONS, scrapedData.primary_language),
       support_emails: current.support_emails || scrapedData.support_email || "",
     }));
-  }, [isUpdateMode, scrapedData, reset]);
+  }, [isUpdateMode, companyData, scrapedData, reset]);
 
   const onSubmit = async (data: CompanyIdentityValues) => {
     try {
