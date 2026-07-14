@@ -1,0 +1,39 @@
+import { Icons } from "@/components/icons";
+
+const CHECKLIST = [
+  "Reduce repetitive support requests",
+  "Improve response times",
+  "Deliver better customer experiences",
+  "Scale customer support more efficiently",
+];
+
+export function ChecklistSection() {
+  return (
+    <section className="w-full bg-white px-6 py-16 md:px-10 md:py-20 lg:px-16 lg:py-26">
+      <div className="mx-auto max-w-360">
+        <div className="mb-10 md:mb-14">
+          <p className="font-dm-mono mb-4 text-base leading-[1.2] tracking-[10%] text-gray-400 uppercase md:text-lg">
+            Built for growth
+          </p>
+          <h2 className="font-greed-narrow max-w-240 text-4xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase md:text-5xl lg:text-[66px]">
+            Built for businesses growing faster than their support teams
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
+          {CHECKLIST.map((item) => (
+            <div
+              key={item}
+              className="flex items-center gap-4 border border-black px-5 py-6 md:px-6 md:py-7"
+            >
+              <Icons.CheckCircle className="size-6 shrink-0" />
+              <span className="font-stolzl text-base leading-normal tracking-[2%] text-black md:text-lg">
+                {item}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
