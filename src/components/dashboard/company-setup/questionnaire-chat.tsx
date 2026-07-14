@@ -474,8 +474,10 @@ export function QuestionnaireChat({
           made with this email
         </p>
         <div className="font-greed-narrow mb-9 flex h-[62px] w-full max-w-[307px] items-center justify-center rounded-[10px] border border-black pr-2 pl-6 text-center text-2xl leading-[1.1] font-semibold tracking-[-1%]">
-          <span className="text-black">{emailHandle}</span>
-          <span className="text-black/50">@swifty.email</span>
+          <span className="min-w-0 truncate text-black">{emailHandle}</span>
+          <span className="shrink-0 whitespace-nowrap text-black/50">
+            @swifty.email
+          </span>
         </div>
 
         <div className="w-full max-w-56">
@@ -801,9 +803,9 @@ function EmailPickerScreen({
             onChange(e.target.value.toLowerCase().replace(/\s+/g, ""))
           }
           placeholder="companyname"
-          className="font-greed-narrow mr-2 min-w-0 text-2xl leading-[1.1] font-semibold tracking-[-1%] text-black outline-none placeholder:text-black/20"
+          className="font-greed-narrow mr-2 min-w-0 flex-1 text-2xl leading-[1.1] font-semibold tracking-[-1%] text-black outline-none placeholder:text-black/20"
         />
-        <span className="font-greed-narrow text-2xl leading-[1.1] font-semibold tracking-[-1%] text-black/50">
+        <span className="font-greed-narrow shrink-0 text-2xl leading-[1.1] font-semibold tracking-[-1%] whitespace-nowrap text-black/50">
           @swifty.email
         </span>
       </div>
