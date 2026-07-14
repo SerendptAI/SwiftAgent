@@ -547,7 +547,7 @@ export function QuestionnaireChat({
 
                 {/* Options */}
                 {entry.options && (
-                  <div className="w-fit space-y-3">
+                  <div className="flex flex-wrap gap-2">
                     {entry.options.map((option) => {
                       const isSelected = entry.selected === option;
                       return (
@@ -555,7 +555,7 @@ export function QuestionnaireChat({
                           key={option}
                           disabled={!!entry.selected}
                           onClick={() => handleSelectOption(option)}
-                          className={`font-dm-mono flex w-full items-center gap-2 border px-5 py-2.5 text-left text-sm leading-loose uppercase transition-colors ${
+                          className={`font-dm-mono flex items-center gap-2 border px-4 py-2 text-left text-sm leading-normal uppercase transition-colors ${
                             isSelected
                               ? "border-[#E8613C] bg-[#E8613C] text-white"
                               : entry.selected
