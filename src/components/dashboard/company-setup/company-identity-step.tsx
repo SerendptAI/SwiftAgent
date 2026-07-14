@@ -7,8 +7,14 @@ import { z } from "zod";
 import { useRegistrationDetails } from "@/hooks/use-auth";
 import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
 import { getApiErrorMessage } from "@/lib/api-error";
+import { useOnboardingStore } from "@/store/onboarding-store";
 
 import { OnboardingErrorToast } from "./onboarding-error-toast";
+import {
+  BRAND_TONE_OPTIONS,
+  LANGUAGE_OPTIONS,
+  matchOptionValue,
+} from "./select-options";
 import { FormLabel, FormSelect, FormTextarea, NextButton } from "./ui-elements";
 
 const companyIdentitySchema = z.object({
@@ -75,6 +81,25 @@ export function CompanyIdentityStep({
       }));
     }
   }, [isUpdateMode, registrationDetails, reset]);
+
+  const scrapedData = useOnboardingStore((state) => state.scrapedData);
+
+  useEffect(() => {
+    if (isUpdateMode || !scrapedData) return;
+    reset((current) => ({
+      ...current,
+      description: current.description || scrapedData.description || "",
+      customer_value:
+        current.customer_value || scrapedData.customer_value || "",
+      brand_tone:
+        current.brand_tone ||
+        matchOptionValue(BRAND_TONE_OPTIONS, scrapedData.brand_tone),
+      primary_language:
+        current.primary_language ||
+        matchOptionValue(LANGUAGE_OPTIONS, scrapedData.primary_language),
+      support_emails: current.support_emails || scrapedData.support_email || "",
+    }));
+  }, [isUpdateMode, scrapedData, reset]);
 
   const onSubmit = async (data: CompanyIdentityValues) => {
     try {
@@ -154,10 +179,11 @@ export function CompanyIdentityStep({
                   <option value="" disabled>
                     Select a tone
                   </option>
-                  <option value="professional">Professional</option>
-                  <option value="friendly">Friendly</option>
-                  <option value="playful">Playful</option>
-                  <option value="authoritative">Authoritative</option>
+                  {BRAND_TONE_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
                 </FormSelect>
               </div>
 
@@ -172,10 +198,11 @@ export function CompanyIdentityStep({
                   <option value="" disabled>
                     Select Language
                   </option>
-                  <option value="en">English</option>
-                  <option value="es">Spanish</option>
-                  <option value="fr">French</option>
-                  <option value="de">German</option>
+                  {LANGUAGE_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
                 </FormSelect>
               </div>
             </div>

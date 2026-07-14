@@ -70,6 +70,12 @@ export function useCompanyMutations() {
   return { createCompany, updateCompany, uploadLogo, updateEmailSlug };
 }
 
+export function useScrapeWebsite() {
+  return useMutation({
+    mutationFn: (url: string) => companyApi.scrapeWebsite(url),
+  });
+}
+
 export function useInviteMember() {
   const queryClient = useQueryClient();
 

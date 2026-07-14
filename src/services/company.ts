@@ -42,6 +42,18 @@ export interface EmailSlugCheckResult {
   suggestion?: string;
 }
 
+export interface ScrapedCompanyData {
+  industry: string | null;
+  company_size: string | null;
+  description: string | null;
+  customer_value: string | null;
+  brand_tone: string | null;
+  primary_language: string | null;
+  contact_email: string | null;
+  support_email: string | null;
+  phone_number: string | null;
+}
+
 export type CompanyUpdateSection =
   | "info"
   | "identity"
@@ -89,6 +101,14 @@ export const companyApi = {
       `/api/v1/companies/${companyId}`,
     );
     return data;
+  },
+
+  scrapeWebsite: async (url: string): Promise<ScrapedCompanyData> => {
+    const { data } = await apiClient.post<{
+      status: string;
+      data: ScrapedCompanyData;
+    }>("/api/v1/companies/scrape-website", { url });
+    return data.data;
   },
 
   update: async (

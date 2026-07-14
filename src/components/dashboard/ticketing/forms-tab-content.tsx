@@ -3,8 +3,10 @@
 import {
   ChevronDown,
   Info,
+  Loader2,
   Pencil,
   Plus,
+  Send,
   Settings,
   Trash2,
   X,
@@ -31,6 +33,7 @@ import {
   useRenamePage,
   useRenamePageForm,
   useRenameWebsite,
+  useReplyToSubmission,
 } from "@/hooks/use-forms";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import type { Form, OverviewPage, Submission } from "@/services/forms";
@@ -620,7 +623,83 @@ function FormSubmissionDetail({
           <p className="text-black/40">No submission data</p>
         )}
       </div>
+
+      {(selected.replies?.length ?? 0) > 0 && (
+        <div className="mt-8 space-y-3">
+          <p className="font-dm-mono text-xs font-normal tracking-[0.14em] text-black/60 uppercase sm:text-sm sm:tracking-[0.18em]">
+            Replies
+          </p>
+          {selected.replies!.map((reply, index) => (
+            <div key={index} className="rounded-xl bg-gray-50 p-4">
+              <p className="font-dm-mono text-sm whitespace-pre-wrap text-black">
+                {typeof reply.reply_text === "string"
+                  ? reply.reply_text
+                  : JSON.stringify(reply)}
+              </p>
+              {typeof reply.sent_at === "string" && (
+                <p className="font-dm-mono mt-2 text-xs text-black/40 uppercase">
+                  {formatSubmissionReceivedAt(reply.sent_at)}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {formType === "online" && (
+        <SubmissionReplyComposer key={selected.id} submissionId={selected.id} />
+      )}
     </div>
+  );
+}
+
+function SubmissionReplyComposer({ submissionId }: { submissionId: string }) {
+  const [draft, setDraft] = useState("");
+  const replyToSubmission = useReplyToSubmission();
+  const isSending = replyToSubmission.isPending;
+
+  const handleSend = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const replyText = draft.trim();
+    if (!replyText || isSending) return;
+    try {
+      await replyToSubmission.mutateAsync({ submissionId, replyText });
+      setDraft("");
+    } catch {
+      // Error state is surfaced below the composer.
+    }
+  };
+
+  return (
+    <form onSubmit={handleSend} className="mt-8">
+      <div className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2">
+        <input
+          type="text"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          placeholder="Type a reply..."
+          disabled={isSending}
+          className="font-dm-mono flex-1 bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400 disabled:opacity-60"
+        />
+        <button
+          type="submit"
+          disabled={!draft.trim() || isSending}
+          aria-label="Send"
+          className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-gray-400 transition-colors hover:text-[#006BE5] disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {isSending ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Send className="h-4 w-4 -translate-x-px" />
+          )}
+        </button>
+      </div>
+      {replyToSubmission.isError && (
+        <p className="font-dm-mono mt-2 text-xs text-red-500">
+          Failed to send reply. Please try again.
+        </p>
+      )}
+    </form>
   );
 }
 

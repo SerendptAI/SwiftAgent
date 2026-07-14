@@ -356,3 +356,31 @@ export function useMarkSubmissionRead() {
     },
   });
 }
+
+export function useReplyToSubmission() {
+  const queryClient = useQueryClient();
+  const companyId = useActiveCompanyId();
+
+  return useMutation({
+    mutationFn: ({
+      submissionId,
+      replyText,
+      subject,
+    }: {
+      submissionId: string;
+      replyText: string;
+      subject?: string;
+    }) =>
+      formsApi.replyToSubmission(companyId!, submissionId, {
+        reply_text: replyText,
+        ...(subject && { subject }),
+      }),
+    onSuccess: (updatedSubmission) => {
+      queryClient.invalidateQueries({ queryKey: ["submissions", companyId] });
+      queryClient.setQueryData(
+        ["submissions", companyId, "detail", updatedSubmission.id],
+        updatedSubmission,
+      );
+    },
+  });
+}

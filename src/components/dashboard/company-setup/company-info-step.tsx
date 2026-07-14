@@ -12,12 +12,19 @@ import {
   useCompaniesQuery,
   useCompanyMutations,
   useCompanyQuery,
+  useScrapeWebsite,
 } from "@/hooks/use-company";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { cn } from "@/lib/utils";
 import { useOnboardingStore } from "@/store/onboarding-store";
 
 import { OnboardingErrorToast } from "./onboarding-error-toast";
+import {
+  COMPANY_SIZE_OPTIONS,
+  INDUSTRY_OPTIONS,
+  matchCompanySize,
+  matchOptionValue,
+} from "./select-options";
 import { FormInput, FormLabel, FormSelect, NextButton } from "./ui-elements";
 
 const companyInfoSchema = z.object({
@@ -62,6 +69,9 @@ export function CompanyInfoStep({
   const setTypedCompanyName = useOnboardingStore(
     (state) => state.setTypedCompanyName,
   );
+  const setScrapedData = useOnboardingStore((state) => state.setScrapedData);
+  const scrapeWebsite = useScrapeWebsite();
+  const lastScrapedUrl = useRef<string | null>(null);
 
   const companies: Company[] = (rawCompanies ?? []).map((c) => ({
     id: c.id,
@@ -147,6 +157,33 @@ export function CompanyInfoStep({
       setSelectedCompany(current || companies[0]);
     }
   }, [companies, selectedCompany, companyId]);
+
+  const handleWebsiteBlur = async () => {
+    // FormInput uppercases as the user types; URLs are case-insensitive hosts.
+    const raw = watch("website")?.trim().toLowerCase();
+    if (isUpdateMode || !raw || scrapeWebsite.isPending) return;
+    const url = raw.startsWith("http") ? raw : `https://${raw}`;
+    if (lastScrapedUrl.current === url) return;
+    lastScrapedUrl.current = url;
+
+    try {
+      const scraped = await scrapeWebsite.mutateAsync(url);
+      setScrapedData(scraped);
+      reset((current) => ({
+        ...current,
+        industry:
+          current.industry ||
+          matchOptionValue(INDUSTRY_OPTIONS, scraped.industry),
+        company_size:
+          current.company_size || matchCompanySize(scraped.company_size),
+        contact_email: current.contact_email || scraped.contact_email || "",
+        phone_number: current.phone_number || scraped.phone_number || "",
+      }));
+    } catch {
+      // Prefill is best-effort; the user can still fill the form manually.
+      lastScrapedUrl.current = null;
+    }
+  };
 
   const onSubmit = async (data: CompanyInfoValues) => {
     try {
@@ -341,11 +378,21 @@ export function CompanyInfoStep({
 
         <div className="col-span-1">
           <FormLabel htmlFor="website">Company Website</FormLabel>
-          <FormInput
-            id="website"
-            placeholder="https://site.com"
-            {...register("website")}
-          />
+          <div className="relative">
+            <FormInput
+              id="website"
+              placeholder="https://site.com"
+              {...register("website", { onBlur: handleWebsiteBlur })}
+            />
+            {scrapeWebsite.isPending && (
+              <Loader2 className="absolute top-1/2 right-4 h-4 w-4 -translate-y-1/2 animate-spin text-purple-600" />
+            )}
+          </div>
+          {scrapeWebsite.isPending && (
+            <p className="mt-1 text-xs text-gray-400">
+              Analyzing your website to prefill details…
+            </p>
+          )}
         </div>
 
         <div className="col-span-1">
@@ -354,10 +401,11 @@ export function CompanyInfoStep({
             <option value="" disabled>
               Select an industry
             </option>
-            <option value="tech">Technology</option>
-            <option value="finance">Finance</option>
-            <option value="health">Healthcare</option>
-            <option value="retail">Retail</option>
+            {INDUSTRY_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
           </FormSelect>
         </div>
 
@@ -367,11 +415,11 @@ export function CompanyInfoStep({
             <option value="" disabled>
               Select a company size
             </option>
-            <option value="1-100">1 – 100</option>
-            <option value="101-1000">101 – 1,000</option>
-            <option value="1001-10000">1,001 – 10,000</option>
-            <option value="10001-100000">10,001 – 100,000</option>
-            <option value="100000+">100,000+</option>
+            {COMPANY_SIZE_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
           </FormSelect>
         </div>
 

@@ -22,12 +22,21 @@ export interface Form {
   snippet?: string;
 }
 
+export interface SubmissionReply {
+  reply_text?: string;
+  subject?: string;
+  sent_at?: string;
+  [key: string]: unknown;
+}
+
 export interface Submission {
   id: string;
   form_id: string;
   company_id: string;
   data: Record<string, unknown>;
   is_read: boolean;
+  replied_at?: string | null;
+  replies?: SubmissionReply[];
   visitor_id?: string;
   submitted_at: string;
   submitter_name?: string;
@@ -331,6 +340,19 @@ export const formsApi = {
   ): Promise<Submission> => {
     const { data } = await apiClient.put<Submission>(
       `${BASE}/${enc(companyId)}/submissions/${enc(submissionId)}/read`,
+    );
+    return data;
+  },
+
+  /** Emails the reply to the submitter from <company_slug>@swifty.email. */
+  replyToSubmission: async (
+    companyId: string,
+    submissionId: string,
+    payload: { reply_text: string; subject?: string },
+  ): Promise<Submission> => {
+    const { data } = await apiClient.post<Submission>(
+      `${BASE}/${enc(companyId)}/submissions/${enc(submissionId)}/reply`,
+      payload,
     );
     return data;
   },
