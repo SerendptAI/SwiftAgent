@@ -55,8 +55,15 @@ export function useHasActivePlan(
 ): boolean | undefined {
   const { data } = useBillingDetails(companyId);
   if (!data) return undefined;
+  if (data.tier == null || data.tier === "none") return false;
   const status = data.subscription_status ?? data.status;
-  return data.tier != null && data.tier !== "none" && status === "active";
+  if (status === "active") return true;
+  // Canceled subscriptions retain their plan until the paid period ends.
+  return (
+    status === "canceled" &&
+    !!data.subscription_expires_at &&
+    new Date(data.subscription_expires_at).getTime() > Date.now()
+  );
 }
 
 // ── Create Checkout Session ───────────────────────────────────────────────────
