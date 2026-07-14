@@ -136,6 +136,7 @@ export function CompanyInfoStep({
   }, [isUpdateMode, registrationDetails, reset]);
 
   const typedName = watch("name");
+  const industryValue = watch("industry");
 
   useEffect(() => {
     setTypedCompanyName(typedName || "");
@@ -164,7 +165,11 @@ export function CompanyInfoStep({
       website: current.website || websiteUrl,
       industry:
         current.industry ||
-        matchOptionValue(INDUSTRY_OPTIONS, scrapedData?.industry),
+        matchOptionValue(INDUSTRY_OPTIONS, scrapedData?.industry) ||
+        // The backend stores industry as an unrestricted string, so keep
+        // scraped values that don't map to a listed option.
+        scrapedData?.industry ||
+        "",
       company_size:
         current.company_size || matchCompanySize(scrapedData?.company_size),
       contact_email: current.contact_email || scrapedData?.contact_email || "",
@@ -383,6 +388,10 @@ export function CompanyInfoStep({
                 {option.label}
               </option>
             ))}
+            {industryValue &&
+              !INDUSTRY_OPTIONS.some((o) => o.value === industryValue) && (
+                <option value={industryValue}>{industryValue}</option>
+              )}
           </FormSelect>
         </div>
 
