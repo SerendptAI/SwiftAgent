@@ -473,7 +473,7 @@ export function QuestionnaireChat({
           <br />
           made with this email
         </p>
-        <div className="font-greed-narrow mb-9 flex h-[62px] w-full max-w-[307px] items-center justify-center rounded-[10px] border border-black pr-2 pl-6 text-center text-2xl leading-[1.1] font-semibold tracking-[-1%]">
+        <div className="font-greed-narrow mb-9 flex h-[62px] w-full max-w-[307px] items-center justify-center rounded-[10px] border border-black pr-2 pl-4 text-center text-lg leading-[1.1] font-semibold tracking-[-1%] sm:pl-6 sm:text-2xl">
           <span className="min-w-0 truncate text-black">{emailHandle}</span>
           <span className="shrink-0 whitespace-nowrap text-black/50">
             @swifty.email
@@ -700,8 +700,8 @@ export function QuestionnaireChat({
 
 function OverlayShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-6">
-      <div className="relative flex w-full max-w-138 flex-col items-center justify-center bg-white px-10 py-15 text-center shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 sm:p-6">
+      <div className="relative flex w-full max-w-138 flex-col items-center justify-center bg-white px-5 py-10 text-center shadow-xl sm:px-10 sm:py-15">
         {children}
       </div>
     </div>
@@ -796,16 +796,16 @@ function EmailPickerScreen({
         This is the email address that will be used to communicate with
         customers via email, it should correspond with your company name
       </p>
-      <div className="mb-3 flex h-[62px] w-full max-w-[307px] items-center justify-between rounded-sm border border-black py-3 pr-2 pl-6">
+      <div className="mb-3 flex h-[62px] w-full max-w-[307px] items-center justify-between rounded-sm border border-black py-3 pr-2 pl-4 sm:pl-6">
         <input
           value={value}
           onChange={(e) =>
             onChange(e.target.value.toLowerCase().replace(/\s+/g, ""))
           }
           placeholder="companyname"
-          className="font-greed-narrow mr-2 min-w-0 flex-1 text-2xl leading-[1.1] font-semibold tracking-[-1%] text-black outline-none placeholder:text-black/20"
+          className="font-greed-narrow mr-2 min-w-0 flex-1 text-lg leading-[1.1] font-semibold tracking-[-1%] text-black outline-none placeholder:text-black/20 sm:text-2xl"
         />
-        <span className="font-greed-narrow shrink-0 text-2xl leading-[1.1] font-semibold tracking-[-1%] whitespace-nowrap text-black/50">
+        <span className="font-greed-narrow shrink-0 text-lg leading-[1.1] font-semibold tracking-[-1%] whitespace-nowrap text-black/50 sm:text-2xl">
           @swifty.email
         </span>
       </div>
