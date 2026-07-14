@@ -19,6 +19,22 @@ export const INDUSTRY_OPTIONS: SelectOption[] = [
   { value: "other", label: "Other" },
 ];
 
+/**
+ * company_type values. "crypto" drives the crypto-specific questionnaire and
+ * document uploads; every other category gets the generic business set.
+ * "saas_finance" keeps the value the backend already stores for SaaS.
+ */
+export const BUSINESS_CATEGORY_OPTIONS: SelectOption[] = [
+  { value: "saas_finance", label: "SaaS / Software" },
+  { value: "crypto", label: "Crypto / Web3" },
+  { value: "ecommerce", label: "E-commerce / Retail" },
+  { value: "fintech", label: "Finance / Fintech" },
+  { value: "healthcare", label: "Healthcare" },
+  { value: "education", label: "Education" },
+  { value: "services", label: "Professional Services" },
+  { value: "other", label: "Other" },
+];
+
 export const COMPANY_SIZE_OPTIONS: SelectOption[] = [
   { value: "1-100", label: "1 – 100" },
   { value: "101-1000", label: "101 – 1,000" },

@@ -18,6 +18,8 @@ import { useCheckEmailSlug, useCompanyMutations } from "@/hooks/use-company";
 import { useIngestKnowledge, useUploadKnowledge } from "@/hooks/use-knowledge";
 import { getApiErrorMessage } from "@/lib/api-error";
 
+import { BUSINESS_CATEGORY_OPTIONS } from "./select-options";
+
 const BriggsAnimation = dynamic(
   () => import("@/components/briggs-face-animation"),
   { ssr: false },
@@ -87,13 +89,15 @@ interface QuestionDef {
 
 const INITIAL_QUESTION: QuestionDef = {
   id: "company_type",
-  question: "Are you a SAAS or crypto based company?",
-  options: ["WE ARE A SAAS COMPANY.", "WE ARE A CRYPTO COMPANY."],
+  question: "What kind of company are you?",
+  options: BUSINESS_CATEGORY_OPTIONS.map((o) => o.label.toUpperCase()),
   type: "select",
   apiMapping: {
     section: "type",
     field: "company_type",
-    transform: (v) => (v.includes("SAAS") ? "saas" : "crypto"),
+    transform: (v) =>
+      BUSINESS_CATEGORY_OPTIONS.find((o) => o.label.toUpperCase() === v)
+        ?.value ?? "other",
   },
 };
 
@@ -271,7 +275,7 @@ export function QuestionnaireChat({
 
     let nextQuestions = questions;
     if (questionDef?.id === "company_type") {
-      const type: CompanyType = option.includes("SAAS") ? "saas" : "crypto";
+      const type: CompanyType = option.includes("CRYPTO") ? "crypto" : "saas";
       nextQuestions = buildQuestions(type);
       setQuestions(nextQuestions);
     }

@@ -15,11 +15,21 @@ import { cn } from "@/lib/utils";
 import type { KnowledgeDocument } from "@/services/knowledge";
 
 import { OnboardingErrorToast } from "./onboarding-error-toast";
+import { BUSINESS_CATEGORY_OPTIONS } from "./select-options";
 import { NextButton } from "./ui-elements";
 
 const knowledgeSourcesSchema = z.object({
-  companyType: z.enum(["saas", "crypto"]),
+  companyType: z.string().min(1),
 });
+
+const CATEGORY_ICONS: Record<string, React.ElementType> = {
+  saas_finance: Icons.dollarbill,
+  crypto: Icons.dollar,
+};
+
+/** Older records stored "saas"; the selector uses "saas_finance". */
+const normalizeCompanyType = (type?: string) =>
+  !type || type === "saas" ? "saas_finance" : type;
 
 type KnowledgeSourcesValues = z.infer<typeof knowledgeSourcesSchema>;
 
@@ -56,18 +66,14 @@ export function KnowledgeSourcesStep({
     useForm<KnowledgeSourcesValues>({
       resolver: zodResolver(knowledgeSourcesSchema),
       defaultValues: {
-        companyType: (companyData?.company_type === "crypto"
-          ? "crypto"
-          : "saas") as "saas" | "crypto",
+        companyType: normalizeCompanyType(companyData?.company_type),
       },
     });
 
   useEffect(() => {
     if (isUpdateMode && companyData) {
       reset({
-        companyType: (companyData.company_type === "crypto"
-          ? "crypto"
-          : "saas") as "saas" | "crypto",
+        companyType: normalizeCompanyType(companyData.company_type),
       });
     }
   }, [isUpdateMode, companyData, reset]);
@@ -84,9 +90,7 @@ export function KnowledgeSourcesStep({
       await updateCompany.mutateAsync({
         companyId,
         section: "type",
-        payload: {
-          company_type: data.companyType === "saas" ? "saas_finance" : "crypto",
-        },
+        payload: { company_type: data.companyType },
       });
 
       onNext?.();
@@ -103,38 +107,32 @@ export function KnowledgeSourcesStep({
 
   return (
     <div className="mx-auto w-full max-w-4xl pb-4">
-      {/* Company Type Toggle */}
+      {/* Company Type Selector */}
       <div className="mb-8 flex justify-center sm:mb-12">
-        <div className="relative grid w-full grid-cols-1 gap-2 rounded-2xl bg-gray-100 p-3 shadow-sm sm:w-fit sm:grid-cols-2 sm:gap-8 sm:p-4">
-          <button
-            onClick={() => setValue("companyType", "saas")}
-            className={cn(
-              "relative z-10 flex min-h-10 items-center justify-center gap-2 rounded-xl px-3 text-xs font-bold uppercase transition-all duration-300 sm:justify-start sm:px-2 sm:text-sm",
-              companyType === "saas"
-                ? "bg-white text-gray-900 shadow-[-6px_6px_0px_0px_#000000] ring-1 ring-black/5"
-                : "text-gray-400 hover:text-gray-600",
-            )}
-          >
-            <Icons.dollarbill />
-            Saas/Finance
-          </button>
-          <button
-            onClick={() => setValue("companyType", "crypto")}
-            className={cn(
-              "relative z-10 flex min-h-10 items-center justify-center gap-2 rounded-xl px-3 text-xs font-bold uppercase transition-all duration-300 sm:justify-start sm:px-2 sm:text-sm",
-              companyType === "crypto"
-                ? "bg-white text-gray-900 shadow-[-6px_6px_0px_0px_#000000] ring-1 ring-black/5"
-                : "text-gray-400 hover:text-gray-600",
-            )}
-          >
-            <Icons.dollar />
-            Crypto Based Company
-          </button>
+        <div className="relative grid w-full grid-cols-1 gap-2 rounded-2xl bg-gray-100 p-3 shadow-sm sm:grid-cols-2 sm:gap-3 sm:p-4 lg:grid-cols-4">
+          {BUSINESS_CATEGORY_OPTIONS.map((option) => {
+            const Icon = CATEGORY_ICONS[option.value];
+            return (
+              <button
+                key={option.value}
+                onClick={() => setValue("companyType", option.value)}
+                className={cn(
+                  "relative z-10 flex min-h-10 items-center justify-center gap-2 rounded-xl px-3 text-xs font-bold uppercase transition-all duration-300 sm:justify-start sm:px-2 sm:text-sm",
+                  companyType === option.value
+                    ? "bg-white text-gray-900 shadow-[-6px_6px_0px_0px_#000000] ring-1 ring-black/5"
+                    : "text-gray-400 hover:text-gray-600",
+                )}
+              >
+                {Icon && <Icon />}
+                {option.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
       <div className="space-y-6">
-        {companyType === "saas" ? (
+        {companyType !== "crypto" ? (
           <>
             <UploadSection
               companyId={companyId}
@@ -243,7 +241,7 @@ export function KnowledgeSourcesStep({
           onDismiss={() => setError(null)}
         />
         {footerAction ??
-          (companyType === "saas" ? (
+          (companyType !== "crypto" ? (
             <NextButton onClick={handleSubmit(onSubmit)} disabled={isPending}>
               {isPending ? (
                 <span className="flex items-center justify-center gap-2">
