@@ -24,7 +24,7 @@ jobs:
         if: github.ref == 'refs/heads/staging'
         run: |
           ./deploy.sh staging
-        working-directory: /home/ghrunner/swift-agents-staging
+        working-directory: /home/ghrunner/swift-agents-prod
 
       - name: Deploy Tagged Release
         if: github.ref_type == 'tag'
