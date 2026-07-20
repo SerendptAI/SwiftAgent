@@ -3,9 +3,14 @@
 import { ChevronRight, FileText, Globe } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { usePageFormSubmissions } from "@/hooks/use-forms";
+import {
+  useDeletableFormGroups,
+  useDeletablePages,
+  useDeletableWebsites,
+  usePageFormSubmissions,
+} from "@/hooks/use-forms";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
-import type { Form, FormOverview, Submission } from "@/services/forms";
+import type { Form, Submission } from "@/services/forms";
 import { getSubmissionDisplayName } from "@/services/forms";
 
 import { formatDate, formatDateTime, hostLabel } from "./forms-hierarchy";
@@ -158,7 +163,6 @@ function SuccessBody({ path }: { path: string }) {
 interface FormsDeleteManagerProps {
   open: boolean;
   forms: Form[];
-  overviews: Record<string, FormOverview>;
   isDeleting: boolean;
   onClose: () => void;
   onDeleteWebsite: (form: Form) => Promise<void>;
@@ -174,7 +178,6 @@ interface FormsDeleteManagerProps {
 export function FormsDeleteManager({
   open,
   forms,
-  overviews,
   isDeleting,
   onClose,
   onDeleteWebsite,
@@ -214,6 +217,23 @@ export function FormsDeleteManager({
   }, [successPath, onClose]);
 
   const websites = forms.filter((f) => f.type === "website" && f.website_link);
+  const { data: deletableWebsites = [] } = useDeletableWebsites(open);
+  const { data: deletablePages = [], isLoading: pagesLoading } =
+    useDeletablePages(
+      step.name === "pages" ? step.form.id : null,
+      open && step.name === "pages",
+    );
+  const { data: deletableForms = [], isLoading: formsLoading } =
+    useDeletableFormGroups(
+      step.name === "forms" ? step.form.id : null,
+      step.name === "forms" ? step.pagePath : null,
+      open && step.name === "forms",
+    );
+  const formCountByWebsite = new Map<string, number>();
+  for (const w of deletableWebsites) {
+    formCountByWebsite.set(w.website, w.form_count);
+    formCountByWebsite.set(hostLabel(w.website), w.form_count);
+  }
   const { data: entries = [] } = usePageFormSubmissions(
     open && step.name === "entries" ? step.form.id : null,
     step.name === "entries" ? step.pagePath : null,
@@ -270,10 +290,10 @@ export function FormsDeleteManager({
               </p>
             ) : (
               websites.map((site) => {
-                const overview = overviews[site.id];
-                const groupCount = overview
-                  ? overview.pages.reduce((n, p) => n + p.forms.length, 0)
-                  : null;
+                const groupCount =
+                  formCountByWebsite.get(site.website_link!) ??
+                  formCountByWebsite.get(hostLabel(site.website_link!)) ??
+                  null;
                 return (
                   <Row key={site.id}>
                     <button
@@ -319,7 +339,7 @@ export function FormsDeleteManager({
     }
 
     if (step.name === "pages") {
-      const pages = overviews[step.form.id]?.pages ?? [];
+      const pages = deletablePages;
       return (
         <div className="flex flex-col gap-4 p-6">
           <SectionIntro
@@ -327,7 +347,11 @@ export function FormsDeleteManager({
             sub={`Pages that have forms on ${step.form.website_link}`}
           />
           <div className="flex flex-col">
-            {pages.length === 0 ? (
+            {pagesLoading ? (
+              <p className="font-stolzl py-6 text-center text-[13px] text-[#7E7E7E]">
+                Loading pages…
+              </p>
+            ) : pages.length === 0 ? (
               <p className="font-stolzl py-6 text-center text-[13px] text-[#7E7E7E]">
                 No pages with forms yet.
               </p>
@@ -365,8 +389,8 @@ export function FormsDeleteManager({
                       }
                     />
                     <CountPill>
-                      {page.total_entries}{" "}
-                      {page.total_entries === 1 ? "entry" : "entries"}
+                      {page.entries_count}{" "}
+                      {page.entries_count === 1 ? "entry" : "entries"}
                     </CountPill>
                     <ChevronRight className="h-3.5 w-3.5 text-black" />
                   </div>
@@ -383,10 +407,7 @@ export function FormsDeleteManager({
     }
 
     if (step.name === "forms") {
-      const pageForms =
-        overviews[step.form.id]?.pages.find(
-          (page) => page.page_path === step.pagePath,
-        )?.forms ?? [];
+      const pageForms = deletableForms;
       return (
         <div className="flex flex-col gap-4 p-6">
           <SectionIntro
@@ -394,53 +415,63 @@ export function FormsDeleteManager({
             sub="Select a form to manage its entries, or delete the entire form."
           />
           <div className="flex flex-col gap-3">
-            {pageForms.map((group) => (
-              <div
-                key={group.form_identifier}
-                className="flex items-center justify-between gap-3 border border-[#EDEDED] p-4"
-              >
-                <button
-                  type="button"
-                  onClick={() =>
-                    setStep({
-                      name: "entries",
-                      form: step.form,
-                      pagePath: step.pagePath,
-                      formIdentifier: group.form_identifier,
-                      formName: group.form_name,
-                    })
-                  }
-                  className="flex min-w-0 flex-1 cursor-pointer flex-col items-start gap-1 text-left"
+            {formsLoading ? (
+              <p className="font-stolzl py-6 text-center text-[13px] text-[#7E7E7E]">
+                Loading forms…
+              </p>
+            ) : pageForms.length === 0 ? (
+              <p className="font-stolzl py-6 text-center text-[13px] text-[#7E7E7E]">
+                No forms on this page.
+              </p>
+            ) : (
+              pageForms.map((group) => (
+                <div
+                  key={group.form_identifier}
+                  className="flex items-center justify-between gap-3 border border-[#EDEDED] p-4"
                 >
-                  <span className="font-dm-mono truncate text-[14px] font-medium text-black">
-                    {group.form_name}
-                  </span>
-                  <span className="font-stolzl text-[11px] text-[#7E7E7E]">
-                    Entries: {group.entries_count}{" "}
-                    {group.entries_count === 1 ? "submission" : "submissions"}
-                  </span>
-                  <span className="font-stolzl text-[11px] text-[#7E7E7E]">
-                    Last submission: {formatDate(group.last_submission)}
-                  </span>
-                </button>
-                <div className="flex shrink-0 items-center gap-3">
-                  <SolidActionButton
-                    label="Delete form"
-                    colorClass="bg-[#F25430]"
+                  <button
+                    type="button"
                     onClick={() =>
-                      setPending({
-                        kind: "formGroup",
-                        path: `${hostLabel(step.form.website_link!)}${step.pagePath}/${formSlug(group.form_name)}`,
-                        formId: step.form.id,
+                      setStep({
+                        name: "entries",
+                        form: step.form,
                         pagePath: step.pagePath,
                         formIdentifier: group.form_identifier,
+                        formName: group.form_name,
                       })
                     }
-                  />
-                  <ChevronRight className="h-3.5 w-3.5 text-black" />
+                    className="flex min-w-0 flex-1 cursor-pointer flex-col items-start gap-1 text-left"
+                  >
+                    <span className="font-dm-mono truncate text-[14px] font-medium text-black">
+                      {group.form_name}
+                    </span>
+                    <span className="font-stolzl text-[11px] text-[#7E7E7E]">
+                      Entries: {group.entries_count}{" "}
+                      {group.entries_count === 1 ? "submission" : "submissions"}
+                    </span>
+                    <span className="font-stolzl text-[11px] text-[#7E7E7E]">
+                      Last submission: {formatDate(group.last_submission)}
+                    </span>
+                  </button>
+                  <div className="flex shrink-0 items-center gap-3">
+                    <SolidActionButton
+                      label="Delete form"
+                      colorClass="bg-[#F25430]"
+                      onClick={() =>
+                        setPending({
+                          kind: "formGroup",
+                          path: `${hostLabel(step.form.website_link!)}${step.pagePath}/${formSlug(group.form_name)}`,
+                          formId: step.form.id,
+                          pagePath: step.pagePath,
+                          formIdentifier: group.form_identifier,
+                        })
+                      }
+                    />
+                    <ChevronRight className="h-3.5 w-3.5 text-black" />
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
           <button
             type="button"

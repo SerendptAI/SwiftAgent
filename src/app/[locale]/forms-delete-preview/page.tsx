@@ -122,7 +122,6 @@ export default function FormsDeletePreviewPage() {
       <FormsDeleteManager
         open={which === "delete"}
         forms={FORMS}
-        overviews={OVERVIEWS}
         isDeleting={false}
         onClose={() => setWhich(null)}
         onDeleteWebsite={async () => {}}

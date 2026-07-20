@@ -901,10 +901,8 @@ export function FormsTabContent() {
 
   const { data: forms = [] } = useForms();
   const selectedOverviewQuery = useFormOverview(selectedFormId);
-  // Overviews for every form are only needed by the delete/edit managers, so
-  // defer that fan-out until one of them opens instead of firing it on mount.
   const overviews = useFormOverviews(
-    isDeleteModalOpen || isEditManagerOpen ? forms.map((f) => f.id) : [],
+    isEditManagerOpen ? forms.map((f) => f.id) : [],
   );
   const deleteWebsite = useDeleteWebsite();
   const deletePage = useDeletePage();
@@ -1222,7 +1220,6 @@ export function FormsTabContent() {
       <FormsDeleteManager
         open={isDeleteModalOpen}
         forms={forms}
-        overviews={overviews.byId}
         isDeleting={isBulkDeleting}
         onClose={() => setIsDeleteModalOpen(false)}
         onDeleteWebsite={handleDeleteWebsite}
