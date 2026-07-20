@@ -69,9 +69,63 @@ const PLAN_META: Record<string, PlanMeta> = {
       "UNLIMITED INVITED MEMBERS\nPER COMPANY",
     ],
   },
+  business: {
+    name: "BUSINESS PLAN",
+    description:
+      "FOR SMALL SETUPS GETTING\nSTARTED WITH AI SUPPORT\nAT A LOW ENTRY POINT.",
+    textColor: "text-[#F3B03D]",
+    image: "/images/pricing/icon1.svg",
+    features: [
+      "1 DEPLOYED AI AGENT",
+      "UP TO 5 DOCUMENT UPLOADS",
+      "1 SUPPORTED LANGUAGE",
+      "BASIC ANSWER BOUNDARIES",
+      "BASIC ANALYTICS REPORTING",
+      "UNLIMITED AGENT CHATS\nPER MONTH",
+      "UP TO 2 STROLLS PER MONTH",
+      "STANDARD SHARED COMPUTE TIER",
+      "UP TO 2 INVITED MEMBERS\nPER COMPANY",
+    ],
+  },
+  startup: {
+    name: "STARTUP PLAN",
+    description:
+      "BUILT FOR GROWING TEAMS\nSCALING THEIR AI OPERATIONS\nWITH MORE HEADROOM.",
+    textColor: "text-[#6433CC]",
+    image: "/images/pricing/icon2.svg",
+    features: [
+      "1 DEPLOYED AI AGENT",
+      "UP TO 20 DOCUMENT UPLOADS",
+      "UP TO 2 SUPPORTED LANGUAGES",
+      "ADVANCED ANSWER BOUNDARIES\nFOR NUANCED AGENT RESPONSES",
+      "ADVANCED ANALYTICS REPORTING",
+      "UNLIMITED AGENT CHATS\nPER MONTH",
+      "UP TO 5 STROLLS PER MONTH",
+      "PRIORITY COMPUTE TIER\n(REDUCES GENERATION LATENCY)",
+      "UP TO 5 INVITED MEMBERS\nPER COMPANY",
+    ],
+  },
+  enterprise_payg: {
+    name: "ENTERPRISE (PAYG)",
+    description:
+      "FOR LARGE ORGANIZATIONS\nWITH PAY-AS-YOU-GO SCALING\nBEYOND THE INCLUDED LIMITS.",
+    textColor: "text-[#F25430]",
+    image: "/images/pricing/icon3.svg",
+    features: [
+      "UNLIMITED DEPLOYED AI AGENTS",
+      "50 DOCUMENTS INCLUDED,\nTHEN PAY-AS-YOU-GO",
+      "ALL SUPPORTED LANGUAGES\n(UNLIMITED)",
+      "CUSTOM ANSWER BOUNDARY\nCONTROLS",
+      "FULLY CUSTOMIZABLE ANALYTICS",
+      "UNLIMITED AGENT CHATS\nPER MONTH",
+      "25 STROLLS/MO INCLUDED,\nTHEN PAY-AS-YOU-GO",
+      "DEDICATED COMPUTE TIER FOR\nTHE FASTEST RESPONSE TIMES",
+      "5 MEMBERS INCLUDED,\nTHEN PAY-AS-YOU-GO",
+    ],
+  },
 };
 
-const TIER_ORDER = ["basic", "pro", "enterprise"];
+const TIER_ORDER = ["business", "startup", "enterprise_payg"];
 
 function formatPrice(usd: number | undefined): string {
   if (typeof usd !== "number") return "";
