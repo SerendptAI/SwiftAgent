@@ -188,9 +188,11 @@ function InboxHeader() {
 function StatusControls({
   activeStatus,
   onStatusChange,
+  onSettings,
 }: {
   activeStatus: FormSubmissionStatus;
   onStatusChange: (status: FormSubmissionStatus) => void;
+  onSettings?: () => void;
 }) {
   return (
     <div className="flex items-center justify-between gap-3 sm:gap-6">
@@ -225,7 +227,9 @@ function StatusControls({
       <button
         type="button"
         aria-label="Form settings"
-        className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg text-[#808080] transition-colors hover:bg-[#F6F6F6] sm:h-12 sm:w-12 sm:rounded-xl"
+        onClick={onSettings}
+        disabled={!onSettings}
+        className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg text-[#808080] transition-colors hover:bg-[#F6F6F6] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent sm:h-12 sm:w-12 sm:rounded-xl"
       >
         <Settings className="h-5 w-5 sm:h-7 sm:w-7" />
       </button>
@@ -710,12 +714,14 @@ function FormSubmissionList({
   onSelect,
   activeStatus,
   onStatusChange,
+  onSettings,
 }: {
   submissions: Submission[];
   selectedId: string | null;
   onSelect: (id: string) => void;
   activeStatus: FormSubmissionStatus;
   onStatusChange: (status: FormSubmissionStatus) => void;
+  onSettings?: () => void;
 }) {
   const visibleSubmissions = submissions.filter(
     (s) => s.is_read === (activeStatus === "read"),
@@ -727,6 +733,7 @@ function FormSubmissionList({
         <StatusControls
           activeStatus={activeStatus}
           onStatusChange={onStatusChange}
+          onSettings={onSettings}
         />
       </div>
 
@@ -894,6 +901,7 @@ export function FormsTabContent() {
   const [isEditManagerOpen, setIsEditManagerOpen] = useState(false);
   const [isWebsiteFormDrawerOpen, setIsWebsiteFormDrawerOpen] = useState(false);
   const [isOnlineFormDrawerOpen, setIsOnlineFormDrawerOpen] = useState(false);
+  const [settingsForm, setSettingsForm] = useState<Form | null>(null);
   const [successForm, setSuccessForm] = useState<{
     type: FormType;
     name: string;
@@ -1171,6 +1179,9 @@ export function FormsTabContent() {
               onSelect={setSelectedSubmissionId}
               activeStatus={activeStatus}
               onStatusChange={handleStatusChange}
+              onSettings={
+                selectedForm ? () => setSettingsForm(selectedForm) : undefined
+              }
             />
           </div>
         </div>
@@ -1210,6 +1221,20 @@ export function FormsTabContent() {
         onClose={() => setIsOnlineFormDrawerOpen(false)}
         onSuccess={handleOnlineFormSuccess}
         mode="create"
+      />
+      <WebsiteFormDrawer
+        open={settingsForm?.type === "website"}
+        onClose={() => setSettingsForm(null)}
+        onSuccess={() => setSettingsForm(null)}
+        mode="edit"
+        editForm={settingsForm?.type === "website" ? settingsForm : undefined}
+      />
+      <OnlineFormDrawer
+        open={settingsForm?.type === "online"}
+        onClose={() => setSettingsForm(null)}
+        onSuccess={() => setSettingsForm(null)}
+        mode="edit"
+        editForm={settingsForm?.type === "online" ? settingsForm : undefined}
       />
       <FormCreationSuccessModal
         open={successForm !== null}
