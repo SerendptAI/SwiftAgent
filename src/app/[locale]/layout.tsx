@@ -3,6 +3,7 @@ import "@/styles/globals.css";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
+import { setRequestLocale } from "next-intl/server";
 import { Suspense } from "react";
 
 import { UpgradeModalTrigger } from "@/components/dashboard/upgrade-modal-trigger";
@@ -71,6 +72,8 @@ const RootLayout = async ({
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+
+  setRequestLocale(locale);
 
   return (
     <html lang={locale} suppressHydrationWarning>
