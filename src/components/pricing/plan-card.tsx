@@ -77,7 +77,7 @@ export function PlanCard({
           </span>
         </p>
 
-        <p className="mb-4 text-xs leading-relaxed tracking-wider whitespace-pre-line text-gray-500 uppercase md:mb-5 md:text-sm">
+        <p className="mb-4 text-xs leading-relaxed tracking-wider whitespace-normal text-gray-500 uppercase md:mb-5 md:text-sm md:whitespace-pre-line">
           {plan.description}
         </p>
 
