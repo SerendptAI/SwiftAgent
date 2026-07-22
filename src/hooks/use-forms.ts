@@ -9,6 +9,9 @@ import { useActiveCompanyId } from "@/hooks/use-active-company";
 import type {
   CreateOnlineFormPayload,
   CreateWebsiteFormPayload,
+  DeletableFormGroup,
+  DeletablePage,
+  DeletableWebsite,
   Form,
   FormKeys,
   FormOverview,
@@ -337,6 +340,41 @@ export function usePageFormSubmissions(
         params,
       ),
     enabled: !!companyId && !!formId && !!pagePath && !!formIdentifier,
+  });
+}
+
+export function useDeletableWebsites(enabled: boolean) {
+  const companyId = useActiveCompanyId();
+
+  return useQuery<DeletableWebsite[]>({
+    queryKey: ["forms-delete-websites", companyId],
+    queryFn: () => formsApi.listDeletableWebsites(companyId!),
+    enabled: enabled && !!companyId,
+  });
+}
+
+export function useDeletablePages(formId: string | null, enabled: boolean) {
+  const companyId = useActiveCompanyId();
+
+  return useQuery<DeletablePage[]>({
+    queryKey: ["forms-delete-pages", companyId, formId],
+    queryFn: () => formsApi.listDeletablePages(companyId!, formId!),
+    enabled: enabled && !!companyId && !!formId,
+  });
+}
+
+export function useDeletableFormGroups(
+  formId: string | null,
+  pagePath: string | null,
+  enabled: boolean,
+) {
+  const companyId = useActiveCompanyId();
+
+  return useQuery<DeletableFormGroup[]>({
+    queryKey: ["forms-delete-forms", companyId, formId, pagePath],
+    queryFn: () =>
+      formsApi.listDeletableFormGroups(companyId!, formId!, pagePath!),
+    enabled: enabled && !!companyId && !!formId && !!pagePath,
   });
 }
 

@@ -25,6 +25,7 @@ import {
   useDeletePage,
   useDeletePageForm,
   useDeleteWebsite,
+  useFormOverview,
   useFormOverviews,
   useForms,
   useFormSubmissions,
@@ -187,9 +188,11 @@ function InboxHeader() {
 function StatusControls({
   activeStatus,
   onStatusChange,
+  onSettings,
 }: {
   activeStatus: FormSubmissionStatus;
   onStatusChange: (status: FormSubmissionStatus) => void;
+  onSettings?: () => void;
 }) {
   return (
     <div className="flex items-center justify-between gap-3 sm:gap-6">
@@ -224,7 +227,9 @@ function StatusControls({
       <button
         type="button"
         aria-label="Form settings"
-        className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg text-[#808080] transition-colors hover:bg-[#F6F6F6] sm:h-12 sm:w-12 sm:rounded-xl"
+        onClick={onSettings}
+        disabled={!onSettings}
+        className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg text-[#808080] transition-colors hover:bg-[#F6F6F6] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent sm:h-12 sm:w-12 sm:rounded-xl"
       >
         <Settings className="h-5 w-5 sm:h-7 sm:w-7" />
       </button>
@@ -709,12 +714,14 @@ function FormSubmissionList({
   onSelect,
   activeStatus,
   onStatusChange,
+  onSettings,
 }: {
   submissions: Submission[];
   selectedId: string | null;
   onSelect: (id: string) => void;
   activeStatus: FormSubmissionStatus;
   onStatusChange: (status: FormSubmissionStatus) => void;
+  onSettings?: () => void;
 }) {
   const visibleSubmissions = submissions.filter(
     (s) => s.is_read === (activeStatus === "read"),
@@ -726,6 +733,7 @@ function FormSubmissionList({
         <StatusControls
           activeStatus={activeStatus}
           onStatusChange={onStatusChange}
+          onSettings={onSettings}
         />
       </div>
 
@@ -795,6 +803,10 @@ export function PageFormTabs({
   onSelectPage: (pagePath: string) => void;
   onSelectFormIdentifier: (formIdentifier: string) => void;
 }) {
+  const [collapsedPages, setCollapsedPages] = useState<Record<string, boolean>>(
+    {},
+  );
+
   return (
     <div className="flex shrink-0 flex-wrap items-start gap-3">
       {pages.map((page) => {
@@ -816,37 +828,56 @@ export function PageFormTabs({
             </button>
           );
         }
+        const isCollapsed = collapsedPages[page.page_path] ?? true;
         return (
           <div
             key={page.page_path}
-            className="flex flex-col rounded-[9px] border border-black/5 bg-[#006BE5] p-[9px] pt-0"
+            className="flex w-[170px] flex-col gap-2 rounded-[9px] border border-black/5 bg-[#006BE5] p-[9px]"
           >
-            <div className="font-dm-mono flex h-[42px] items-center justify-center px-0.5 text-base font-medium tracking-[0.1em] text-white uppercase">
-              <span className="max-w-[152px] truncate">{page.page_path}</span>
-            </div>
-            <div className="flex flex-col gap-2">
-              {page.forms.map((group) => {
-                const isActiveForm =
-                  group.form_identifier === selectedFormIdentifier;
-                return (
-                  <button
-                    key={group.form_identifier}
-                    type="button"
-                    onClick={() =>
-                      onSelectFormIdentifier(group.form_identifier)
-                    }
-                    className={`font-dm-mono flex h-[37px] w-[152px] cursor-pointer items-center justify-center rounded-[9px] border border-black/5 px-2.5 text-xs tracking-[0.1em] uppercase transition-colors ${
-                      isActiveForm
-                        ? "bg-[#F25430] font-medium text-white"
-                        : "bg-white font-normal text-black hover:bg-gray-50"
-                    }`}
-                    aria-pressed={isActiveForm}
-                  >
-                    <span className="truncate">{group.form_name}</span>
-                  </button>
-                );
-              })}
-            </div>
+            <button
+              type="button"
+              onClick={() =>
+                setCollapsedPages((prev) => ({
+                  ...prev,
+                  [page.page_path]: !isCollapsed,
+                }))
+              }
+              className="font-dm-mono flex h-[37px] w-full cursor-pointer items-center gap-1.5 px-2.5 text-base font-medium tracking-[0.1em] text-white uppercase"
+              aria-expanded={!isCollapsed}
+            >
+              <ChevronDown
+                className={`size-4 shrink-0 transition-transform ${isCollapsed ? "-rotate-90" : ""}`}
+              />
+              <span className="min-w-0 flex-1 truncate text-center">
+                {page.page_path}
+              </span>
+              <span className="size-4 shrink-0" aria-hidden="true" />
+            </button>
+            {!isCollapsed && (
+              <div className="scrollbar-none flex max-h-[220px] flex-col gap-2 overflow-y-auto">
+                {page.forms.map((group) => {
+                  const isActiveForm =
+                    group.form_identifier === selectedFormIdentifier;
+                  return (
+                    <button
+                      key={group.form_identifier}
+                      type="button"
+                      onClick={() =>
+                        onSelectFormIdentifier(group.form_identifier)
+                      }
+                      className={`font-dm-mono flex h-[37px] w-[152px] cursor-pointer items-center justify-center rounded-[9px] border border-black/5 px-2.5 text-xs tracking-[0.1em] uppercase transition-colors ${
+                        isActiveForm
+                          ? "bg-[#F25430] font-medium text-white"
+                          : "bg-white font-normal text-black hover:bg-gray-50"
+                      }`}
+                      aria-pressed={isActiveForm}
+                    >
+                      <span className="truncate">{group.form_name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
         );
       })}
@@ -870,13 +901,17 @@ export function FormsTabContent() {
   const [isEditManagerOpen, setIsEditManagerOpen] = useState(false);
   const [isWebsiteFormDrawerOpen, setIsWebsiteFormDrawerOpen] = useState(false);
   const [isOnlineFormDrawerOpen, setIsOnlineFormDrawerOpen] = useState(false);
+  const [settingsForm, setSettingsForm] = useState<Form | null>(null);
   const [successForm, setSuccessForm] = useState<{
     type: FormType;
     name: string;
   } | null>(null);
 
   const { data: forms = [] } = useForms();
-  const overviews = useFormOverviews(forms.map((f) => f.id));
+  const selectedOverviewQuery = useFormOverview(selectedFormId);
+  const overviews = useFormOverviews(
+    isEditManagerOpen ? forms.map((f) => f.id) : [],
+  );
   const deleteWebsite = useDeleteWebsite();
   const deletePage = useDeletePage();
   const deletePageForm = useDeletePageForm();
@@ -895,7 +930,7 @@ export function FormsTabContent() {
 
   const selectedForm = forms.find((f) => f.id === selectedFormId) ?? null;
   const selectedFormType: FormType = selectedForm?.type ?? "website";
-  const overview = selectedFormId ? overviews.byId[selectedFormId] : undefined;
+  const overview = selectedOverviewQuery.data;
   const pages = overview?.pages ?? [];
   const hasHierarchy = pages.length > 0;
 
@@ -1123,7 +1158,7 @@ export function FormsTabContent() {
         onCreateWebsiteForm={() => setIsWebsiteFormDrawerOpen(true)}
         onCreateOnlineForm={() => setIsOnlineFormDrawerOpen(true)}
       />
-      <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:h-[600px] lg:flex-none lg:grid-cols-12 lg:gap-8">
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:h-[600px] lg:flex-none lg:grid-cols-12 lg:grid-rows-1 lg:gap-8">
         <div className="hidden min-w-0 lg:col-span-7 lg:block">
           {inboxDetail}
         </div>
@@ -1144,6 +1179,9 @@ export function FormsTabContent() {
               onSelect={setSelectedSubmissionId}
               activeStatus={activeStatus}
               onStatusChange={handleStatusChange}
+              onSettings={
+                selectedForm ? () => setSettingsForm(selectedForm) : undefined
+              }
             />
           </div>
         </div>
@@ -1184,6 +1222,20 @@ export function FormsTabContent() {
         onSuccess={handleOnlineFormSuccess}
         mode="create"
       />
+      <WebsiteFormDrawer
+        open={settingsForm?.type === "website"}
+        onClose={() => setSettingsForm(null)}
+        onSuccess={() => setSettingsForm(null)}
+        mode="edit"
+        editForm={settingsForm?.type === "website" ? settingsForm : undefined}
+      />
+      <OnlineFormDrawer
+        open={settingsForm?.type === "online"}
+        onClose={() => setSettingsForm(null)}
+        onSuccess={() => setSettingsForm(null)}
+        mode="edit"
+        editForm={settingsForm?.type === "online" ? settingsForm : undefined}
+      />
       <FormCreationSuccessModal
         open={successForm !== null}
         formIcon={FORM_TYPE_META[successForm?.type ?? "website"].icon}
@@ -1193,7 +1245,6 @@ export function FormsTabContent() {
       <FormsDeleteManager
         open={isDeleteModalOpen}
         forms={forms}
-        overviews={overviews.byId}
         isDeleting={isBulkDeleting}
         onClose={() => setIsDeleteModalOpen(false)}
         onDeleteWebsite={handleDeleteWebsite}

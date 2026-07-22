@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { setRequestLocale } from "next-intl/server";
 
 import { CaseStudyDetail } from "@/components/landing/case-study-detail";
 import { ContactSection } from "@/components/landing/contact-section";
 import { Navbar } from "@/components/landing/navbar";
 import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provider";
+import { routing } from "@/i18n/routing";
 import {
   CASE_STUDIES,
   getCaseStudy,
@@ -14,17 +16,21 @@ import {
 import { siteConfig } from "@/lib/site-config";
 
 interface CaseStudyPageProps {
-  params: Promise<{ caseStudyId: string }>;
+  params: Promise<{ locale: string; caseStudyId: string }>;
 }
 
 export function generateStaticParams() {
-  return CASE_STUDIES.map((cs) => ({ caseStudyId: cs.id }));
+  return routing.locales.flatMap((locale) =>
+    CASE_STUDIES.map((cs) => ({ locale, caseStudyId: cs.id })),
+  );
 }
 
 export async function generateMetadata({
   params,
 }: CaseStudyPageProps): Promise<Metadata> {
-  const { caseStudyId } = await params;
+  const { locale, caseStudyId } = await params;
+  setRequestLocale(locale);
+
   const caseStudy = getCaseStudy(caseStudyId);
   if (!caseStudy) return {};
 
@@ -32,13 +38,15 @@ export async function generateMetadata({
     title: `${caseStudy.name} Case Study — Swift Agents`,
     description: getCaseStudyPlainDescription(caseStudy),
     alternates: {
-      canonical: `${siteConfig.url}/en/case-studies/${caseStudy.id}`,
+      canonical: `${siteConfig.url}/${locale}/case-studies/${caseStudy.id}`,
     },
   };
 }
 
 export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
-  const { caseStudyId } = await params;
+  const { locale, caseStudyId } = await params;
+  setRequestLocale(locale);
+
   const caseStudy = getCaseStudy(caseStudyId);
   if (!caseStudy) notFound();
 

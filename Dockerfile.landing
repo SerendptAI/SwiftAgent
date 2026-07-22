@@ -12,6 +12,11 @@ RUN npm install
 # copy the rest of the source tree
 COPY . .
 
+# Let Docker know about ENV_FILE arg, defaulting to .env
+ARG ENV_FILE=.env
+# Overwrite .env.production with the selected env file so next build uses it
+RUN cp ${ENV_FILE} .env.production || true
+
 # build the Next.js application
 RUN npm run build
 

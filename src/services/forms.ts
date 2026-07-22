@@ -70,6 +70,23 @@ export interface FormKeys {
   snippet: string;
 }
 
+export interface DeletableWebsite {
+  website: string;
+  form_count: number;
+}
+
+export interface DeletablePage {
+  page_path: string;
+  entries_count: number;
+}
+
+export interface DeletableFormGroup {
+  form_identifier: string;
+  form_name: string;
+  entries_count: number;
+  last_submission?: string | null;
+}
+
 export interface RegeneratedFormKeys {
   api_key: string;
   public_key: string;
@@ -200,6 +217,38 @@ export const formsApi = {
       `${BASE}/${enc(companyId)}/${enc(formId)}/overview`,
     );
     return data;
+  },
+
+  listDeletableWebsites: async (
+    companyId: string,
+  ): Promise<DeletableWebsite[]> => {
+    const { data } = await apiClient.get<
+      DeletableWebsite[] | { items: DeletableWebsite[] }
+    >(`${BASE}/${enc(companyId)}/delete/websites`);
+    return unwrapList(data);
+  },
+
+  listDeletablePages: async (
+    companyId: string,
+    formId: string,
+  ): Promise<DeletablePage[]> => {
+    const { data } = await apiClient.get<
+      DeletablePage[] | { items: DeletablePage[] }
+    >(`${BASE}/${enc(companyId)}/delete/${enc(formId)}/pages`);
+    return unwrapList(data);
+  },
+
+  listDeletableFormGroups: async (
+    companyId: string,
+    formId: string,
+    pagePath: string,
+  ): Promise<DeletableFormGroup[]> => {
+    const { data } = await apiClient.get<
+      DeletableFormGroup[] | { items: DeletableFormGroup[] }
+    >(
+      `${BASE}/${enc(companyId)}/delete/${enc(formId)}/pages/${enc(pagePath)}/forms`,
+    );
+    return unwrapList(data);
   },
 
   getKeys: async (companyId: string, formId: string): Promise<FormKeys> => {

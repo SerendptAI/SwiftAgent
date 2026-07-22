@@ -5,10 +5,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { CopyButton } from "@/components/dashboard/ticketing/copy-button";
 import { Icons } from "@/components/icons";
-import { useCreateWebsiteForm, useUpdateForm } from "@/hooks/use-forms";
+import {
+  useCreateWebsiteForm,
+  useFormKeys,
+  useRegenerateFormKeys,
+  useUpdateForm,
+} from "@/hooks/use-forms";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
 import { isValidEmail, isValidHttpUrl } from "@/lib/validation";
-import type { Form } from "@/services/forms";
+import type { Form, RegeneratedFormKeys } from "@/services/forms";
 
 const DRAWER_TRANSITION_MS = 520;
 
@@ -225,21 +230,26 @@ export function WebsiteFormDrawer({
               }`}
             >
               {activeStep === "website" ? (
-                <WebsiteInformationForm
-                  websiteLink={websiteLink}
-                  alertEmail={alertEmail}
-                  errors={errors}
-                  isLoading={isPending}
-                  isEdit={isEdit}
-                  apiError={
-                    isError
-                      ? `Failed to ${isEdit ? "update" : "create"} form. Please try again.`
-                      : undefined
-                  }
-                  onWebsiteLinkChange={setWebsiteLink}
-                  onAlertEmailChange={setAlertEmail}
-                  onContinue={handleContinue}
-                />
+                <>
+                  <WebsiteInformationForm
+                    websiteLink={websiteLink}
+                    alertEmail={alertEmail}
+                    errors={errors}
+                    isLoading={isPending}
+                    isEdit={isEdit}
+                    apiError={
+                      isError
+                        ? `Failed to ${isEdit ? "update" : "create"} form. Please try again.`
+                        : undefined
+                    }
+                    onWebsiteLinkChange={setWebsiteLink}
+                    onAlertEmailChange={setAlertEmail}
+                    onContinue={handleContinue}
+                  />
+                  {isEdit && editForm && (
+                    <FormSettingsKeys formId={editForm.id} />
+                  )}
+                </>
               ) : (
                 <SecurityInformationForm
                   form={createdForm}
@@ -442,6 +452,111 @@ function SecurityInformationForm({
           Save and Exit
         </button>
       </div>
+    </div>
+  );
+}
+
+function FormSettingsKeys({ formId }: { formId: string }) {
+  const { data: keys } = useFormKeys(formId);
+  const regenerate = useRegenerateFormKeys();
+  const [confirming, setConfirming] = useState(false);
+  const [fresh, setFresh] = useState<RegeneratedFormKeys | null>(null);
+
+  const snippet = fresh?.snippet ?? keys?.snippet ?? "";
+  const apiKey = fresh?.api_key ?? "";
+  const publicKey = fresh?.public_key ?? "";
+
+  const handleRegenerate = () => {
+    regenerate.mutate(formId, {
+      onSuccess: (data) => {
+        setFresh(data);
+        setConfirming(false);
+      },
+    });
+  };
+
+  return (
+    <div className="mt-8 flex flex-col gap-4 border-t border-[#EDEDED] pt-8 md:mt-12 md:pt-12">
+      <h3 className="font-dm-mono text-sm font-bold tracking-[0.04em] text-black uppercase md:text-lg">
+        API Keys &amp; Snippet
+      </h3>
+
+      <section className="flex flex-col">
+        <p className="font-dm-mono mb-3 text-[11px] tracking-[0.1em] text-black/40 uppercase">
+          Install snippet
+        </p>
+        <div className="font-dm-mono min-h-24 overflow-auto rounded-lg bg-[#F4F1EC] p-4 text-[10px] leading-[1.45] tracking-[0.1em] whitespace-pre-wrap text-black/40 md:p-6 md:text-xs">
+          {snippet}
+        </div>
+        {snippet && (
+          <div className="mt-3 flex justify-end">
+            <CopyButton value={snippet} label="Copy snippet" />
+          </div>
+        )}
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <div className="font-dm-mono flex flex-col gap-2 rounded-lg bg-[#F4F1EC] p-4 text-[10px] leading-[1.8] tracking-[0.1em] text-black/40 md:p-6 md:text-xs">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="min-w-0 flex-1 truncate">
+              API key: {apiKey || `${keys?.api_key_prefix ?? "—"}••••••••`}
+            </span>
+            {apiKey && <CopyButton value={apiKey} label="Copy API key" />}
+          </div>
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="min-w-0 flex-1 truncate">
+              Public key:{" "}
+              {publicKey || `${keys?.public_key_prefix ?? "—"}••••••••`}
+            </span>
+            {publicKey && (
+              <CopyButton value={publicKey} label="Copy public key" />
+            )}
+          </div>
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="min-w-0 flex-1 truncate">Form ID: {formId}</span>
+            <CopyButton value={formId} label="Copy form ID" />
+          </div>
+        </div>
+
+        {fresh ? (
+          <p className="font-dm-mono text-[11px] leading-[1.5] tracking-[0.08em] text-[#F25430] uppercase">
+            Copy these now — full keys are shown only once. Update your
+            installed snippet everywhere.
+          </p>
+        ) : confirming ? (
+          <div className="flex flex-col gap-2">
+            <p className="font-dm-mono text-[11px] leading-[1.5] tracking-[0.08em] text-[#F25430] uppercase">
+              Regenerating invalidates your current keys immediately.
+            </p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={handleRegenerate}
+                disabled={regenerate.isPending}
+                className="font-dm-mono h-9 flex-1 cursor-pointer rounded-lg bg-[#F25430] text-xs tracking-[0.08em] text-white uppercase transition-colors hover:bg-[#d94526] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {regenerate.isPending ? "Regenerating..." : "Yes, regenerate"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirming(false)}
+                disabled={regenerate.isPending}
+                className="font-dm-mono h-9 flex-1 cursor-pointer rounded-lg bg-[#EDEDED] text-xs tracking-[0.08em] text-black uppercase transition-colors hover:bg-[#e2e2e2] disabled:opacity-60"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setConfirming(true)}
+            className="font-dm-mono h-9 w-full cursor-pointer rounded-lg border border-[#F25430] text-xs tracking-[0.08em] text-[#F25430] uppercase transition-colors hover:bg-[#F25430]/5"
+          >
+            Regenerate keys
+          </button>
+        )}
+      </section>
     </div>
   );
 }

@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - feat/forms
+      - staging
     tags:
       - 'v2*'
 
@@ -20,10 +20,10 @@ jobs:
           ./deploy.sh landing
         working-directory: /home/ghrunner/swift-agents-prod
 
-      - name: Deploy Feature Forms Environment
-        if: github.ref == 'refs/heads/feat/forms'
+      - name: Deploy Staging Environment
+        if: github.ref == 'refs/heads/staging'
         run: |
-          ./deploy.sh feat-forms
+          ./deploy.sh staging
         working-directory: /home/ghrunner/swift-agents-prod
 
       - name: Deploy Tagged Release

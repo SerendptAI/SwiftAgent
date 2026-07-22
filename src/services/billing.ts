@@ -5,7 +5,15 @@ import { apiClient } from "@/lib/api-client";
 // "none" is the post-onboarding / expired-subscription tier: a paywalled state
 // with zero allowance for paid features. The backend never returns it from
 // /plans, so it only ever appears on a company's own billing details.
-export type SubscriptionTier = "none" | "basic" | "pro" | "enterprise" | null;
+export type SubscriptionTier =
+  | "none"
+  | "basic"
+  | "pro"
+  | "enterprise"
+  | "business"
+  | "startup"
+  | "enterprise_payg"
+  | null;
 export type SubscriptionStatus = "active" | "inactive" | "canceled";
 export type BillingProvider = "polar" | "palmpay" | null;
 export type PlanRegion = "african" | "international";
