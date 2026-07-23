@@ -1,7 +1,40 @@
+"use client";
+
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef } from "react";
+
+gsap.registerPlugin(ScrollTrigger);
+
 export function PayoutSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const ctx = gsap.context(() => {
+      gsap.from(cardRef.current, {
+        scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
+        y: 50,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power3.out",
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="w-full bg-white px-6 py-16 md:px-10 md:py-24 lg:px-20">
-      <div className="mx-auto flex max-w-[1000px] flex-col items-center gap-8 rounded-lg border border-black bg-white p-8 shadow-[-6px_8px_0px_0px_#000000] md:flex-row md:gap-12 md:p-12">
+    <section
+      ref={sectionRef}
+      className="w-full bg-white px-6 py-16 md:px-10 md:py-24 lg:px-20"
+    >
+      <div
+        ref={cardRef}
+        className="mx-auto flex max-w-[1000px] flex-col items-center gap-8 rounded-lg border border-black bg-white p-8 shadow-[-6px_8px_0px_0px_#000000] md:flex-row md:gap-12 md:p-12"
+      >
         <div className="flex flex-1 flex-col gap-2">
           <p className="font-dm-mono text-sm tracking-[0.15em] text-[#7e7e7e] uppercase">
             Affiliate reward

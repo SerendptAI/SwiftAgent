@@ -1,3 +1,11 @@
+"use client";
+
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef } from "react";
+
+gsap.registerPlugin(ScrollTrigger);
+
 const STEPS = [
   {
     number: "01",
@@ -22,10 +30,47 @@ const STEPS = [
 ];
 
 export function ProtocolSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const ctx = gsap.context(() => {
+      if (headerRef.current) {
+        gsap.from(headerRef.current.children, {
+          scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
+          y: 40,
+          opacity: 0,
+          stagger: 0.1,
+          duration: 0.7,
+          ease: "power3.out",
+        });
+      }
+
+      if (gridRef.current) {
+        gsap.from(gridRef.current.children, {
+          scrollTrigger: { trigger: gridRef.current, start: "top 80%" },
+          y: 50,
+          opacity: 0,
+          stagger: 0.12,
+          duration: 0.7,
+          ease: "power3.out",
+        });
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="w-full bg-[#D9F99D] px-6 py-16 md:px-10 md:py-24 lg:px-20">
+    <section
+      ref={sectionRef}
+      className="w-full bg-[#D9F99D] px-6 py-16 md:px-10 md:py-24 lg:px-20"
+    >
       <div className="mx-auto max-w-360">
-        <div className="flex flex-col gap-3">
+        <div ref={headerRef} className="flex flex-col gap-3">
           <p className="font-dm-mono text-sm tracking-[0.15em] text-[#111827] uppercase">
             How it works
           </p>
@@ -34,7 +79,10 @@ export function ProtocolSection() {
           </h2>
         </div>
 
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 md:mt-16 lg:grid-cols-4 lg:gap-8">
+        <div
+          ref={gridRef}
+          className="mt-14 grid gap-6 sm:grid-cols-2 md:mt-16 lg:grid-cols-4 lg:gap-8"
+        >
           {STEPS.map((step) => (
             <div
               key={step.number}

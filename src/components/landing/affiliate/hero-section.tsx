@@ -1,5 +1,8 @@
+"use client";
+
+import gsap from "gsap";
 import Image from "next/image";
-import { Fragment } from "react";
+import { Fragment, useEffect, useRef } from "react";
 
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
@@ -68,14 +71,87 @@ function ReferrerAvatar({ src, name }: { src: string; name: string }) {
 }
 
 export function AffiliateHeroSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const headlineRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const clusterRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const ctx = gsap.context(() => {
+      gsap.from(navRef.current, {
+        y: -40,
+        opacity: 0,
+        duration: 1,
+        ease: "power3.out",
+        delay: 0.2,
+        clearProps: "all",
+      });
+
+      if (headlineRef.current) {
+        gsap.from(headlineRef.current.children, {
+          y: 40,
+          opacity: 0,
+          stagger: 0.12,
+          duration: 0.8,
+          ease: "power3.out",
+          delay: 0.4,
+          clearProps: "all",
+        });
+      }
+
+      gsap.from(subtitleRef.current, {
+        y: 30,
+        opacity: 0,
+        duration: 0.9,
+        ease: "power3.out",
+        delay: 0.9,
+        clearProps: "all",
+      });
+
+      if (ctaRef.current) {
+        gsap.from(ctaRef.current.children, {
+          y: 20,
+          opacity: 0,
+          stagger: 0.1,
+          duration: 0.7,
+          ease: "power3.out",
+          delay: 1,
+          clearProps: "all",
+        });
+      }
+
+      if (clusterRef.current) {
+        gsap.from(clusterRef.current.children, {
+          scale: 0.85,
+          opacity: 0,
+          transformOrigin: "center",
+          stagger: 0.12,
+          duration: 0.7,
+          ease: "back.out(1.5)",
+          delay: 0.7,
+          clearProps: "all",
+        });
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="relative overflow-hidden bg-white">
-      <Navbar />
+    <section ref={sectionRef} className="relative overflow-hidden bg-white">
+      <Navbar ref={navRef} />
 
       <div className="relative mx-auto max-w-360 px-6 md:px-10 lg:min-h-[900px] lg:px-20">
         {/* Copy + CTAs */}
         <div className="pt-32 pb-16 md:pt-40 lg:max-w-[58%] lg:pt-56 lg:pb-24">
-          <h1 className="font-greed-narrow max-w-[720px] text-[40px] leading-[1.15] font-medium tracking-[-0.02em] text-[#1f1f1f] uppercase sm:text-[52px] lg:text-[64px] xl:text-[72px]">
+          <h1
+            ref={headlineRef}
+            className="font-greed-narrow max-w-[720px] text-[40px] leading-[1.15] font-medium tracking-[-0.02em] text-[#1f1f1f] uppercase sm:text-[52px] lg:text-[64px] xl:text-[72px]"
+          >
             <span className="block">You already know the</span>
             <span className="block">businesses we&apos;re</span>
             <span className="block">
@@ -83,14 +159,17 @@ export function AffiliateHeroSection() {
             </span>
           </h1>
 
-          <p className="font-stolzl mt-8 max-w-[633px] text-base leading-[1.6] text-[#7e7e7e] md:text-lg">
+          <p
+            ref={subtitleRef}
+            className="font-stolzl mt-8 max-w-[633px] text-base leading-[1.6] text-[#7e7e7e] md:text-lg"
+          >
             SwiftAgents empowers websites with smart AI assistants that handle
             live chats, ticketing, and support flows seamlessly. Introduce us to
             businesses struggling with manual support, and get paid when they go
             live. It&apos;s that simple.
           </p>
 
-          <div className="mt-10 flex flex-wrap gap-5">
+          <div ref={ctaRef} className="mt-10 flex flex-wrap gap-5">
             <Link
               href="/refer"
               className="font-dm-mono inline-flex items-center justify-center rounded-lg border border-black bg-[#F2B035] px-9 py-[18px] text-sm tracking-[0.1em] text-[#1f1f1f] uppercase shadow-[-4px_5px_0px_0px_#000000] transition-all hover:translate-x-[-1px] hover:translate-y-[1px] hover:shadow-[-3px_4px_0px_0px_#000000] md:text-[18px]"
@@ -107,7 +186,10 @@ export function AffiliateHeroSection() {
         </div>
 
         {/* Avatar cluster (lg) */}
-        <div className="absolute top-0 right-0 hidden h-full w-[46%] lg:block">
+        <div
+          ref={clusterRef}
+          className="absolute top-0 right-0 hidden h-full w-[46%] lg:block"
+        >
           {REFERRERS.map((r) => (
             <Fragment key={r.name}>
               <div className={cn("absolute w-[38%]", r.avatar)}>

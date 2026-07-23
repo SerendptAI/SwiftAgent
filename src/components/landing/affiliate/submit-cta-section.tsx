@@ -1,7 +1,43 @@
+"use client";
+
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef } from "react";
+
+gsap.registerPlugin(ScrollTrigger);
+
 export function SubmitCtaSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const ctx = gsap.context(() => {
+      if (contentRef.current) {
+        gsap.from(contentRef.current.children, {
+          scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
+          y: 40,
+          opacity: 0,
+          stagger: 0.15,
+          duration: 0.8,
+          ease: "power3.out",
+        });
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="w-full bg-[#F2B035] px-6 py-16 md:px-10 md:py-24 lg:px-20">
-      <div className="mx-auto flex max-w-360 flex-col items-center gap-10 text-center">
+    <section
+      ref={sectionRef}
+      className="w-full bg-[#F2B035] px-6 py-16 md:px-10 md:py-24 lg:px-20"
+    >
+      <div
+        ref={contentRef}
+        className="mx-auto flex max-w-360 flex-col items-center gap-10 text-center"
+      >
         <div className="flex flex-col items-center gap-4">
           <h2 className="font-greed-narrow text-3xl leading-[1.1] font-medium tracking-[-0.02em] text-[#1f1f1f] uppercase md:text-5xl lg:text-[56px]">
             Ready to send your first referral?
