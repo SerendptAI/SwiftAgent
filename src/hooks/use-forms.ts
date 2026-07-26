@@ -347,6 +347,21 @@ export function usePageFormSubmissions(
   });
 }
 
+/** Submissions across every form, for the default unified inbox view. */
+export function useAllSubmissions(
+  params: SubmissionListParams = {},
+  options: { refetchInterval?: number; enabled?: boolean } = {},
+) {
+  const companyId = useActiveCompanyId();
+
+  return useQuery<Submission[]>({
+    queryKey: ["submissions", companyId, "all", params],
+    queryFn: () => formsApi.listAllSubmissions(companyId!, params),
+    enabled: (options.enabled ?? true) && !!companyId,
+    refetchInterval: options.refetchInterval,
+  });
+}
+
 /** Count of unread submissions across every form, for the Forms channel badge. */
 export function useUnreadSubmissionsCount() {
   const companyId = useActiveCompanyId();
