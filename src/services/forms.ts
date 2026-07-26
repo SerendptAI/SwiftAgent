@@ -342,6 +342,19 @@ export const formsApi = {
     });
   },
 
+  listAllSubmissions: async (
+    companyId: string,
+    params: SubmissionListParams = {},
+  ): Promise<Submission[]> => {
+    const { is_read, skip = 0, limit = 50 } = params;
+    const { data } = await apiClient.get<
+      Submission[] | { items: Submission[] }
+    >(`${BASE}/${enc(companyId)}/submissions/all`, {
+      params: { ...(is_read != null && { is_read }), skip, limit },
+    });
+    return unwrapList(data);
+  },
+
   listFormSubmissions: async (
     companyId: string,
     formId: string,

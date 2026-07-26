@@ -343,6 +343,27 @@ export function usePageFormSubmissions(
   });
 }
 
+/** Count of unread submissions across every form, for the Forms channel badge. */
+export function useUnreadSubmissionsCount() {
+  const companyId = useActiveCompanyId();
+
+  return useQuery<number>({
+    queryKey: ["submissions", companyId, "unread-count"],
+    queryFn: async () => {
+      const unread = await formsApi.listAllSubmissions(companyId!, {
+        is_read: false,
+        limit: 100,
+      });
+      return unread.length;
+    },
+    enabled: !!companyId,
+    // Keep the badge reasonably fresh while the dashboard is open — forms
+    // have no websocket like tickets do, so we poll.
+    refetchInterval: 60 * 1000,
+    refetchOnWindowFocus: true,
+  });
+}
+
 export function useDeletableWebsites(enabled: boolean) {
   const companyId = useActiveCompanyId();
 

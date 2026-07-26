@@ -2,6 +2,7 @@
 
 import { Icons } from "@/components/icons";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { useUnreadSubmissionsCount } from "@/hooks/use-forms";
 import { useTickets } from "@/hooks/use-tickets";
 
 type ChannelKey = "tickets" | "forms" | "mail";
@@ -50,9 +51,10 @@ interface ChannelNavigatorProps {
 
 export function ChannelNavigator({ active, onChange }: ChannelNavigatorProps) {
   const { data: tickets } = useTickets();
+  const { data: unreadSubmissions } = useUnreadSubmissionsCount();
   const counts: Record<ChannelKey, number> = {
     tickets: tickets?.filter((t) => (t.unseen_count ?? 0) > 0).length ?? 0,
-    forms: 0,
+    forms: unreadSubmissions ?? 0,
     mail: 0,
   };
 
