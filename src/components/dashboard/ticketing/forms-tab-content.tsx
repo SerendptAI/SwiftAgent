@@ -955,9 +955,13 @@ export function FormsTabContent() {
     hasHierarchy ? (selectedFormId ?? null) : null,
     selectedPagePath,
     selectedFormIdentifier,
+    {},
+    { refetchInterval: 60 * 1000 },
   );
   const { data: flatSubmissions = [] } = useFormSubmissions(
     hasHierarchy ? null : (selectedForm?.id ?? null),
+    {},
+    { refetchInterval: 60 * 1000 },
   );
   const submissions = hasHierarchy ? scopedSubmissions : flatSubmissions;
 

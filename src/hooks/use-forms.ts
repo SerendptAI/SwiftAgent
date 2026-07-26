@@ -304,6 +304,7 @@ export function useBulkDeleteSubmissions() {
 export function useFormSubmissions(
   formId: string | null,
   params: SubmissionListParams = {},
+  options: { refetchInterval?: number } = {},
 ) {
   const companyId = useActiveCompanyId();
 
@@ -311,6 +312,7 @@ export function useFormSubmissions(
     queryKey: ["submissions", companyId, formId, params],
     queryFn: () => formsApi.listFormSubmissions(companyId!, formId!, params),
     enabled: !!companyId && !!formId,
+    refetchInterval: options.refetchInterval,
   });
 }
 
@@ -319,6 +321,7 @@ export function usePageFormSubmissions(
   pagePath: string | null,
   formIdentifier: string | null,
   params: SubmissionListParams = {},
+  options: { refetchInterval?: number } = {},
 ) {
   const companyId = useActiveCompanyId();
 
@@ -340,6 +343,7 @@ export function usePageFormSubmissions(
         params,
       ),
     enabled: !!companyId && !!formId && !!pagePath && !!formIdentifier,
+    refetchInterval: options.refetchInterval,
   });
 }
 
