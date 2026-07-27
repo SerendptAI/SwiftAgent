@@ -49,7 +49,7 @@ export function WhySwitchSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-5 pb-14 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-x-5 gap-y-20 pb-14 sm:grid-cols-2 lg:grid-cols-4">
           {REASONS.map((reason) => (
             <div
               key={reason.title}
