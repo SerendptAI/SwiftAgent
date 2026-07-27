@@ -145,9 +145,9 @@ export function AffiliateHeroSection() {
     <section ref={sectionRef} className="relative overflow-hidden bg-white">
       <Navbar ref={navRef} />
 
-      <div className="relative mx-auto max-w-360 px-6 md:px-10 lg:min-h-[900px] lg:px-20">
+      <div className="relative mx-auto max-w-360 px-6 md:px-10 lg:px-20 xl:min-h-[900px]">
         {/* Copy + CTAs */}
-        <div className="pt-32 pb-16 md:pt-40 lg:max-w-[58%] lg:pt-56 lg:pb-24">
+        <div className="pt-32 pb-16 md:pt-40 lg:pt-48 lg:pb-20 xl:max-w-[58%] xl:pt-56 xl:pb-24">
           <h1
             ref={headlineRef}
             className="font-greed-narrow max-w-[720px] text-[40px] leading-[1.15] font-medium tracking-[-0.02em] text-[#1f1f1f] uppercase sm:text-[52px] lg:text-[64px] xl:text-[72px]"
@@ -185,10 +185,10 @@ export function AffiliateHeroSection() {
           </div>
         </div>
 
-        {/* Avatar cluster (lg) */}
+        {/* Avatar cluster (xl+, where the artistic percentage-based layout has room to breathe) */}
         <div
           ref={clusterRef}
-          className="absolute top-0 right-0 hidden h-full w-[46%] lg:block"
+          className="absolute top-0 right-0 hidden h-full w-[46%] xl:block"
         >
           {REFERRERS.map((r) => (
             <Fragment key={r.name}>
@@ -205,8 +205,8 @@ export function AffiliateHeroSection() {
         </div>
       </div>
 
-      {/* Avatar row (mobile / tablet) */}
-      <div className="mx-auto flex max-w-360 flex-wrap justify-center gap-8 px-6 pb-16 md:px-10 lg:hidden">
+      {/* Avatar row (mobile / tablet / smaller desktop, below xl) */}
+      <div className="mx-auto flex max-w-360 flex-wrap justify-center gap-8 px-6 pb-16 md:px-10 xl:hidden">
         {REFERRERS.map((r) => (
           <div key={r.name} className="flex w-28 flex-col items-center gap-3">
             <ReferrerAvatar src={r.src} name={r.name} />

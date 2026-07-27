@@ -94,7 +94,7 @@ export function ReferralPathSection() {
       className="w-full bg-[#F6F6F6] px-6 py-16 md:px-10 md:py-24 lg:px-20"
     >
       <div className="mx-auto max-w-360">
-        <div ref={headerRef} className="flex flex-col gap-3">
+        <div ref={headerRef} className="flex flex-col gap-4">
           <p className="font-dm-mono text-sm tracking-[0.15em] text-[#6433cc] uppercase">
             Referral path
           </p>
@@ -105,11 +105,11 @@ export function ReferralPathSection() {
 
         <div ref={flowRef} className="relative mt-14 px-4 md:mt-16 md:px-10">
           {/* Dashed track */}
-          <div className="absolute top-4 right-4 left-4 border-t border-dashed border-[#BDBDBD] md:right-10 md:left-10" />
+          <div className="absolute top-4 right-0 left-0 border-t border-dashed border-[#BDBDBD]" />
           {/* Drawing progress line — referral (purple) flowing to payout (gold) */}
           <div
             ref={progressRef}
-            className="absolute top-4 right-4 left-4 h-[2px] origin-left -translate-y-1/2 rounded-full bg-gradient-to-r from-[#6433cc] to-[#F2B035] md:right-10 md:left-10"
+            className="absolute top-4 right-0 left-0 h-[2px] origin-left -translate-y-1/2 rounded-full bg-gradient-to-r from-[#6433cc] to-[#F2B035]"
           />
 
           <div className="relative flex items-start">
@@ -127,7 +127,7 @@ export function ReferralPathSection() {
                 />
                 <div
                   data-step
-                  className="mt-3 flex flex-col items-center gap-1 text-center"
+                  className="flex flex-col items-center gap-1 text-center"
                 >
                   <span
                     className={cn(

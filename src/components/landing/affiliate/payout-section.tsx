@@ -33,13 +33,13 @@ export function PayoutSection() {
     >
       <div
         ref={cardRef}
-        className="mx-auto flex max-w-[1000px] flex-col items-center gap-8 rounded-lg border border-black bg-white p-8 shadow-[-6px_8px_0px_0px_#000000] md:flex-row md:gap-12 md:p-12"
+        className="mx-auto flex max-w-[1000px] flex-col items-center gap-8 rounded-[8px] border border-black bg-white p-8 shadow-[-6px_8px_0px_0px_#000000] md:flex-row md:gap-12 md:p-12"
       >
         <div className="flex flex-1 flex-col gap-2">
           <p className="font-dm-mono text-sm tracking-[0.15em] text-[#7e7e7e] uppercase">
             Affiliate reward
           </p>
-          <p className="font-greed-narrow text-6xl font-medium text-[#f2b035]">
+          <p className="font-greed-narrow text-[64px] font-medium text-[#f2b035]">
             20%
           </p>
           <p className="font-dm-mono text-[18px] text-[#1f1f1f] uppercase">

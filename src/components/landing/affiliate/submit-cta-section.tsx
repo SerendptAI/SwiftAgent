@@ -47,9 +47,9 @@ export function SubmitCtaSection() {
           </p>
         </div>
 
-        <div className="flex w-full max-w-[700px] flex-col items-stretch gap-6 rounded-sm border border-black bg-white p-6 shadow-[-4px_5px_0px_0px_#000000] sm:flex-row sm:items-center sm:gap-8">
+        <div className="flex w-full max-w-[700px] flex-col items-stretch gap-6 border border-black bg-white p-6 shadow-[-4px_5px_0px_0px_#000000] sm:flex-row sm:items-center sm:gap-8">
           <div className="flex flex-1 flex-col gap-1 text-left">
-            <span className="font-dm-mono text-xs tracking-[0.08em] text-[#7e7e7e] uppercase">
+            <span className="font-dm-mono text-xs text-[#7e7e7e] uppercase">
               Submission channel
             </span>
             <span className="font-dm-mono text-lg break-all text-[#6433cc] md:text-xl">

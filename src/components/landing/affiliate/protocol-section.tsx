@@ -86,7 +86,7 @@ export function ProtocolSection() {
           {STEPS.map((step) => (
             <div
               key={step.number}
-              className="flex flex-col gap-6 rounded-lg border border-[#111827] bg-white p-8 shadow-[-3px_4px_0px_0px_#111827]"
+              className="flex flex-col gap-6 rounded-[8px] border border-[#111827] bg-white p-8 shadow-[-3px_4px_0px_0px_#111827]"
             >
               <span className="font-dm-mono text-[32px] text-[#f25430]">
                 {step.number}
