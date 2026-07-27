@@ -10,11 +10,7 @@ import { cn, getProfileImage } from "@/lib/utils";
 
 import { Icons } from "../icons";
 import { Button } from "../ui/button";
-import {
-  isLandingNavLinkActive,
-  LANDING_NAV_LINKS,
-  PRODUCTS_DROPDOWN_LINKS,
-} from "./nav-links";
+import { isLandingNavLinkActive, LANDING_NAV_LINKS } from "./nav-links";
 import { NavigationMenu } from "./navigation-menu";
 
 interface NavbarProps {
@@ -24,8 +20,8 @@ interface NavbarProps {
 export const Navbar = forwardRef<HTMLElement, NavbarProps>(
   ({ className }, ref) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [productsOpen, setProductsOpen] = useState(false);
-    const productsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(
+    const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+    const dropdownCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(
       null,
     );
     const [hash, setHash] = useState("");
@@ -80,19 +76,21 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                     hash,
                   );
 
-                  if (link.label === "PRODUCTS") {
+                  if (link.dropdown) {
+                    const isOpen = openDropdown === link.label;
+
                     return (
                       <div
                         key={link.href}
                         className="relative h-full"
                         onMouseEnter={() => {
-                          if (productsCloseTimer.current)
-                            clearTimeout(productsCloseTimer.current);
-                          setProductsOpen(true);
+                          if (dropdownCloseTimer.current)
+                            clearTimeout(dropdownCloseTimer.current);
+                          setOpenDropdown(link.label);
                         }}
                         onMouseLeave={() => {
-                          productsCloseTimer.current = setTimeout(
-                            () => setProductsOpen(false),
+                          dropdownCloseTimer.current = setTimeout(
+                            () => setOpenDropdown(null),
                             350,
                           );
                         }}
@@ -115,7 +113,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                         <div
                           className={cn(
                             "absolute top-13.5 -left-6.5 z-50 w-78.5 border border-black bg-white px-6 pt-2 pb-9 transition-all duration-200",
-                            productsOpen
+                            isOpen
                               ? "pointer-events-auto translate-y-0 opacity-100"
                               : "pointer-events-none -translate-y-1 opacity-0",
                           )}
@@ -123,23 +121,25 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                           {/* Panel header */}
                           <div className="mb-4 flex items-center justify-between">
                             <span className="font-greed-narrow text-[30px] leading-[1.34] font-medium tracking-[-2%] uppercase">
-                              OUR PRODUCTS
+                              {link.dropdown.title}
                             </span>
                             <Icons.NavChevronDown className="size-5.5" />
                           </div>
 
                           {/* Preview image */}
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src="/images/product-dropdown.svg"
-                            alt="Swift Agents product preview"
-                            className="mb-6 h-25 w-full object-cover"
-                            style={{ aspectRatio: "265 / 100" }}
-                          />
+                          {link.dropdown.previewImage && (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={link.dropdown.previewImage}
+                              alt="Swift Agents product preview"
+                              className="mb-6 h-25 w-full object-cover"
+                              style={{ aspectRatio: "265 / 100" }}
+                            />
+                          )}
 
                           {/* Links */}
                           <div className="flex flex-col gap-4">
-                            {PRODUCTS_DROPDOWN_LINKS.map((item) => (
+                            {link.dropdown.links.map((item) => (
                               <Link
                                 key={item.href + item.label}
                                 href={item.href}
