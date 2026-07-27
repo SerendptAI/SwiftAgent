@@ -2,6 +2,7 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -11,10 +12,22 @@ import { Navbar } from "./navbar";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const TIMELINE_CALLOUTS = [
+  {
+    icon: "/images/home/timeline-hours.svg",
+    text: "Live in hours — not weeks.",
+  },
+  {
+    icon: "/images/home/timeline-setup.svg",
+    text: "No heavy setup. No long implementation cycles.",
+  },
+];
+
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const headlineRef = useRef<HTMLDivElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const calloutsRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
@@ -74,13 +87,25 @@ export function HeroSection() {
         clearProps: "all",
       });
 
+      if (calloutsRef.current) {
+        gsap.from(calloutsRef.current.children, {
+          y: 20,
+          opacity: 0,
+          stagger: 0.1,
+          duration: 0.7,
+          ease: "power3.out",
+          delay: 1.05,
+          clearProps: "all",
+        });
+      }
+
       if (ctaRef.current) {
         gsap.from(ctaRef.current.children, {
           y: 20,
           opacity: 0,
           duration: 0.7,
           ease: "power3.out",
-          delay: 0.6,
+          delay: 1.2,
           clearProps: "all",
         });
       }
@@ -116,52 +141,37 @@ export function HeroSection() {
         <div className="flex w-full flex-col justify-center py-12 md:w-[78%] md:px-10 md:py-0 lg:w-[55%] lg:px-16">
           <div
             ref={headlineRef}
-            className="font-greed-narrow flex flex-col gap-6 text-[50px] leading-normal font-medium tracking-[-2%] uppercase md:text-5xl lg:text-[56px] xl:text-[65px]"
+            className="font-greed-narrow flex flex-col gap-4 text-[42px] leading-normal font-medium tracking-[-2%] uppercase sm:text-5xl md:gap-6 lg:text-[56px] xl:text-[65px]"
           >
-            <div className="xs:flex-row xs:items-center flex flex-col gap-6">
+            <div className="flex flex-wrap items-center gap-4 md:gap-6">
               <span
-                className="hero-badge xs:w-auto xs:justify-start inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
+                className="hero-badge inline-flex items-center justify-center rounded-4xl px-5 text-white"
                 style={{ backgroundColor: "#03A84E" }}
               >
                 CUSTOMER
               </span>
               <span
-                className="hero-badge xs:w-auto xs:justify-start inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
+                className="hero-badge inline-flex items-center justify-center rounded-4xl px-5 text-white"
                 style={{ backgroundColor: "#F25430" }}
               >
                 SUPPORT
               </span>
             </div>
 
-            <div className="flex items-center gap-6">
-              <span className="hero-text flex gap-4 text-black">
-                <span>THAT</span> <span>DOESN&apos;T</span>
-              </span>
-
+            <div className="flex flex-wrap items-center gap-4 md:gap-6">
+              <span className="hero-text text-black">THAT DOESN&apos;T</span>
               <span
-                className="hero-badge xs:inline-flex hidden h-fit items-center rounded-4xl px-5 text-black"
+                className="hero-badge inline-flex items-center justify-center rounded-4xl px-5 text-black"
                 style={{ backgroundColor: "#F2B035" }}
               >
                 SCALE
               </span>
             </div>
 
-            <div className="xs:hidden flex items-center gap-6">
+            <div className="flex flex-wrap items-center gap-4 md:gap-6">
+              <span className="hero-text text-black">YOUR</span>
               <span
-                className="hero-badge inline-flex h-fit items-center rounded-4xl px-5 text-black"
-                style={{ backgroundColor: "#F2B035" }}
-              >
-                SCALE
-              </span>
-              <span className="hero-badge text-black">YOUR</span>
-            </div>
-
-            <div className="flex items-center gap-6">
-              <span className="hero-text xs:inline hidden text-black">
-                YOUR
-              </span>
-              <span
-                className="hero-badge xs:w-auto xs:justify-start inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
+                className="hero-badge inline-flex items-center justify-center rounded-4xl px-5 text-white"
                 style={{ backgroundColor: "#7F9FFF" }}
               >
                 HEADCOUNT
@@ -174,9 +184,29 @@ export function HeroSection() {
             ref={subtitleRef}
             className="font-stolzl mt-8 max-w-xl text-base leading-relaxed text-black md:mt-10 md:text-lg"
           >
-            Swift Agents automates your customer conversations so your team
-            handles less, and your customers wait less.
+            Swift Agents helps businesses automate customer conversations,
+            reduce support workload, and deliver faster customer experiences
+            across every support channel.
           </p>
+
+          {/* Timeline callouts */}
+          <div ref={calloutsRef} className="mt-6 flex flex-col gap-2.5 md:mt-8">
+            {TIMELINE_CALLOUTS.map((callout) => (
+              <div key={callout.text} className="flex items-center gap-3">
+                <span className="relative size-6 shrink-0">
+                  <Image
+                    src={callout.icon}
+                    alt=""
+                    fill
+                    className="object-contain"
+                  />
+                </span>
+                <span className="font-stolzl text-base text-[#1f1f1f]">
+                  {callout.text}
+                </span>
+              </div>
+            ))}
+          </div>
 
           {/* CTAs */}
           <div

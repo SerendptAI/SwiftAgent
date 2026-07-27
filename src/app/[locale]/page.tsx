@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 
+import { ComparisonSection } from "@/components/landing/comparison-section";
 import { ContactSection } from "@/components/landing/contact-section";
+import { DeployHoursSection } from "@/components/landing/deploy-hours-section";
+import { FeaturesGridSection } from "@/components/landing/features-grid-section";
 import { HeroSection } from "@/components/landing/hero-section";
 import { HomepageChatbot } from "@/components/landing/homepage-chatbot";
 import { HowItWorksSection } from "@/components/landing/how-it-works-section";
@@ -8,8 +11,11 @@ import { IndustriesSection } from "@/components/landing/industries-section";
 import { LiveInHoursBanner } from "@/components/landing/live-in-hours-banner";
 import { PlatformsSection } from "@/components/landing/platforms-section";
 import { PricingSection } from "@/components/landing/pricing-section";
+import { RoiCalculatorSection } from "@/components/landing/roi-calculator-section";
 import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provider";
 import { TrustedBySection } from "@/components/landing/trusted-by-section";
+import { ValuePropsSection } from "@/components/landing/value-props-section";
+import { WhySwitchSection } from "@/components/landing/why-switch-section";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -85,9 +91,15 @@ export default function HomePage() {
         <HeroSection />
         <TrustedBySection />
         <LiveInHoursBanner />
+        <ValuePropsSection />
         <HowItWorksSection />
-        <PlatformsSection />
+        <FeaturesGridSection />
+        <ComparisonSection />
         <IndustriesSection />
+        <RoiCalculatorSection />
+        <DeployHoursSection />
+        <WhySwitchSection />
+        <PlatformsSection />
         <PricingSection />
         <ContactSection />
       </main>

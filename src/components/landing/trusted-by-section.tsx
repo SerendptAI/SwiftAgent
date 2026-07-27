@@ -24,7 +24,7 @@ export function TrustedBySection() {
   return (
     <section className="w-full bg-white py-10 md:py-14">
       <p className="font-dm-mono mb-10 text-center text-lg leading-[1.2] font-medium tracking-[10%] text-black uppercase md:mb-14">
-        TRUSTED BY
+        Trusted by startups, SaaS companies, fintechs, and e-commerce brands.
       </p>
 
       <div

@@ -2,10 +2,6 @@ import type { BillingPlan, BillingPlansResponse } from "@/services/billing";
 
 import type { Plan } from "./plan-card";
 
-/**
- * Tier-level metadata that the backend doesn't return (icons, theme colors,
- * description copy, feature bullets). Keyed by tier slug.
- */
 interface PlanMeta {
   name: string;
   description: string;
@@ -19,7 +15,7 @@ const PLAN_META: Record<string, PlanMeta> = {
     name: "BASIC PLAN",
     description:
       "DESIGNED FOR EARLY STARTUPS\nAND SMALL PROJECTS\nTESTING THE WATERS.",
-    textColor: "text-[#F3B03D]",
+    textColor: "text-[#F2B035]",
     image: "/images/pricing/icon1.svg",
     features: [
       "1 DEPLOYED AI AGENT",
@@ -73,7 +69,7 @@ const PLAN_META: Record<string, PlanMeta> = {
     name: "BUSINESS PLAN",
     description:
       "FOR SMALL SETUPS GETTING\nSTARTED WITH AI SUPPORT\nAT A LOW ENTRY POINT.",
-    textColor: "text-[#F3B03D]",
+    textColor: "text-[#F2B035]",
     image: "/images/pricing/icon1.svg",
     features: [
       "1 DEPLOYED AI AGENT",
