@@ -143,16 +143,16 @@ export function HeroSection() {
             ref={headlineRef}
             className="font-greed-narrow flex flex-col gap-4 text-[42px] leading-normal font-medium tracking-[-2%] uppercase sm:text-5xl md:gap-6 lg:text-[56px] xl:text-[65px]"
           >
-            {/* Row 1 desktop: CUSTOMER + SUPPORT. Mobile: stacked full-width */}
-            <div className="xs:flex-row xs:items-center flex flex-col gap-6">
+            {/* Row 1 desktop: CUSTOMER + SUPPORT. Mobile: stacked */}
+            <div className="xs:flex-row xs:items-center flex flex-col items-start gap-6">
               <span
-                className="hero-badge xs:w-auto xs:justify-start inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
+                className="hero-badge inline-flex items-center rounded-4xl px-5 text-white"
                 style={{ backgroundColor: "#03A84E" }}
               >
                 CUSTOMER
               </span>
               <span
-                className="hero-badge xs:w-auto xs:justify-start inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
+                className="hero-badge inline-flex items-center rounded-4xl px-5 text-white"
                 style={{ backgroundColor: "#F25430" }}
               >
                 SUPPORT
@@ -187,7 +187,7 @@ export function HeroSection() {
                 YOUR
               </span>
               <span
-                className="hero-badge xs:w-auto xs:justify-start inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
+                className="hero-badge inline-flex items-center rounded-4xl px-5 text-white"
                 style={{ backgroundColor: "#7F9FFF" }}
               >
                 HEADCOUNT
@@ -208,7 +208,7 @@ export function HeroSection() {
           {/* Timeline callouts */}
           <div ref={calloutsRef} className="mt-6 flex flex-col gap-2.5 md:mt-8">
             {TIMELINE_CALLOUTS.map((callout) => (
-              <div key={callout.text} className="flex items-center gap-3">
+              <div key={callout.text} className="flex items-start gap-3">
                 <span className="relative size-6 shrink-0">
                   <Image
                     src={callout.icon}
