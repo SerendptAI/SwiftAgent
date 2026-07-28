@@ -141,18 +141,18 @@ export function HeroSection() {
         <div className="flex w-full flex-col justify-center py-12 md:w-[78%] md:px-10 md:py-0 lg:w-[55%] lg:px-16">
           <div
             ref={headlineRef}
-            className="font-greed-narrow flex flex-col gap-4 text-[42px] leading-normal font-medium tracking-[-2%] uppercase sm:text-5xl md:gap-6 lg:text-[56px] xl:text-[65px]"
+            className="font-greed-narrow flex flex-col gap-6 text-[50px] leading-normal font-medium tracking-[-2%] uppercase md:text-5xl lg:text-[56px] xl:text-[65px]"
           >
             {/* Row 1 desktop: CUSTOMER + SUPPORT. Mobile: stacked */}
-            <div className="xs:flex-row xs:items-center flex flex-col items-start gap-6">
+            <div className="xs:flex-row xs:items-center flex flex-col gap-6">
               <span
-                className="hero-badge inline-flex items-center rounded-4xl px-5 text-white"
+                className="hero-badge xs:w-auto xs:justify-start inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
                 style={{ backgroundColor: "#03A84E" }}
               >
                 CUSTOMER
               </span>
               <span
-                className="hero-badge inline-flex items-center rounded-4xl px-5 text-white"
+                className="hero-badge xs:w-auto xs:justify-start inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
                 style={{ backgroundColor: "#F25430" }}
               >
                 SUPPORT
@@ -161,9 +161,11 @@ export function HeroSection() {
 
             {/* Row 2 desktop: THAT DOESN'T + SCALE. Mobile: THAT DOESN'T alone */}
             <div className="flex items-center gap-6">
-              <span className="hero-text text-black">THAT DOESN&apos;T</span>
+              <span className="hero-text flex gap-4 text-black">
+                <span>THAT</span> <span>DOESN&apos;T</span>
+              </span>
               <span
-                className="hero-badge xs:inline-flex hidden items-center justify-center rounded-4xl px-5 text-black"
+                className="hero-badge xs:inline-flex hidden h-fit items-center rounded-4xl px-5 text-black"
                 style={{ backgroundColor: "#F2B035" }}
               >
                 SCALE
@@ -173,7 +175,7 @@ export function HeroSection() {
             {/* Mobile only: SCALE + YOUR share a row */}
             <div className="xs:hidden flex items-center gap-6">
               <span
-                className="hero-badge inline-flex items-center justify-center rounded-4xl px-5 text-black"
+                className="hero-badge inline-flex h-fit items-center rounded-4xl px-5 text-black"
                 style={{ backgroundColor: "#F2B035" }}
               >
                 SCALE
@@ -187,7 +189,7 @@ export function HeroSection() {
                 YOUR
               </span>
               <span
-                className="hero-badge inline-flex items-center rounded-4xl px-5 text-white"
+                className="hero-badge xs:w-auto xs:justify-start inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
                 style={{ backgroundColor: "#7F9FFF" }}
               >
                 HEADCOUNT
