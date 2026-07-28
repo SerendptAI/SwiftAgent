@@ -14,7 +14,7 @@ const PLATFORMS = [
     label: "WEBSITE",
     icon: Icons.PlatformWebsite,
     description:
-      "Integrate our intelligent chatbot into your website to manage visitor interactions. Any inquiries that the bot cannot resolve will be escalated to a human agent for assistance.",
+      "Deploy our smart chatbot on your site to handle conversations with visitors. Any questions that can't be answered get escalated to a real human agent to answer.",
     video: "/videos/platforms/website.mp4",
   },
   {
@@ -135,8 +135,7 @@ export function PlatformsSection() {
               <Link href="/signup">GET STARTED</Link>
             </Button>
           </div>
-
-          <div className="relative w-full overflow-hidden">
+          <div className="relative w-full">
             {PLATFORMS.map((p, i) => (
               <div
                 key={p.id}

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import { ContactSection } from "@/components/landing/contact-section";
-import { DemoCaseStudiesSection } from "@/components/landing/demo-casestudies-section";
 import { DemoHeroSection } from "@/components/landing/demo-hero-section";
 import { DemoSimulatorSection } from "@/components/landing/demo-simulator-section";
 import { Navbar } from "@/components/landing/navbar";
@@ -28,7 +27,6 @@ export default function DemoPage() {
             <DemoSimulatorSection />
           </div>
         </div>
-        <DemoCaseStudiesSection />
         <ContactSection />
       </main>
     </SmoothScrollProvider>

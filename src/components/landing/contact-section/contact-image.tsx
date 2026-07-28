@@ -11,7 +11,7 @@ export function ContactImage() {
         width={500}
         height={600}
         priority
-        className="absolute h-4/5 w-full bg-[#7CA2FE] object-cover object-left md:hidden"
+        className="absolute h-4/5 w-full bg-[#7F9FFF] object-cover object-left md:hidden"
       />
 
       {/* Desktop only — lazy-loaded so mobile won't fetch it */}
@@ -21,7 +21,7 @@ export function ContactImage() {
         width={500}
         height={500}
         loading="lazy"
-        className="hidden h-full w-full bg-[#7CA2FE] object-left md:block"
+        className="hidden h-full w-full bg-[#7F9FFF] object-left md:block"
       />
     </>
   );

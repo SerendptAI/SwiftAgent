@@ -46,7 +46,7 @@ export function FormCheckIcon({ className }: { className?: string }) {
 
 export function PathChip({ children }: { children: ReactNode }) {
   return (
-    <span className="flex w-fit items-center gap-[5px] rounded-[15px] bg-[#F6F6F6] px-2 py-[7px]">
+    <span className="flex max-w-full min-w-0 items-center gap-[5px] rounded-[15px] bg-[#F6F6F6] px-2 py-[7px]">
       <Globe className="h-[18px] w-[18px] shrink-0 text-[#7E7E7E]" />
       <span className="font-dm-mono min-w-0 truncate text-[11px] text-[#7E7E7E] uppercase">
         {children}
@@ -212,7 +212,7 @@ export function ManagerShell({
       <section
         role="dialog"
         aria-modal="true"
-        className="relative flex max-h-[90vh] w-full max-w-[560px] flex-col overflow-y-auto rounded-[21px] bg-white py-3 shadow-[0px_24px_48px_0px_rgba(0,0,0,0.2)]"
+        className="scrollbar-none relative flex max-h-[90vh] w-full max-w-[560px] flex-col overflow-y-auto rounded-[21px] bg-white py-3 shadow-[0px_24px_48px_0px_rgba(0,0,0,0.2)]"
       >
         <div className="mx-3 flex h-[51px] shrink-0 items-center justify-between rounded-[17px] bg-[#F3F3F3] px-[21px]">
           <h2 className="font-greed-narrow text-[30px] leading-none font-medium text-black">

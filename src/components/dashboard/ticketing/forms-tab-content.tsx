@@ -12,7 +12,7 @@ import {
   X,
 } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { FormCreationSuccessModal } from "@/components/dashboard/ticketing/form-creation-success-modal";
 import { FormsDeleteManager } from "@/components/dashboard/ticketing/forms-delete-manager";
@@ -21,6 +21,7 @@ import { MessagesEmptyState } from "@/components/dashboard/ticketing/messages-em
 import { OnlineFormDrawer } from "@/components/dashboard/ticketing/online-form-drawer";
 import { WebsiteFormDrawer } from "@/components/dashboard/ticketing/website-form-drawer";
 import {
+  useAllSubmissions,
   useBulkDeleteSubmissions,
   useDeletePage,
   useDeletePageForm,
@@ -307,6 +308,7 @@ function FormsToolbar({
   forms,
   selectedFormId,
   onSelectForm,
+  onSelectAll,
   onDelete,
   onEdit,
   onCreateWebsiteForm,
@@ -315,6 +317,7 @@ function FormsToolbar({
   forms: Form[];
   selectedFormId: string | null;
   onSelectForm: (id: string) => void;
+  onSelectAll: () => void;
   onDelete: () => void;
   onEdit: () => void;
   onCreateWebsiteForm: () => void;
@@ -438,7 +441,9 @@ function FormsToolbar({
             <span className="font-dm-mono min-w-0 flex-1 truncate text-xs font-normal tracking-[0.1em] text-black uppercase lg:text-base lg:tracking-[0.18em]">
               {selectedForm
                 ? getFormDisplayName(selectedForm)
-                : "Create a new form"}
+                : forms.length > 0
+                  ? "All Forms"
+                  : "Create a new form"}
             </span>
             <ChevronDown
               className={`h-3.5 w-3.5 shrink-0 text-black transition-transform duration-200 lg:h-4 lg:w-4 ${isFormMenuOpen ? "rotate-180" : ""}`}
@@ -452,6 +457,19 @@ function FormsToolbar({
               <CreateFormMenu onSelect={handleCreateForm} widthClass="w-full" />
             ) : (
               <div className="font-dm-mono rounded-xl bg-white px-2 py-1.5 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] lg:px-3 lg:py-2">
+                <button
+                  type="button"
+                  className="flex h-10 w-full cursor-pointer items-center gap-2 border-b border-[#EDEDED] px-2 text-left transition-colors hover:bg-gray-50 lg:h-12 lg:gap-3 lg:px-3"
+                  onClick={() => {
+                    onSelectAll();
+                    setIsFormMenuOpen(false);
+                  }}
+                >
+                  <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-[#6433CC] lg:h-[23px] lg:w-[23px]" />
+                  <span className="min-w-0 flex-1 truncate text-xs font-medium tracking-[0.1em] text-[#6433CC] uppercase lg:text-base lg:tracking-[0.18em]">
+                    All Forms
+                  </span>
+                </button>
                 {forms.map((form) => (
                   <button
                     key={form.id}
@@ -565,15 +583,15 @@ function SubmissionNameDropdown({
 
 function FormSubmissionDetail({
   allSubmissions,
+  forms,
   selectedId,
   onSelect,
-  formType,
   hideTitle = false,
 }: {
   allSubmissions: Submission[];
+  forms: Form[];
   selectedId: string | null;
   onSelect: (id: string) => void;
-  formType: FormType;
   hideTitle?: boolean;
 }) {
   const selected =
@@ -589,6 +607,9 @@ function FormSubmissionDetail({
       />
     );
   }
+
+  const formType: FormType =
+    forms.find((f) => f.id === selected.form_id)?.type ?? "website";
 
   return (
     <div className="relative min-h-[420px] w-full overflow-hidden lg:h-full lg:rounded-3xl lg:bg-white lg:px-10 lg:py-9 lg:shadow-sm">
@@ -715,6 +736,7 @@ function FormSubmissionList({
   activeStatus,
   onStatusChange,
   onSettings,
+  newIds,
 }: {
   submissions: Submission[];
   selectedId: string | null;
@@ -722,6 +744,7 @@ function FormSubmissionList({
   activeStatus: FormSubmissionStatus;
   onStatusChange: (status: FormSubmissionStatus) => void;
   onSettings?: () => void;
+  newIds?: Set<string>;
 }) {
   const visibleSubmissions = submissions.filter(
     (s) => s.is_read === (activeStatus === "read"),
@@ -741,6 +764,7 @@ function FormSubmissionList({
         <div className="space-y-4">
           {visibleSubmissions.map((submission) => {
             const isSelected = submission.id === selectedId;
+            const isNew = newIds?.has(submission.id) ?? false;
             const displayName = getSubmissionDisplayName(submission);
             const preview = getSubmissionPreview(submission);
             const time = formatSubmissionTime(submission.submitted_at);
@@ -758,8 +782,21 @@ function FormSubmissionList({
               >
                 <SubmissionAvatar name={displayName} />
                 <div className="min-w-0 flex-1">
-                  <div className="font-dm-mono truncate text-base font-normal tracking-[0.08em] uppercase">
-                    {displayName}
+                  <div className="flex items-center gap-2">
+                    <div className="font-dm-mono min-w-0 truncate text-base font-normal tracking-[0.08em] uppercase">
+                      {displayName}
+                    </div>
+                    {isNew && (
+                      <span
+                        className={`font-dm-mono shrink-0 rounded-full px-1.5 py-0.5 text-[9px] font-bold uppercase ${
+                          isSelected
+                            ? "bg-white/20 text-white"
+                            : "bg-[#6433CC] text-white"
+                        }`}
+                      >
+                        New
+                      </span>
+                    )}
                   </div>
                   <div
                     className={`font-stolzl mt-1 truncate text-sm ${
@@ -885,6 +922,53 @@ export function PageFormTabs({
   );
 }
 
+/**
+ * Flags submissions that showed up in a poll refresh after the initial
+ * load for the current scope, so the UI can surface them as a brief
+ * "new submission" preview instead of silently updating the list.
+ *
+ * `ready` must only go true once the underlying query has actually
+ * resolved — otherwise the pre-fetch `[]` gets seeded as the baseline
+ * and every submission in the real first response gets flagged "new".
+ */
+function useNewSubmissionArrivals(
+  submissions: Submission[],
+  scopeKey: string,
+  ready: boolean,
+) {
+  const seenIds = useRef<Set<string> | null>(null);
+  const seenScopeKey = useRef<string | null>(null);
+  const [arrivals, setArrivals] = useState<Submission[]>([]);
+
+  useEffect(() => {
+    if (!ready) return;
+
+    if (seenScopeKey.current !== scopeKey) {
+      seenScopeKey.current = scopeKey;
+      seenIds.current = new Set(submissions.map((s) => s.id));
+      setArrivals([]);
+      return;
+    }
+
+    const known = seenIds.current ?? new Set<string>();
+    const fresh = submissions.filter((s) => !known.has(s.id));
+    if (fresh.length === 0) return;
+
+    seenIds.current = new Set(submissions.map((s) => s.id));
+    setArrivals((prev) => [...fresh, ...prev].slice(0, 4));
+    fresh.forEach((s) => {
+      window.setTimeout(() => {
+        setArrivals((prev) => prev.filter((item) => item.id !== s.id));
+      }, 8000);
+    });
+  }, [submissions, scopeKey, ready]);
+
+  const dismiss = (id: string) =>
+    setArrivals((prev) => prev.filter((item) => item.id !== id));
+
+  return { arrivals, dismiss };
+}
+
 export function FormsTabContent() {
   const [selectedSubmissionId, setSelectedSubmissionId] = useState<
     string | null
@@ -922,14 +1006,8 @@ export function FormsTabContent() {
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
   const { mutate: markSubmissionRead } = useMarkSubmissionRead();
 
-  useEffect(() => {
-    if (forms.length > 0 && !selectedFormId) {
-      setSelectedFormId(forms[0].id);
-    }
-  }, [forms, selectedFormId]);
-
   const selectedForm = forms.find((f) => f.id === selectedFormId) ?? null;
-  const selectedFormType: FormType = selectedForm?.type ?? "website";
+  const isAllMode = selectedFormId === null;
   const overview = selectedOverviewQuery.data;
   const pages = overview?.pages ?? [];
   const hasHierarchy = pages.length > 0;
@@ -951,15 +1029,49 @@ export function FormsTabContent() {
       setSelectedFormIdentifier(nextIdentifier);
   }, [overview, selectedPagePath, selectedFormIdentifier]);
 
-  const { data: scopedSubmissions = [] } = usePageFormSubmissions(
-    hasHierarchy ? (selectedFormId ?? null) : null,
+  const scopedSubmissionsQuery = usePageFormSubmissions(
+    !isAllMode && hasHierarchy ? selectedFormId : null,
     selectedPagePath,
     selectedFormIdentifier,
+    {},
+    { refetchInterval: 60 * 1000 },
   );
-  const { data: flatSubmissions = [] } = useFormSubmissions(
-    hasHierarchy ? null : (selectedForm?.id ?? null),
+  const flatSubmissionsQuery = useFormSubmissions(
+    !isAllMode && !hasHierarchy ? (selectedForm?.id ?? null) : null,
+    {},
+    { refetchInterval: 60 * 1000 },
   );
-  const submissions = hasHierarchy ? scopedSubmissions : flatSubmissions;
+  const allSubmissionsQuery = useAllSubmissions(
+    {},
+    { refetchInterval: 60 * 1000, enabled: isAllMode },
+  );
+  const submissions = useMemo(
+    () =>
+      isAllMode
+        ? (allSubmissionsQuery.data ?? [])
+        : hasHierarchy
+          ? (scopedSubmissionsQuery.data ?? [])
+          : (flatSubmissionsQuery.data ?? []),
+    [
+      isAllMode,
+      hasHierarchy,
+      allSubmissionsQuery.data,
+      scopedSubmissionsQuery.data,
+      flatSubmissionsQuery.data,
+    ],
+  );
+  const submissionsReady = isAllMode
+    ? allSubmissionsQuery.isSuccess
+    : hasHierarchy
+      ? scopedSubmissionsQuery.isSuccess
+      : flatSubmissionsQuery.isSuccess;
+
+  const scopeKey = isAllMode
+    ? "all"
+    : `${selectedFormId ?? ""}:${selectedPagePath ?? ""}:${selectedFormIdentifier ?? ""}`;
+  const { arrivals: newArrivals, dismiss: dismissArrival } =
+    useNewSubmissionArrivals(submissions, scopeKey, submissionsReady);
+  const newIds = new Set(newArrivals.map((s) => s.id));
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 1023px)");
@@ -981,6 +1093,13 @@ export function FormsTabContent() {
 
   const handleSelectForm = (id: string) => {
     setSelectedFormId(id);
+    setSelectedPagePath(null);
+    setSelectedFormIdentifier(null);
+    setSelectedSubmissionId(null);
+  };
+
+  const handleSelectAll = () => {
+    setSelectedFormId(null);
     setSelectedPagePath(null);
     setSelectedFormIdentifier(null);
     setSelectedSubmissionId(null);
@@ -1131,28 +1250,66 @@ export function FormsTabContent() {
   const inboxDetail = (
     <FormSubmissionDetail
       allSubmissions={submissions}
+      forms={forms}
       selectedId={selectedSubmissionId}
       onSelect={setSelectedSubmissionId}
-      formType={selectedFormType}
     />
   );
 
   const mobileInboxDetail = (
     <FormSubmissionDetail
       allSubmissions={submissions}
+      forms={forms}
       selectedId={selectedSubmissionId}
       onSelect={setSelectedSubmissionId}
-      formType={selectedFormType}
       hideTitle
     />
   );
 
   return (
     <div className="flex min-w-0 flex-1 flex-col gap-4 lg:gap-8">
+      {newArrivals.length > 0 && (
+        <div className="fixed top-4 right-4 left-4 z-10000 flex flex-col items-end gap-2 sm:top-6 sm:right-6 sm:left-auto sm:w-full sm:max-w-sm">
+          {newArrivals.map((submission) => (
+            <div
+              key={submission.id}
+              className="animate-in slide-in-from-top-2 fade-in flex w-full items-start gap-2 rounded-2xl border border-[#EDEDED] bg-white p-4 shadow-[0_12px_32px_-8px_rgba(0,0,0,0.25)] duration-200"
+            >
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedSubmissionId(submission.id);
+                  dismissArrival(submission.id);
+                }}
+                className="flex min-w-0 flex-1 cursor-pointer items-start gap-3 text-left"
+              >
+                <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#6433CC]" />
+                <div className="min-w-0 flex-1">
+                  <p className="font-dm-mono truncate text-xs font-bold tracking-[0.08em] text-black uppercase">
+                    New submission — {getSubmissionDisplayName(submission)}
+                  </p>
+                  <p className="font-stolzl mt-1 truncate text-sm text-[#7E7E7E]">
+                    {getSubmissionPreview(submission)}
+                  </p>
+                </div>
+              </button>
+              <button
+                type="button"
+                aria-label="Dismiss"
+                onClick={() => dismissArrival(submission.id)}
+                className="shrink-0 cursor-pointer text-[#7E7E7E] transition-opacity hover:opacity-60"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
       <FormsToolbar
         forms={forms}
         selectedFormId={selectedFormId}
         onSelectForm={handleSelectForm}
+        onSelectAll={handleSelectAll}
         onDelete={handleDelete}
         onEdit={handleEdit}
         onCreateWebsiteForm={() => setIsWebsiteFormDrawerOpen(true)}
@@ -1182,6 +1339,7 @@ export function FormsTabContent() {
               onSettings={
                 selectedForm ? () => setSettingsForm(selectedForm) : undefined
               }
+              newIds={newIds}
             />
           </div>
         </div>

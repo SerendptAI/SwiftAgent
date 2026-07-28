@@ -2,6 +2,7 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -11,10 +12,22 @@ import { Navbar } from "./navbar";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const TIMELINE_CALLOUTS = [
+  {
+    icon: "/images/home/timeline-hours.svg",
+    text: "Live in hours — not weeks.",
+  },
+  {
+    icon: "/images/home/timeline-setup.svg",
+    text: "No heavy setup. No long implementation cycles.",
+  },
+];
+
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const headlineRef = useRef<HTMLDivElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const calloutsRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
@@ -74,13 +87,25 @@ export function HeroSection() {
         clearProps: "all",
       });
 
+      if (calloutsRef.current) {
+        gsap.from(calloutsRef.current.children, {
+          y: 20,
+          opacity: 0,
+          stagger: 0.1,
+          duration: 0.7,
+          ease: "power3.out",
+          delay: 1.05,
+          clearProps: "all",
+        });
+      }
+
       if (ctaRef.current) {
         gsap.from(ctaRef.current.children, {
           y: 20,
           opacity: 0,
           duration: 0.7,
           ease: "power3.out",
-          delay: 0.6,
+          delay: 1.2,
           clearProps: "all",
         });
       }
@@ -118,6 +143,7 @@ export function HeroSection() {
             ref={headlineRef}
             className="font-greed-narrow flex flex-col gap-6 text-[50px] leading-normal font-medium tracking-[-2%] uppercase md:text-5xl lg:text-[56px] xl:text-[65px]"
           >
+            {/* Row 1 desktop: CUSTOMER + SUPPORT. Mobile: stacked */}
             <div className="xs:flex-row xs:items-center flex flex-col gap-6">
               <span
                 className="hero-badge xs:w-auto xs:justify-start inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
@@ -133,11 +159,11 @@ export function HeroSection() {
               </span>
             </div>
 
+            {/* Row 2 desktop: THAT DOESN'T + SCALE. Mobile: THAT DOESN'T alone */}
             <div className="flex items-center gap-6">
               <span className="hero-text flex gap-4 text-black">
                 <span>THAT</span> <span>DOESN&apos;T</span>
               </span>
-
               <span
                 className="hero-badge xs:inline-flex hidden h-fit items-center rounded-4xl px-5 text-black"
                 style={{ backgroundColor: "#F2B035" }}
@@ -146,6 +172,7 @@ export function HeroSection() {
               </span>
             </div>
 
+            {/* Mobile only: SCALE + YOUR share a row */}
             <div className="xs:hidden flex items-center gap-6">
               <span
                 className="hero-badge inline-flex h-fit items-center rounded-4xl px-5 text-black"
@@ -156,6 +183,7 @@ export function HeroSection() {
               <span className="hero-badge text-black">YOUR</span>
             </div>
 
+            {/* Row 3 desktop: YOUR + HEADCOUNT. Mobile: HEADCOUNT alone */}
             <div className="flex items-center gap-6">
               <span className="hero-text xs:inline hidden text-black">
                 YOUR
@@ -174,9 +202,29 @@ export function HeroSection() {
             ref={subtitleRef}
             className="font-stolzl mt-8 max-w-xl text-base leading-relaxed text-black md:mt-10 md:text-lg"
           >
-            Swift Agents automates your customer conversations so your team
-            handles less, and your customers wait less.
+            Swift Agents helps businesses automate customer conversations,
+            reduce support workload, and deliver faster customer experiences
+            across every support channel.
           </p>
+
+          {/* Timeline callouts */}
+          <div ref={calloutsRef} className="mt-6 flex flex-col gap-2.5 md:mt-8">
+            {TIMELINE_CALLOUTS.map((callout) => (
+              <div key={callout.text} className="flex items-start gap-3">
+                <span className="relative size-6 shrink-0">
+                  <Image
+                    src={callout.icon}
+                    alt=""
+                    fill
+                    className="object-contain"
+                  />
+                </span>
+                <span className="font-stolzl text-base text-[#1f1f1f]">
+                  {callout.text}
+                </span>
+              </div>
+            ))}
+          </div>
 
           {/* CTAs */}
           <div

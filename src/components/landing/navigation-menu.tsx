@@ -10,11 +10,7 @@ import { useCurrentUser } from "@/hooks/use-auth";
 import { cn, getProfileImage } from "@/lib/utils";
 
 import { Icons } from "../icons";
-import {
-  isLandingNavLinkActive,
-  LANDING_NAV_LINKS,
-  PRODUCTS_DROPDOWN_LINKS,
-} from "./nav-links";
+import { isLandingNavLinkActive, LANDING_NAV_LINKS } from "./nav-links";
 
 interface NavigationMenuProps {
   isOpen: boolean;
@@ -27,7 +23,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
   const linksRef = useRef<HTMLDivElement>(null);
   const [hash, setHash] = useState("");
   const [isMounted, setIsMounted] = useState(false);
-  const [productsOpen, setProductsOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const pathname = usePathname();
   const { data: user } = useCurrentUser();
 
@@ -122,12 +118,16 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                 hash,
               );
 
-              if (link.label === "PRODUCTS") {
+              if (link.dropdown) {
+                const isOpen = openDropdown === link.label;
+
                 return (
                   <div key={link.href} className="m-4">
                     {/* Accordion trigger */}
                     <button
-                      onClick={() => setProductsOpen((prev) => !prev)}
+                      onClick={() =>
+                        setOpenDropdown(isOpen ? null : link.label)
+                      }
                       className={cn(
                         "font-dm-mono flex w-full items-center justify-between px-6 py-3 text-base font-normal tracking-[0.2em] text-gray-900 uppercase transition-colors hover:bg-gray-50",
                         isActive &&
@@ -138,7 +138,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                       <span
                         className={cn(
                           "transition-transform duration-200",
-                          productsOpen && "rotate-180",
+                          isOpen && "rotate-180",
                         )}
                       >
                         <Icons.NavChevronDown />
@@ -149,20 +149,22 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                     <div
                       className={cn(
                         "grid transition-all duration-300 ease-in-out",
-                        productsOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
+                        isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
                       )}
                     >
                       <div className="overflow-hidden">
                         <div className="flex flex-col gap-5 border border-t-0 border-black px-6 py-5">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src="/images/product-dropdown.svg"
-                            alt="Swift Agents product preview"
-                            className="w-full object-cover"
-                            style={{ aspectRatio: "265 / 100" }}
-                          />
+                          {link.dropdown.previewImage && (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={link.dropdown.previewImage}
+                              alt="Swift Agents product preview"
+                              className="w-full object-cover"
+                              style={{ aspectRatio: "265 / 100" }}
+                            />
+                          )}
                           <div className="flex flex-col gap-4">
-                            {PRODUCTS_DROPDOWN_LINKS.map((item) => (
+                            {link.dropdown.links.map((item) => (
                               <Link
                                 key={item.href + item.label}
                                 href={item.href}

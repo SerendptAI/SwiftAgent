@@ -8,7 +8,7 @@ import { ContactLinks } from "./contact-links";
 export function ContactSection() {
   return (
     <section
-      className="relative w-full bg-[#7CA2FE] md:p-12 lg:p-20"
+      className="relative w-full bg-[#7F9FFF] md:p-12 lg:p-20"
       id="contact"
     >
       <div className="mx-auto max-w-[1400px]">

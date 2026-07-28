@@ -114,7 +114,7 @@ function ConfirmBody({
         <br />
         this ?
       </h3>
-      <div className="mt-5">
+      <div className="mt-5 flex w-full justify-center">
         <PathChip>{path}</PathChip>
       </div>
       <div className="mt-12 flex w-full justify-center">
@@ -150,7 +150,7 @@ function SuccessBody({ path }: { path: string }) {
         <br />
         Successful
       </h3>
-      <div className="mt-5">
+      <div className="mt-5 flex w-full justify-center">
         <PathChip>{path}</PathChip>
       </div>
       <div className="mt-12 flex w-full justify-center">
