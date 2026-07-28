@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 
 const LOGOS = [
   {
@@ -23,7 +24,7 @@ const MARQUEE_LOGOS = [...LOGOS, ...LOGOS];
 export function TrustedBySection() {
   return (
     <section className="w-full bg-white py-10 md:py-14">
-      <p className="font-dm-mono mb-10 text-center text-lg leading-[1.2] font-medium tracking-[10%] text-black uppercase md:mb-14">
+      <p className="font-dm-mono text-muted-foreground mb-10 text-center text-sm leading-[1.6] font-medium tracking-[10%] uppercase md:mb-14 md:text-base">
         Trusted by startups, SaaS companies, fintechs, and e-commerce brands.
       </p>
 
@@ -49,7 +50,13 @@ export function TrustedBySection() {
                 alt={logo.alt}
                 width={logo.width}
                 height={logo.height}
-                style={{ width: logo.width, height: logo.height }}
+                className="w-[calc(var(--logo-w)*0.65)] md:w-[calc(var(--logo-w)*0.8)]"
+                style={
+                  {
+                    "--logo-w": `${logo.width}px`,
+                    height: "auto",
+                  } as CSSProperties
+                }
               />
             </div>
           ))}
