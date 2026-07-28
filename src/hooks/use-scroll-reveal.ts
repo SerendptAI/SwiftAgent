@@ -20,14 +20,14 @@ export function useScrollReveal<T extends HTMLElement>({
     if (!targets.length) return;
 
     const ctx = gsap.context(() => {
-      gsap.set(targets, { y: 48, opacity: 0 });
+      gsap.set(targets, { scale: 0.85, opacity: 0 });
       gsap.to(targets, {
         scrollTrigger: { trigger: el, start: "top 85%" },
-        y: 0,
+        scale: 1,
         opacity: 1,
-        stagger: 0.12,
-        duration: 0.7,
-        ease: "power3.out",
+        stagger: 0.08,
+        duration: 0.5,
+        ease: "back.out(1.7)",
       });
     }, el);
 
