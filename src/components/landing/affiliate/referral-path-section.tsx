@@ -112,7 +112,7 @@ export function ReferralPathSection() {
             className="absolute top-4 right-0 left-0 h-[2px] origin-left -translate-y-1/2 rounded-full bg-gradient-to-r from-[#6433cc] to-[#F2B035]"
           />
 
-          <div className="relative flex items-start">
+          <div className="relative flex items-start gap-3 md:gap-0">
             {STEPS.map((step) => (
               <div
                 key={step.label}
@@ -131,7 +131,7 @@ export function ReferralPathSection() {
                 >
                   <span
                     className={cn(
-                      "font-dm-mono text-sm tracking-[0.08em] uppercase md:text-[18px]",
+                      "font-dm-mono text-xs tracking-[0.08em] uppercase md:text-[18px]",
                       step.highlight ? "text-[#F2B035]" : "text-[#1f1f1f]",
                     )}
                   >
