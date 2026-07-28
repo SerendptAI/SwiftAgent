@@ -59,7 +59,7 @@ export function ComparisonSection() {
               <span className="font-stolzl text-base text-black">
                 {row.label}
               </span>
-              <span className="font-dm-mono ml-11 w-full text-sm text-[#03A84E] uppercase sm:ml-auto sm:w-auto">
+              <span className="font-dm-mono ml-11 w-full text-[11px] text-[#03A84E] uppercase sm:ml-auto sm:w-auto sm:text-sm">
                 {row.detail}
               </span>
             </div>
