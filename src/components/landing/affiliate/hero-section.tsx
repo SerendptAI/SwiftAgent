@@ -53,7 +53,7 @@ function ReferrerBadge({
         Pro referrer
       </span>
       <span
-        className="font-stolzl text-lg font-bold whitespace-nowrap"
+        className="font-stolzl text-base font-bold whitespace-nowrap xl:text-lg"
         style={{ color }}
       >
         {name}
@@ -172,13 +172,13 @@ export function AffiliateHeroSection() {
           <div ref={ctaRef} className="mt-10 flex flex-wrap gap-5">
             <Link
               href="/refer"
-              className="font-dm-mono inline-flex items-center justify-center rounded-lg border border-black bg-[#F2B035] px-9 py-[18px] text-sm tracking-[0.1em] text-[#1f1f1f] uppercase shadow-[-4px_5px_0px_0px_#000000] transition-all hover:translate-x-[-1px] hover:translate-y-[1px] hover:shadow-[-3px_4px_0px_0px_#000000] md:text-[18px]"
+              className="font-dm-mono inline-flex w-full items-center justify-center rounded-lg border border-black bg-[#F2B035] px-9 py-[18px] text-sm tracking-[0.1em] text-[#1f1f1f] uppercase shadow-[-4px_5px_0px_0px_#000000] transition-all hover:translate-x-[-1px] hover:translate-y-[1px] hover:shadow-[-3px_4px_0px_0px_#000000] sm:w-auto md:text-[18px]"
             >
               Submit referral
             </Link>
             <Link
               href="/#pricing"
-              className="font-dm-mono inline-flex items-center justify-center rounded-lg border border-black bg-white px-9 py-[18px] text-sm tracking-[0.1em] text-[#1f1f1f] uppercase shadow-[-4px_5px_0px_0px_#000000] transition-all hover:translate-x-[-1px] hover:translate-y-[1px] hover:shadow-[-3px_4px_0px_0px_#000000] md:text-[18px]"
+              className="font-dm-mono inline-flex w-full items-center justify-center rounded-lg border border-black bg-white px-9 py-[18px] text-sm tracking-[0.1em] text-[#1f1f1f] uppercase shadow-[-4px_5px_0px_0px_#000000] transition-all hover:translate-x-[-1px] hover:translate-y-[1px] hover:shadow-[-3px_4px_0px_0px_#000000] sm:w-auto md:text-[18px]"
             >
               View plan metrics
             </Link>
