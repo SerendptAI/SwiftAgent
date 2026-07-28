@@ -1,4 +1,8 @@
+"use client";
+
 import Image from "next/image";
+
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 const COMPARISON_ROWS = [
   {
@@ -24,6 +28,8 @@ const COMPARISON_ROWS = [
 ];
 
 export function ComparisonSection() {
+  const cardsRef = useScrollReveal<HTMLDivElement>();
+
   return (
     <section className="w-full border-b border-[#1f1f1f] bg-[#03A84E] px-6 py-16 md:px-10 md:py-20 lg:px-16 lg:py-20">
       <div className="mx-auto flex max-w-360 flex-col gap-10 lg:flex-row lg:gap-16">
@@ -43,7 +49,7 @@ export function ComparisonSection() {
           </p>
         </div>
 
-        <div className="flex flex-1 flex-col gap-4">
+        <div ref={cardsRef} className="flex flex-1 flex-col gap-4">
           {COMPARISON_ROWS.map((row) => (
             <div
               key={row.label}

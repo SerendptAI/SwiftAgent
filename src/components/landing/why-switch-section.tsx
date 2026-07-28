@@ -1,4 +1,8 @@
+"use client";
+
 import Image from "next/image";
+
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 const REASONS = [
   {
@@ -30,6 +34,8 @@ const REASONS = [
 ];
 
 export function WhySwitchSection() {
+  const cardsRef = useScrollReveal<HTMLDivElement>();
+
   return (
     <section className="w-full bg-white px-6 py-16 md:px-10 md:py-20 lg:px-16 lg:py-20">
       <div className="mx-auto flex max-w-360 flex-col gap-6">
@@ -49,7 +55,10 @@ export function WhySwitchSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-x-5 gap-y-26 pb-14 sm:grid-cols-2 lg:grid-cols-4">
+        <div
+          ref={cardsRef}
+          className="grid grid-cols-1 gap-x-5 gap-y-26 pb-14 sm:grid-cols-2 lg:grid-cols-4"
+        >
           {REASONS.map((reason) => (
             <div
               key={reason.title}

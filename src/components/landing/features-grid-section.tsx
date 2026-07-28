@@ -1,4 +1,8 @@
+"use client";
+
 import Image from "next/image";
+
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 const FEATURES = [
   {
@@ -32,6 +36,8 @@ const FEATURES = [
 ];
 
 export function FeaturesGridSection() {
+  const cardsRef = useScrollReveal<HTMLDivElement>();
+
   return (
     <section className="w-full bg-white px-6 py-16 md:px-10 md:py-20 lg:px-16 lg:py-20">
       <div className="mx-auto max-w-360">
@@ -39,7 +45,7 @@ export function FeaturesGridSection() {
           Everything Your Team Needs To Support Customers At Scale
         </p>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div ref={cardsRef} className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {FEATURES.map((feature) => (
             <div
               key={feature.title}

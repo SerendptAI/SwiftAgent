@@ -1,7 +1,12 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import { Link } from "@/i18n/navigation";
 
 export function RoiCalculatorSection() {
+  const cardRef = useScrollReveal<HTMLDivElement>({ self: true });
+
   return (
     <section className="w-full bg-[#F2B035] px-6 py-16 md:px-10 md:py-20 lg:px-16 lg:py-20">
       <div className="mx-auto flex max-w-360 flex-col items-start gap-10 lg:flex-row lg:items-start lg:gap-16">
@@ -23,7 +28,10 @@ export function RoiCalculatorSection() {
           </Button>
         </div>
 
-        <div className="w-full max-w-100 shrink-0 rounded-2xl border border-[#1f1f1f] bg-white p-6 drop-shadow-[-3px_4px_0px_#000000]">
+        <div
+          ref={cardRef}
+          className="w-full max-w-100 shrink-0 rounded-2xl border border-[#1f1f1f] bg-white p-6 drop-shadow-[-3px_4px_0px_#000000]"
+        >
           <div className="mb-4 flex items-center justify-between">
             <span className="font-dm-mono text-xs font-medium text-[#1f1f1f] uppercase">
               ROI Estimator

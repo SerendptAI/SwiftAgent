@@ -1,3 +1,7 @@
+"use client";
+
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
+
 const INDUSTRIES = [
   {
     label: "E-Commerce",
@@ -26,6 +30,8 @@ const INDUSTRIES = [
 ];
 
 export function IndustriesSection() {
+  const cardsRef = useScrollReveal<HTMLDivElement>();
+
   return (
     <section className="w-full bg-white px-6 py-16 md:px-10 md:py-20 lg:px-16 lg:py-26">
       <div className="mx-auto max-w-360">
@@ -41,7 +47,10 @@ export function IndustriesSection() {
         </div>
 
         {/* Industry cards */}
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-12 lg:grid-cols-4 xl:gap-15">
+        <div
+          ref={cardsRef}
+          className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-12 lg:grid-cols-4 xl:gap-15"
+        >
           {INDUSTRIES.map((industry, i) => (
             <div key={i} className="flex flex-col gap-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}

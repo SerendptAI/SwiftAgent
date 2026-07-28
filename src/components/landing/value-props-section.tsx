@@ -1,4 +1,8 @@
+"use client";
+
 import { Check } from "lucide-react";
+
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 const VALUE_PROPS = [
   {
@@ -28,6 +32,8 @@ const VALUE_PROPS = [
 ];
 
 export function ValuePropsSection() {
+  const cardsRef = useScrollReveal<HTMLDivElement>();
+
   return (
     <section className="w-full bg-white px-6 py-16 md:px-10 md:py-20 lg:px-16 lg:py-20">
       <div className="mx-auto max-w-360">
@@ -35,7 +41,10 @@ export function ValuePropsSection() {
           Built For Businesses Growing Faster Than Their Support Teams
         </p>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div
+          ref={cardsRef}
+          className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
+        >
           {VALUE_PROPS.map((prop) => (
             <div
               key={prop.title}
