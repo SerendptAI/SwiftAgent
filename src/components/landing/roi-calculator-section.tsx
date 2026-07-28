@@ -5,7 +5,7 @@ export function RoiCalculatorSection() {
   return (
     <section className="w-full bg-[#F2B035] px-6 py-16 md:px-10 md:py-20 lg:px-16 lg:py-20">
       <div className="mx-auto flex max-w-360 flex-col items-start gap-10 lg:flex-row lg:items-start lg:gap-16">
-        <div className="flex flex-1 flex-col gap-6">
+        <div className="flex w-full flex-1 flex-col gap-6 lg:w-auto">
           <p className="font-dm-mono text-2xl leading-normal font-medium text-[#1f1f1f] uppercase md:text-4xl">
             See how much support cost you&apos;re currently overpaying
           </p>
@@ -16,7 +16,7 @@ export function RoiCalculatorSection() {
           <Button
             variant="outline"
             size="lg"
-            className="w-fit border-[#1f1f1f]"
+            className="w-full max-w-100 border-[#1f1f1f] lg:w-fit lg:max-w-none"
             asChild
           >
             <Link href="/demo">Calculate My Savings</Link>
