@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
+
 import { AuthGuard } from "@/components/auth-check";
 import { Header } from "@/components/dashboard/header";
 import { SupportChatbot } from "@/components/dashboard/settings/support-chatbot";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { TicketsSocket } from "@/components/dashboard/ticketing/tickets-socket";
 import { MobileGate } from "@/components/mobile-gate";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default function DashboardLayout({
   children,
