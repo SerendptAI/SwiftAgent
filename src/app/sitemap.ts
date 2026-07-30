@@ -1,8 +1,9 @@
 import { MetadataRoute } from "next";
 
 import { CASE_STUDIES } from "@/lib/case-studies";
+import { siteConfig } from "@/lib/site-config";
 
-const BASE_URL = process.env.APP_URL || "https://swiftagents.org";
+const BASE_URL = siteConfig.url;
 const locales = ["en", "pl"] as const;
 const defaultLocale = "en";
 

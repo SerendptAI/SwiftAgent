@@ -17,7 +17,7 @@ export const siteConfig = {
     "Embeddable Widget",
     "Voice AI",
   ],
-  url: process.env.APP_URL || "https://swiftagents.org",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://swiftagents.org",
   locale: "en_US",
   creator: "Serendpt AI",
   authors: [{ name: "Serendpt AI", url: "https://swiftagents.org" }],

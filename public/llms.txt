@@ -1,0 +1,30 @@
+# Swift Agents
+
+> Swift Agents is an AI-powered customer engagement platform by Serendpt AI. Businesses deploy AI support agents that automate repetitive customer conversations across live chat, voice, and embeddable widgets — resolving support tickets without scaling human headcount.
+
+Swift Agents targets support teams drowning in repetitive queries: the platform automates the bulk of conversations and hands the rest to humans, so teams stop hiring linearly as conversation volume grows.
+
+## Pages
+
+- [Home](https://swiftagents.org/en): Platform overview — what Swift Agents does and who it is for
+- [Agents](https://swiftagents.org/en/agents): The AI agents available and what each one handles
+- [Products](https://swiftagents.org/en/products): Product lineup, including live chat, voice AI, and the embeddable widget
+- [Demo](https://swiftagents.org/en/demo): Interactive ROI calculator — enter conversation volume, team size, and cost per agent to see the support headcount and spend Swift Agents removes
+- [Scale Support](https://swiftagents.org/en/landing): How teams scale customer support without scaling headcount
+- [Sign Up](https://swiftagents.org/en/signup): Create a Swift Agents account
+
+## Case Studies
+
+- [Case Studies](https://swiftagents.org/en/case-studies): Results from teams using Swift Agents
+- [Partyverse](https://swiftagents.org/en/case-studies/partyverse)
+- [Kuda Bank](https://swiftagents.org/en/case-studies/kuda-bank)
+- [Flutterwave](https://swiftagents.org/en/case-studies/flutterwave)
+- [Chowdeck](https://swiftagents.org/en/case-studies/chowdeck)
+- [Raenest](https://swiftagents.org/en/case-studies/raenest)
+
+## Optional
+
+- [Affiliate Program](https://swiftagents.org/en/affiliate): Earn by referring businesses to Swift Agents
+- [Refer a Founder](https://swiftagents.org/en/refer): Referral campaign for founders
+- [Privacy Policy](https://swiftagents.org/en/privacy-policy)
+- [Polish version](https://swiftagents.org/pl): The site is also available with a Polish URL prefix

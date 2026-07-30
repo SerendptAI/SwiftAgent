@@ -1,6 +1,8 @@
 import { MetadataRoute } from "next";
 
-const BASE_URL = process.env.APP_URL || "https://swiftagents.org";
+import { siteConfig } from "@/lib/site-config";
+
+const BASE_URL = siteConfig.url;
 
 export default function robots(): MetadataRoute.Robots {
   return {
