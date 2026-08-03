@@ -1,0 +1,53 @@
+# Dockerfile.ns
+# Admin dashboard — ns.swiftagents.org
+#
+# Identical to Dockerfile.landing apart from the default ENV_FILE. Build with:
+#   docker build -f Dockerfile.ns -t swift-agents-ns .
+# or override the env file explicitly:
+#   docker build -f Dockerfile.ns --build-arg ENV_FILE=.env.ns -t swift-agents-ns .
+
+# builder stage
+FROM node:20-alpine AS builder
+# set a fixed working directory
+WORKDIR /app
+
+# copy package definitions and install dependencies
+COPY package.json package-lock.json* yarn.lock* ./
+# install with npm (avoids lockfile mismatches in CI)
+RUN npm install
+
+# copy the rest of the source tree
+COPY . .
+
+# Let Docker know about ENV_FILE arg, defaulting to this host's env file
+ARG ENV_FILE=.env.ns
+# Overwrite .env.production with the selected env file so next build uses it
+RUN cp ${ENV_FILE} .env.production || true
+
+# build the Next.js application
+RUN npm run build
+
+# runtime stage
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+# ANALYTICS_SECRET_KEY is read at request time by the analytics proxy, not
+# inlined at build time, so it has to be present in the running container.
+# Pass it with --env-file .env.ns (or -e) when starting this image.
+
+# only keep the artifacts needed at runtime
+# next.config.ts must be present at runtime — Next reads images.remotePatterns
+# from it on every /_next/image request; without it the allowlist is empty.
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/next.config.ts ./
+COPY --from=builder /app/tsconfig.json ./
+
+EXPOSE 3000
+
+# start the production server
+CMD ["npm", "start"]
