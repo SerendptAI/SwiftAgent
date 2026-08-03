@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 
 import type { CaseStudy } from "@/lib/case-studies";
 import { getCaseStudyPath } from "@/lib/case-studies";
+import { cn } from "@/lib/utils";
 
 function PlayIcon() {
   return (
@@ -100,13 +101,38 @@ export function CaseStudyDetail({
   caseStudy: CaseStudy;
   showFullCaseStudyLink?: boolean;
 }) {
+  const [activeUseCase, setActiveUseCase] = useState(0);
+  const activeVideo = caseStudy.useCases[activeUseCase]?.video;
+
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12 xl:gap-18">
-      <img
-        src={caseStudy.mockup}
-        alt={`${caseStudy.name} app screenshot`}
-        className="aspect-571/701 w-full object-cover"
-      />
+      {/*
+        Landscape clips are far shorter than the use case list beside them, so
+        the player is centred in its column rather than pinned to the top —
+        otherwise the leftover height all pools underneath it.
+      */}
+      <div className="flex flex-col justify-center">
+        {activeVideo ? (
+          <video
+            // Remount on change so the new source actually loads and plays.
+            key={activeVideo}
+            src={activeVideo}
+            className={`w-full rounded-2xl bg-black object-contain ${caseStudy.videoAspect}`}
+            controls
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+          />
+        ) : (
+          <img
+            src={caseStudy.mockup}
+            alt={`${caseStudy.name} app screenshot`}
+            className="aspect-571/701 w-full object-cover"
+          />
+        )}
+      </div>
 
       <div className="flex flex-col justify-start">
         <div className="mb-6 flex items-center gap-6">
@@ -127,12 +153,26 @@ export function CaseStudyDetail({
         <div className="flex flex-col gap-6 md:gap-8">
           {caseStudy.useCases.map((uc, i) => (
             <div key={i}>
-              <div className="mb-4 flex w-fit items-center gap-3 rounded-[10px] border border-black bg-[#F6F4EF] px-4 py-3 shadow-[-3px_3px_0px_0px_#000000] md:mb-6">
+              <button
+                type="button"
+                onClick={() => setActiveUseCase(i)}
+                disabled={!uc.video}
+                aria-pressed={activeUseCase === i}
+                className={cn(
+                  "mb-4 flex w-fit items-center gap-3 rounded-[10px] border border-black bg-[#F6F4EF] px-4 py-3 text-left transition-transform md:mb-6",
+                  uc.video
+                    ? "cursor-pointer hover:translate-x-[-1px] hover:translate-y-[1px]"
+                    : "cursor-default",
+                  activeUseCase === i && uc.video
+                    ? "shadow-[-1px_1px_0px_0px_#000000]"
+                    : "shadow-[-3px_3px_0px_0px_#000000]",
+                )}
+              >
                 <PlayIcon />
                 <span className="font-dm-mono text-base font-medium tracking-[10%] text-black uppercase md:text-lg lg:text-xl">
                   {uc.title}
                 </span>
-              </div>
+              </button>
               <p className="font-stolzl px-1 text-base leading-[1.76] tracking-[2%] text-black md:text-lg">
                 {uc.description}
               </p>
