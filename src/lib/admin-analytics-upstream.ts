@@ -2,12 +2,6 @@ import { NextResponse } from "next/server";
 
 import { ANALYTICS_SECTIONS, AnalyticsSection } from "@/lib/admin-analytics";
 
-/**
- * Analytics can be pointed at a different backend from the rest of the app.
- * The endpoints ship on their own schedule, so an environment that has not
- * deployed them yet can borrow one that has without moving auth and every
- * other call along with it. Unset, this is just NEXT_PUBLIC_API_URL.
- */
 const API_BASE_URL = (
   process.env.ANALYTICS_API_URL ||
   process.env.NEXT_PUBLIC_API_URL ||
