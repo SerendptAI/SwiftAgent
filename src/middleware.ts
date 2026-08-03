@@ -9,14 +9,53 @@ const intlMiddleware = createMiddleware(routing);
 const WIDGET_CORS_PATTERN =
   /^\/api\/(companies|visitors|chat|tts|stt|stroll)|^\/(widget-ui\.js|stroll\.js)/;
 
+/**
+ * The admin host serves the analytics dashboard and nothing else. It runs the
+ * same image as the landing host, so the split is by hostname rather than by
+ * build.
+ */
+const ADMIN_HOST = process.env.ADMIN_HOST || "ns.swiftagents.org";
+
+const ADMIN_ANALYTICS_PATH = "/admin/analytics";
+
+/** The page itself, plus the API routes it reads its data from. */
+const ADMIN_ALLOWED_PATTERN = new RegExp(
+  `^(?:/(?:${routing.locales.join("|")}))?${ADMIN_ANALYTICS_PATH}(?:/|$)|^/api/admin/analytics(?:/|$)`,
+);
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
+function isAdminHost(req: NextRequest) {
+  const host = req.headers.get("host");
+  if (!host) return false;
+
+  // Strip the port so a host:3000 style header still matches.
+  return host.split(":")[0].toLowerCase() === ADMIN_HOST.toLowerCase();
+}
+
 export default function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
+  if (isAdminHost(req)) {
+    // The bare domain is the only convenience redirect; everything else that
+    // is not the analytics dashboard does not exist on this host.
+    if (pathname === "/") {
+      return NextResponse.redirect(
+        new URL(
+          `/${routing.defaultLocale}${ADMIN_ANALYTICS_PATH}`,
+          req.nextUrl,
+        ),
+      );
+    }
+
+    if (!ADMIN_ALLOWED_PATTERN.test(pathname)) {
+      return new NextResponse(null, { status: 404 });
+    }
+  }
 
   // Handle CORS for widget assets and API routes
   if (WIDGET_CORS_PATTERN.test(pathname)) {

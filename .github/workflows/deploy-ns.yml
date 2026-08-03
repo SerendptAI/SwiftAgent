@@ -1,0 +1,36 @@
+name: Deploy Northstar
+
+# Northstar (ns.swiftagents.org) builds the same Next.js app as the landing
+# host — Dockerfile.ns copies the whole tree and differs only in which env file
+# it builds with. So it deploys on any change that lands in the image, not just
+# on the analytics routes it serves. Filtering to analytics files alone would
+# leave ns running stale shared code after a dependency bump or a fix to a
+# component it imports.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'messages/**'
+      - 'public/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'next.config.ts'
+      - 'postcss.config.mjs'
+      - 'tsconfig.json'
+      - 'typed.d.ts'
+      - 'Dockerfile.ns'
+      - '.github/workflows/deploy-ns.yml'
+
+jobs:
+  deploy-ns:
+    name: Deploy Northstar
+    runs-on: self-hosted
+
+    steps:
+      - name: Deploy Northstar
+        run: |
+          ./deploy.sh ns
+        working-directory: /home/ghrunner/swift-agents-prod
