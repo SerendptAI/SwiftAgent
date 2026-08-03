@@ -8,7 +8,7 @@ import {
   KpiRow,
   Panel,
 } from "@/components/admin/analytics/primitives";
-import { BRAND, customerExperience as data } from "@/lib/admin-analytics";
+import { BRAND, CustomerExperienceView } from "@/lib/admin-analytics";
 
 const TONE_COLOR = {
   Positive: BRAND.purple,
@@ -16,7 +16,11 @@ const TONE_COLOR = {
   Negative: BRAND.orange,
 } as const;
 
-function ThemeRow({ label, mentions, tone }: (typeof data.themes)[number]) {
+function ThemeRow({
+  label,
+  mentions,
+  tone,
+}: CustomerExperienceView["themes"][number]) {
   return (
     <div className="flex items-center justify-between gap-4 rounded-[8px] border-2 border-[rgba(31,31,31,0.1)] px-3 py-2.5">
       <div className="flex min-w-0 items-center gap-3">
@@ -38,7 +42,7 @@ function ThemeRow({ label, mentions, tone }: (typeof data.themes)[number]) {
   );
 }
 
-export function CustomerExperience() {
+export function CustomerExperience({ data }: { data: CustomerExperienceView }) {
   return (
     <div className="flex flex-col gap-4">
       <KpiRow items={data.kpis} />
@@ -56,7 +60,8 @@ export function CustomerExperience() {
           data={data.trends}
           series={[
             { key: "csat", name: "CSAT Score", color: BRAND.purple },
-            { key: "nps", name: "NPS Score", color: BRAND.yellow },
+            // NPS runs 0-100 against CSAT's 0-5, so it needs its own scale.
+            { key: "nps", name: "NPS Score", color: BRAND.yellow, axis: "nps" },
           ]}
         />
       </Panel>

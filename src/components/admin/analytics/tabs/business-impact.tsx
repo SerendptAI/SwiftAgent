@@ -8,11 +8,9 @@ import {
   Panel,
   StackedBar,
 } from "@/components/admin/analytics/primitives";
-import { BRAND, businessImpact as data } from "@/lib/admin-analytics";
+import { BRAND, BusinessImpactView } from "@/lib/admin-analytics";
 
-function RoiSummary() {
-  const { roi } = data;
-
+function RoiSummary({ roi }: Pick<BusinessImpactView, "roi">) {
   return (
     <div className="flex flex-1 items-start gap-6">
       <div className="flex w-[248px] shrink-0 flex-col gap-2 rounded-[8px] border-2 border-[rgba(31,31,31,0.1)] bg-[#ece6f7] p-4">
@@ -49,7 +47,7 @@ function RoiSummary() {
   );
 }
 
-export function BusinessImpact() {
+export function BusinessImpact({ data }: { data: BusinessImpactView }) {
   return (
     <div className="flex flex-col gap-4">
       <KpiRow items={data.kpis} />
@@ -67,15 +65,16 @@ export function BusinessImpact() {
       >
         <TrendLineChart
           data={data.trends}
-          domain={[0, 28]}
           series={[
             { key: "cost", name: "Cost Saved ($k)", color: BRAND.purple },
             {
+              // Raw hours dwarf the same period's dollars-in-thousands.
               key: "hours",
               name: "Hours Saved",
               color: BRAND.yellow,
               dashed: true,
               dots: true,
+              axis: "hours",
             },
           ]}
         />
@@ -85,7 +84,7 @@ export function BusinessImpact() {
           <BarList items={data.departments} />
         </Panel>
         <Panel eyebrow="Efficiency Audit" title="ROI Calculator Summary">
-          <RoiSummary />
+          <RoiSummary roi={data.roi} />
         </Panel>
       </div>
     </div>

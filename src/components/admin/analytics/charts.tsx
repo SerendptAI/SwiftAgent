@@ -27,6 +27,20 @@ const TOOLTIP_STYLE = {
   fontSize: 12,
 } as const;
 
+const DEFAULT_AXIS = "default";
+
+const AUTO_DOMAIN = ["dataMin - 2", "dataMax + 2"] as const;
+
+/**
+ * Series that share an axis id scale against each other. Give a series its own
+ * id when it carries a different unit — hours next to dollars, NPS next to
+ * CSAT — so neither flattens the other. Axes stay hidden either way, and
+ * tooltips keep reporting the real values.
+ */
+const axisIdsOf = (series: { axis?: string }[]) => [
+  ...new Set(series.map((item) => item.axis ?? DEFAULT_AXIS)),
+];
+
 export interface LineSeries {
   key: string;
   name: string;
@@ -34,6 +48,7 @@ export interface LineSeries {
   dashed?: boolean;
   dots?: boolean;
   dotColor?: string;
+  axis?: string;
 }
 
 export function TrendLineChart({
@@ -67,7 +82,14 @@ export function TrendLineChart({
             interval={0}
             dy={8}
           />
-          <YAxis hide domain={domain ?? ["dataMin - 2", "dataMax + 2"]} />
+          {axisIdsOf(series).map((axisId) => (
+            <YAxis
+              key={axisId}
+              yAxisId={axisId}
+              hide
+              domain={domain ?? AUTO_DOMAIN}
+            />
+          ))}
           <Tooltip
             contentStyle={TOOLTIP_STYLE}
             cursor={{ stroke: "rgba(31,31,31,0.2)" }}
@@ -75,6 +97,7 @@ export function TrendLineChart({
           {series.map((line) => (
             <Line
               key={line.key}
+              yAxisId={line.axis ?? DEFAULT_AXIS}
               type="linear"
               dataKey={line.key}
               name={line.name}
@@ -102,7 +125,7 @@ export function GroupedBarChart({
   height = 180,
 }: {
   data: SeriesPoint[];
-  series: { key: string; name: string; color: string }[];
+  series: { key: string; name: string; color: string; axis?: string }[];
   height?: number;
 }) {
   return (
@@ -120,11 +143,14 @@ export function GroupedBarChart({
             interval={0}
             dy={8}
           />
-          <YAxis hide />
+          {axisIdsOf(series).map((axisId) => (
+            <YAxis key={axisId} yAxisId={axisId} hide />
+          ))}
           <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: "#f6f4ef" }} />
           {series.map((bar) => (
             <Bar
               key={bar.key}
+              yAxisId={bar.axis ?? DEFAULT_AXIS}
               dataKey={bar.key}
               name={bar.name}
               fill={bar.color}

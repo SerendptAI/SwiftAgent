@@ -9,9 +9,13 @@ import {
   KpiRow,
   Panel,
 } from "@/components/admin/analytics/primitives";
-import { BRAND, conversationInsights as data } from "@/lib/admin-analytics";
+import { BRAND, ConversationInsightsView } from "@/lib/admin-analytics";
 
-export function ConversationInsights() {
+export function ConversationInsights({
+  data,
+}: {
+  data: ConversationInsightsView;
+}) {
   return (
     <div className="flex flex-col gap-4">
       <KpiRow items={data.kpis} fit />
@@ -30,7 +34,6 @@ export function ConversationInsights() {
       >
         <TrendLineChart
           data={data.trends}
-          domain={[4, 19]}
           series={[
             { key: "liveChat", name: "Live Chat", color: BRAND.purple },
             { key: "email", name: "Email", color: BRAND.orange },

@@ -92,10 +92,12 @@ export function AnalyticsControls({
   range,
   onRangeChange,
   onExport,
+  exporting,
 }: {
   range: DateRange;
   onRangeChange: (range: DateRange) => void;
   onExport: () => void;
+  exporting?: boolean;
 }) {
   return (
     <div className="flex items-center justify-between px-10 py-3">
@@ -127,9 +129,10 @@ export function AnalyticsControls({
       </div>
       <button
         onClick={onExport}
-        className="font-dm-mono rounded-[6px] border-2 border-[rgba(31,31,31,0.1)] bg-[#6433cc] px-4 py-2 text-[12px] text-white uppercase transition-opacity hover:opacity-90"
+        disabled={exporting}
+        className="font-dm-mono rounded-[6px] border-2 border-[rgba(31,31,31,0.1)] bg-[#6433cc] px-4 py-2 text-[12px] text-white uppercase transition-opacity hover:opacity-90 disabled:opacity-60"
       >
-        Export Report
+        {exporting ? "Exporting…" : "Export Report"}
       </button>
     </div>
   );

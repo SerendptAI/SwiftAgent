@@ -14,12 +14,13 @@ import {
   Panel,
 } from "@/components/admin/analytics/primitives";
 import { useToast } from "@/components/ui/toast";
-import { BRAND, executiveSummary as data } from "@/lib/admin-analytics";
+import { BRAND, ExecutiveSummaryView } from "@/lib/admin-analytics";
 import { cn } from "@/lib/utils";
 
-function NorthStarCard() {
-  const { northStar } = data;
-
+function NorthStarCard({
+  northStar,
+  sparkline,
+}: Pick<ExecutiveSummaryView, "northStar" | "sparkline">) {
   return (
     <section className="flex items-center gap-12 rounded-[16px] border-2 border-[rgba(31,31,31,0.1)] bg-[#ece6f7] p-8">
       <div className="flex min-w-0 flex-1 flex-col gap-5">
@@ -54,7 +55,7 @@ function NorthStarCard() {
           />
         </div>
         <div className="flex flex-col items-center gap-1">
-          <Sparkline data={data.sparkline} color={BRAND.purple} />
+          <Sparkline data={sparkline} color={BRAND.purple} />
           <p className="font-dm-mono text-[11px] text-[#7e7e7e]">
             {northStar.caption}
           </p>
@@ -64,7 +65,9 @@ function NorthStarCard() {
   );
 }
 
-function CompaniesTable() {
+function CompaniesTable({
+  companies,
+}: Pick<ExecutiveSummaryView, "companies">) {
   const toast = useToast();
 
   return (
@@ -90,7 +93,7 @@ function CompaniesTable() {
           </tr>
         </thead>
         <tbody>
-          {data.companies.map((company) => (
+          {companies.map((company) => (
             <tr
               key={company.name}
               onClick={() => toast.success(`Opening ${company.name} report.`)}
@@ -127,10 +130,10 @@ function CompaniesTable() {
   );
 }
 
-export function ExecutiveSummary() {
+export function ExecutiveSummary({ data }: { data: ExecutiveSummaryView }) {
   return (
     <div className="flex flex-col gap-4">
-      <NorthStarCard />
+      <NorthStarCard northStar={data.northStar} sparkline={data.sparkline} />
       <KpiRow items={data.kpis} />
       <Panel
         eyebrow="Historical Performance"
@@ -146,7 +149,6 @@ export function ExecutiveSummary() {
       >
         <TrendLineChart
           data={data.arrTrend}
-          domain={[64, 82]}
           series={[
             {
               key: "arr",
@@ -181,7 +183,7 @@ export function ExecutiveSummary() {
           </div>
         </Panel>
       </div>
-      <CompaniesTable />
+      <CompaniesTable companies={data.companies} />
     </div>
   );
 }

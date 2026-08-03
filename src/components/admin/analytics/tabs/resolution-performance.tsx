@@ -9,7 +9,7 @@ import {
   KpiRow,
   Panel,
 } from "@/components/admin/analytics/primitives";
-import { BRAND, resolutionPerformance as data } from "@/lib/admin-analytics";
+import { BRAND, ResolutionPerformanceView } from "@/lib/admin-analytics";
 
 const OUTCOME_SERIES = [
   { key: "resolved", name: "AI Resolved", color: BRAND.purple },
@@ -17,7 +17,9 @@ const OUTCOME_SERIES = [
   { key: "pending", name: "Pending", color: BRAND.yellow },
 ];
 
-function ChannelTimesTable() {
+function ChannelTimesTable({
+  channelTimes,
+}: Pick<ResolutionPerformanceView, "channelTimes">) {
   return (
     <table className="w-full border-collapse">
       <thead>
@@ -34,7 +36,7 @@ function ChannelTimesTable() {
         </tr>
       </thead>
       <tbody>
-        {data.channelTimes.map((row) => (
+        {channelTimes.map((row) => (
           <tr
             key={row.channel}
             className="border-b border-[rgba(31,31,31,0.06)] last:border-0"
@@ -55,7 +57,11 @@ function ChannelTimesTable() {
   );
 }
 
-export function ResolutionPerformance() {
+export function ResolutionPerformance({
+  data,
+}: {
+  data: ResolutionPerformanceView;
+}) {
   return (
     <div className="flex flex-col gap-4">
       <KpiRow items={data.kpis} />
@@ -71,7 +77,6 @@ export function ResolutionPerformance() {
         />
         <TrendLineChart
           data={data.trends}
-          domain={[12, 88]}
           series={[
             {
               key: "arr",
@@ -102,7 +107,7 @@ export function ResolutionPerformance() {
           />
         </Panel>
         <Panel eyebrow="Channel Metrics" title="Resolution Time by Channel">
-          <ChannelTimesTable />
+          <ChannelTimesTable channelTimes={data.channelTimes} />
         </Panel>
       </div>
     </div>

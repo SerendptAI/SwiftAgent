@@ -9,9 +9,9 @@ import {
   KpiRow,
   Panel,
 } from "@/components/admin/analytics/primitives";
-import { aiPerformance as data, BRAND } from "@/lib/admin-analytics";
+import { AiPerformanceView, BRAND } from "@/lib/admin-analytics";
 
-export function AiPerformance() {
+export function AiPerformance({ data }: { data: AiPerformanceView }) {
   return (
     <div className="flex flex-col gap-4">
       <KpiRow items={data.kpis} />
@@ -27,7 +27,6 @@ export function AiPerformance() {
         />
         <TrendLineChart
           data={data.trends}
-          domain={[74, 98]}
           series={[
             { key: "accuracy", name: "AI Accuracy Rate", color: BRAND.purple },
             {

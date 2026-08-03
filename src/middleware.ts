@@ -31,6 +31,12 @@ export default function middleware(req: NextRequest) {
     return res;
   }
 
+  // Route handlers are never locale-prefixed. Without this, intl routing
+  // redirects /api/... to /en/api/... and the handler never runs.
+  if (pathname.startsWith("/api/")) {
+    return NextResponse.next();
+  }
+
   // Skip intl middleware for auth callback to preserve query params (tokens)
   if (pathname.includes("/auth/callback")) {
     return NextResponse.next();
