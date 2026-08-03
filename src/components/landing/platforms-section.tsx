@@ -6,6 +6,7 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { useInViewAutoplay } from "@/hooks/use-in-view-autoplay";
 import { Link } from "@/i18n/navigation";
+import { siteConfig } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
 
 const PLATFORMS = [
@@ -129,7 +130,13 @@ export function PlatformsSection() {
 
           <div className="mb-10 flex max-w-107.5 flex-wrap justify-center gap-4 md:grid md:grid-cols-2 md:gap-8">
             <Button variant="outline" size="lg" asChild>
-              <Link href="/demo">BOOK A DEMO</Link>
+              <a
+                href={siteConfig.demoBookingUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                BOOK A DEMO
+              </a>
             </Button>
             <Button size="lg" asChild>
               <Link href="/signup">GET STARTED</Link>

@@ -18,6 +18,7 @@ export const siteConfig = {
     "Voice AI",
   ],
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://swiftagents.org",
+  demoBookingUrl: "https://cal.com/swiftagents/demo",
   locale: "en_US",
   creator: "Serendpt AI",
   authors: [{ name: "Serendpt AI", url: "https://swiftagents.org" }],

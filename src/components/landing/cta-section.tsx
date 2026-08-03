@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
+import { siteConfig } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
 
 interface CtaSectionProps {
@@ -37,7 +38,13 @@ export function CtaSection({ variant = "light" }: CtaSectionProps) {
 
           <div className="xs:max-w-107.5 flex w-full flex-wrap gap-4 sm:grid sm:grid-cols-2 md:gap-8">
             <Button variant="outline" size="lg" className="w-full" asChild>
-              <Link href="/demo">BOOK A DEMO</Link>
+              <a
+                href={siteConfig.demoBookingUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                BOOK A DEMO
+              </a>
             </Button>
             <Button
               size="lg"

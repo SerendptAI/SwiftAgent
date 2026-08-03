@@ -7,6 +7,7 @@ import { useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
+import { siteConfig } from "@/lib/site-config";
 
 import { Navbar } from "./navbar";
 
@@ -232,7 +233,13 @@ export function HeroSection() {
             className="mt-8 grid w-full max-w-140 grid-cols-1 gap-4 md:mt-10 md:grid-cols-2 lg:gap-6 xl:gap-8"
           >
             <Button variant="outline" size="lg" className="w-full" asChild>
-              <Link href="/demo">BOOK A DEMO</Link>
+              <a
+                href={siteConfig.demoBookingUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                BOOK A DEMO
+              </a>
             </Button>
             <Button size="lg" className="w-full" asChild>
               <Link href="/signup">GET STARTED</Link>
