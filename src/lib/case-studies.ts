@@ -18,10 +18,11 @@ export interface CaseStudy {
   mockup: string;
   description: string;
   /**
-   * Orientation of this partner's clips. Written out in full so Tailwind picks
-   * the classes up when it scans this file.
+   * Orientation of this partner's clips, reserving the right space before the
+   * video loads. Written out in full so Tailwind picks the classes up when it
+   * scans this file.
    */
-  videoAspect: "aspect-[9/16]" | "aspect-video";
+  videoAspect?: "aspect-[9/16]" | "aspect-video";
   useCases: CaseStudyUseCase[];
   /** Unpublished studies stay here for reference but are not served anywhere. */
   published: boolean;
@@ -35,7 +36,6 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
     name: "PARTYVERSE",
     logo: "/images/Referrals/logos/partyverse.png",
     mockup: MOCKUP,
-    videoAspect: "aspect-video",
     published: false,
     description:
       "<strong>Partyverse</strong> is an app where people go to buy tickets to events but the user experience is made for those who already know the party they want to attend, not those who are confused or just want to attend anything",
@@ -62,7 +62,6 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
     name: "KUDA BANK",
     logo: "/images/Referrals/logos/kuda.png",
     mockup: MOCKUP,
-    videoAspect: "aspect-video",
     published: false,
     description:
       "<strong>Kuda Bank</strong> is a digital-first bank built for Africans, offering zero-fee banking, savings, and spending tools through a seamless mobile experience.",
@@ -89,7 +88,6 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
     name: "FLUTTERWAVE",
     logo: "/images/Referrals/logos/flutterwave.png",
     mockup: MOCKUP,
-    videoAspect: "aspect-video",
     published: false,
     description:
       "<strong>Flutterwave</strong> is a global payments technology company that enables businesses across Africa and beyond to accept and make payments with a single API.",
