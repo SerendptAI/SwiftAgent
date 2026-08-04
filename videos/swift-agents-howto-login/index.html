@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #000;
+      }
+
+      @font-face {
+        font-family: "GreedNarrow";
+        src: url("assets/fonts/GreedNarrow-Medium.otf") format("opentype");
+        font-weight: 500;
+        font-display: block;
+      }
+      @font-face {
+        font-family: "StolzlV";
+        src: url("assets/fonts/stolzl_book.otf") format("opentype");
+        font-weight: 400;
+        font-display: block;
+      }
+      @font-face {
+        font-family: "DMMonoV";
+        src: url("assets/fonts/dmmono-400.woff2") format("woff2");
+        font-weight: 400;
+        font-display: block;
+      }
+      @font-face {
+        font-family: "DMMonoV";
+        src: url("assets/fonts/dmmono-500.woff2") format("woff2");
+        font-weight: 500;
+        font-display: block;
+      }
+
+      body {
+        font-family: "StolzlV", system-ui, sans-serif;
+      }
+
+      .hl-ground {
+        position: absolute;
+        inset: 0;
+        background: #ffffff;
+      }
+      .hl-display {
+        font-family: "GreedNarrow", system-ui, sans-serif;
+        text-transform: uppercase;
+        color: #0a0a0a;
+        letter-spacing: -0.01em;
+      }
+      .hl-mono {
+        font-family: "DMMonoV", ui-monospace, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+
+      /* Caption band — same position in every scene so the eye never hunts */
+      .hl-caption {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 92px;
+        text-align: center;
+        font-size: 34px;
+        font-weight: 500;
+        color: #0a0a0a;
+      }
+
+      .hl-card {
+        position: absolute;
+        left: 50%;
+        top: 380px;
+        width: 900px;
+        margin-left: -450px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .hl-heading {
+        font-family: "StolzlV", system-ui, sans-serif;
+        font-size: 52px;
+        color: #0a0a0a;
+        margin-top: 22px;
+      }
+      .hl-field {
+        position: relative;
+        margin-top: 56px;
+        width: 720px;
+        height: 96px;
+        border: 2px solid rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+        background: #ffffff;
+      }
+      .hl-field-text {
+        position: absolute;
+        left: 2px;
+        width: 500px;
+        text-align: center;
+        font-size: 28px;
+        color: #0a0a0a;
+        font-family: "DMMonoV", ui-monospace, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        white-space: nowrap;
+      }
+      #hl-ph {
+        position: absolute;
+        left: 0;
+        right: 0;
+      }
+      .hl-signin {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        margin-top: -37px;
+        white-space: nowrap;
+        height: 74px;
+        background: #0a0a0a;
+        color: #ffffff;
+        border-radius: 6px;
+        padding: 0 28px;
+        display: flex;
+        align-items: center;
+        font-size: 26px;
+        font-weight: 500;
+        font-family: "DMMonoV", ui-monospace, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+
+      .hl-otp-row {
+        position: absolute;
+        left: 50%;
+        top: 462px;
+        margin-left: -305px;
+        width: 610px;
+        display: flex;
+        justify-content: center;
+        gap: 22px;
+      }
+      .hl-otp-box {
+        width: 80px;
+        height: 124px;
+        border: 2px solid rgba(0, 0, 0, 0.2);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "DMMonoV", ui-monospace, monospace;
+        font-size: 46px;
+        color: #0a0a0a;
+        background: #ffffff;
+      }
+      .hl-spam {
+        position: absolute;
+        left: 50%;
+        top: 654px;
+        margin-left: -420px;
+        width: 840px;
+        text-align: center;
+        font-family: "DMMonoV", ui-monospace, monospace;
+        font-size: 27px;
+        line-height: 1.5;
+        color: #7e7e7e;
+        padding: 24px 30px;
+      }
+      .hl-focus-ring {
+        position: absolute;
+        left: 50%;
+        top: 640px;
+        margin-left: -440px;
+        width: 880px;
+        height: 128px;
+        border: 4px solid #f2b035;
+        border-radius: 18px;
+      }
+      .hl-cursor {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 78px;
+        height: 78px;
+      }
+      .hl-check {
+        position: absolute;
+        left: 50%;
+        top: 404px;
+        margin-left: -84px;
+        width: 168px;
+        height: 168px;
+        border-radius: 84px;
+        background: #f2b035;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="47"
+      data-width="1920"
+      data-height="1080"
+    >
+      <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <symbol id="hl-mark" viewBox="0 0 72 71">
+          <path d="M72 0H0V70.23H72V0Z" fill="#F2B035" />
+          <path d="M34.9276 15.8941C34.9285 17.1858 35.4142 19.8319 36.1075 23.0929C36.6746 25.7614 37.395 28.9013 38.1431 32.1609C38.3188 32.9228 38.4944 33.6908 38.6709 34.4614C39.6024 38.5334 40.5315 42.6656 41.228 46.2197C41.9292 49.7929 42.3814 52.7233 42.383 54.4196C42.3853 57.1438 41.5894 59.0924 40.3227 60.3604C39.0546 61.6295 37.237 62.2941 35.0407 62.2978C33.23 62.3013 31.409 61.9127 29.7883 61.2801L31.1906 56.3124C32.0804 56.8583 32.9958 57.1079 33.799 57.1068C34.6141 57.1055 35.3889 56.8098 35.9596 56.2307C36.532 55.6493 36.8549 54.8281 36.8541 53.8521C36.8533 52.1369 36.3864 49.23 35.71 45.8011C35.0296 42.3519 34.1236 38.3104 33.22 34.2944L33.1121 33.8161C32.244 29.9583 31.3863 26.1479 30.7363 22.9141C30.0558 19.5246 29.6185 16.8384 29.617 15.3984C29.6151 13.1224 30.347 11.3287 31.5615 10.1056C32.7746 8.88268 34.5255 8.17404 36.6692 8.17023C38.7225 8.16658 40.4583 8.68812 41.7843 9.321L39.741 13.8356C38.9991 13.4231 38.1123 13.1445 37.3279 13.1459C36.6083 13.1472 35.9781 13.4175 35.5401 13.9452C35.1148 14.457 34.9266 15.1437 34.9276 15.8941Z" fill="#0A0A0A" />
+        </symbol>
+      </svg>
+
+      <!-- Ground rides a full-bleed child, never the root -->
+      <div
+        id="hl-ground" class="clip hl-ground"
+        data-start="0"
+        data-duration="47"
+        data-track-index="0"
+      ></div>
+
+      <!-- ── Scene 0 · Title card (0-3s) ────────────────────────────── -->
+      <div
+        id="hl-scene-title"
+        class="clip"
+        data-start="0"
+        data-duration="3"
+        data-track-index="1"
+        style="position: absolute; inset: 0"
+      >
+        <svg id="hl-title-logo" style="position:absolute;left:50%;top:372px;margin-left:-52px;width:104px;height:104px"><use href="#hl-mark" /></svg>
+        <div
+          id="hl-title-word"
+          class="hl-display"
+          style="
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 524px;
+            text-align: center;
+            font-size: 104px;
+          "
+        >
+          How to log in
+        </div>
+        <div
+          id="hl-title-sub"
+          class="hl-mono"
+          style="
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 664px;
+            text-align: center;
+            font-size: 28px;
+            color: #6e6e6e;
+          "
+        >
+          Swift Agents
+        </div>
+      </div>
+
+      <!-- ── Scenes 1-5 · The locked app stage (3-42s) ──────────────── -->
+      <div
+        id="hl-scene-stage"
+        class="clip"
+        data-start="3"
+        data-duration="39"
+        data-track-index="1"
+        style="position: absolute; inset: 0"
+      >
+        <div id="hl-surface" style="position: absolute; inset: 0">
+          <div id="hl-emailgroup" style="position: absolute; inset: 0">
+            <svg id="hl-logo-small" style="position:absolute;left:50%;top:244px;margin-left:-48px;width:96px;height:96px"><use href="#hl-mark" /></svg>
+            <div class="hl-card">
+              <div
+                class="hl-mono"
+                style="font-size: 26px; color: #6e6e6e; font-weight: 400"
+              >
+                Welcome back
+              </div>
+              <div class="hl-heading">Log in to your account</div>
+              <div class="hl-field">
+                <div class="hl-field-text">
+                  <span id="hl-ph" style="color: #6e6e6e">Company email</span
+                  ><span id="hl-typed"></span>
+                </div>
+                <div id="hl-signin" class="hl-signin">Sign in</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="hl-codegroup" style="position: absolute; inset: 0">
+            <div class="hl-otp-row">
+              <div class="hl-otp-box" id="hl-otp-0"></div>
+              <div class="hl-otp-box" id="hl-otp-1"></div>
+              <div class="hl-otp-box" id="hl-otp-2"></div>
+              <div class="hl-otp-box" id="hl-otp-3"></div>
+              <div class="hl-otp-box" id="hl-otp-4"></div>
+              <div class="hl-otp-box" id="hl-otp-5"></div>
+            </div>
+            <div id="hl-spam" class="hl-spam">
+              We&rsquo;ve emailed you a code. Can&rsquo;t find it? Check your
+              spam or junk folder.
+            </div>
+            <div id="hl-ring" class="hl-focus-ring"></div>
+            <div
+              id="hl-signingin"
+              class="hl-mono"
+              style="
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 660px;
+                text-align: center;
+                font-size: 28px;
+                color: #6e6e6e;
+              "
+            >
+              Signing in&hellip;
+            </div>
+          </div>
+        </div>
+
+        <svg
+          id="hl-cursor"
+          class="hl-cursor"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M5 2.5 L5 20 L9.4 16.2 L12.3 22.2 L15.2 20.8 L12.4 15 L18.2 15 Z"
+            fill="#0A0A0A"
+            stroke="#FFFFFF"
+            stroke-width="1.4"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+
+      <!-- ── Scene 6 · You're in (42-47s) ───────────────────────────── -->
+      <div
+        id="hl-scene-end"
+        class="clip"
+        data-start="42"
+        data-duration="5"
+        data-track-index="1"
+        style="position: absolute; inset: 0"
+      >
+        <div id="hl-check" class="hl-check">
+          <svg width="88" height="88" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M4 12.5 L9.5 18 L20 6.5"
+              stroke="#0A0A0A"
+              stroke-width="2.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+        <div
+          id="hl-endword"
+          class="hl-display"
+          style="
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 620px;
+            text-align: center;
+            font-size: 96px;
+          "
+        >
+          You&rsquo;re in
+        </div>
+        <svg id="hl-endlogo" style="position:absolute;left:50%;top:828px;margin-left:-34px;width:68px;height:68px"><use href="#hl-mark" /></svg>
+      </div>
+
+      <!-- ── Captions ───────────────────────────────────────────────── -->
+      <div
+        id="hl-cap-1" class="clip hl-caption hl-mono"
+        data-start="3"
+        data-duration="5"
+        data-track-index="2"
+      >
+        The login page
+      </div>
+      <div
+        id="hl-cap-2" class="clip hl-caption hl-mono"
+        data-start="8"
+        data-duration="10"
+        data-track-index="2"
+      >
+        Step 1 &mdash; Enter your company email
+      </div>
+      <div
+        id="hl-cap-3" class="clip hl-caption hl-mono"
+        data-start="18"
+        data-duration="8"
+        data-track-index="2"
+      >
+        Step 2 &mdash; We email you a 6-digit code
+      </div>
+      <div
+        id="hl-cap-4" class="clip hl-caption hl-mono"
+        data-start="26"
+        data-duration="8"
+        data-track-index="2"
+      >
+        Can&rsquo;t see it? Check spam
+      </div>
+      <div
+        id="hl-cap-5" class="clip hl-caption hl-mono"
+        data-start="34"
+        data-duration="8"
+        data-track-index="2"
+      >
+        Step 3 &mdash; Type the code
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines["main"] = tl;
+
+      const EMAIL = "ada@chowdeck.com";
+      const CODE = ["4", "8", "2", "9", "1", "5"];
+
+      // The stage scales under the cursor, so a target's screen position has to
+      // be derived from the scale in force during that scene. Without this the
+      // pointer drifts off whatever it is supposed to be clicking.
+      const TIP = { x: 16, y: 8 };
+      function at(x, y, scale, ty) {
+        return {
+          x: 960 + (x - 960) * scale - TIP.x,
+          y: 540 + (y - 540) * scale + ty - TIP.y,
+        };
+      }
+
+      const STEP1 = { scale: 1.34, ty: 80 };
+      const STEP3 = { scale: 1.24, ty: 36 };
+      const AT_FIELD = at(820, 608, STEP1.scale, STEP1.ty);
+      const AT_SIGNIN = at(1219, 608, STEP1.scale, STEP1.ty);
+      const AT_OTP = at(695, 524, STEP3.scale, STEP3.ty);
+      const OFF = { x: 1560, y: 1180 };
+
+      // ── Scene 0 · title card ──────────────────────────────────────
+      tl.fromTo(
+        "#hl-title-logo",
+        { scale: 0.9, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.5, ease: "power2.out" },
+        0.15,
+      );
+      tl.fromTo(
+        "#hl-title-word",
+        { y: 26, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" },
+        0.45,
+      );
+      tl.fromTo(
+        "#hl-title-sub",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.4, ease: "power2.out" },
+        0.75,
+      );
+
+      // ── Scene 1 · orientation: the whole page, once ───────────────
+      tl.set("#hl-codegroup", { opacity: 0 }, 3.0);
+      tl.set("#hl-signin", { opacity: 0 }, 3.0);
+      tl.set("#hl-ring", { opacity: 0 }, 3.0);
+      tl.set("#hl-signingin", { opacity: 0 }, 3.0);
+      tl.set("#hl-spam", { opacity: 0 }, 3.0);
+      tl.set("#hl-typed", { innerHTML: "" }, 3.0);
+      tl.set("#hl-ph", { opacity: 1 }, 3.0);
+      tl.set("#hl-cursor", { x: OFF.x, y: OFF.y, opacity: 0 }, 3.0);
+      tl.fromTo(
+        "#hl-surface",
+        { scale: 0.97, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.6, ease: "power2.out" },
+        3.1,
+      );
+
+      // ── Scene 2 · step 1, the email ───────────────────────────────
+      // Scale in so the field is large; legibility is the whole risk here.
+      tl.to(
+        "#hl-surface",
+        { scale: STEP1.scale, y: STEP1.ty, duration: 0.7, ease: "power2.out" },
+        8.0,
+      );
+      tl.to(
+        "#hl-cursor",
+        {
+          x: AT_FIELD.x,
+          y: AT_FIELD.y,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power2.out",
+        },
+        8.5,
+      );
+      tl.to("#hl-cursor", { scale: 0.88, duration: 0.09 }, 9.4);
+      tl.to("#hl-cursor", { scale: 1, duration: 0.09 }, 9.49);
+      tl.to("#hl-ph", { opacity: 0, duration: 0.12 }, 9.7);
+      for (let i = 1; i <= EMAIL.length; i++) {
+        tl.set("#hl-typed", { innerHTML: EMAIL.slice(0, i) }, 9.8 + i * 0.045);
+      }
+      const typedEnd = 9.8 + EMAIL.length * 0.045;
+      // Real behaviour: Sign in only exists once the field is non-empty.
+      tl.fromTo(
+        "#hl-signin",
+        { opacity: 0, scale: 0.9 },
+        { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" },
+        typedEnd + 0.15,
+      );
+      tl.to(
+        "#hl-cursor",
+        { x: AT_SIGNIN.x, y: AT_SIGNIN.y, duration: 0.7, ease: "power2.out" },
+        typedEnd + 0.7,
+      );
+      tl.to("#hl-signin", { scale: 0.94, duration: 0.09 }, typedEnd + 1.5);
+      tl.to("#hl-signin", { scale: 1, duration: 0.09 }, typedEnd + 1.59);
+      tl.to("#hl-cursor", { scale: 0.88, duration: 0.09 }, typedEnd + 1.5);
+      tl.to("#hl-cursor", { scale: 1, duration: 0.09 }, typedEnd + 1.59);
+
+      // ── Scene 3 · step 2, the code is sent ────────────────────────
+      tl.to("#hl-emailgroup", { opacity: 0, duration: 0.35 }, 18.0);
+      tl.to("#hl-cursor", { opacity: 0, duration: 0.3 }, 18.0);
+      tl.to(
+        "#hl-surface",
+        { scale: STEP3.scale, y: STEP3.ty, duration: 0.6, ease: "power2.out" },
+        18.0,
+      );
+      tl.to("#hl-codegroup", { opacity: 1, duration: 0.3 }, 18.4);
+      for (let i = 0; i < 6; i++) {
+        tl.fromTo(
+          "#hl-otp-" + i,
+          { scale: 0.7, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(2)" },
+          18.5 + i * 0.06,
+        );
+      }
+
+      // ── Scene 4 · check spam — the support beat, then stillness ───
+      tl.to("#hl-spam", { opacity: 1, duration: 0.45 }, 26.2);
+      tl.fromTo(
+        "#hl-ring",
+        { opacity: 0, scale: 0.97 },
+        { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out" },
+        26.8,
+      );
+
+      // ── Scene 5 · step 3, type the code ───────────────────────────
+      tl.to("#hl-ring", { opacity: 0, duration: 0.35 }, 34.0);
+      tl.fromTo(
+        "#hl-cursor",
+        { x: OFF.x, y: OFF.y, opacity: 0 },
+        {
+          x: AT_OTP.x,
+          y: AT_OTP.y,
+          opacity: 1,
+          duration: 0.7,
+          ease: "power2.out",
+        },
+        34.2,
+      );
+      tl.to("#hl-cursor", { scale: 0.88, duration: 0.09 }, 35.0);
+      tl.to("#hl-cursor", { scale: 1, duration: 0.09 }, 35.09);
+      CODE.forEach(function (digit, i) {
+        const at = 35.4 + i * 0.18;
+        tl.set("#hl-otp-" + i, { innerHTML: digit }, at);
+        tl.fromTo(
+          "#hl-otp-" + i,
+          { scale: 1.12 },
+          { scale: 1, duration: 0.16, ease: "power2.out" },
+          at,
+        );
+      });
+      const codeEnd = 35.4 + 6 * 0.18;
+      tl.to("#hl-cursor", { opacity: 0, duration: 0.3 }, codeEnd + 0.2);
+      // The real form auto-submits on the sixth digit — no button press.
+      tl.to("#hl-spam", { opacity: 0, duration: 0.3 }, codeEnd + 0.3);
+      tl.to("#hl-signingin", { opacity: 1, duration: 0.35 }, codeEnd + 0.5);
+
+      // ── Scene 6 · you're in ───────────────────────────────────────
+      tl.fromTo(
+        "#hl-check",
+        { scale: 0.7, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.8)" },
+        42.2,
+      );
+      tl.fromTo(
+        "#hl-endword",
+        { y: 24, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" },
+        42.5,
+      );
+      tl.fromTo(
+        "#hl-endlogo",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.45, ease: "power2.out" },
+        43.0,
+      );
+    </script>
+  </body>
+</html>

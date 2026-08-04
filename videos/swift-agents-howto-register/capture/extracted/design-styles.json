@@ -1,0 +1,91 @@
+{
+  "typography": [
+    {
+      "role": "display",
+      "fontFamily": "fontGreedNarrow",
+      "fontSize": "60px",
+      "fontWeight": "400",
+      "lineHeight": "63px",
+      "letterSpacing": "-1.5px",
+      "color": "lab(8.11897 0.811279 -12.254)",
+      "sampleText": "SWIFT AGENTSREGISTRATION FORM"
+    },
+    {
+      "role": "label",
+      "fontFamily": "Naira Fallback",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "lineHeight": "24px",
+      "letterSpacing": "normal",
+      "color": "lab(8.11897 0.811279 -12.254)",
+      "sampleText": "Company Name"
+    },
+    {
+      "role": "link",
+      "fontFamily": "Inter",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "lineHeight": "24px",
+      "letterSpacing": "normal",
+      "color": "lab(2.75381 0 0)",
+      "sampleText": ""
+    }
+  ],
+  "spacing": {
+    "observed": [
+      6,
+      8,
+      16,
+      24,
+      32,
+      40,
+      56
+    ],
+    "baseUnit": 8
+  },
+  "radius": [
+    "8px"
+  ],
+  "shadows": [
+    {
+      "value": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(0, 0, 0) -4px 4px 0px 0px",
+      "count": 1
+    }
+  ],
+  "buttons": [
+    {
+      "label": "Register",
+      "background": "#006BE5",
+      "backgroundImage": "",
+      "backdropFilter": "",
+      "color": "#FFFFFF",
+      "padding": "0px",
+      "borderRadius": "14px",
+      "border": "0px solid lab(90.952 0 -0.0000119209)",
+      "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(0, 0, 0) -4px 4px 0px 0px",
+      "fontSize": "18px",
+      "fontWeight": "400",
+      "height": "36px"
+    }
+  ],
+  "cards": [],
+  "nav": {
+    "label": "navigation",
+    "background": "transparent",
+    "backgroundImage": "",
+    "backdropFilter": "",
+    "color": "lab(2.75381 0 0)",
+    "padding": "0px 24px",
+    "borderRadius": "0px",
+    "border": "0px solid lab(90.952 0 -0.0000119209)",
+    "boxShadow": "none",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "height": "80px"
+  },
+  "chips": [],
+  "statCells": [],
+  "tabs": [],
+  "backgrounds": [],
+  "glass": []
+}

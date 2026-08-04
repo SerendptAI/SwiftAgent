@@ -1,0 +1,23 @@
+[a] PRODUCTS
+[span] OUR PRODUCTS
+[a] DOWNLOAD THE SWIFT AGENTS APP
+[a] USE OUR SDKS
+[span] START EARNING
+[a] AFFILIATE PROGRAM
+[a] REFER & EARN
+[span] TRY THE DEMO
+[a] COST CALCULATOR
+[a] USE ANALYSIS
+[h1] SWIFT AGENTS
+[h1] REGISTRATION FORM
+[label] Company Name
+[label] Company Email
+[label] What does your company do
+[label] Estimated/customer size or Average customer size
+[option] Select customer size
+[option] 1 – 100
+[option] 101 – 1,000
+[option] 1,001 – 10,000
+[option] 10,001 – 100,000
+[option] 100,000+
+[button] Register
