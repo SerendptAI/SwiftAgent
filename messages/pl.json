@@ -4,5 +4,12 @@
     "signOut": "Wyloguj się",
     "subtitle": "Szablon startowy Next.js, pełen funkcji takich jak TypeScript, Tailwind CSS, Next-auth, Eslint, Stripe, narzędzia testowe i wiele innych. Rozpocznij swój projekt wydajnie i stylowo.",
     "getStartedButton": "Zacznij"
+  },
+  "consent": {
+    "ariaLabel": "Zgoda na pliki cookie",
+    "message": "Używamy plików cookie, aby zrozumieć, jak odwiedzający korzystają z witryny, i ulepszać produkt.",
+    "privacyPolicy": "Polityka prywatności",
+    "accept": "Akceptuję",
+    "decline": "Odrzuć"
   }
 }

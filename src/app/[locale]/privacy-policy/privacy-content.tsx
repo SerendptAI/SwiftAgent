@@ -119,9 +119,11 @@ export function PrivacyContent() {
                   <strong className="text-gray-900">
                     Cookies and Tracking Technologies:
                   </strong>{" "}
-                  We use essential cookies and similar tracking technologies to
-                  maintain secure user sessions, remember system preferences,
-                  and analyze platform performance.
+                  We use essential cookies to maintain secure user sessions and
+                  remember system preferences. With your consent, we also use
+                  analytics cookies to understand how the platform is used and
+                  to improve it. You can decline these in the cookie banner
+                  without affecting your use of the platform.
                 </li>
               </ul>
             </div>

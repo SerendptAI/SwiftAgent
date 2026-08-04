@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Loader } from "@/components/loader";
 import { useCurrentUser } from "@/hooks/use-auth";
 import { useCompanyQuery } from "@/hooks/use-company";
+import { identifyUser } from "@/lib/analytics";
 import { getAccessToken } from "@/lib/api-client";
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -27,6 +28,12 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  // React Query keeps `user` referentially stable, so this re-identifies only
+  // when the user data actually changes.
+  useEffect(() => {
+    if (user) identifyUser(user);
+  }, [user]);
 
   const hasToken = typeof window !== "undefined" && !!getAccessToken();
   const isResolving = isLoading || (hasToken && status === "pending" && !user);

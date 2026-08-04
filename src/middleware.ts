@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 
 import { routing } from "./i18n/routing";
+import { stripLocalePrefix } from "./lib/locale-path";
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -18,10 +19,6 @@ const ADMIN_HOST = process.env.ADMIN_HOST || "ns.swiftagents.org";
 
 const ADMIN_ANALYTICS_PATH = "/admin/analytics";
 const ADMIN_ANALYTICS_API_PATH = `/api${ADMIN_ANALYTICS_PATH}`;
-
-const LOCALE_PREFIX_PATTERN = new RegExp(
-  `^/(?:${routing.locales.join("|")})(?=/|$)`,
-);
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -47,10 +44,7 @@ function isWithin(pathname: string, base: string) {
 function isAdminAnalyticsPath(pathname: string) {
   if (isWithin(pathname, ADMIN_ANALYTICS_API_PATH)) return true;
 
-  return isWithin(
-    pathname.replace(LOCALE_PREFIX_PATTERN, ""),
-    ADMIN_ANALYTICS_PATH,
-  );
+  return isWithin(stripLocalePrefix(pathname), ADMIN_ANALYTICS_PATH);
 }
 
 export default function middleware(req: NextRequest) {
@@ -108,7 +102,9 @@ export const config = {
     "/stroll.js",
     // API routes (for CORS)
     "/api/:path*",
-    // All other routes except Next.js internals, static files, and embed
-    "/((?!trpc|_next|_vercel|.*\\..*|.*\\/embed.*).*)",
+    // All other routes except Next.js internals, static files, and embed.
+    // `ingest` is the PostHog proxy from next.config.ts: locale routing would
+    // rewrite its paths, and the admin-host gate would 404 them.
+    "/((?!trpc|ingest|_next|_vercel|.*\\..*|.*\\/embed.*).*)",
   ],
 };

@@ -6,6 +6,8 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { Suspense } from "react";
 
+import { AnalyticsTracker } from "@/components/analytics-tracker";
+import { ConsentBanner } from "@/components/consent-banner";
 import { UpgradeModalTrigger } from "@/components/dashboard/upgrade-modal-trigger";
 import { ChatbotRouteGuard } from "@/components/landing/chatbot-route-guard";
 import { QueryProvider } from "@/components/query-provider";
@@ -96,6 +98,8 @@ const RootLayout = async ({
               </ToastProvider>
             </QueryProvider>
             <ChatbotRouteGuard />
+            <AnalyticsTracker />
+            <ConsentBanner />
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

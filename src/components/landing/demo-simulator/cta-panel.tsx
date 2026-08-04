@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 
-import { siteConfig } from "@/lib/site-config";
+import { DemoBookingLink } from "../demo-booking-link";
 
 export function CtaPanel() {
   return (
@@ -36,14 +36,12 @@ export function CtaPanel() {
           <p className="font-dm-mono text-base leading-[1.6] tracking-[10%] text-black/80 uppercase md:text-lg">
             DEPLOY A SWIFTAGENTS AI AGENT IN UNDER A DAY.
           </p>
-          <a
-            href={siteConfig.demoBookingUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+          <DemoBookingLink
+            location="roi-simulator"
             className="font-greed-narrow w-full shrink-0 border border-black bg-white p-3 text-center text-3xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-shadow sm:max-w-101 md:p-5 md:text-4xl lg:text-[46px]"
           >
             BOOK A DEMO
-          </a>
+          </DemoBookingLink>
         </div>
       </div>
     </div>
