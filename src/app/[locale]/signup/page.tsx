@@ -11,6 +11,7 @@ import {
 } from "@/components/dashboard/company-setup/ui-elements";
 import { Navbar } from "@/components/landing/navbar";
 import { useRegisterInterest } from "@/hooks/use-auth";
+import { trackEvent } from "@/lib/analytics";
 
 export default function RegisterCompanyPage() {
   const [form, setForm] = useState({
@@ -36,6 +37,9 @@ export default function RegisterCompanyPage() {
       },
       {
         onSuccess: () => {
+          trackEvent("signup_interest_submitted", {
+            customer_size: form.size,
+          });
           setSubmitted(true);
         },
         onError: (error: unknown) => {

@@ -27,5 +27,12 @@
   },
   "dashboard": {
     "welcomeMessage": "Welcome to your Dashboard"
+  },
+  "consent": {
+    "ariaLabel": "Cookie consent",
+    "message": "We use cookies to understand how visitors use the site and to improve the product.",
+    "privacyPolicy": "Privacy policy",
+    "accept": "Accept",
+    "decline": "Decline"
   }
 }

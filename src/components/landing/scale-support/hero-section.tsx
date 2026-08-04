@@ -6,8 +6,8 @@ import { useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
-import { siteConfig } from "@/lib/site-config";
 
+import { DemoBookingLink } from "../demo-booking-link";
 import { Navbar } from "../navbar";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -162,13 +162,9 @@ export function HeroSection() {
             className="mt-8 grid w-full max-w-140 grid-cols-1 gap-4 md:mt-10 md:grid-cols-2 lg:gap-6 xl:gap-8"
           >
             <Button variant="outline" size="lg" className="w-full" asChild>
-              <a
-                href={siteConfig.demoBookingUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <DemoBookingLink location="scale-support-hero">
                 BOOK A DEMO
-              </a>
+              </DemoBookingLink>
             </Button>
             <Button size="lg" className="w-full" asChild>
               <Link href="/signup">GET STARTED</Link>

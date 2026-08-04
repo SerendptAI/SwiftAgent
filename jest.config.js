@@ -9,6 +9,11 @@ const config = {
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   testEnvironment: "jest-environment-jsdom",
   preset: "ts-jest",
+  // Next's SWC transformer rewrites `@/` in imports but not in jest.mock()
+  // specifiers, so the alias needs an explicit mapping.
+  moduleNameMapper: {
+    "^@/(.*)$": "<rootDir>/src/$1",
+  },
   testPathIgnorePatterns: ["<rootDir>/src/__tests__/e2e"],
   transform: {
     "^.+\\.jsx?$": "babel-jest",

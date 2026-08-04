@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSetActiveCompanyId } from "@/hooks/use-active-company";
 import { useCurrentUser } from "@/hooks/use-auth";
 import { useCompaniesQuery, useCompanyQuery } from "@/hooks/use-company";
+import { trackEvent } from "@/lib/analytics";
 import { useOnboardingStore } from "@/store/onboarding-store";
 
 import { CompanyIdentityStep } from "./company-identity-step";
@@ -112,6 +113,11 @@ export function SetupWizard() {
     !websiteIntroDone && (isNewCompany || (!!user && !effectiveCompanyId));
 
   const handleNext = () => {
+    trackEvent("onboarding_step_completed", {
+      step_index: currentStep,
+      step_name: STEPS[currentStep],
+    });
+
     if (currentStep === 1) {
       // After Company Identity, show completion screen
       setShowCompletion(true);

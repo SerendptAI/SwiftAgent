@@ -24,6 +24,12 @@ on:
       - 'Dockerfile.ns'
       - '.github/workflows/deploy-ns.yml'
 
+# Two pushes in quick succession would otherwise run deploy.sh ns twice at once
+# on the same runner, against the same working directory.
+concurrency:
+  group: deploy-ns
+  cancel-in-progress: false
+
 jobs:
   deploy-ns:
     name: Deploy Northstar

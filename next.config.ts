@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
+// PostHog is proxied through our own origin (src/lib/analytics.ts posts to
+// /ingest) so ad blockers, which filter *.posthog.com, don't drop the traffic.
+const POSTHOG_INGEST_HOST = "https://us.i.posthog.com";
+const POSTHOG_ASSETS_HOST = "https://us-assets.i.posthog.com";
+
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["127.0.0.1"],
   images: {
@@ -18,6 +23,18 @@ const nextConfig: NextConfig = {
         hostname: "res.cloudinary.com",
       },
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/ingest/static/:path*",
+        destination: `${POSTHOG_ASSETS_HOST}/static/:path*`,
+      },
+      {
+        source: "/ingest/:path*",
+        destination: `${POSTHOG_INGEST_HOST}/:path*`,
+      },
+    ];
   },
   async headers() {
     return [

@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useToast } from "@/components/ui/toast";
 import { useSendOtp, useVerifyOtp } from "@/hooks/use-auth";
+import { trackEvent } from "@/lib/analytics";
 
 const OTP_LENGTH = 6;
 
@@ -54,8 +55,13 @@ export default function LoginPage() {
       { email: email.trim() },
       {
         onSuccess: (data) => {
+          trackEvent("login_otp_requested", {
+            otp_required: data.otp_required,
+          });
+
           if (!data.otp_required) {
             // Grace period — already authenticated
+            trackEvent("login_completed", { method: "email" });
             router.push("/en/dashboard");
             return;
           }
@@ -101,6 +107,7 @@ export default function LoginPage() {
         { email: email.trim(), otpCode: code },
         {
           onSuccess: () => {
+            trackEvent("login_completed", { method: "email" });
             router.push("/en/dashboard");
           },
           onError: () => {

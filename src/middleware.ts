@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 
 import { routing } from "./i18n/routing";
+import { stripLocalePrefix } from "./lib/locale-path";
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -17,11 +18,7 @@ const WIDGET_CORS_PATTERN =
 const ADMIN_HOST = process.env.ADMIN_HOST || "ns.swiftagents.org";
 
 const ADMIN_ANALYTICS_PATH = "/admin/analytics";
-
-/** The page itself, plus the API routes it reads its data from. */
-const ADMIN_ALLOWED_PATTERN = new RegExp(
-  `^(?:/(?:${routing.locales.join("|")}))?${ADMIN_ANALYTICS_PATH}(?:/|$)|^/api/admin/analytics(?:/|$)`,
-);
+const ADMIN_ANALYTICS_API_PATH = `/api${ADMIN_ANALYTICS_PATH}`;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -30,11 +27,24 @@ const corsHeaders = {
 };
 
 function isAdminHost(req: NextRequest) {
-  const host = req.headers.get("host");
-  if (!host) return false;
+  // A reverse proxy that rewrites Host to the upstream address would leave the
+  // gate permanently inert, so the forwarded name wins when it is present.
+  const host =
+    req.headers.get("x-forwarded-host") ?? req.headers.get("host") ?? "";
+  const hostname = host.split(",")[0].trim().split(":")[0];
 
-  // Strip the port so a host:3000 style header still matches.
-  return host.split(":")[0].toLowerCase() === ADMIN_HOST.toLowerCase();
+  return hostname.toLowerCase() === ADMIN_HOST.toLowerCase();
+}
+
+function isWithin(pathname: string, base: string) {
+  return pathname === base || pathname.startsWith(`${base}/`);
+}
+
+/** The analytics page itself, plus the API routes it reads its data from. */
+function isAdminAnalyticsPath(pathname: string) {
+  if (isWithin(pathname, ADMIN_ANALYTICS_API_PATH)) return true;
+
+  return isWithin(stripLocalePrefix(pathname), ADMIN_ANALYTICS_PATH);
 }
 
 export default function middleware(req: NextRequest) {
@@ -52,7 +62,7 @@ export default function middleware(req: NextRequest) {
       );
     }
 
-    if (!ADMIN_ALLOWED_PATTERN.test(pathname)) {
+    if (!isAdminAnalyticsPath(pathname)) {
       return new NextResponse(null, { status: 404 });
     }
   }
@@ -92,7 +102,9 @@ export const config = {
     "/stroll.js",
     // API routes (for CORS)
     "/api/:path*",
-    // All other routes except Next.js internals, static files, and embed
-    "/((?!trpc|_next|_vercel|.*\\..*|.*\\/embed.*).*)",
+    // All other routes except Next.js internals, static files, and embed.
+    // `ingest` is the PostHog proxy from next.config.ts: locale routing would
+    // rewrite its paths, and the admin-host gate would 404 them.
+    "/((?!trpc|ingest|_next|_vercel|.*\\..*|.*\\/embed.*).*)",
   ],
 };

@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
-import { siteConfig } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
+
+import { DemoBookingLink } from "./demo-booking-link";
 
 interface CtaSectionProps {
   variant?: "light" | "green";
@@ -38,13 +39,9 @@ export function CtaSection({ variant = "light" }: CtaSectionProps) {
 
           <div className="xs:max-w-107.5 flex w-full flex-wrap gap-4 sm:grid sm:grid-cols-2 md:gap-8">
             <Button variant="outline" size="lg" className="w-full" asChild>
-              <a
-                href={siteConfig.demoBookingUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <DemoBookingLink location="landing-cta">
                 BOOK A DEMO
-              </a>
+              </DemoBookingLink>
             </Button>
             <Button
               size="lg"

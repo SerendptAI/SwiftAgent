@@ -6,6 +6,7 @@ import { useLocale } from "next-intl";
 import { useEffect, useRef } from "react";
 
 import { Loader } from "@/components/loader";
+import { trackEvent } from "@/lib/analytics";
 import { getAccessToken } from "@/lib/api-client";
 import { getCurrentUser, processAuthCallback } from "@/services/auth";
 import { clearActiveCompany } from "@/store/active-company-store";
@@ -40,6 +41,7 @@ export default function AuthCallbackPage() {
 
       try {
         const user = await getCurrentUser();
+        trackEvent("login_completed", { method: "google" });
         const target = user.onboarding_completed ? "dashboard" : "onboarding";
         router.replace(`/${locale}/${target}`);
       } catch {

@@ -1,5 +1,6 @@
 import axios from "axios";
 
+import { resetAnalytics } from "@/lib/analytics";
 import { clearActiveCompany } from "@/store/active-company-store";
 
 export const API_BASE_URL = (
@@ -34,6 +35,8 @@ export function clearAuthTokens() {
   localStorage.removeItem(REFRESH_TOKEN_KEY);
   localStorage.removeItem(AUTH_PROVIDER_KEY);
   clearActiveCompany();
+  // Deliberate and forced logouts both funnel through here.
+  resetAnalytics();
 }
 
 export function getAuthProvider(): string | null {
