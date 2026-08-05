@@ -103,8 +103,9 @@ export const config = {
     // API routes (for CORS)
     "/api/:path*",
     // All other routes except Next.js internals, static files, and embed.
-    // `ingest` is the PostHog proxy from next.config.ts: locale routing would
-    // rewrite its paths, and the admin-host gate would 404 them.
-    "/((?!trpc|ingest|_next|_vercel|.*\\..*|.*\\/embed.*).*)",
+    // `ingest` is the PostHog proxy from next.config.ts and `studio` is the
+    // Sanity Studio, which lives outside [locale]: locale routing would
+    // rewrite both, and the admin-host gate would 404 them.
+    "/((?!trpc|ingest|studio|_next|_vercel|.*\\..*|.*\\/embed.*).*)",
   ],
 };
