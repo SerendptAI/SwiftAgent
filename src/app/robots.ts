@@ -22,6 +22,8 @@ export default function robots(): MetadataRoute.Robots {
           "/en/auth",
           "/pl/auth",
           "/api/",
+          // The CMS is not locale-prefixed and has nothing to index.
+          "/studio",
         ],
       },
     ],
