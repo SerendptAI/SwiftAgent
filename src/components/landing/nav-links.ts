@@ -13,6 +13,11 @@ export const DEMO_DROPDOWN_LINKS = [
   { label: "USE ANALYSIS", href: "/case-studies", arrow: true },
 ] as const;
 
+export const RESOURCES_DROPDOWN_LINKS = [
+  { label: "BLOG", href: "/blog", arrow: true },
+  { label: "CASE STUDIES", href: "/case-studies", arrow: true },
+] as const;
+
 interface NavDropdownLink {
   readonly label: string;
   readonly href: string;
@@ -50,6 +55,11 @@ export const LANDING_NAV_LINKS: readonly NavLink[] = [
     label: "DEMO",
     href: "/demo",
     dropdown: { title: "TRY THE DEMO", links: DEMO_DROPDOWN_LINKS },
+  },
+  {
+    label: "RESOURCES",
+    href: "/blog",
+    dropdown: { title: "READ UP", links: RESOURCES_DROPDOWN_LINKS },
   },
   { label: "PRICING", href: "/#pricing" },
 ];

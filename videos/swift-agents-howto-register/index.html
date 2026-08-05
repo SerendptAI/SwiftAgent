@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #000;
+      }
+
+      @font-face {
+        font-family: "GreedNarrow";
+        src: url("assets/fonts/GreedNarrow-Medium.otf") format("opentype");
+        font-weight: 500;
+        font-display: block;
+      }
+      @font-face {
+        font-family: "StolzlV";
+        src: url("assets/fonts/stolzl_book.otf") format("opentype");
+        font-weight: 400;
+        font-display: block;
+      }
+      @font-face {
+        font-family: "DMMonoV";
+        src: url("assets/fonts/dmmono-400.woff2") format("woff2");
+        font-weight: 400;
+        font-display: block;
+      }
+      @font-face {
+        font-family: "DMMonoV";
+        src: url("assets/fonts/dmmono-500.woff2") format("woff2");
+        font-weight: 500;
+        font-display: block;
+      }
+
+      body {
+        font-family: "StolzlV", system-ui, sans-serif;
+      }
+
+      .hr-ground {
+        position: absolute;
+        inset: 0;
+        background: #ffffff;
+      }
+      .hr-display {
+        font-family: "GreedNarrow", system-ui, sans-serif;
+        text-transform: uppercase;
+        color: #0a0a0a;
+        letter-spacing: -0.01em;
+      }
+      .hr-mono {
+        font-family: "DMMonoV", ui-monospace, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+      .hr-caption {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 92px;
+        text-align: center;
+        font-size: 34px;
+        font-weight: 500;
+        color: #0a0a0a;
+      }
+      .hr-caption-sub {
+        display: block;
+        margin-top: 16px;
+        font-size: 27px;
+        color: #6e6e6e;
+      }
+
+      /* ── The reconstructed registration form ───────────────────────── */
+      .hr-form {
+        position: absolute;
+        left: 50%;
+        top: 0;
+        margin-left: -500px;
+        width: 1000px;
+      }
+      .hr-label {
+        font-family: "StolzlV", system-ui, sans-serif;
+        font-size: 27px;
+        color: #0a0a0a;
+      }
+      .hr-input {
+        position: relative;
+        width: 1000px;
+        height: 72px;
+        background: #f3f4f6;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        padding: 0 26px;
+        font-family: "DMMonoV", ui-monospace, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-size: 25px;
+        color: #0a0a0a;
+      }
+      .hr-textarea {
+        position: relative;
+        width: 1000px;
+        height: 128px;
+        background: #f3f4f6;
+        border-radius: 8px;
+        padding: 22px 26px;
+        font-family: "DMMonoV", ui-monospace, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-size: 25px;
+        line-height: 1.45;
+        color: #0a0a0a;
+      }
+      .hr-ph {
+        color: #6e6e6e;
+      }
+      .hr-input > .hr-ph {
+        position: absolute;
+        left: 26px;
+        top: 50%;
+        margin-top: -16px;
+      }
+      .hr-textarea > .hr-ph {
+        position: absolute;
+        left: 26px;
+        right: 26px;
+        top: 22px;
+      }
+      .hr-btn {
+        width: 1000px;
+        height: 80px;
+        background: #006be5;
+        color: #ffffff;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "DMMonoV", ui-monospace, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 28px;
+        font-weight: 500;
+        box-shadow: -4px 4px 0px 0px #000000;
+      }
+      .hr-chevron {
+        margin-left: auto;
+      }
+      .hr-options {
+        position: absolute;
+        left: 50%;
+        margin-left: -500px;
+        width: 1000px;
+        background: #ffffff;
+        border: 2px solid #e5e5e5;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .hr-option {
+        height: 62px;
+        display: flex;
+        align-items: center;
+        padding: 0 26px;
+        font-family: "DMMonoV", ui-monospace, monospace;
+        font-size: 25px;
+        color: #0a0a0a;
+        letter-spacing: 0.06em;
+      }
+      .hr-cursor {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 78px;
+        height: 78px;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="47"
+      data-width="1920"
+      data-height="1080"
+    >
+      <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+        <symbol id="hr-mark" viewBox="0 0 72 71">
+          <path d="M72 0H0V70.23H72V0Z" fill="#F2B035" />
+          <path
+            d="M34.9276 15.8941C34.9285 17.1858 35.4142 19.8319 36.1075 23.0929C36.6746 25.7614 37.395 28.9013 38.1431 32.1609C38.3188 32.9228 38.4944 33.6908 38.6709 34.4614C39.6024 38.5334 40.5315 42.6656 41.228 46.2197C41.9292 49.7929 42.3814 52.7233 42.383 54.4196C42.3853 57.1438 41.5894 59.0924 40.3227 60.3604C39.0546 61.6295 37.237 62.2941 35.0407 62.2978C33.23 62.3013 31.409 61.9127 29.7883 61.2801L31.1906 56.3124C32.0804 56.8583 32.9958 57.1079 33.799 57.1068C34.6141 57.1055 35.3889 56.8098 35.9596 56.2307C36.532 55.6493 36.8549 54.8281 36.8541 53.8521C36.8533 52.1369 36.3864 49.23 35.71 45.8011C35.0296 42.3519 34.1236 38.3104 33.22 34.2944L33.1121 33.8161C32.244 29.9583 31.3863 26.1479 30.7363 22.9141C30.0558 19.5246 29.6185 16.8384 29.617 15.3984C29.6151 13.1224 30.347 11.3287 31.5615 10.1056C32.7746 8.88268 34.5255 8.17404 36.6692 8.17023C38.7225 8.16658 40.4583 8.68812 41.7843 9.321L39.741 13.8356C38.9991 13.4231 38.1123 13.1445 37.3279 13.1459C36.6083 13.1472 35.9781 13.4175 35.5401 13.9452C35.1148 14.457 34.9266 15.1437 34.9276 15.8941Z"
+            fill="#0A0A0A"
+          />
+        </symbol>
+      </svg>
+
+      <div
+        id="hr-ground"
+        class="clip hr-ground"
+        data-start="0"
+        data-duration="47"
+        data-track-index="0"
+      ></div>
+
+      <!-- ── Scene 0 · Title card (0-3s) ────────────────────────────── -->
+      <div
+        id="hr-scene-title"
+        class="clip"
+        data-start="0"
+        data-duration="3"
+        data-track-index="1"
+        style="position: absolute; inset: 0"
+      >
+        <svg
+          id="hr-title-logo"
+          style="
+            position: absolute;
+            left: 50%;
+            top: 372px;
+            margin-left: -52px;
+            width: 104px;
+            height: 104px;
+          "
+        >
+          <use href="#hr-mark" />
+        </svg>
+        <div
+          id="hr-title-word"
+          class="hr-display"
+          style="
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 524px;
+            text-align: center;
+            font-size: 104px;
+          "
+        >
+          How to register
+        </div>
+        <div
+          id="hr-title-sub"
+          class="hr-mono"
+          style="
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 664px;
+            text-align: center;
+            font-size: 28px;
+            color: #6e6e6e;
+          "
+        >
+          Swift Agents
+        </div>
+      </div>
+
+      <!-- ── Scenes 1-5 · The locked form stage (3-40s) ─────────────── -->
+      <div
+        id="hr-scene-stage"
+        class="clip"
+        data-start="3"
+        data-duration="37"
+        data-track-index="1"
+        style="position: absolute; inset: 0"
+      >
+        <div
+          id="hr-viewport"
+          style="
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            height: 904px;
+            overflow: hidden;
+          "
+        >
+          <div
+            id="hr-surface"
+            style="position: absolute; left: 0; top: 0; width: 1920px; height: 1080px"
+          >
+          <div class="hr-form">
+            <div
+              id="hr-heading"
+              class="hr-display"
+              style="font-size: 56px; line-height: 1.06; margin-top: 92px"
+            >
+              Swift Agents<br />Registration form
+            </div>
+
+            <div id="hr-g1" style="margin-top: 42px">
+              <div class="hr-label">Company Name</div>
+              <div id="hr-f1" class="hr-input" style="margin-top: 12px">
+                <span id="hr-f1-ph" class="hr-ph">Company legal name</span
+                ><span id="hr-f1-val"></span>
+              </div>
+            </div>
+
+            <div id="hr-g2" style="margin-top: 26px">
+              <div class="hr-label">Company Email</div>
+              <div id="hr-f2" class="hr-input" style="margin-top: 12px">
+                <span id="hr-f2-ph" class="hr-ph">company@email.com</span
+                ><span id="hr-f2-val"></span>
+              </div>
+            </div>
+
+            <div id="hr-g3" style="margin-top: 26px">
+              <div class="hr-label">What does your company do</div>
+              <div id="hr-f3" class="hr-textarea" style="margin-top: 12px">
+                <span id="hr-f3-ph" class="hr-ph"
+                  >Brief description of what your company does</span
+                ><span id="hr-f3-val"></span>
+              </div>
+            </div>
+
+            <div id="hr-g4" style="margin-top: 26px">
+              <div class="hr-label">
+                Estimated/customer size or Average customer size
+              </div>
+              <div id="hr-f4" class="hr-input" style="margin-top: 12px">
+                <span id="hr-f4-ph" class="hr-ph">Select customer size</span
+                ><span id="hr-f4-val"></span>
+                <span class="hr-chevron hr-mono" style="color: #6e6e6e">v</span>
+              </div>
+            </div>
+
+            <div id="hr-btn" class="hr-btn" style="margin-top: 34px">
+              Register
+            </div>
+          </div>
+
+          <!-- the select, opened -->
+          <div id="hr-options" class="hr-options" style="top: 839px">
+            <div class="hr-option">1 &ndash; 100</div>
+            <div class="hr-option">101 &ndash; 1,000</div>
+            <div class="hr-option">1,001 &ndash; 10,000</div>
+            <div id="hr-opt-pick" class="hr-option">10,001 &ndash; 100,000</div>
+            <div class="hr-option">100,000+</div>
+          </div>
+          </div>
+        </div>
+
+        <svg
+          id="hr-cursor"
+          class="hr-cursor"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M5 2.5 L5 20 L9.4 16.2 L12.3 22.2 L15.2 20.8 L12.4 15 L18.2 15 Z"
+            fill="#0A0A0A"
+            stroke="#FFFFFF"
+            stroke-width="1.4"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+
+      <!-- ── Scene 6 · Now you wait (40-47s) ────────────────────────── -->
+      <div
+        id="hr-scene-end"
+        class="clip"
+        data-start="40"
+        data-duration="7"
+        data-track-index="1"
+        style="position: absolute; inset: 0"
+      >
+        <div
+          id="hr-thanks"
+          class="hr-display"
+          style="
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 286px;
+            text-align: center;
+            font-size: 92px;
+            line-height: 1.06;
+          "
+        >
+          Thank you for<br />registering!
+        </div>
+        <div
+          id="hr-thanks-sub"
+          class="hr-mono"
+          style="
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 512px;
+            text-align: center;
+            font-size: 30px;
+            color: #0a0a0a;
+          "
+        >
+          We&rsquo;ll reach out soon!
+        </div>
+        <img
+          id="hr-thanks-art"
+          src="assets/Thankyou.svg"
+          alt=""
+          style="
+            position: absolute;
+            left: 50%;
+            top: 596px;
+            margin-left: -46px;
+            width: 92px;
+            height: 220px;
+          "
+        />
+      </div>
+
+      <!-- ── Captions ───────────────────────────────────────────────── -->
+      <div
+        id="hr-cap-1"
+        class="clip hr-caption hr-mono"
+        data-start="3"
+        data-duration="5"
+        data-track-index="3"
+      >
+        The registration form
+      </div>
+      <div
+        id="hr-cap-2"
+        class="clip hr-caption hr-mono"
+        data-start="8"
+        data-duration="10"
+        data-track-index="3"
+      >
+        Step 1 &mdash; Company name and email
+      </div>
+      <div
+        id="hr-cap-3"
+        class="clip hr-caption hr-mono"
+        data-start="18"
+        data-duration="9"
+        data-track-index="3"
+      >
+        Step 2 &mdash; Describe what you do
+        <span class="hr-caption-sub">This is how we judge fit</span>
+      </div>
+      <div
+        id="hr-cap-4"
+        class="clip hr-caption hr-mono"
+        data-start="27"
+        data-duration="8"
+        data-track-index="3"
+      >
+        Step 3 &mdash; Pick your customer volume
+      </div>
+      <div
+        id="hr-cap-5"
+        class="clip hr-caption hr-mono"
+        data-start="35"
+        data-duration="5"
+        data-track-index="3"
+      >
+        Step 4 &mdash; Register
+      </div>
+      <div
+        id="hr-cap-6"
+        class="clip hr-caption hr-mono"
+        data-start="40"
+        data-duration="7"
+        data-track-index="3"
+      >
+        We review every application &mdash; you&rsquo;ll hear from us
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines["main"] = tl;
+
+      const NAME = "Chowdeck";
+      const EMAIL = "ops@chowdeck.com";
+      const DESC =
+        "Food delivery across Nigeria. We handle order, rider and refund questions at high volume.";
+
+      // Field centres in unscaled stage space, measured off the layout above.
+      const Y_F1 = 328;
+      const Y_F2 = 465;
+      const Y_F3 = 630;
+      const Y_F4 = 795;
+      const Y_BTN = 905;
+
+      // The stage scales and pans per step, so cursor targets must be derived
+      // from the transform in force during that scene — otherwise the pointer
+      // drifts off whatever it is meant to be clicking.
+      const TIP = { x: 16, y: 8 };
+      // Focus sits above the optical centre so panned form content clears the
+      // caption band — scene 3's caption runs to two lines and reaches y=893.
+      const FOCUS_Y = 470;
+      function panTo(yFocus, scale) {
+        return FOCUS_Y - 540 - (yFocus - 540) * scale;
+      }
+      function at(x, y, scale, ty) {
+        return {
+          x: 960 + (x - 960) * scale - TIP.x,
+          y: 540 + (y - 540) * scale + ty - TIP.y,
+        };
+      }
+
+      const S_WIDE = 0.78; // orientation: the whole form has to fit
+      const S_STEP = 1.15;
+      const TY_WIDE = 0;
+      const TY_F12 = panTo((Y_F1 + Y_F2) / 2, S_STEP);
+      const TY_F3 = panTo(Y_F3, S_STEP);
+      const TY_F4 = panTo(Y_F4 + 90, S_STEP);
+
+      const OFF = { x: 1620, y: 1180 };
+
+      // ── Scene 0 · title card ──────────────────────────────────────
+      tl.fromTo(
+        "#hr-title-logo",
+        { scale: 0.9, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.5, ease: "power2.out" },
+        0.15,
+      );
+      tl.fromTo(
+        "#hr-title-word",
+        { y: 26, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" },
+        0.45,
+      );
+      tl.fromTo(
+        "#hr-title-sub",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.4, ease: "power2.out" },
+        0.75,
+      );
+
+      // ── Scene 1 · orientation: the whole form, once ───────────────
+      tl.set("#hr-options", { opacity: 0 }, 3.0);
+      tl.set("#hr-cursor", { x: OFF.x, y: OFF.y, opacity: 0 }, 3.0);
+      tl.set("#hr-f1-val", { innerHTML: "" }, 3.0);
+      tl.set("#hr-f2-val", { innerHTML: "" }, 3.0);
+      tl.set("#hr-f3-val", { innerHTML: "" }, 3.0);
+      tl.set("#hr-f4-val", { innerHTML: "" }, 3.0);
+      tl.set(
+        ["#hr-heading", "#hr-g1", "#hr-g2", "#hr-g3", "#hr-g4", "#hr-btn"],
+        { autoAlpha: 1 },
+        3.0,
+      );
+      tl.set("#hr-f1-ph", { opacity: 1 }, 3.0);
+      tl.set("#hr-f2-ph", { opacity: 1 }, 3.0);
+      tl.set("#hr-f3-ph", { opacity: 1 }, 3.0);
+      tl.set("#hr-f4-ph", { opacity: 1 }, 3.0);
+      tl.fromTo(
+        "#hr-surface",
+        { scale: S_WIDE * 0.98, y: TY_WIDE, opacity: 0 },
+        {
+          scale: S_WIDE,
+          y: TY_WIDE,
+          opacity: 1,
+          duration: 0.6,
+          ease: "power2.out",
+        },
+        3.1,
+      );
+
+      // ── Scene 2 · step 1, name + email ────────────────────────────
+      tl.to("#hr-heading", { autoAlpha: 0, duration: 0.3 }, 8.0);
+      tl.to("#hr-g1", { autoAlpha: 1, duration: 0.3 }, 8.0);
+      tl.to("#hr-g2", { autoAlpha: 1, duration: 0.3 }, 8.0);
+      tl.to("#hr-g3", { autoAlpha: 0, duration: 0.3 }, 8.0);
+      tl.to("#hr-g4", { autoAlpha: 0, duration: 0.3 }, 8.0);
+      tl.to("#hr-btn", { autoAlpha: 0, duration: 0.3 }, 8.0);
+      tl.to(
+        "#hr-surface",
+        { scale: S_STEP, y: TY_F12, duration: 0.7, ease: "power2.out" },
+        8.0,
+      );
+      const pF1 = at(560, Y_F1, S_STEP, TY_F12);
+      const pF2 = at(560, Y_F2, S_STEP, TY_F12);
+      tl.to(
+        "#hr-cursor",
+        { x: pF1.x, y: pF1.y, opacity: 1, duration: 0.8, ease: "power2.out" },
+        8.4,
+      );
+      tl.to("#hr-cursor", { scale: 0.88, duration: 0.09 }, 9.3);
+      tl.to("#hr-cursor", { scale: 1, duration: 0.09 }, 9.39);
+      tl.to("#hr-f1-ph", { opacity: 0, duration: 0.12 }, 9.6);
+      for (let i = 1; i <= NAME.length; i++) {
+        tl.set("#hr-f1-val", { innerHTML: NAME.slice(0, i) }, 9.7 + i * 0.05);
+      }
+      const f1End = 9.7 + NAME.length * 0.05;
+      tl.to(
+        "#hr-cursor",
+        { x: pF2.x, y: pF2.y, duration: 0.6, ease: "power2.out" },
+        f1End + 0.4,
+      );
+      tl.to("#hr-cursor", { scale: 0.88, duration: 0.09 }, f1End + 1.1);
+      tl.to("#hr-cursor", { scale: 1, duration: 0.09 }, f1End + 1.19);
+      tl.to("#hr-f2-ph", { opacity: 0, duration: 0.12 }, f1End + 1.35);
+      for (let i = 1; i <= EMAIL.length; i++) {
+        tl.set(
+          "#hr-f2-val",
+          { innerHTML: EMAIL.slice(0, i) },
+          f1End + 1.45 + i * 0.045,
+        );
+      }
+
+      // ── Scene 3 · step 2, what you do ─────────────────────────────
+      tl.to("#hr-heading", { autoAlpha: 0, duration: 0.3 }, 18.0);
+      tl.to("#hr-g1", { autoAlpha: 0, duration: 0.3 }, 18.0);
+      tl.to("#hr-g2", { autoAlpha: 0, duration: 0.3 }, 18.0);
+      tl.to("#hr-g3", { autoAlpha: 1, duration: 0.3 }, 18.0);
+      tl.to("#hr-g4", { autoAlpha: 0, duration: 0.3 }, 18.0);
+      tl.to("#hr-btn", { autoAlpha: 0, duration: 0.3 }, 18.0);
+      tl.to(
+        "#hr-surface",
+        { scale: S_STEP, y: TY_F3, duration: 0.7, ease: "power2.out" },
+        18.0,
+      );
+      const pF3 = at(560, Y_F3 - 30, S_STEP, TY_F3);
+      tl.to(
+        "#hr-cursor",
+        { x: pF3.x, y: pF3.y, duration: 0.7, ease: "power2.out" },
+        18.3,
+      );
+      tl.to("#hr-cursor", { scale: 0.88, duration: 0.09 }, 19.1);
+      tl.to("#hr-cursor", { scale: 1, duration: 0.09 }, 19.19);
+      tl.to("#hr-f3-ph", { opacity: 0, duration: 0.12 }, 19.4);
+      for (let i = 1; i <= DESC.length; i++) {
+        tl.set("#hr-f3-val", { innerHTML: DESC.slice(0, i) }, 19.5 + i * 0.062);
+      }
+
+      // ── Scene 4 · step 3, customer volume ─────────────────────────
+      tl.to("#hr-heading", { autoAlpha: 0, duration: 0.3 }, 27.0);
+      tl.to("#hr-g1", { autoAlpha: 0, duration: 0.3 }, 27.0);
+      tl.to("#hr-g2", { autoAlpha: 0, duration: 0.3 }, 27.0);
+      tl.to("#hr-g3", { autoAlpha: 0, duration: 0.3 }, 27.0);
+      tl.to("#hr-g4", { autoAlpha: 1, duration: 0.3 }, 27.0);
+      tl.to("#hr-btn", { autoAlpha: 0, duration: 0.3 }, 27.0);
+      tl.to(
+        "#hr-surface",
+        { scale: S_STEP, y: TY_F4, duration: 0.7, ease: "power2.out" },
+        27.0,
+      );
+      const pF4 = at(560, Y_F4, S_STEP, TY_F4);
+      tl.to(
+        "#hr-cursor",
+        { x: pF4.x, y: pF4.y, duration: 0.7, ease: "power2.out" },
+        27.3,
+      );
+      tl.to("#hr-cursor", { scale: 0.88, duration: 0.09 }, 28.1);
+      tl.to("#hr-cursor", { scale: 1, duration: 0.09 }, 28.19);
+      // the real five options, opened
+      tl.fromTo(
+        "#hr-options",
+        { opacity: 0, y: -10 },
+        { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" },
+        28.4,
+      );
+      const pPick = at(560, Y_F4 + 268, S_STEP, TY_F4);
+      tl.to(
+        "#hr-cursor",
+        { x: pPick.x, y: pPick.y, duration: 0.7, ease: "power2.out" },
+        29.4,
+      );
+      tl.to("#hr-opt-pick", { backgroundColor: "#F3F4F6", duration: 0.15 }, 30.1);
+      tl.to("#hr-cursor", { scale: 0.88, duration: 0.09 }, 30.3);
+      tl.to("#hr-cursor", { scale: 1, duration: 0.09 }, 30.39);
+      tl.to("#hr-options", { opacity: 0, duration: 0.25 }, 30.7);
+      tl.to("#hr-f4-ph", { opacity: 0, duration: 0.12 }, 30.7);
+      tl.set("#hr-f4-val", { innerHTML: "10,001 &ndash; 100,000" }, 30.82);
+
+      // ── Scene 5 · step 4, submit ──────────────────────────────────
+      tl.to("#hr-heading", { autoAlpha: 1, duration: 0.3 }, 35.0);
+      tl.to("#hr-g1", { autoAlpha: 1, duration: 0.3 }, 35.0);
+      tl.to("#hr-g2", { autoAlpha: 1, duration: 0.3 }, 35.0);
+      tl.to("#hr-g3", { autoAlpha: 1, duration: 0.3 }, 35.0);
+      tl.to("#hr-g4", { autoAlpha: 1, duration: 0.3 }, 35.0);
+      tl.to("#hr-btn", { autoAlpha: 1, duration: 0.3 }, 35.0);
+      tl.to(
+        "#hr-surface",
+        { scale: S_WIDE, y: TY_WIDE, duration: 0.7, ease: "power2.out" },
+        35.0,
+      );
+      const pBtn = at(960, Y_BTN, S_WIDE, TY_WIDE);
+      tl.to(
+        "#hr-cursor",
+        { x: pBtn.x, y: pBtn.y, duration: 0.8, ease: "power2.out" },
+        35.4,
+      );
+      // The real button's offset shadow compresses under the press.
+      tl.to("#hr-btn", { x: -4, y: 4, duration: 0.1 }, 36.5);
+      tl.to("#hr-btn", { x: 0, y: 0, duration: 0.14 }, 36.6);
+      tl.to("#hr-cursor", { scale: 0.88, duration: 0.09 }, 36.5);
+      tl.to("#hr-cursor", { scale: 1, duration: 0.09 }, 36.59);
+      tl.to("#hr-cursor", { opacity: 0, duration: 0.3 }, 37.4);
+
+      // ── Scene 6 · now you wait ────────────────────────────────────
+      tl.fromTo(
+        "#hr-thanks",
+        { y: 26, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.55, ease: "power2.out" },
+        40.2,
+      );
+      tl.fromTo(
+        "#hr-thanks-sub",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.45, ease: "power2.out" },
+        40.7,
+      );
+      tl.fromTo(
+        "#hr-thanks-art",
+        { scale: 0.9, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.6)" },
+        41.1,
+      );
+    </script>
+  </body>
+</html>

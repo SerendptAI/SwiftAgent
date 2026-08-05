@@ -8,16 +8,39 @@ import { useScrollLock } from "@/hooks/use-scroll-lock";
 
 const DRAWER_TRANSITION_MS = 520;
 
-const VIDEOS = [
-  "How to login",
-  "How to register account",
-  "How to create widget",
-  "Set up your account",
-  "Personalize settings",
-  "Link a card",
-  "Invite a teammate",
-  "Read visitor activity",
-  "Manage conversations",
+/**
+ * A tutorial with no `recording` has not been made yet and shows the
+ * placeholder. Pairing the file with its caption track in one object keeps an
+ * uncaptioned video unrepresentable — the clips are silent, so the track is
+ * the only way the content reaches a screen reader.
+ */
+interface TutorialVideo {
+  title: string;
+  recording?: { src: string; captions: string };
+}
+
+const VIDEOS: TutorialVideo[] = [
+  {
+    title: "How to login",
+    recording: {
+      src: "/videos/tutorials/how-to-login.mp4",
+      captions: "/videos/tutorials/how-to-login.en.vtt",
+    },
+  },
+  {
+    title: "How to register account",
+    recording: {
+      src: "/videos/tutorials/how-to-register.mp4",
+      captions: "/videos/tutorials/how-to-register.en.vtt",
+    },
+  },
+  { title: "How to create widget" },
+  { title: "Set up your account" },
+  { title: "Personalize settings" },
+  { title: "Link a card" },
+  { title: "Invite a teammate" },
+  { title: "Read visitor activity" },
+  { title: "Manage conversations" },
 ];
 
 export function DevelopmentResourcesDrawer({
@@ -31,7 +54,9 @@ export function DevelopmentResourcesDrawer({
   const [isClosing, setIsClosing] = useState(false);
   const [isTutorialVideosExpanded, setIsTutorialVideosExpanded] =
     useState(true);
-  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
+  const [selectedVideo, setSelectedVideo] = useState<TutorialVideo | null>(
+    null,
+  );
   const closeTimeoutRef = useRef<number | null>(null);
   const contentMaxWidthClass = "max-w-[1240px]";
   useScrollLock(isMounted);
@@ -163,38 +188,57 @@ export function DevelopmentResourcesDrawer({
                     : "text-[30px] md:text-[34px]"
                 }`}
               >
-                {selectedVideo ?? "Development Resources"}
+                {selectedVideo?.title ?? "Development Resources"}
               </h2>
             </header>
 
             {selectedVideo ? (
               <div className="mt-8 md:mt-[70px]">
-                <button
-                  type="button"
-                  aria-label={`Play ${selectedVideo}`}
-                  className="group relative aspect-video w-full overflow-hidden bg-[#373737] text-left focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-black md:h-[656px]"
-                >
-                  <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.18)_0%,rgba(0,0,0,0.18)_34%,rgba(210,210,210,0.72)_34%,rgba(210,210,210,0.72)_66%,rgba(0,0,0,0.18)_66%,rgba(0,0,0,0.18)_100%)]" />
-                  <div className="absolute inset-0 bg-black/28" />
-                  <div className="absolute top-0 left-[37%] h-full w-[26%] bg-[#C9C9C9]" />
-                  <div className="absolute top-0 left-[37%] h-[5.5%] w-[26%] bg-[#BDBDBD]" />
-                  <div className="absolute top-[1%] left-[38.8%] h-[3.6%] w-[2.3%] bg-[#B58A24]" />
-                  <div className="absolute top-[2%] left-[41.7%] h-[1.8%] w-[9%] bg-black/50" />
-                  <div className="absolute top-[2%] right-[39.2%] h-[1.6%] w-[1.2%] rotate-45 border-r-2 border-b-2 border-black/60" />
-                  <div className="absolute top-[12.6%] left-[38.8%] h-[6.8%] w-[17.5%] rounded-[26px] bg-[#B9C8D8]" />
-                  <div className="absolute top-[13.8%] left-[39.9%] h-[1.2%] w-[12%] rounded-full bg-[#0058BA]/60" />
-                  <div className="absolute top-[16.5%] left-[39.9%] h-[1.2%] w-[13%] rounded-full bg-[#0058BA]/60" />
-                  <div className="absolute top-[22.6%] left-[38.9%] h-[5%] w-[15.5%] border border-black/10 bg-white/12" />
-                  <div className="absolute top-[30.5%] left-[38.9%] h-[5%] w-[15.5%] border border-black/10 bg-white/12" />
-                  <div className="absolute top-[14%] left-[22%] h-[71%] w-[18%] rounded-[18px] border border-black/10 bg-white/8" />
-                  <div className="absolute top-[14%] right-[16%] h-[12%] w-[17%] rounded-[16px] bg-white/6" />
-                  <div className="absolute right-[12%] bottom-[15%] h-[14%] w-[23%] rounded-[18px] bg-white/6" />
-                  <span className="absolute inset-0 flex items-center justify-center">
-                    <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white transition-transform duration-300 group-hover:scale-105 md:h-25 md:w-25">
-                      <Play className="h-7 w-7 fill-black text-black md:h-9 md:w-9" />
+                {selectedVideo.recording ? (
+                  <video
+                    key={selectedVideo.recording.src}
+                    src={selectedVideo.recording.src}
+                    controls
+                    autoPlay
+                    playsInline
+                    className="aspect-video w-full bg-black md:h-[656px]"
+                  >
+                    <track
+                      kind="captions"
+                      srcLang="en"
+                      label="English"
+                      src={selectedVideo.recording.captions}
+                      default
+                    />
+                  </video>
+                ) : (
+                  <button
+                    type="button"
+                    aria-label={`Play ${selectedVideo.title}`}
+                    className="group relative aspect-video w-full overflow-hidden bg-[#373737] text-left focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-black md:h-[656px]"
+                  >
+                    <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.18)_0%,rgba(0,0,0,0.18)_34%,rgba(210,210,210,0.72)_34%,rgba(210,210,210,0.72)_66%,rgba(0,0,0,0.18)_66%,rgba(0,0,0,0.18)_100%)]" />
+                    <div className="absolute inset-0 bg-black/28" />
+                    <div className="absolute top-0 left-[37%] h-full w-[26%] bg-[#C9C9C9]" />
+                    <div className="absolute top-0 left-[37%] h-[5.5%] w-[26%] bg-[#BDBDBD]" />
+                    <div className="absolute top-[1%] left-[38.8%] h-[3.6%] w-[2.3%] bg-[#B58A24]" />
+                    <div className="absolute top-[2%] left-[41.7%] h-[1.8%] w-[9%] bg-black/50" />
+                    <div className="absolute top-[2%] right-[39.2%] h-[1.6%] w-[1.2%] rotate-45 border-r-2 border-b-2 border-black/60" />
+                    <div className="absolute top-[12.6%] left-[38.8%] h-[6.8%] w-[17.5%] rounded-[26px] bg-[#B9C8D8]" />
+                    <div className="absolute top-[13.8%] left-[39.9%] h-[1.2%] w-[12%] rounded-full bg-[#0058BA]/60" />
+                    <div className="absolute top-[16.5%] left-[39.9%] h-[1.2%] w-[13%] rounded-full bg-[#0058BA]/60" />
+                    <div className="absolute top-[22.6%] left-[38.9%] h-[5%] w-[15.5%] border border-black/10 bg-white/12" />
+                    <div className="absolute top-[30.5%] left-[38.9%] h-[5%] w-[15.5%] border border-black/10 bg-white/12" />
+                    <div className="absolute top-[14%] left-[22%] h-[71%] w-[18%] rounded-[18px] border border-black/10 bg-white/8" />
+                    <div className="absolute top-[14%] right-[16%] h-[12%] w-[17%] rounded-[16px] bg-white/6" />
+                    <div className="absolute right-[12%] bottom-[15%] h-[14%] w-[23%] rounded-[18px] bg-white/6" />
+                    <span className="absolute inset-0 flex items-center justify-center">
+                      <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white transition-transform duration-300 group-hover:scale-105 md:h-25 md:w-25">
+                        <Play className="h-7 w-7 fill-black text-black md:h-9 md:w-9" />
+                      </span>
                     </span>
-                  </span>
-                </button>
+                  </button>
+                )}
               </div>
             ) : (
               <>
@@ -225,11 +269,11 @@ export function DevelopmentResourcesDrawer({
                     id="development-resources-tutorial-videos"
                     className="mt-7 grid grid-cols-1 gap-7 sm:grid-cols-2 md:mt-[42px] md:gap-x-[72px] md:gap-y-[54px] xl:grid-cols-3"
                   >
-                    {VIDEOS.map((title, index) => (
+                    {VIDEOS.map((video, index) => (
                       <button
-                        key={title}
+                        key={video.title}
                         type="button"
-                        onClick={() => setSelectedVideo(title)}
+                        onClick={() => setSelectedVideo(video)}
                         className="group text-left focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-black"
                       >
                         <div className="relative aspect-365/195 w-full overflow-hidden bg-[#343434]">
@@ -249,7 +293,7 @@ export function DevelopmentResourcesDrawer({
                           </span>
                         </div>
                         <h3 className="font-dm-mono mt-3 text-base leading-tight font-medium text-black uppercase md:mt-[22px] md:text-xl md:leading-none">
-                          {title}
+                          {video.title}
                         </h3>
                       </button>
                     ))}

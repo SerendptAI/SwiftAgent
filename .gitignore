@@ -58,6 +58,12 @@ bun.lock
 # local task checklist
 TODO.md
 
+# HyperFrames build output — the shipped MP4s live in public/videos/tutorials,
+# and snapshots are throwaway QA frames. The compositions themselves are kept
+# so the videos stay re-renderable.
+videos/*/renders/
+videos/*/snapshots/
+
 AGENTS.md
 CLAUDE.md
 .codex
