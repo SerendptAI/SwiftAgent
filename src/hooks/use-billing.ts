@@ -3,8 +3,10 @@ import {
   useQuery,
   type UseQueryOptions,
 } from "@tanstack/react-query";
+import { useCallback, useState } from "react";
 
 import { getAccessToken } from "@/lib/api-client";
+import { getApiErrorMessage } from "@/lib/api-error";
 import type {
   BillingDetails,
   BillingPlansResponse,
@@ -74,10 +76,39 @@ export function useCreateCheckout() {
   });
 }
 
-// ── Create Polar Customer Portal Session ──────────────────────────────────────
+// ── Customer Portal ───────────────────────────────────────────────────────────
 
-export function useCreatePortalSession() {
+function useCreatePortalSession() {
   return useMutation<PortalSessionResponse, Error, string>({
     mutationFn: createPortalSession,
   });
+}
+
+const PORTAL_ERROR_FALLBACK = "Failed to load subscription portal.";
+
+/**
+ * Redirects to the company's customer portal, whichever provider the backend
+ * resolves from the active subscription. Reports failures as a message instead
+ * of throwing, so callers can render them inline.
+ */
+export function useOpenBillingPortal(companyId: string | null | undefined) {
+  const [error, setError] = useState<string | null>(null);
+  const { mutateAsync, isPending } = useCreatePortalSession();
+
+  const open = useCallback(async () => {
+    if (!companyId) return;
+    setError(null);
+    try {
+      const { portal_url } = await mutateAsync(companyId);
+      if (!portal_url) {
+        setError(PORTAL_ERROR_FALLBACK);
+        return;
+      }
+      window.location.href = portal_url;
+    } catch (err) {
+      setError(getApiErrorMessage(err, PORTAL_ERROR_FALLBACK));
+    }
+  }, [companyId, mutateAsync]);
+
+  return { open, error, isPending };
 }

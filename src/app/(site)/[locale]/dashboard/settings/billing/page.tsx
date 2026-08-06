@@ -8,17 +8,15 @@ import { CanceledSubscriptionBanner } from "@/components/dashboard/settings/canc
 import { CardBrandIcon } from "@/components/dashboard/settings/card-brand-icon";
 import { HelpBanner } from "@/components/dashboard/settings/help-banner";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
-import { useBillingDetails, useCreatePortalSession } from "@/hooks/use-billing";
-import { getApiErrorMessage } from "@/lib/api-error";
+import { useBillingDetails, useOpenBillingPortal } from "@/hooks/use-billing";
 import type { SavedCard } from "@/services/billing";
 import { useCardStore } from "@/store/card-store";
 
 export default function BillingPage() {
   const [showAddCard, setShowAddCard] = useState(false);
-  const [portalError, setPortalError] = useState<string | null>(null);
   const companyId = useActiveCompanyId();
   const { data: details } = useBillingDetails(companyId);
-  const portalSession = useCreatePortalSession();
+  const portal = useOpenBillingPortal(companyId);
   const { savedCards: localCards, addCard } = useCardStore();
 
   const backendCards: SavedCard[] = details?.saved_cards ?? [];
@@ -37,21 +35,6 @@ export default function BillingPage() {
   const canManageSubscription =
     !!companyId &&
     (subscriptionStatus === "active" || subscriptionStatus === "canceled");
-
-  const handleManageSubscription = async () => {
-    if (!companyId) return;
-    setPortalError(null);
-    try {
-      const { portal_url } = await portalSession.mutateAsync(companyId);
-      if (portal_url) {
-        window.location.href = portal_url;
-      }
-    } catch (err) {
-      setPortalError(
-        getApiErrorMessage(err, "Failed to load subscription portal."),
-      );
-    }
-  };
 
   return (
     <div className="flex min-h-[360px] flex-col gap-5 rounded-[20px] bg-white p-3 shadow-sm sm:min-h-[450px] sm:gap-6 sm:rounded-xl sm:p-4">
@@ -112,11 +95,11 @@ export default function BillingPage() {
                 Manage Subscription
               </span>
               <button
-                onClick={handleManageSubscription}
-                disabled={portalSession.isPending}
+                onClick={portal.open}
+                disabled={portal.isPending}
                 className="font-dm-mono flex items-center gap-2 rounded-2xl bg-[#006BE5] px-6 py-2.5 text-sm font-bold tracking-wide text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#0058C0] disabled:opacity-50"
               >
-                {portalSession.isPending ? (
+                {portal.isPending ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Opening…
@@ -128,8 +111,8 @@ export default function BillingPage() {
                 )}
               </button>
             </div>
-            {portalError && (
-              <p className="font-stolzl text-xs text-red-500">{portalError}</p>
+            {portal.error && (
+              <p className="font-stolzl text-xs text-red-500">{portal.error}</p>
             )}
           </div>
         )}
