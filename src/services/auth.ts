@@ -5,6 +5,7 @@ import {
   setAuthProvider,
   setAuthTokens,
 } from "@/lib/api-client";
+import type { ScrapedCompanyData } from "@/services/company";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -211,6 +212,13 @@ export interface RegistrationDetails {
   company_name: string;
   company_description: string;
   customer_size: string;
+  company_website: string | null;
+  /**
+   * Extracted from the company's website when an admin approved the
+   * registration, so onboarding opens prefilled with no live scrape. Null when
+   * no website was given or the extraction found nothing.
+   */
+  scraped_data: ScrapedCompanyData | null;
 }
 
 export async function getRegistrationDetails(): Promise<RegistrationDetails> {

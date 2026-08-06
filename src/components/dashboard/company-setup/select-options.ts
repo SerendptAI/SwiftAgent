@@ -43,6 +43,20 @@ export const COMPANY_SIZE_OPTIONS: SelectOption[] = [
   { value: "100000+", label: "100,000+" },
 ];
 
+export const COUNTRY_OPTIONS: SelectOption[] = [
+  { value: "us", label: "United States" },
+  { value: "uk", label: "United Kingdom" },
+  { value: "ca", label: "Canada" },
+  { value: "ng", label: "Nigeria" },
+];
+
+export const TIMEZONE_OPTIONS: SelectOption[] = [
+  { value: "utc", label: "UTC" },
+  { value: "est", label: "EST" },
+  { value: "pst", label: "PST" },
+  { value: "wat", label: "WAT" },
+];
+
 export const BRAND_TONE_OPTIONS: SelectOption[] = [
   { value: "professional", label: "Professional" },
   { value: "friendly", label: "Friendly" },

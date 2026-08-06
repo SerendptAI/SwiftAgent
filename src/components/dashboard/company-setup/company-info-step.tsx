@@ -20,9 +20,11 @@ import { useOnboardingStore } from "@/store/onboarding-store";
 import { OnboardingErrorToast } from "./onboarding-error-toast";
 import {
   COMPANY_SIZE_OPTIONS,
+  COUNTRY_OPTIONS,
   INDUSTRY_OPTIONS,
   matchCompanySize,
   matchOptionValue,
+  TIMEZONE_OPTIONS,
 } from "./select-options";
 import { FormInput, FormLabel, FormSelect, NextButton } from "./ui-elements";
 
@@ -174,6 +176,14 @@ export function CompanyInfoStep({
         current.company_size || matchCompanySize(scrapedData?.company_size),
       contact_email: current.contact_email || scrapedData?.contact_email || "",
       phone_number: current.phone_number || scrapedData?.phone_number || "",
+      // Both are selects, so an unmatched scrape has to leave them empty
+      // rather than set a value the dropdown cannot represent.
+      country:
+        current.country ||
+        matchOptionValue(COUNTRY_OPTIONS, scrapedData?.country),
+      timezone:
+        current.timezone ||
+        matchOptionValue(TIMEZONE_OPTIONS, scrapedData?.timezone),
     }));
   }, [isUpdateMode, scrapedData, websiteUrl, reset]);
 
@@ -415,10 +425,11 @@ export function CompanyInfoStep({
             <option value="" disabled>
               Select Country
             </option>
-            <option value="us">United States</option>
-            <option value="uk">United Kingdom</option>
-            <option value="ca">Canada</option>
-            <option value="ng">Nigeria</option>
+            {COUNTRY_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
           </FormSelect>
         </div>
 
@@ -428,10 +439,11 @@ export function CompanyInfoStep({
             <option value="" disabled>
               Select Timezone
             </option>
-            <option value="utc">UTC</option>
-            <option value="est">EST</option>
-            <option value="pst">PST</option>
-            <option value="wat">WAT</option>
+            {TIMEZONE_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
           </FormSelect>
         </div>
 
