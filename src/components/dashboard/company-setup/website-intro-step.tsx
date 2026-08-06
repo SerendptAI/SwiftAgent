@@ -2,6 +2,7 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
 import { useScrapeWebsite } from "@/hooks/use-company";
+import { normalizeWebsiteUrl } from "@/lib/website-url";
 import { useOnboardingStore } from "@/store/onboarding-store";
 
 import { FormInput, NextButton } from "./ui-elements";
@@ -13,16 +14,9 @@ export function WebsiteIntroStep({ onDone }: { onDone: () => void }) {
   const setScrapedData = useOnboardingStore((state) => state.setScrapedData);
   const isAnalyzing = scrapeWebsite.isPending;
 
-  const normalizedUrl = () => {
-    // FormInput uppercases as the user types; URLs are case-insensitive hosts.
-    const raw = website.trim().toLowerCase();
-    if (!raw) return "";
-    return raw.startsWith("http") ? raw : `https://${raw}`;
-  };
-
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault();
-    const url = normalizedUrl();
+    const url = normalizeWebsiteUrl(website);
     if (!url || isAnalyzing) return;
     setWebsiteUrl(url);
     try {
@@ -34,7 +28,7 @@ export function WebsiteIntroStep({ onDone }: { onDone: () => void }) {
   };
 
   const handleSkip = () => {
-    setWebsiteUrl(normalizedUrl());
+    setWebsiteUrl(normalizeWebsiteUrl(website));
     onDone();
   };
 

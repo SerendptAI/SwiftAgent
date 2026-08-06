@@ -52,6 +52,13 @@ export interface ScrapedCompanyData {
   contact_email: string | null;
   support_email: string | null;
   phone_number: string | null;
+  // Added by the pre-scrape that runs when an admin approves a registration.
+  // The live /scrape-website path is not guaranteed to return them, so they
+  // stay optional rather than claiming a value that may be absent.
+  country?: string | null;
+  timezone?: string | null;
+  company_type?: string | null;
+  suggested_ai_prompts?: string[] | null;
 }
 
 export type CompanyUpdateSection =

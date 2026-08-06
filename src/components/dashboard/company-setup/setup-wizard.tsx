@@ -4,7 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { useSetActiveCompanyId } from "@/hooks/use-active-company";
-import { useCurrentUser } from "@/hooks/use-auth";
+import { useCurrentUser, useRegistrationDetails } from "@/hooks/use-auth";
 import { useCompaniesQuery, useCompanyQuery } from "@/hooks/use-company";
 import { trackEvent } from "@/lib/analytics";
 import { useOnboardingStore } from "@/store/onboarding-store";
@@ -34,6 +34,7 @@ export function SetupWizard() {
   const [websiteIntroDone, setWebsiteIntroDone] = useState(false);
   const {
     companyId,
+    scrapedData,
     setCompanyId,
     setTypedCompanyName,
     setWebsiteUrl,
@@ -55,6 +56,15 @@ export function SetupWizard() {
   const shouldUpdateExistingCompany = !isNewCompany && !!effectiveCompanyId;
 
   const { data: companyData } = useCompanyQuery(effectiveCompanyId);
+
+  // The registration record describes the company the user signed up with, so
+  // a further company added later must not inherit its scrape. React Query
+  // still hands back cached data while a query is disabled, so `isNewCompany`
+  // is checked here rather than relied on through `enabled` alone.
+  const registrationQuery = useRegistrationDetails(!isNewCompany);
+  const preScrapedData = isNewCompany
+    ? null
+    : (registrationQuery.data?.scraped_data ?? null);
 
   useEffect(() => {
     if (isNewCompany) {
@@ -107,10 +117,32 @@ export function SetupWizard() {
     }
   }, [companyData?.name, setTypedCompanyName]);
 
+  // Approval-time scraping means the forms can open already filled. A scrape
+  // the user runs on the intro step is the more deliberate one, so it is never
+  // overwritten here.
+  useEffect(() => {
+    const details = isNewCompany ? undefined : registrationQuery.data;
+    if (!details || scrapedData) return;
+    if (details.company_website) setWebsiteUrl(details.company_website);
+    if (details.scraped_data) setScrapedData(details.scraped_data);
+  }, [
+    isNewCompany,
+    registrationQuery.data,
+    scrapedData,
+    setScrapedData,
+    setWebsiteUrl,
+  ]);
+
   // Only brand-new companies get the website intro; resuming an in-progress
-  // company (or waiting on the user fetch) goes straight to the form.
+  // company (or waiting on the user fetch) goes straight to the form. Asking
+  // for a website already scraped at approval would re-run that work, so the
+  // step is skipped once pre-scraped data is in hand — and the decision waits
+  // for the lookup to settle, or the step would flash up and vanish.
   const showWebsiteIntro =
-    !websiteIntroDone && (isNewCompany || (!!user && !effectiveCompanyId));
+    !websiteIntroDone &&
+    !registrationQuery.isLoading &&
+    !preScrapedData &&
+    (isNewCompany || (!!user && !effectiveCompanyId));
 
   const handleNext = () => {
     trackEvent("onboarding_step_completed", {

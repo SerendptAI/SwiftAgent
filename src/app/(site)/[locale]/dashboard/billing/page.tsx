@@ -3,6 +3,7 @@
 import { ChevronDown, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { CheckoutModal } from "@/components/dashboard/billing/checkout-modal";
 import { CompanyToolbar } from "@/components/dashboard/company-toolbar";
 import { AddCardModal } from "@/components/dashboard/settings/add-card-modal";
 import { CanceledSubscriptionBanner } from "@/components/dashboard/settings/canceled-subscription-banner";
@@ -10,26 +11,23 @@ import { CardBrandIcon } from "@/components/dashboard/settings/card-brand-icon";
 import { type Plan, PlanCard } from "@/components/pricing/plan-card";
 import { plansFromBackend } from "@/components/pricing/plans";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
-import {
-  useBillingDetails,
-  useBillingPlans,
-  useCreateCheckout,
-} from "@/hooks/use-billing";
+import { useBillingDetails, useBillingPlans } from "@/hooks/use-billing";
 import { cn } from "@/lib/utils";
 import type { SavedCard } from "@/services/billing";
 import { useCardStore } from "@/store/card-store";
 
+/** A plan is only checkout-ready once the backend has given it a tier slug. */
+type CheckoutPlan = Plan & { tier: string };
+
 export default function BillingPage() {
   const [showAddCard, setShowAddCard] = useState(false);
   const [cardMenuOpen, setCardMenuOpen] = useState(false);
-  const [pendingTier, setPendingTier] = useState<string | null>(null);
-  const [checkoutError, setCheckoutError] = useState("");
+  const [checkoutPlan, setCheckoutPlan] = useState<CheckoutPlan | null>(null);
   const cardMenuRef = useRef<HTMLDivElement>(null);
 
   const companyId = useActiveCompanyId();
   const { data: details } = useBillingDetails(companyId);
   const { data: backendPlans } = useBillingPlans();
-  const createCheckout = useCreateCheckout();
   const { savedCards: localCards, addCard } = useCardStore();
   const plans: Plan[] = plansFromBackend(backendPlans);
 
@@ -56,39 +54,7 @@ export default function BillingPage() {
 
   const handleSubscribe = (plan: Plan) => {
     if (!plan.tier || !companyId) return;
-    setCheckoutError("");
-    setPendingTier(plan.tier);
-
-    createCheckout.mutate(
-      { company_id: companyId, tier: plan.tier },
-      {
-        onSuccess: ({ checkout_url }) => {
-          if (checkout_url) {
-            window.location.href = checkout_url;
-          } else {
-            setPendingTier(null);
-          }
-        },
-        onError: (error: unknown) => {
-          setPendingTier(null);
-          const data =
-            error && typeof error === "object" && "response" in error
-              ? (
-                  error as {
-                    response?: {
-                      data?: { message?: string; detail?: string };
-                    };
-                  }
-                ).response?.data
-              : undefined;
-          setCheckoutError(
-            data?.message ||
-              data?.detail ||
-              "Unable to start checkout. Please try again.",
-          );
-        },
-      },
-    );
+    setCheckoutPlan({ ...plan, tier: plan.tier });
   };
 
   return (
@@ -164,37 +130,31 @@ export default function BillingPage() {
         <div className="mb-4">
           <CanceledSubscriptionBanner details={details} />
         </div>
-        {checkoutError && (
-          <p className="font-stolzl mb-4 text-xs text-red-600 sm:text-sm">
-            {checkoutError}
-          </p>
-        )}
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10">
           {plans.map((plan) => {
             const isActive =
               !!plan.tier && !!activeTier && plan.tier === activeTier;
-            const isPending = pendingTier === plan.tier;
             return (
               <PlanCard
                 key={plan.name}
                 plan={plan}
                 showSubscribe
                 onSubscribe={handleSubscribe}
-                subscribeDisabled={
-                  !companyId || isActive || createCheckout.isPending
-                }
-                subscribeLabel={
-                  isActive
-                    ? "CURRENT PLAN"
-                    : isPending
-                      ? "REDIRECTING..."
-                      : undefined
-                }
+                subscribeDisabled={!companyId || isActive}
+                subscribeLabel={isActive ? "CURRENT PLAN" : undefined}
               />
             );
           })}
         </div>
       </div>
+
+      {checkoutPlan && companyId && (
+        <CheckoutModal
+          plan={checkoutPlan}
+          companyId={companyId}
+          onClose={() => setCheckoutPlan(null)}
+        />
+      )}
 
       {showAddCard && (
         <AddCardModal
