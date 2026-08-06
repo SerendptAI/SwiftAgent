@@ -24,7 +24,7 @@ export function CheckoutErrorAlert({
   return (
     <div
       role="alert"
-      className="mb-4 flex flex-col gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-4 sm:px-6"
+      className="flex flex-col gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-4"
     >
       <div className="flex items-start gap-3">
         <AlertTriangle

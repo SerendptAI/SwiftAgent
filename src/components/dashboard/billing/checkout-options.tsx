@@ -29,7 +29,7 @@ export function CheckoutOptions({
   disabled = false,
 }: CheckoutOptionsProps) {
   return (
-    <div className="mb-4 flex flex-col gap-4 rounded-xl border border-gray-100 bg-white px-4 py-4 sm:px-6">
+    <div className="flex flex-col gap-4">
       <fieldset disabled={disabled} className="min-w-0">
         <legend className="font-dm-mono text-xs font-semibold tracking-[0.15em] text-gray-500 uppercase sm:text-sm">
           Payment Method
