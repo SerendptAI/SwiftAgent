@@ -1,3 +1,5 @@
+import axios from "axios";
+
 import { apiClient } from "@/lib/api-client";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -15,7 +17,7 @@ export type SubscriptionTier =
   | "enterprise_payg"
   | null;
 export type SubscriptionStatus = "active" | "inactive" | "canceled";
-export type BillingProvider = "polar" | "palmpay" | null;
+export type BillingProvider = "polar" | "bachs";
 export type PlanRegion = "african" | "international";
 
 export interface BillingPlan {
@@ -71,7 +73,7 @@ export interface BillingDetails {
   subscription_expires_at?: string;
   /** Nested per-feature usage counters (agents, documents, members, agent_chats, strolls). */
   usage?: UsageBreakdown;
-  billing_provider?: BillingProvider;
+  billing_provider?: BillingProvider | null;
   display_name?: string;
   /** Not in the /status response today; kept optional for the saved-cards UI when it lands. */
   saved_cards?: SavedCard[];
@@ -81,6 +83,10 @@ export interface CheckoutPayload {
   company_id: string;
   tier: string;
   user_timezone?: string;
+  /** Omit to let the backend apply its own default (Polar). */
+  provider?: BillingProvider;
+  /** Bachs-only custom code; the backend rejects invalid or expired ones with a 400. */
+  discount_code?: string;
 }
 
 export interface CheckoutResponse {
@@ -101,6 +107,26 @@ export function getUserTimezone(): string | undefined {
   } catch {
     return undefined;
   }
+}
+
+// Checkout is rejected when the company already subscribes through another
+// provider, to stop it being billed twice. The response carries no error code,
+// so match the stable middle of the message — the provider names on either side
+// are interpolated by the backend.
+const CROSS_PROVIDER_CONFLICT_PATTERN =
+  /active subscription with [\s\S]*before switching to/i;
+
+/**
+ * True when a failed checkout can be resolved by cancelling the existing
+ * subscription in the customer portal.
+ */
+export function isCrossProviderConflict(error: unknown): boolean {
+  if (!axios.isAxiosError(error) || error.response?.status !== 400)
+    return false;
+  const detail = error.response.data?.detail;
+  return (
+    typeof detail === "string" && CROSS_PROVIDER_CONFLICT_PATTERN.test(detail)
+  );
 }
 
 // ── Endpoints ─────────────────────────────────────────────────────────────────
@@ -128,9 +154,11 @@ export async function getBillingDetails(
 export async function createCheckoutSession(
   payload: CheckoutPayload,
 ): Promise<CheckoutResponse> {
+  const discountCode = payload.discount_code?.trim();
   const body: CheckoutPayload = {
     ...payload,
     user_timezone: payload.user_timezone ?? getUserTimezone(),
+    discount_code: discountCode || undefined,
   };
   const { data } = await apiClient.post<CheckoutResponse>(
     "/api/v1/billing/checkout",

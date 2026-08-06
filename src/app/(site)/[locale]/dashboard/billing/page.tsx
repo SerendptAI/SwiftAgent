@@ -3,6 +3,11 @@
 import { ChevronDown, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import {
+  type CheckoutError,
+  CheckoutErrorAlert,
+} from "@/components/dashboard/billing/checkout-error-alert";
+import { CheckoutOptions } from "@/components/dashboard/billing/checkout-options";
 import { CompanyToolbar } from "@/components/dashboard/company-toolbar";
 import { AddCardModal } from "@/components/dashboard/settings/add-card-modal";
 import { CanceledSubscriptionBanner } from "@/components/dashboard/settings/canceled-subscription-banner";
@@ -15,15 +20,24 @@ import {
   useBillingPlans,
   useCreateCheckout,
 } from "@/hooks/use-billing";
+import { getApiErrorMessage } from "@/lib/api-error";
 import { cn } from "@/lib/utils";
-import type { SavedCard } from "@/services/billing";
+import {
+  type BillingProvider,
+  isCrossProviderConflict,
+  type SavedCard,
+} from "@/services/billing";
 import { useCardStore } from "@/store/card-store";
 
 export default function BillingPage() {
   const [showAddCard, setShowAddCard] = useState(false);
   const [cardMenuOpen, setCardMenuOpen] = useState(false);
   const [pendingTier, setPendingTier] = useState<string | null>(null);
-  const [checkoutError, setCheckoutError] = useState("");
+  const [checkoutError, setCheckoutError] = useState<CheckoutError | null>(
+    null,
+  );
+  const [provider, setProvider] = useState<BillingProvider>("polar");
+  const [discountCode, setDiscountCode] = useState("");
   const cardMenuRef = useRef<HTMLDivElement>(null);
 
   const companyId = useActiveCompanyId();
@@ -54,38 +68,45 @@ export default function BillingPage() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleProviderChange = (nextProvider: BillingProvider) => {
+    setProvider(nextProvider);
+    // The message names the provider that was attempted, so it goes stale here.
+    setCheckoutError(null);
+  };
+
   const handleSubscribe = (plan: Plan) => {
     if (!plan.tier || !companyId) return;
-    setCheckoutError("");
+    setCheckoutError(null);
     setPendingTier(plan.tier);
 
     createCheckout.mutate(
-      { company_id: companyId, tier: plan.tier },
+      {
+        company_id: companyId,
+        tier: plan.tier,
+        provider,
+        discount_code: provider === "bachs" ? discountCode : undefined,
+      },
       {
         onSuccess: ({ checkout_url }) => {
           if (checkout_url) {
             window.location.href = checkout_url;
-          } else {
-            setPendingTier(null);
+            return;
           }
+          setPendingTier(null);
+          setCheckoutError({
+            message: "Checkout is unavailable right now. Please try again.",
+            canOpenPortal: false,
+          });
         },
         onError: (error: unknown) => {
           setPendingTier(null);
-          const data =
-            error && typeof error === "object" && "response" in error
-              ? (
-                  error as {
-                    response?: {
-                      data?: { message?: string; detail?: string };
-                    };
-                  }
-                ).response?.data
-              : undefined;
-          setCheckoutError(
-            data?.message ||
-              data?.detail ||
+          setCheckoutError({
+            message: getApiErrorMessage(
+              error,
               "Unable to start checkout. Please try again.",
-          );
+            ),
+            canOpenPortal: isCrossProviderConflict(error),
+          });
         },
       },
     );
@@ -164,10 +185,15 @@ export default function BillingPage() {
         <div className="mb-4">
           <CanceledSubscriptionBanner details={details} />
         </div>
+        <CheckoutOptions
+          provider={provider}
+          onProviderChange={handleProviderChange}
+          discountCode={discountCode}
+          onDiscountCodeChange={setDiscountCode}
+          disabled={createCheckout.isPending}
+        />
         {checkoutError && (
-          <p className="font-stolzl mb-4 text-xs text-red-600 sm:text-sm">
-            {checkoutError}
-          </p>
+          <CheckoutErrorAlert error={checkoutError} companyId={companyId} />
         )}
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10">
           {plans.map((plan) => {
