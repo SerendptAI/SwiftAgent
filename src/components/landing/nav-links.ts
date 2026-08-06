@@ -10,13 +10,22 @@ export const EARN_DROPDOWN_LINKS = [
 
 export const DEMO_DROPDOWN_LINKS = [
   { label: "COST CALCULATOR", href: "/demo", arrow: true },
-  { label: "USE ANALYSIS", href: "/case-studies", arrow: true },
+  { label: "USECASE ANALYSIS", href: "/case-studies", arrow: true },
 ] as const;
 
 export const RESOURCES_DROPDOWN_LINKS = [
   { label: "BLOG", href: "/blog", arrow: true },
-  { label: "CASE STUDIES", href: "/case-studies", arrow: true },
+  {
+    label: "DOCUMENTATION",
+    href: "https://docs.swiftagents.org/",
+    arrow: true,
+  },
 ] as const;
+
+/** Absolute hrefs leave the site, so the nav opens them in a new tab. */
+export function isExternalHref(href: string): boolean {
+  return /^https?:\/\//.test(href);
+}
 
 interface NavDropdownLink {
   readonly label: string;

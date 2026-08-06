@@ -10,7 +10,11 @@ import { useCurrentUser } from "@/hooks/use-auth";
 import { cn, getProfileImage } from "@/lib/utils";
 
 import { Icons } from "../icons";
-import { isLandingNavLinkActive, LANDING_NAV_LINKS } from "./nav-links";
+import {
+  isExternalHref,
+  isLandingNavLinkActive,
+  LANDING_NAV_LINKS,
+} from "./nav-links";
 
 interface NavigationMenuProps {
   isOpen: boolean;
@@ -164,19 +168,31 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                             />
                           )}
                           <div className="flex flex-col gap-4">
-                            {link.dropdown.links.map((item) => (
-                              <Link
-                                key={item.href + item.label}
-                                href={item.href}
-                                onClick={onClose}
-                                className="font-dm-mono flex items-center gap-2 text-sm tracking-[0.12em] text-black uppercase hover:opacity-60"
-                              >
-                                {item.label}
-                                {item.arrow && (
-                                  <Icons.ArrowUpRight width={16} height={16} />
-                                )}
-                              </Link>
-                            ))}
+                            {link.dropdown.links.map((item) => {
+                              const isExternal = isExternalHref(item.href);
+                              return (
+                                <Link
+                                  key={item.href + item.label}
+                                  href={item.href}
+                                  onClick={onClose}
+                                  target={isExternal ? "_blank" : undefined}
+                                  rel={
+                                    isExternal
+                                      ? "noopener noreferrer"
+                                      : undefined
+                                  }
+                                  className="font-dm-mono flex items-center gap-2 text-sm tracking-[0.12em] text-black uppercase hover:opacity-60"
+                                >
+                                  {item.label}
+                                  {item.arrow && (
+                                    <Icons.ArrowUpRight
+                                      width={16}
+                                      height={16}
+                                    />
+                                  )}
+                                </Link>
+                              );
+                            })}
                           </div>
                         </div>
                       </div>

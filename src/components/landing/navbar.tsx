@@ -10,7 +10,11 @@ import { cn, getProfileImage } from "@/lib/utils";
 
 import { Icons } from "../icons";
 import { Button } from "../ui/button";
-import { isLandingNavLinkActive, LANDING_NAV_LINKS } from "./nav-links";
+import {
+  isExternalHref,
+  isLandingNavLinkActive,
+  LANDING_NAV_LINKS,
+} from "./nav-links";
 import { NavigationMenu } from "./navigation-menu";
 
 interface NavbarProps {
@@ -139,18 +143,27 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
 
                           {/* Links */}
                           <div className="flex flex-col gap-4">
-                            {link.dropdown.links.map((item) => (
-                              <Link
-                                key={item.href + item.label}
-                                href={item.href}
-                                className="font-dm-mono text-base leading-[1.83] tracking-[10%] text-black/80 uppercase hover:text-black"
-                              >
-                                {item.label}
-                                {item.arrow && (
-                                  <Icons.ArrowUpRight className="ml-3 inline-block size-5.5" />
-                                )}
-                              </Link>
-                            ))}
+                            {link.dropdown.links.map((item) => {
+                              const isExternal = isExternalHref(item.href);
+                              return (
+                                <Link
+                                  key={item.href + item.label}
+                                  href={item.href}
+                                  target={isExternal ? "_blank" : undefined}
+                                  rel={
+                                    isExternal
+                                      ? "noopener noreferrer"
+                                      : undefined
+                                  }
+                                  className="font-dm-mono text-base leading-[1.83] tracking-[10%] text-black/80 uppercase hover:text-black"
+                                >
+                                  {item.label}
+                                  {item.arrow && (
+                                    <Icons.ArrowUpRight className="ml-3 inline-block size-5.5" />
+                                  )}
+                                </Link>
+                              );
+                            })}
                           </div>
                         </div>
                       </div>
