@@ -32,21 +32,23 @@ export function CheckoutModal({
   const [provider, setProvider] = useState<BillingProvider>("polar");
   const [discountCode, setDiscountCode] = useState("");
   const [error, setError] = useState<CheckoutError | null>(null);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const createCheckout = useCreateCheckout();
 
   useScrollLock(true);
 
-  // Dismissal is blocked mid-request: the tab is about to be handed to the
-  // provider, and closing would strand the user with no sign of what happened.
-  const isPending = createCheckout.isPending;
+  // Stays true across the handoff to the provider. The mutation settles the
+  // moment the URL is assigned, so keying off isPending alone would re-enable
+  // the button mid-navigation and let a second checkout session be opened.
+  const isSubmitting = createCheckout.isPending || isRedirecting;
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && !isPending) onClose();
+      if (event.key === "Escape" && !isSubmitting) onClose();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isPending, onClose]);
+  }, [isSubmitting, onClose]);
 
   const handleProviderChange = (nextProvider: BillingProvider) => {
     setProvider(nextProvider);
@@ -66,6 +68,7 @@ export function CheckoutModal({
       {
         onSuccess: ({ checkout_url }) => {
           if (checkout_url) {
+            setIsRedirecting(true);
             window.location.href = checkout_url;
             return;
           }
@@ -95,7 +98,7 @@ export function CheckoutModal({
       <button
         type="button"
         aria-label="Close checkout"
-        disabled={isPending}
+        disabled={isSubmitting}
         onClick={onClose}
         className="absolute inset-0 cursor-pointer bg-black/45 disabled:cursor-default"
       />
@@ -109,7 +112,7 @@ export function CheckoutModal({
         <button
           type="button"
           aria-label="Close"
-          disabled={isPending}
+          disabled={isSubmitting}
           onClick={onClose}
           className="absolute top-4 right-4 text-black/50 transition-colors hover:text-black disabled:opacity-40"
         >
@@ -140,7 +143,7 @@ export function CheckoutModal({
           onProviderChange={handleProviderChange}
           discountCode={discountCode}
           onDiscountCodeChange={setDiscountCode}
-          disabled={isPending}
+          disabled={isSubmitting}
         />
 
         {error && <CheckoutErrorAlert error={error} companyId={companyId} />}
@@ -149,7 +152,7 @@ export function CheckoutModal({
           <button
             type="button"
             onClick={onClose}
-            disabled={isPending}
+            disabled={isSubmitting}
             className="font-dm-mono h-11 rounded-lg border border-gray-200 px-6 text-sm tracking-[0.08em] text-gray-700 uppercase transition-colors hover:bg-gray-50 disabled:opacity-50 sm:h-10"
           >
             Cancel
@@ -157,10 +160,10 @@ export function CheckoutModal({
           <button
             type="button"
             onClick={handleConfirm}
-            disabled={isPending}
+            disabled={isSubmitting}
             className="font-dm-mono inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#006BE5] px-6 text-sm tracking-[0.08em] text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#005fca] disabled:opacity-60 sm:h-10"
           >
-            {isPending ? (
+            {isSubmitting ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
                 Redirecting…
