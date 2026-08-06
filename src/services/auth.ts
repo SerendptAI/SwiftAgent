@@ -185,6 +185,11 @@ export interface RegisterInterestPayload {
   company_email: string;
   company_description: string;
   customer_size: string;
+  /**
+   * Optional to the backend, but the approval-time scrape that prefills
+   * onboarding depends on it, so the form collects it for every registration.
+   */
+  company_website: string;
 }
 
 export interface RegisterInterestResponse {

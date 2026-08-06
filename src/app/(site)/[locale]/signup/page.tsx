@@ -12,6 +12,7 @@ import {
 import { Navbar } from "@/components/landing/navbar";
 import { useRegisterInterest } from "@/hooks/use-auth";
 import { trackEvent } from "@/lib/analytics";
+import { isValidWebsiteUrl, normalizeWebsiteUrl } from "@/lib/website-url";
 
 export default function RegisterCompanyPage() {
   const [form, setForm] = useState({
@@ -19,14 +20,28 @@ export default function RegisterCompanyPage() {
     email: "",
     description: "",
     size: "",
+    website: "",
   });
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [websiteError, setWebsiteError] = useState("");
   const registerInterest = useRegisterInterest();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError("");
+    setWebsiteError("");
+
+    // The website drives the approval-time scrape that prefills onboarding, so
+    // it is worth rejecting a typo here rather than shipping a dead URL.
+    if (!form.website.trim()) {
+      setWebsiteError("Company website is required");
+      return;
+    }
+    if (!isValidWebsiteUrl(form.website)) {
+      setWebsiteError("Enter a valid website, e.g. acme.com");
+      return;
+    }
 
     registerInterest.mutate(
       {
@@ -34,6 +49,7 @@ export default function RegisterCompanyPage() {
         company_email: form.email.trim(),
         company_description: form.description.trim(),
         customer_size: form.size,
+        company_website: normalizeWebsiteUrl(form.website),
       },
       {
         onSuccess: () => {
@@ -155,6 +171,28 @@ export default function RegisterCompanyPage() {
                       }
                       required
                     />
+                  </div>
+
+                  <div>
+                    <FormLabel htmlFor="companyWebsite">
+                      Company Website
+                    </FormLabel>
+                    <FormInput
+                      id="companyWebsite"
+                      placeholder="acme.com"
+                      value={form.website}
+                      onChange={(e) => {
+                        setWebsiteError("");
+                        setForm({ ...form, website: e.target.value });
+                      }}
+                      className={websiteError ? "ring-2 ring-red-500" : ""}
+                      required
+                    />
+                    {websiteError && (
+                      <p className="font-stolzl mt-1 text-sm text-red-600">
+                        {websiteError}
+                      </p>
+                    )}
                   </div>
 
                   <div>
