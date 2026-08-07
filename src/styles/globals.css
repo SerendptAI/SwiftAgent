@@ -225,7 +225,10 @@ html.lenis body {
 }
 html,
 body {
-  overflow-x: hidden;
+  /* `clip` rather than `hidden`: both stop sideways overflow, but `hidden`
+     makes this a scroll container, and a `position: sticky` descendant then
+     anchors to it instead of the viewport and never pins. */
+  overflow-x: clip;
   position: relative;
   width: 100%;
 }
