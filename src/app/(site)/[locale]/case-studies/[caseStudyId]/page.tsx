@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 
 import { CaseStudyDetail } from "@/components/landing/case-study-detail";
-import { ContactSection } from "@/components/landing/contact-section";
 import { Navbar } from "@/components/landing/navbar";
 import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provider";
 import { routing } from "@/i18n/routing";
@@ -66,7 +65,6 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
             <CaseStudyDetail caseStudy={caseStudy} />
           </div>
         </div>
-        <ContactSection />
       </main>
     </SmoothScrollProvider>
   );

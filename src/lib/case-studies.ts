@@ -30,6 +30,9 @@ export interface CaseStudy {
 
 const MOCKUP = "/images/products/swift-agents-sdk.svg";
 
+/** Orange from the design library; fills the play-progress ring. */
+export const DEFAULT_ACCENT_COLOR = "#F25430";
+
 const ALL_CASE_STUDIES: CaseStudy[] = [
   {
     id: "partyverse",

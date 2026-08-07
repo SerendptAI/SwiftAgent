@@ -28,7 +28,7 @@ export default function CaseStudiesPage() {
               HOW SWIFT AGENTS CAN HELP YOUR BUSINESS
             </p>
             <h1 className="font-greed-narrow mb-10 text-4xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase sm:text-5xl md:mb-14 md:text-[56px] lg:text-[66px]">
-              CASE STUDIES
+              USECASE ANALYSIS
             </h1>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8 xl:grid-cols-3">

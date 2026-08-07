@@ -18,7 +18,7 @@ export function DemoCaseStudiesSection() {
           HOW SWIFT AGENTS CAN HELP YOUR BUSINESS
         </p>
         <h2 className="font-greed-narrow mb-10 text-4xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase sm:text-5xl md:mb-6 md:text-[56px] lg:text-[66px]">
-          CASE STUDIES
+          USECASE ANALYSIS
         </h2>
 
         <div className="mb-10 flex gap-4 overflow-x-auto pb-2 [scrollbar-width:none] md:mb-14 lg:mb-18 lg:gap-6 [&::-webkit-scrollbar]:hidden">
