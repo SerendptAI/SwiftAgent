@@ -1,11 +1,12 @@
 "use client";
 
-import { Check, ChevronDown, X } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   CaseStudyVideo,
+  DockedPlayer,
   type PlayerMode,
   PlayGlyph,
   ProgressDisc,
@@ -102,10 +103,13 @@ export function CaseStudyDetail({
   const [progress, setProgress] = useState(0);
   const [miniDismissed, setMiniDismissed] = useState(false);
 
+  /** Whether the in-page clip has been scrolled past. */
+  const [scrolledPast, setScrolledPast] = useState(false);
+
   /**
-   * Detaching the player would collapse its slot and shorten the page under the
-   * reader, which bounces the marker back into view and undocks it again. The
-   * slot holds the height it had while inline so nothing below it moves.
+   * Going fullscreen lifts the clip out of the layout, which would shorten the
+   * page under the reader; the slot holds the height it had so returning lands
+   * on the same scroll position.
    */
   const [reservedHeight, setReservedHeight] = useState<number | null>(null);
 
@@ -119,12 +123,19 @@ export function CaseStudyDetail({
     Boolean(activeVideo) && activeVideo !== unplayableVideo;
   const aspectClass = caseStudy.videoAspect ?? "aspect-video";
 
-  const detach = useCallback((next: Exclude<PlayerMode, "inline">) => {
+  const showDocked =
+    scrolledPast &&
+    mode === "inline" &&
+    playing &&
+    !miniDismissed &&
+    isVideoPlayable;
+
+  const enterFullscreen = useCallback(() => {
     setReservedHeight(slotRef.current?.getBoundingClientRect().height ?? null);
-    setMode(next);
+    setMode("fullscreen");
   }, []);
 
-  const reattach = useCallback(() => {
+  const exitFullscreen = useCallback(() => {
     setReservedHeight(null);
     setMode("inline");
   }, []);
@@ -149,48 +160,31 @@ export function CaseStudyDetail({
     setProgress((prev) => (Math.abs(next - prev) < 0.005 ? prev : next));
   }, []);
 
-  // Read through a ref so the observer subscribes once. Re-subscribing on every
-  // mode change makes it re-fire against the layout it just changed.
-  const playerState = useRef({ mode, playing, miniDismissed, isVideoPlayable });
-  playerState.current = { mode, playing, miniDismissed, isVideoPlayable };
-
   /**
-   * A zero-height marker at the top of the slot, rather than the slot itself:
-   * it gives a clean crossing even when the clip is taller than the viewport,
-   * and it keeps working after the player detaches.
+   * A zero-height marker at the top of the slot, rather than the slot itself,
+   * so the crossing stays clean even when the clip is taller than the viewport.
    */
   useEffect(() => {
     const marker = markerRef.current;
     if (!marker) return;
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        const { mode, playing, miniDismissed, isVideoPlayable } =
-          playerState.current;
-        if (mode === "fullscreen") return;
-
-        if (entry.isIntersecting) {
-          if (mode === "mini") reattach();
-        } else if (
-          mode === "inline" &&
-          playing &&
-          !miniDismissed &&
-          isVideoPlayable
-        ) {
-          detach("mini");
-        }
-      },
+      ([entry]) => setScrolledPast(!entry.isIntersecting),
       { rootMargin: "-96px 0px 0px 0px" },
     );
     observer.observe(marker);
     return () => observer.disconnect();
-  }, [detach, reattach]);
+  }, []);
+
+  const returnToClip = useCallback(() => {
+    slotRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, []);
 
   useEffect(() => {
     if (mode !== "fullscreen") return;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") reattach();
+      if (event.key === "Escape") exitFullscreen();
     };
     document.addEventListener("keydown", onKeyDown);
 
@@ -200,7 +194,7 @@ export function CaseStudyDetail({
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = overflow;
     };
-  }, [mode, reattach]);
+  }, [mode, exitFullscreen]);
 
   return (
     <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-12 xl:gap-18">
@@ -226,8 +220,6 @@ export function CaseStudyDetail({
             // Above the navbar, which sits at z-100.
             mode === "fullscreen" &&
               "fixed inset-0 z-200 flex flex-col items-center justify-center gap-5 bg-black px-4 py-16 md:px-8",
-            mode === "mini" &&
-              "fixed right-4 bottom-4 z-200 w-[55vw] max-w-[240px] drop-shadow-2xl",
           )}
         >
           {mode === "fullscreen" && (
@@ -237,7 +229,7 @@ export function CaseStudyDetail({
               </p>
               <button
                 type="button"
-                onClick={reattach}
+                onClick={exitFullscreen}
                 aria-label="Exit fullscreen"
                 className="shrink-0 cursor-pointer text-white transition-opacity hover:opacity-70"
               >
@@ -261,7 +253,7 @@ export function CaseStudyDetail({
               name={caseStudy.name}
               aspectClass={aspectClass}
               mode={mode}
-              onExpand={() => detach("fullscreen")}
+              onExpand={enterFullscreen}
               onTimeUpdate={handleTimeUpdate}
               onPlayingChange={setPlaying}
               onVideoError={() => setUnplayableVideo(activeVideo ?? null)}
@@ -271,7 +263,7 @@ export function CaseStudyDetail({
           {mode === "fullscreen" && (
             <button
               type="button"
-              onClick={reattach}
+              onClick={exitFullscreen}
               className="flex w-full max-w-[557px] shrink-0 cursor-pointer items-center gap-3 rounded-[10px] border border-black bg-[#F6F4EF] px-3 py-2 text-left shadow-[-3px_4px_0px_0px_#000000]"
             >
               <ProgressDisc
@@ -285,30 +277,20 @@ export function CaseStudyDetail({
               <ChevronDown className="ml-auto size-6 shrink-0 text-black md:size-8" />
             </button>
           )}
-
-          {mode === "mini" && (
-            <>
-              <ProgressDisc
-                playing={playing}
-                progress={progress}
-                accentColor={DEFAULT_ACCENT_COLOR}
-                className="absolute -top-3 -left-3 z-10 drop-shadow-[0_1px_3px_rgba(0,0,0,0.35)]"
-              />
-              <button
-                type="button"
-                onClick={() => {
-                  setMiniDismissed(true);
-                  reattach();
-                }}
-                aria-label="Close mini player"
-                className="absolute top-2 right-2 z-10 flex size-7 cursor-pointer items-center justify-center rounded-full bg-white/90 transition-transform hover:scale-105"
-              >
-                <X className="size-4 text-black" />
-              </button>
-            </>
-          )}
         </div>
       </div>
+
+      {showDocked && activeVideo && (
+        <DockedPlayer
+          video={activeVideo}
+          sourceRef={videoRef}
+          playing={playing}
+          progress={progress}
+          accentColor={DEFAULT_ACCENT_COLOR}
+          onReturn={returnToClip}
+          onClose={() => setMiniDismissed(true)}
+        />
+      )}
 
       <div
         style={{ order: TEXT_COLUMN_ORDER }}
