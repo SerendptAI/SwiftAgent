@@ -1,12 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import type { RefObject } from "react";
+import { X } from "lucide-react";
+import { type RefObject, useEffect, useRef } from "react";
 
 import { cn } from "@/lib/utils";
 
-/** The player is inline in the page, blown up over it, or docked in a corner. */
-export type PlayerMode = "inline" | "fullscreen" | "mini";
+/** The in-page clip is either sitting in the layout or blown up over it. */
+export type PlayerMode = "inline" | "fullscreen";
 
 const RING_RADIUS = 17;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
@@ -105,6 +106,78 @@ function ExpandGlyph() {
   );
 }
 
+/**
+ * The corner player is a second clip rather than the page one relocated, so the
+ * spot it came from keeps playing instead of leaving a hole. It picks up from
+ * wherever the in-page clip has reached; both are muted, so they simply run
+ * alongside each other.
+ */
+export function DockedPlayer({
+  video,
+  sourceRef,
+  playing,
+  progress,
+  accentColor,
+  onReturn,
+  onClose,
+}: {
+  video: string;
+  sourceRef: RefObject<HTMLVideoElement | null>;
+  playing: boolean;
+  progress: number;
+  accentColor: string;
+  onReturn: () => void;
+  onClose: () => void;
+}) {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    const source = sourceRef.current;
+    if (!el) return;
+    if (source && Number.isFinite(source.currentTime)) {
+      el.currentTime = source.currentTime;
+    }
+    void el.play().catch(() => {});
+  }, [sourceRef, video]);
+
+  return (
+    <div className="fixed right-4 bottom-4 z-200 w-[52vw] max-w-[230px] overflow-hidden rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
+      <button
+        type="button"
+        onClick={onReturn}
+        aria-label="Back to the clip in the page"
+        className="block w-full cursor-pointer"
+      >
+        <video
+          ref={ref}
+          src={video}
+          className="block w-full object-contain"
+          loop
+          muted
+          playsInline
+        />
+      </button>
+
+      <ProgressDisc
+        playing={playing}
+        progress={progress}
+        accentColor={accentColor}
+        className="pointer-events-none absolute top-2 left-2"
+      />
+
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label="Close mini player"
+        className="absolute top-2 right-2 flex size-7 cursor-pointer items-center justify-center rounded-full bg-white/85 transition-transform hover:scale-105"
+      >
+        <X className="size-4 text-black" />
+      </button>
+    </div>
+  );
+}
+
 export function CaseStudyVideo({
   videoRef,
   video,
@@ -135,9 +208,7 @@ export function CaseStudyVideo({
   const sizing =
     mode === "fullscreen"
       ? "max-h-full w-auto max-w-full"
-      : mode === "mini"
-        ? cn("w-full", aspectClass)
-        : cn("w-full", aspectClass, portrait && "lg:h-[76vh] lg:w-auto");
+      : cn("w-full", aspectClass, portrait && "lg:h-[76vh] lg:w-auto");
 
   return (
     <div
@@ -152,11 +223,7 @@ export function CaseStudyVideo({
           key={video}
           ref={videoRef}
           src={video}
-          className={cn(
-            "mx-auto object-contain",
-            mode === "mini" ? "rounded-xl" : "rounded-2xl",
-            sizing,
-          )}
+          className={cn("mx-auto rounded-2xl object-contain", sizing)}
           autoPlay
           loop
           muted
