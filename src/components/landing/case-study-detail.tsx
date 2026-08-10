@@ -22,6 +22,19 @@ import { cn } from "@/lib/utils";
  */
 const TEXT_COLUMN_ORDER = 99;
 
+/**
+ * Shared look for the copy that partners author as markup — use case bodies and
+ * the sign-off. Tailwind's preflight strips list markers, so `ul` opts back in;
+ * `blockquote` is the stack of example prompts a user would type.
+ */
+const RICH_TEXT = cn(
+  "font-stolzl text-base leading-[1.76] tracking-[2%] text-black md:text-lg",
+  "[&_p+p]:mt-3",
+  "[&_ul]:mt-2 [&_ul]:list-disc [&_ul]:pl-6 [&_ul+p]:mt-3 [&_li]:mt-1",
+  "[&_blockquote]:my-3 [&_blockquote]:border-l-2 [&_blockquote]:border-black/15 [&_blockquote]:pl-4",
+  "[&_blockquote_p+p]:mt-1",
+);
+
 function ShareIcon() {
   return (
     <svg
@@ -351,16 +364,25 @@ export function CaseStudyDetail({
                   {useCase.title}
                 </span>
               </button>
-              <p className="font-stolzl px-1 text-base leading-[1.76] tracking-[2%] text-black md:text-lg">
-                {useCase.description}
-              </p>
+              <div
+                className={cn(RICH_TEXT, "px-1")}
+                dangerouslySetInnerHTML={{ __html: useCase.description }}
+              />
             </div>
           );
         })}
 
-        {showFullCaseStudyLink && (
+        {caseStudy.closing && (
           <div
             style={{ order: (caseStudy.useCases.length + 1) * 2 }}
+            className={cn(RICH_TEXT, "px-1 lg:mt-8")}
+            dangerouslySetInnerHTML={{ __html: caseStudy.closing }}
+          />
+        )}
+
+        {showFullCaseStudyLink && (
+          <div
+            style={{ order: (caseStudy.useCases.length + 2) * 2 }}
             className="lg:mt-8"
           >
             <Link

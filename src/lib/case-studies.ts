@@ -2,6 +2,10 @@ import { cn } from "@/lib/utils";
 
 export interface CaseStudyUseCase {
   title: string;
+  /**
+   * Trusted HTML, as with `CaseStudy.description`. Plain prose can be written
+   * bare; `p`, `ul`/`li` and `blockquote` are styled by the detail view.
+   */
   description: string;
   /**
    * Walkthrough clip for this use case, played in the detail view. Optional
@@ -24,6 +28,8 @@ export interface CaseStudy {
    */
   videoAspect?: "aspect-[9/16]" | "aspect-video";
   useCases: CaseStudyUseCase[];
+  /** Sign-off shown under the use cases. Trusted HTML, as with `description`. */
+  closing?: string;
   /** Unpublished studies stay here for reference but are not served anywhere. */
   published: boolean;
 }
@@ -34,32 +40,6 @@ const MOCKUP = "/images/products/swift-agents-sdk.svg";
 export const DEFAULT_ACCENT_COLOR = "#F25430";
 
 const ALL_CASE_STUDIES: CaseStudy[] = [
-  {
-    id: "partyverse",
-    name: "PARTYVERSE",
-    logo: "/images/Referrals/logos/partyverse.png",
-    mockup: MOCKUP,
-    published: false,
-    description:
-      "<strong>Partyverse</strong> is an app where people go to buy tickets to events but the user experience is made for those who already know the party they want to attend, not those who are confused or just want to attend anything",
-    useCases: [
-      {
-        title: "TELL OUR BOT HOW YOU ARE FEELING",
-        description:
-          "Tell our bot what kind of party you'd like to attend and it will bring out the best suggestions for the exact time frame you want",
-      },
-      {
-        title: "SETTLE PAYMENT ISSUES",
-        description:
-          "Tell our bot what kind of party you'd like to attend and it will bring out the best suggestions for the exact time frame you want",
-      },
-      {
-        title: "COMMUNICATE VIA CHAT NOT EMAIL",
-        description:
-          "Tell our bot what kind of party you'd like to attend and it will bring out the best suggestions for the exact time frame you want",
-      },
-    ],
-  },
   {
     id: "kuda-bank",
     name: "KUDA BANK",
@@ -171,6 +151,55 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
         video: "/videos/partners/raenest/every-step.mp4",
       },
     ],
+  },
+  {
+    id: "partyverse",
+    name: "PARTYVERSE",
+    logo: "/images/Referrals/logos/partyverse.png",
+    mockup: MOCKUP,
+    description:
+      "<strong>Partyverse</strong> helps people discover and buy tickets to events. From our analysis, the current experience appears optimized for users who already know what event they want to attend. But for users who are undecided, exploring options, or simply looking for somewhere interesting to go, the journey can create friction.",
+    videoAspect: "aspect-[9/16]",
+    published: true,
+    useCases: [
+      {
+        title: "DISCOVER EVENTS THROUGH CONVERSATION",
+        description: [
+          "<p>Instead of searching through multiple events, users can simply describe what they want:</p>",
+          "<blockquote>",
+          "<p>“What parties are happening this Friday?”</p>",
+          "<p>“I want something chill around Lekki.”</p>",
+          "<p>“I want a nightlife event with Afrobeat music.”</p>",
+          "</blockquote>",
+          "<p>SwiftAgents helps guide users to relevant suggestions instantly.</p>",
+        ].join(""),
+        video: "/videos/partners/partyverse/describe-what-you-want.mp4",
+      },
+      {
+        title: "HANDLE PAYMENT QUESTIONS FASTER",
+        description: [
+          "<p>Help users get answers to common payment-related issues immediately:</p>",
+          "<ul>",
+          "<li>Failed payments</li>",
+          "<li>Ticket confirmation questions</li>",
+          "<li>Transaction status updates</li>",
+          "<li>Refund-related questions</li>",
+          "</ul>",
+        ].join(""),
+        video: "/videos/partners/partyverse/payment-issues.mp4",
+      },
+      {
+        title: "MAKE SUPPORT FEEL LIKE A CONVERSATION",
+        description:
+          "Instead of sending customers to support forms or waiting for email responses, users can ask questions naturally and receive immediate guidance.",
+        video: "/videos/partners/partyverse/refund-in-chat.mp4",
+      },
+    ],
+    closing: [
+      "<p>Less searching. Less waiting. Faster experiences.</p>",
+      "<p>Traditional support platforms help teams manage support. ",
+      "<strong>SwiftAgents helps teams reduce it.</strong></p>",
+    ].join(""),
   },
 ];
 
