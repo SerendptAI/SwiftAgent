@@ -18,7 +18,7 @@ export const siteConfig = {
     "Voice AI",
   ],
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://swiftagents.org",
-  demoBookingUrl: "https://calendly.com/serendptgroup/30min",
+  demoBookingUrl: "https://cal.com/serendpt-ai-g0c27c/swift-agents-call",
   locale: "en_US",
   creator: "Serendpt AI",
   authors: [{ name: "Serendpt AI", url: "https://swiftagents.org" }],
