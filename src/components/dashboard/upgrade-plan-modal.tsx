@@ -5,13 +5,21 @@ import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { useEffect, useId, useState } from "react";
 
+import { DemoBookingLink } from "@/components/landing/demo-booking-link";
 import type { Plan } from "@/components/pricing/plan-card";
-import { plansFromBackend } from "@/components/pricing/plans";
+import {
+  CONTACT_SALES_LABEL,
+  plansFromBackend,
+} from "@/components/pricing/plans";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useBillingDetails, useBillingPlans } from "@/hooks/use-billing";
 import type { SubscriptionTier } from "@/services/billing";
 
 import { Icons } from "../icons";
+
+// Figma: 143x38 button pinned 14px from the card's right edge, 97px from its top.
+const MODAL_CTA_CLASS =
+  "font-dm-mono absolute top-[97px] right-[14px] inline-flex h-[38px] w-[143px] cursor-pointer items-center justify-center rounded-[13px] border border-[#EDEDED] bg-[#006BE5] text-[14px] leading-[1.2] tracking-[1.4px] text-white uppercase transition-colors hover:bg-[#0055B8]";
 
 // Exact path data lifted from the Figma export (viewBox 0 0 136 150).
 const PLAN_ICON_DATA: Record<
@@ -241,7 +249,9 @@ function UpgradePlanCard({
 
       {/* Price — Figma: left:154 top:43 */}
       <p className="font-dm-mono absolute top-[43px] left-[154px] text-[18px] leading-[1.2] tracking-[1.8px] text-black uppercase">
-        {plan.price} {plan.billing}
+        {plan.contactSales
+          ? CONTACT_SALES_LABEL
+          : `${plan.price} ${plan.billing}`}
       </p>
 
       {/* Features — Figma: left:154 top:90 w:269 */}
@@ -266,12 +276,15 @@ function UpgradePlanCard({
         <span className="font-dm-mono absolute top-[97px] right-[27px] inline-flex h-[38px] w-[160px] items-center justify-center rounded-[13px] border border-[#EDEDED] bg-[#EDEDED] text-[14px] leading-[1.2] tracking-[1.4px] text-black uppercase">
           Presently On
         </span>
-      ) : (
-        <button
-          type="button"
-          onClick={onSelect}
-          className="font-dm-mono absolute top-[97px] right-[14px] inline-flex h-[38px] w-[143px] cursor-pointer items-center justify-center rounded-[13px] border border-[#EDEDED] bg-[#006BE5] text-[14px] leading-[1.2] tracking-[1.4px] text-white uppercase transition-colors hover:bg-[#0055B8]"
+      ) : plan.contactSales ? (
+        <DemoBookingLink
+          location="pricing-enterprise"
+          className={MODAL_CTA_CLASS}
         >
+          {CONTACT_SALES_LABEL}
+        </DemoBookingLink>
+      ) : (
+        <button type="button" onClick={onSelect} className={MODAL_CTA_CLASS}>
           View More
         </button>
       )}

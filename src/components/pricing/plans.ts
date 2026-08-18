@@ -10,6 +10,11 @@ interface PlanMeta {
   features: string[];
 }
 
+/** Enterprise tiers are sold by conversation, so they show a contact CTA instead of a price. */
+const CONTACT_SALES_TIERS = new Set(["enterprise", "enterprise_payg"]);
+
+export const CONTACT_SALES_LABEL = "CONTACT ME";
+
 const PLAN_META: Record<string, PlanMeta> = {
   basic: {
     name: "BASIC PLAN",
@@ -146,6 +151,7 @@ function toPlan(tier: string, billing: BillingPlan): Plan | null {
     textColor: meta.textColor,
     image: meta.image,
     features: meta.features,
+    contactSales: CONTACT_SALES_TIERS.has(tier),
   };
 }
 
