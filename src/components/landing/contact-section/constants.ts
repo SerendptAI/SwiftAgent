@@ -3,7 +3,7 @@ export const NAV_LINKS = [
   { label: "TWITTER", href: "https://x.com/swftagents" },
   { label: "INSTAGRAM", href: "/" },
   { label: "CAREERS", href: "/" },
-  { label: "BLOG", href: "/" },
+  { label: "BLOG", href: "/blog" },
   { label: "EMAIL", href: "mailto:thelma@swiftagents.org" },
 ] as const;
 
