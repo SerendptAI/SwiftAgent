@@ -13,7 +13,7 @@ interface PlanMeta {
 /** Enterprise tiers are sold by conversation, so they show a contact CTA instead of a price. */
 const CONTACT_SALES_TIERS = new Set(["enterprise", "enterprise_payg"]);
 
-export const CONTACT_SALES_LABEL = "CONTACT ME";
+export const CONTACT_SALES_LABEL = "CONTACT US";
 
 const PLAN_META: Record<string, PlanMeta> = {
   basic: {
@@ -107,21 +107,21 @@ const PLAN_META: Record<string, PlanMeta> = {
     ],
   },
   enterprise_payg: {
-    name: "ENTERPRISE (PAYG)",
+    name: "ENTERPRISE PLAN",
     description:
-      "FOR LARGE ORGANIZATIONS\nWITH PAY-AS-YOU-GO SCALING\nBEYOND THE INCLUDED LIMITS.",
+      "FOR LARGE ORGANIZATIONS\nRUNNING AI SUPPORT ACROSS\nTHEIR ENTIRE OPERATION.",
     textColor: "text-[#F25430]",
     image: "/images/pricing/icon3.svg",
     features: [
       "UNLIMITED DEPLOYED AI AGENTS",
-      "50 DOCUMENTS INCLUDED,\nTHEN PAY-AS-YOU-GO",
+      "UP TO 50 DOCUMENT UPLOADS",
       "ALL SUPPORTED LANGUAGES\n(UNLIMITED)",
       "CUSTOM ANSWER BOUNDARY\nCONTROLS",
       "FULLY CUSTOMIZABLE ANALYTICS",
       "UNLIMITED AGENT CHATS\nPER MONTH",
-      "25 STROLLS/MO INCLUDED,\nTHEN PAY-AS-YOU-GO",
+      "UP TO 25 STROLLS PER MONTH",
       "DEDICATED COMPUTE TIER FOR\nTHE FASTEST RESPONSE TIMES",
-      "5 MEMBERS INCLUDED,\nTHEN PAY-AS-YOU-GO",
+      "UP TO 5 INVITED MEMBERS\nPER COMPANY",
     ],
   },
 };

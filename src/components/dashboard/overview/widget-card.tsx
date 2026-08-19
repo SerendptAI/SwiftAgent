@@ -130,23 +130,23 @@ export function WidgetCard() {
       {isOpen ? (
         <div className="relative">
           <div className="relative">
-            <div className="absolute top-0 right-0 left-0 z-10 flex h-[48px] items-center gap-2 pr-3 sm:gap-4 sm:pr-0">
+            <div className="absolute top-0 right-0 left-0 z-10 flex h-[54px] items-start gap-2 pr-3 sm:gap-4 sm:pr-0">
               <div
-                className="bg-muted h-full rounded-br-md pr-4"
+                className="h-full rounded-br-[10px] bg-[#F6F6F6] pr-[11px] pl-[5px]"
                 ref={modeDropdownRef}
               >
                 <button
                   onClick={() => setModeDropdownOpen((v) => !v)}
-                  className="font-dm-mono flex min-h-11 items-center gap-2 rounded-md bg-[#006BE5] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1E88E5] sm:px-5"
+                  className="font-dm-mono mt-[-2px] flex h-[46px] items-center gap-[9px] rounded-[14px] bg-[#006BE5] px-4 text-[16px] font-semibold text-white transition-colors hover:bg-[#1E88E5]"
                 >
                   <ChevronDown
-                    className={`h-4 w-4 transition-transform ${modeDropdownOpen ? "rotate-180" : ""}`}
+                    className={`h-5 w-5 transition-transform ${modeDropdownOpen ? "rotate-180" : ""}`}
                   />
                   {mode === "button" ? "Button" : "Widget"}
                 </button>
 
                 {modeDropdownOpen && (
-                  <div className="animate-in fade-in slide-in-from-top-1 absolute top-[48px] left-0 z-20 min-w-[180px] overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg">
+                  <div className="animate-in fade-in slide-in-from-top-1 absolute top-[54px] left-0 z-20 min-w-[180px] overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg">
                     <button
                       onClick={() => {
                         setMode("widget");
@@ -178,7 +178,7 @@ export function WidgetCard() {
                 )}
               </div>
 
-              <div className="flex items-center sm:pr-6">
+              <div className="flex items-center pt-[6px] sm:pr-6">
                 <button
                   onClick={() => {
                     if (locked) {
@@ -187,7 +187,7 @@ export function WidgetCard() {
                     }
                     setIsSettingsOpen(true);
                   }}
-                  className="font-greed-narrow flex min-h-10 cursor-pointer items-center gap-2 rounded-md bg-[#EDEDED] px-3 py-2 text-xs font-bold tracking-wider text-gray-600 uppercase transition-colors hover:bg-gray-100 sm:px-4"
+                  className="font-greed-narrow flex h-[42px] cursor-pointer items-center gap-2 rounded-[7px] bg-[#EDEDED] px-3 text-[13px] font-bold tracking-wider text-gray-600 uppercase transition-colors hover:bg-gray-100 sm:px-4 sm:text-sm"
                 >
                   <Icons.Settings className="h-5 w-5" />
                   <span className="hidden min-[360px]:inline">SETTINGS</span>
@@ -195,10 +195,10 @@ export function WidgetCard() {
               </div>
             </div>
 
-            <div className="rounded-[20px] border border-gray-100 bg-white px-4 pt-16 pb-5 shadow-sm md:rounded-md md:px-5">
+            <div className="rounded-[21px] border border-gray-100 bg-white px-6 pt-[84px] pb-6 shadow-sm">
               <div className="relative">
                 <pre
-                  className={`font-stolzl max-h-48 overflow-auto rounded-lg bg-[#F6F6F6] p-3 text-[11px] leading-relaxed break-all whitespace-pre-wrap text-gray-700 sm:p-4 sm:text-[13px] ${
+                  className={`font-stolzl max-h-[125px] overflow-auto text-[13px] leading-[1.8] break-all whitespace-pre-wrap text-[#7E7E7E] sm:text-[14px] ${
                     locked ? "pointer-events-none blur-sm select-none" : ""
                   }`}
                 >
@@ -245,7 +245,7 @@ export function WidgetCard() {
               <button
                 onClick={handleCopy}
                 disabled={!codeSnippet || locked}
-                className="font-dm-mono mt-6 flex min-h-11 w-full items-center justify-center gap-2.5 rounded-md bg-[#006BE5] py-2 text-base font-normal text-white shadow-[-4px_4px_0px_0px_#000000] transition-all hover:bg-[#1E88E5] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-2px_2px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-50"
+                className="font-dm-mono mt-6 flex h-[46px] w-full items-center justify-center gap-2.5 rounded-[8px] bg-[#006BE5] text-[16px] font-normal text-white shadow-[-3px_4px_0px_0px_#000000] transition-all hover:bg-[#1E88E5] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-1px_2px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Copy className="h-5 w-5" />
                 {copied ? "Copied!" : "Copy"}
