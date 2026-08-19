@@ -140,8 +140,8 @@ export default function BillingPage() {
                 plan={plan}
                 showSubscribe
                 onSubscribe={handleSubscribe}
-                subscribeDisabled={!companyId || isActive}
-                subscribeLabel={isActive ? "CURRENT PLAN" : undefined}
+                subscribeDisabled={!companyId}
+                isCurrentPlan={isActive}
               />
             );
           })}

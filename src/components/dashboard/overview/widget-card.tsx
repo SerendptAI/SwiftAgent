@@ -10,8 +10,14 @@ import {
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import {
+  emptyStrollForm,
+  StrollConfigFields,
+  strollFormFromConfig,
+  strollFormToPayload,
+  type StrollFormValue,
+} from "@/components/dashboard/stroll-config-fields";
 import { Icons } from "@/components/icons";
-import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useHasActivePlan } from "@/hooks/use-billing";
 import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
@@ -26,7 +32,6 @@ import type {
   IntegrationCreatePayload,
   IntegrationUpdatePayload,
 } from "@/services/integrations";
-import type { StrollConfigPayload } from "@/services/stroll";
 import { useUpgradeModalStore } from "@/store/upgrade-modal-store";
 
 import {
@@ -344,15 +349,8 @@ function ChatbotSettingsSidebar({
   const [selected, setSelected] = useState<Set<AgentId>>(
     () => new Set(["047", "007"]),
   );
-  const [dashboardUrl, setDashboardUrl] = useState("");
-  const [loginUrl, setLoginUrl] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [preAuthUrl, setPreAuthUrl] = useState("");
-  const [schedule, setSchedule] = useState("0 2 * * *");
-  const [maxPages, setMaxPages] = useState<number>(50);
-  const [sandboxMode, setSandboxMode] = useState(true);
-  const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [strollForm, setStrollForm] =
+    useState<StrollFormValue>(emptyStrollForm);
   const [isShown, setIsShown] = useState(false);
   const [suggestedPrompts, setSuggestedPrompts] = useState<string[]>([]);
   const [enableSuggestedPrompts, setEnableSuggestedPrompts] = useState(true);
@@ -363,16 +361,7 @@ function ChatbotSettingsSidebar({
 
   useEffect(() => {
     if (!config) return;
-    setDashboardUrl(config.dashboard_url || "");
-    setSchedule(config.schedule || "0 2 * * *");
-    setSandboxMode(config.sandbox_mode ?? true);
-    setMaxPages(config.max_pages ?? 50);
-    if (config.credentials) {
-      setLoginUrl(config.credentials.login_url || "");
-      setUsername(config.credentials.username || "");
-      setPassword(config.credentials.password || "");
-      setPreAuthUrl(config.credentials.pre_auth_url || "");
-    }
+    setStrollForm(strollFormFromConfig(config));
   }, [config]);
 
   useEffect(() => {
@@ -431,13 +420,6 @@ function ChatbotSettingsSidebar({
       closeWithAnimation();
       return;
     }
-    const credentials: StrollConfigPayload["credentials"] = {
-      username: username.trim(),
-      password,
-    };
-    if (loginUrl.trim()) credentials.login_url = loginUrl.trim();
-    if (preAuthUrl.trim()) credentials.pre_auth_url = preAuthUrl.trim();
-
     const cleanedPrompts = suggestedPrompts
       .map((p) => p.trim())
       .filter(Boolean);
@@ -517,13 +499,7 @@ function ChatbotSettingsSidebar({
       await Promise.all([
         updateConfig.mutateAsync({
           companyId,
-          payload: {
-            dashboard_url: dashboardUrl.trim(),
-            schedule: schedule.trim() || "0 2 * * *",
-            credentials,
-            sandbox_mode: sandboxMode,
-            max_pages: maxPages,
-          },
+          payload: strollFormToPayload(strollForm),
         }),
         updateCompany.mutateAsync({
           companyId,
@@ -623,83 +599,7 @@ function ChatbotSettingsSidebar({
               Please create a sandbox account and share the login details for
               Agent 047
             </p>
-            <div className="space-y-4">
-              <FieldInput
-                id="sandbox-login-url"
-                label="Login URL"
-                value={loginUrl}
-                onChange={setLoginUrl}
-                placeholder="https://app.example.com/login"
-              />
-              <FieldInput
-                id="sandbox-dashboard-url"
-                label="Dashboard URL"
-                value={dashboardUrl}
-                onChange={setDashboardUrl}
-                placeholder="https://app.example.com/dashboard"
-              />
-              <FieldInput
-                id="sandbox-username"
-                label="Email/Username"
-                value={username}
-                onChange={setUsername}
-                placeholder="Email/Username"
-              />
-              <FieldInput
-                id="sandbox-password"
-                label="Password"
-                type="password"
-                value={password}
-                onChange={setPassword}
-                placeholder="••••••••"
-              />
-
-              <label className="flex cursor-pointer items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={sandboxMode}
-                  onChange={(e) => setSandboxMode(e.target.checked)}
-                  className="h-4 w-4 accent-[#006BE5]"
-                />
-                <span className="font-dm-mono text-xs text-gray-700">
-                  Sandbox mode
-                </span>
-              </label>
-
-              <button
-                type="button"
-                onClick={() => setAdvancedOpen((v) => !v)}
-                className="font-dm-mono flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700"
-              >
-                <ChevronDown
-                  className={`h-3.5 w-3.5 transition-transform ${
-                    advancedOpen ? "rotate-180" : ""
-                  }`}
-                />
-                Advanced options
-              </button>
-
-              {advancedOpen && (
-                <div className="space-y-4 border-l-2 border-gray-100 pl-3">
-                  <ScheduleSelect value={schedule} onChange={setSchedule} />
-                  <FieldInput
-                    id="sandbox-max-pages"
-                    label="Max pages"
-                    type="number"
-                    value={String(maxPages)}
-                    onChange={(v) => setMaxPages(Number(v) || 0)}
-                    placeholder="50"
-                  />
-                  <FieldInput
-                    id="sandbox-pre-auth"
-                    label="Pre-auth URL"
-                    value={preAuthUrl}
-                    onChange={setPreAuthUrl}
-                    placeholder="https://app.example.com/auto-login?token=abc"
-                  />
-                </div>
-              )}
-            </div>
+            <StrollConfigFields value={strollForm} onChange={setStrollForm} />
           </CollapsibleSection>
 
           <PaymentSandboxSection />
@@ -727,114 +627,6 @@ function ChatbotSettingsSidebar({
       </aside>
     </div>
   );
-}
-
-const SCHEDULE_PRESETS: { label: string; value: string }[] = [
-  { label: "Every hour", value: "0 * * * *" },
-  { label: "Every 6 hours", value: "0 */6 * * *" },
-  { label: "Every 12 hours", value: "0 */12 * * *" },
-  { label: "Daily at midnight", value: "0 0 * * *" },
-  { label: "Daily at 2 AM", value: "0 2 * * *" },
-  { label: "Daily at 9 AM", value: "0 9 * * *" },
-  { label: "Weekly (Sunday midnight)", value: "0 0 * * 0" },
-  { label: "Monthly (1st at midnight)", value: "0 0 1 * *" },
-];
-
-function ScheduleSelect({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  const isPreset = SCHEDULE_PRESETS.some((p) => p.value === value);
-  return (
-    <div>
-      <div className="mb-1.5 flex items-center justify-between">
-        <label
-          htmlFor="sandbox-schedule"
-          className="font-dm-mono text-xs text-gray-700"
-        >
-          How often should we scan?
-        </label>
-        <InfoTooltip
-          text="Choose how often Agent 047 should scan the sandbox account for updates."
-          className="h-3.5 w-3.5"
-        />
-      </div>
-      <select
-        id="sandbox-schedule"
-        value={isPreset ? value : "__custom"}
-        onChange={(e) => {
-          if (e.target.value !== "__custom") onChange(e.target.value);
-        }}
-        className="font-dm-mono w-full rounded-sm border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#006BE5]"
-      >
-        {SCHEDULE_PRESETS.map((p) => (
-          <option key={p.value} value={p.value}>
-            {p.label}
-          </option>
-        ))}
-        {!isPreset && <option value="__custom">Custom ({value})</option>}
-      </select>
-    </div>
-  );
-}
-
-function FieldInput({
-  id,
-  label,
-  value,
-  onChange,
-  placeholder,
-  type = "text",
-}: {
-  id: string;
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
-  type?: "text" | "password" | "number";
-}) {
-  const tooltipText = getSandboxFieldTooltip(label);
-
-  return (
-    <div>
-      <div className="mb-1.5 flex items-center justify-between">
-        <label htmlFor={id} className="font-dm-mono text-xs text-gray-700">
-          {label}
-        </label>
-        <InfoTooltip text={tooltipText} className="h-3.5 w-3.5" />
-      </div>
-      <input
-        id={id}
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className="font-dm-mono w-full rounded-sm border border-gray-200 px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#006BE5]"
-      />
-    </div>
-  );
-}
-
-function getSandboxFieldTooltip(label: string) {
-  switch (label) {
-    case "Dashboard URL":
-      return "The logged-in page Agent 047 should inspect after signing into the sandbox account.";
-    case "Login URL":
-      return "The page where Agent 047 should enter the sandbox account credentials.";
-    case "Username":
-      return "The sandbox account username Agent 047 should use to sign in.";
-    case "Password":
-      return "The sandbox account password Agent 047 should use to sign in.";
-    case "Max pages":
-      return "The maximum number of pages Agent 047 should scan in one run.";
-    case "Pre-auth URL":
-      return "An optional URL that prepares the sandbox session before the scan starts.";
-    default:
-      return `More information about ${label.toLowerCase()}.`;
-  }
 }
 
 function ToastNotification({

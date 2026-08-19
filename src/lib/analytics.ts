@@ -36,7 +36,8 @@ export type DemoCtaLocation =
   | "landing-platforms"
   | "landing-cta"
   | "roi-simulator"
-  | "scale-support-hero";
+  | "scale-support-hero"
+  | "pricing-enterprise";
 
 /** Every product event and its properties — the single source of truth for both. */
 type AnalyticsEventMap = {

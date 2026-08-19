@@ -1,5 +1,9 @@
 import Image from "next/image";
 
+import { DemoBookingLink } from "@/components/landing/demo-booking-link";
+
+import { CONTACT_SALES_LABEL } from "./plans";
+
 export interface Plan {
   name: string;
   price: string;
@@ -14,7 +18,12 @@ export interface Plan {
   tier?: string;
   /** Number of free trial months — when present, renders an "X Months Free!" badge. */
   trialMonths?: number;
+  /** Sold by conversation — hides the price and swaps Subscribe for a booking link. */
+  contactSales?: boolean;
 }
+
+const CTA_CLASS =
+  "flex h-11 w-full cursor-pointer items-center justify-center rounded-md bg-[#006BE5] py-1 text-xs text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all active:translate-x-[-1px] active:translate-y-[1px] active:shadow-[-1px_1px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-60 md:h-9 md:text-sm";
 
 interface PlanCardProps {
   plan: Plan;
@@ -26,8 +35,8 @@ interface PlanCardProps {
   onSubscribe?: (plan: Plan) => void;
   /** Disables the Subscribe button (e.g. while a checkout request is pending) */
   subscribeDisabled?: boolean;
-  /** Label override for the Subscribe button */
-  subscribeLabel?: string;
+  /** The company already subscribes to this tier — takes precedence over any other CTA. */
+  isCurrentPlan?: boolean;
 }
 
 export function PlanCard({
@@ -36,7 +45,7 @@ export function PlanCard({
   className = "",
   onSubscribe,
   subscribeDisabled = false,
-  subscribeLabel,
+  isCurrentPlan = false,
 }: PlanCardProps) {
   return (
     <div
@@ -67,14 +76,20 @@ export function PlanCard({
         </div>
 
         <p className="mb-3 flex items-baseline gap-2 text-sm leading-none text-gray-900 md:mb-3.5 md:text-base">
-          {plan.priceOriginal ? (
-            <span className="text-sm text-gray-400 line-through">
-              {plan.priceOriginal}
-            </span>
-          ) : null}
-          <span>
-            {plan.price} {plan.billing}
-          </span>
+          {plan.contactSales ? (
+            <span>{CONTACT_SALES_LABEL}</span>
+          ) : (
+            <>
+              {plan.priceOriginal ? (
+                <span className="text-sm text-gray-400 line-through">
+                  {plan.priceOriginal}
+                </span>
+              ) : null}
+              <span>
+                {plan.price} {plan.billing}
+              </span>
+            </>
+          )}
         </p>
 
         <p className="mb-4 text-xs leading-relaxed tracking-wider whitespace-normal text-gray-500 uppercase md:mb-5 md:text-sm md:whitespace-pre-line">
@@ -96,14 +111,27 @@ export function PlanCard({
 
       {showSubscribe && (
         <div className="mt-6 px-4 pb-6 md:mt-8 md:px-6 md:pb-12 lg:mt-12">
-          <button
-            type="button"
-            onClick={() => onSubscribe?.(plan)}
-            disabled={subscribeDisabled}
-            className="h-11 w-full cursor-pointer rounded-md bg-[#006BE5] py-1 text-xs text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all active:translate-x-[-1px] active:translate-y-[1px] active:shadow-[-1px_1px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-60 md:h-9 md:text-sm"
-          >
-            {subscribeLabel || "SUBSCRIBE"}
-          </button>
+          {isCurrentPlan ? (
+            <button type="button" disabled className={CTA_CLASS}>
+              CURRENT PLAN
+            </button>
+          ) : plan.contactSales ? (
+            <DemoBookingLink
+              location="pricing-enterprise"
+              className={CTA_CLASS}
+            >
+              {CONTACT_SALES_LABEL}
+            </DemoBookingLink>
+          ) : (
+            <button
+              type="button"
+              onClick={() => onSubscribe?.(plan)}
+              disabled={subscribeDisabled}
+              className={CTA_CLASS}
+            >
+              SUBSCRIBE
+            </button>
+          )}
         </div>
       )}
     </div>
