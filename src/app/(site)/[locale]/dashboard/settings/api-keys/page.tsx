@@ -4,6 +4,7 @@ import { AlertTriangle, Check, Copy, Loader2, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { HelpBanner } from "@/components/dashboard/settings/help-banner";
+import { CopyButton } from "@/components/dashboard/ticketing/copy-button";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import {
   useApiKeys,
@@ -58,6 +59,18 @@ export default function ApiKeysPage() {
   return (
     <div className="flex min-h-[360px] flex-col gap-5 rounded-[20px] bg-white p-3 shadow-sm sm:min-h-[450px] sm:gap-6 sm:rounded-xl sm:p-4">
       <HelpBanner bgColor="bg-[#00B37E]" />
+
+      <div className="flex items-center gap-3 rounded-xl border border-gray-100 px-4 py-4 sm:px-6">
+        <div className="min-w-0 flex-1">
+          <p className="font-dm-mono mb-1.5 text-xs font-semibold tracking-[0.15em] text-gray-500 uppercase">
+            Company ID
+          </p>
+          <code className="font-stolzl block truncate text-sm text-gray-800">
+            {companyId ?? "—"}
+          </code>
+        </div>
+        {companyId && <CopyButton value={companyId} label="Copy company ID" />}
+      </div>
 
       <div className="space-y-4">
         <div>
