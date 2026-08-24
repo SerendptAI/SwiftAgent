@@ -2,15 +2,12 @@
 
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useId, useState } from "react";
 
 import { DemoBookingLink } from "@/components/landing/demo-booking-link";
 import type { Plan } from "@/components/pricing/plan-card";
-import {
-  CONTACT_SALES_LABEL,
-  plansFromBackend,
-} from "@/components/pricing/plans";
+import { plansFromBackend } from "@/components/pricing/plans";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useBillingDetails, useBillingPlans } from "@/hooks/use-billing";
 import type { SubscriptionTier } from "@/services/billing";
@@ -109,6 +106,7 @@ export function UpgradePlanModal({
   const { data: backendPlans } = useBillingPlans();
   const router = useRouter();
   const locale = useLocale();
+  const t = useTranslations("pricing");
 
   const [visible, setVisible] = useState(open);
   // Only an actually-active subscription counts as the current plan. The backend
@@ -117,7 +115,7 @@ export function UpgradePlanModal({
   const subscriptionStatus = details?.subscription_status ?? details?.status;
   const activeTier: SubscriptionTier =
     subscriptionStatus === "active" ? (details?.tier ?? null) : null;
-  const plans = plansFromBackend(backendPlans);
+  const plans = plansFromBackend(backendPlans, t, locale);
 
   useEffect(() => {
     setVisible(open);
@@ -229,6 +227,8 @@ function UpgradePlanCard({
   onSelect: () => void;
 }) {
   const isLargeTitle = plan.tier !== "basic";
+  const t = useTranslations("pricing");
+
   return (
     <div className="relative h-[150px] w-[685px] max-w-full overflow-hidden border border-black bg-white">
       {/* Plan image — left rail, full height, right border separates from content */}
@@ -250,7 +250,7 @@ function UpgradePlanCard({
       {/* Price — Figma: left:154 top:43 */}
       <p className="font-dm-mono absolute top-[43px] left-[154px] text-[18px] leading-[1.2] tracking-[1.8px] text-black uppercase">
         {plan.contactSales
-          ? CONTACT_SALES_LABEL
+          ? t("contactSales")
           : `${plan.price} ${plan.billing}`}
       </p>
 
@@ -281,7 +281,7 @@ function UpgradePlanCard({
           location="pricing-enterprise"
           className={MODAL_CTA_CLASS}
         >
-          {CONTACT_SALES_LABEL}
+          {t("contactSales")}
         </DemoBookingLink>
       ) : (
         <button type="button" onClick={onSelect} className={MODAL_CTA_CLASS}>

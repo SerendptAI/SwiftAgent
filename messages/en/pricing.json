@@ -1,0 +1,100 @@
+{
+  "eyebrow": "Billing",
+  "heading": "We have three plans for Swift Agents",
+  "billingPeriod": "per month",
+  "subscribe": "Subscribe",
+  "contactSales": "Contact us",
+  "currentPlan": "Current plan",
+  "plans": {
+    "basic": {
+      "name": "Basic plan",
+      "description": "Designed for early startups\nand small projects\ntesting the waters.",
+      "features": [
+        "1 deployed AI agent",
+        "Up to 10 document uploads",
+        "1 supported language",
+        "Basic answer boundaries",
+        "Basic analytics reporting",
+        "Up to 800 voice minutes\nper month",
+        "Standard shared compute tier",
+        "Maximum of 1 company per\ncore user account",
+        "Up to 3 invited members\nper company"
+      ]
+    },
+    "pro": {
+      "name": "Pro plan",
+      "description": "Geared towards growing\noperations needing scale\nand heavier workload volume.",
+      "features": [
+        "Up to 3 deployed AI agents",
+        "Up to 50 document uploads",
+        "Up to 3 supported languages",
+        "Advanced answer boundaries\nfor nuanced agent responses",
+        "Advanced analytics reporting",
+        "Up to 3,000 voice minutes\nper month",
+        "Priority compute tier\n(reduces generation latency)",
+        "Up to 3 companies per\ncore user account",
+        "Up to 10 invited members\nper company"
+      ]
+    },
+    "enterprise": {
+      "name": "Enterprise plan",
+      "description": "Uncapped scaling for\nestablished operations\nand intensive needs.",
+      "features": [
+        "Unlimited deployed AI agents",
+        "Unlimited document uploads",
+        "All supported languages\n(unlimited)",
+        "Custom answer boundary\ncontrols",
+        "Fully customizable analytics",
+        "Unlimited voice minutes\nper month",
+        "Dedicated compute tier for\nthe fastest response times",
+        "Unlimited companies",
+        "Unlimited invited members\nper company"
+      ]
+    },
+    "business": {
+      "name": "Business plan",
+      "description": "For small setups getting\nstarted with AI support\nat a low entry point.",
+      "features": [
+        "1 deployed AI agent",
+        "Up to 5 document uploads",
+        "1 supported language",
+        "Basic answer boundaries",
+        "Basic analytics reporting",
+        "Unlimited agent chats\nper month",
+        "Up to 2 strolls per month",
+        "Standard shared compute tier",
+        "Up to 2 invited members\nper company"
+      ]
+    },
+    "startup": {
+      "name": "Startup plan",
+      "description": "Built for growing teams\nscaling their AI operations\nwith more headroom.",
+      "features": [
+        "1 deployed AI agent",
+        "Up to 20 document uploads",
+        "Up to 2 supported languages",
+        "Advanced answer boundaries\nfor nuanced agent responses",
+        "Advanced analytics reporting",
+        "Unlimited agent chats\nper month",
+        "Up to 5 strolls per month",
+        "Priority compute tier\n(reduces generation latency)",
+        "Up to 5 invited members\nper company"
+      ]
+    },
+    "enterprise_payg": {
+      "name": "Enterprise plan",
+      "description": "For large organizations\nrunning AI support across\ntheir entire operation.",
+      "features": [
+        "Unlimited deployed AI agents",
+        "Up to 50 document uploads",
+        "All supported languages\n(unlimited)",
+        "Custom answer boundary\ncontrols",
+        "Fully customizable analytics",
+        "Unlimited agent chats\nper month",
+        "Up to 25 strolls per month",
+        "Dedicated compute tier for\nthe fastest response times",
+        "Up to 5 invited members\nper company"
+      ]
+    }
+  }
+}

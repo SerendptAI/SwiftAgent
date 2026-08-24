@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronDown, Plus } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 import { CheckoutModal } from "@/components/dashboard/billing/checkout-modal";
@@ -29,7 +30,9 @@ export default function BillingPage() {
   const { data: details } = useBillingDetails(companyId);
   const { data: backendPlans } = useBillingPlans();
   const { savedCards: localCards, addCard } = useCardStore();
-  const plans: Plan[] = plansFromBackend(backendPlans);
+  const t = useTranslations("pricing");
+  const locale = useLocale();
+  const plans: Plan[] = plansFromBackend(backendPlans, t, locale);
 
   const backendCards: SavedCard[] = details?.saved_cards ?? [];
   const localAsSaved: SavedCard[] = localCards.map((c) => ({

@@ -12,7 +12,7 @@ import { routing } from "./routing";
  * `useTranslations("nav")`. A namespace has to be listed here to be loaded —
  * the bundler needs a static list to resolve the imports.
  */
-const NAMESPACES = ["nav", "home", "login", "consent"] as const;
+const NAMESPACES = ["nav", "home", "pricing", "login", "consent"] as const;
 
 type Messages = Record<string, unknown>;
 

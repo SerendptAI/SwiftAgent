@@ -61,5 +61,116 @@
         "description": "Commencez à résoudre les demandes clients sur tous vos canaux de support. En heures, pas en semaines."
       }
     }
+  },
+  "features": {
+    "heading": "Tout ce qu’il faut à votre équipe pour accompagner vos clients à grande échelle",
+    "items": {
+      "instantSupport": {
+        "title": "Support client instantané",
+        "description": "Répondez aux questions de vos clients 24h/24 : support, prise en main, facturation et informations produit."
+      },
+      "productGuidance": {
+        "title": "Accompagnement produit",
+        "description": "Aidez vos utilisateurs à naviguer dans votre plateforme, à trouver les fonctionnalités et à aller au bout de leurs actions sans attendre le support."
+      },
+      "paymentSupport": {
+        "title": "Support paiements et transactions",
+        "description": "Accompagnez vos clients sur la vérification des paiements, les remboursements, le statut des transactions et les questions liées à leur compte."
+      },
+      "knowledgeSearch": {
+        "title": "Recherche intelligente",
+        "description": "Retrouvez instantanément les réponses dans votre site, votre documentation et vos ressources de support."
+      }
+    }
+  },
+  "comparison": {
+    "heading": "Les plateformes de support traditionnelles aident les équipes à gérer le support. Swift Agents les aide à le réduire.",
+    "body": "La plupart des plateformes de support ont été conçues autour des tickets, des tableaux de bord et de processus complexes. SwiftAgents a été conçu autour de résultats automatisés.",
+    "quote": "« Ce n’est pas un outil de support de plus. C’est un système d’automatisation du support client. »",
+    "rows": {
+      "fasterResponses": {
+        "label": "Réponses plus rapides",
+        "detail": "Immédiat contre 2 h d’attente en moyenne"
+      },
+      "lessManualWork": {
+        "label": "Moins de travail manuel",
+        "detail": "70 % automatisé contre un tri manuel"
+      },
+      "betterExperiences": {
+        "label": "Meilleures expériences",
+        "detail": "Des résolutions justes, sans attente"
+      },
+      "lowerCosts": {
+        "label": "Coûts de support réduits",
+        "detail": "Une fraction du coût d’une équipe classique"
+      }
+    }
+  },
+  "industries": {
+    "eyebrow": "Conçu pour votre secteur",
+    "heading": "Fait pour les entreprises\nqui grandissent plus vite que leurs équipes",
+    "items": {
+      "ecommerce": {
+        "label": "E-commerce",
+        "description": "Automatisez le suivi des commandes, les remboursements et les questions de livraison, à grande échelle."
+      },
+      "esaas": {
+        "label": "ESaaS",
+        "description": "Gérez automatiquement la prise en main, le dépannage et l’accompagnement produit."
+      },
+      "fintech": {
+        "label": "Fintech",
+        "description": "Traitez les transactions, les demandes de vérification et les questions de compte avec précision."
+      },
+      "digitalPlatforms": {
+        "label": "Plateformes numériques",
+        "description": "Gérez de gros volumes d’échanges clients sans agrandir votre équipe."
+      }
+    }
+  },
+  "roiCalculator": {
+    "heading": "Voyez combien vous payez en trop pour votre support",
+    "body": "Calculez le nombre d’agents de support que vous pourriez éviter de recruter avec SwiftAgents.",
+    "cta": "Calculer mes économies",
+    "estimator": {
+      "title": "Estimateur de ROI",
+      "saved": "14 500 $/mois économisés",
+      "ticketsLabel": "Tickets mensuels actuels",
+      "ticketsValue": "5 000",
+      "agentsLabel": "Agents économisés (estimation)",
+      "agentsValue": "4 ETP"
+    }
+  },
+  "deployHours": {
+    "heading": "Déployez en quelques heures, pas en semaines",
+    "body": "La plupart des systèmes de support imposent une longue prise en main, une configuration et un paramétrage fastidieux. Swift Agents est conçu pour mettre votre équipe en ligne rapidement, afin d’en tirer de la valeur immédiatement.",
+    "points": {
+      "noProjects": "Aucun projet d’intégration complexe.",
+      "noEnterpriseSetup": "Aucune configuration de niveau entreprise.",
+      "noWaiting": "Aucune semaine d’attente avant de démarrer."
+    }
+  },
+  "whySwitch": {
+    "badge": "Pourquoi Swift Agents",
+    "heading": "Pourquoi les équipes dépassent les plateformes de support traditionnelles",
+    "body": "Que vous utilisiez Zendesk, Intercom, Freshworks, Tidio ou que vous gériez le support à la main, le problème est le même : plus de clients, c’est plus de conversations. Plus de conversations, c’est plus de travail de support. SwiftAgents vous aide à alléger cette charge avant qu’elle n’atteigne votre équipe.",
+    "reasons": {
+      "fasterSetup": {
+        "title": "Mise en place plus rapide",
+        "description": "En ligne en quelques heures, pas en semaines. Sans casse-tête technique."
+      },
+      "smarterAutomation": {
+        "title": "Automatisation plus fine",
+        "description": "Réduisez automatiquement les demandes répétitives grâce à une détection intelligente des intentions."
+      },
+      "simplerOperations": {
+        "title": "Opérations simplifiées",
+        "description": "Pas de processus surchargés ni de complexité inutile."
+      },
+      "predictableGrowth": {
+        "title": "Croissance maîtrisée",
+        "description": "Développez votre support client sans faire grimper vos coûts de recrutement."
+      }
+    }
   }
 }

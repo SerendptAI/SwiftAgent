@@ -2,6 +2,7 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 
 import { PlanCard } from "@/components/pricing/plan-card";
@@ -14,8 +15,10 @@ gsap.registerPlugin(ScrollTrigger);
 
 export function PricingSection() {
   const router = useRouter();
+  const t = useTranslations("pricing");
+  const locale = useLocale();
   const { data: backendPlans } = useBillingPlans();
-  const plans = plansFromBackend(backendPlans);
+  const plans = plansFromBackend(backendPlans, t, locale);
 
   // Read the token on click rather than on render: this is a public page, so
   // anonymous visitors should not pay for a session lookup, and localStorage is
@@ -75,10 +78,10 @@ export function PricingSection() {
         {/* Title */}
         <div ref={titleRef} className="mb-6 md:mb-12">
           <span className="mb-8 inline-block font-mono text-sm tracking-widest text-gray-500 uppercase">
-            BILLING
+            {t("eyebrow")}
           </span>
           <h2 className="font-stolzl text-3xl font-normal text-gray-900 md:text-4xl lg:text-4xl">
-            We have three plans for Swift Agents
+            {t("heading")}
           </h2>
         </div>
 
