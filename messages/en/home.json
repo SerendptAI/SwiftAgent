@@ -1,0 +1,65 @@
+{
+  "hero": {
+    "headline": {
+      "customer": "Customer",
+      "support": "Support",
+      "that": "That",
+      "doesnt": "Doesn't",
+      "scale": "Scale",
+      "your": "Your",
+      "headcount": "Headcount"
+    },
+    "subtitle": "Swift Agents helps businesses automate customer conversations, reduce support workload, and deliver faster customer experiences across every support channel.",
+    "callouts": {
+      "hours": "Live in hours — not weeks.",
+      "setup": "No heavy setup. No long implementation cycles."
+    },
+    "bookDemo": "Book a demo",
+    "getStarted": "Get started"
+  },
+  "valueProps": {
+    "heading": "Built for businesses growing faster than their support teams",
+    "items": {
+      "repetitiveRequests": {
+        "title": "Reduce repetitive requests",
+        "description": "Automate up to 70% of common tier-1 inquiries instantly without human intervention."
+      },
+      "responseTimes": {
+        "title": "Improve response times",
+        "description": "Instantly respond to customers 24/7 across every channel, reducing wait times to zero."
+      },
+      "betterExperiences": {
+        "title": "Deliver better experiences",
+        "description": "Empower customers with accurate, precise answers pulled directly from your docs."
+      },
+      "scaleSupport": {
+        "title": "Scale support efficiently",
+        "description": "Handle 10x your current conversation volume without expanding your operational costs."
+      }
+    }
+  },
+  "liveInHours": {
+    "banner": "Live in hours, not weeks"
+  },
+  "trustedBy": {
+    "heading": "Trusted by startups, SaaS companies, fintechs, and e-commerce brands."
+  },
+  "howItWorks": {
+    "eyebrow": "How it works",
+    "heading": "From zero to live\nin hours",
+    "steps": {
+      "connect": {
+        "title": "Connect your\nknowledge",
+        "description": "Upload your docs, FAQs, and website content. SwiftAgents indexes everything in minutes."
+      },
+      "train": {
+        "title": "Train on your\nbusiness",
+        "description": "SwiftAgents learns your products, workflows, and policies so it can respond like your best support rep"
+      },
+      "goLive": {
+        "title": "Go live",
+        "description": "Start resolving customer inquiries across every support channel. Hours, not weeks."
+      }
+    }
+  }
+}

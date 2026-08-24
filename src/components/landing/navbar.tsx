@@ -1,11 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { forwardRef, useEffect, useRef, useState } from "react";
 
 import { useCurrentUser } from "@/hooks/use-auth";
+// Nav hrefs are unprefixed, so they go through the locale-aware Link rather
+// than next/link, which would drop the visitor out of their locale.
+import { Link } from "@/i18n/navigation";
 import { cn, getProfileImage } from "@/lib/utils";
 
 import { Icons } from "../icons";
@@ -32,6 +35,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
     const [isMounted, setIsMounted] = useState(false);
     const pathname = usePathname();
     const { data: user } = useCurrentUser();
+    const t = useTranslations("nav");
 
     // Only trust the auth state after mount to avoid a hydration mismatch
     // (the token lives in localStorage, unavailable during SSR).
@@ -61,7 +65,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
               <div className="relative h-14 w-14">
                 <Image
                   src="/images/newlogo.svg"
-                  alt="Logo"
+                  alt={t("logoAlt")}
                   fill
                   className="object-contain"
                   priority
@@ -81,7 +85,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                   );
 
                   if (link.dropdown) {
-                    const isOpen = openDropdown === link.label;
+                    const isOpen = openDropdown === link.id;
 
                     return (
                       <div
@@ -90,7 +94,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                         onMouseEnter={() => {
                           if (dropdownCloseTimer.current)
                             clearTimeout(dropdownCloseTimer.current);
-                          setOpenDropdown(link.label);
+                          setOpenDropdown(link.id);
                         }}
                         onMouseLeave={() => {
                           dropdownCloseTimer.current = setTimeout(
@@ -109,7 +113,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                               : "font-normal",
                           )}
                         >
-                          {link.label}
+                          {t(`links.${link.id}`)}
                           <Icons.NavChevronDown />
                         </Link>
 
@@ -125,7 +129,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                           {/* Panel header */}
                           <div className="mb-4 flex items-center justify-between">
                             <span className="font-greed-narrow text-[30px] leading-[1.34] font-medium tracking-[-2%] uppercase">
-                              {link.dropdown.title}
+                              {t(`dropdowns.${link.id}.title`)}
                             </span>
                             <Icons.NavChevronDown className="size-5.5" />
                           </div>
@@ -135,7 +139,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                             // eslint-disable-next-line @next/next/no-img-element
                             <img
                               src={link.dropdown.previewImage}
-                              alt="Swift Agents product preview"
+                              alt={t("productPreviewAlt")}
                               className="mb-6 h-25 w-full object-cover"
                               style={{ aspectRatio: "265 / 100" }}
                             />
@@ -147,7 +151,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                               const isExternal = isExternalHref(item.href);
                               return (
                                 <Link
-                                  key={item.href + item.label}
+                                  key={item.href + item.id}
                                   href={item.href}
                                   target={isExternal ? "_blank" : undefined}
                                   rel={
@@ -157,7 +161,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                                   }
                                   className="font-dm-mono text-base leading-[1.83] tracking-[10%] text-black/80 uppercase hover:text-black"
                                 >
-                                  {item.label}
+                                  {t(`dropdowns.${link.id}.links.${item.id}`)}
                                   {item.arrow && (
                                     <Icons.ArrowUpRight className="ml-3 inline-block size-5.5" />
                                   )}
@@ -180,7 +184,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                         isActive ? "font-medium" : "font-normal",
                       )}
                     >
-                      {link.label}
+                      {t(`links.${link.id}`)}
                     </Link>
                   );
                 })}
@@ -190,7 +194,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
               <button
                 onClick={() => setIsMenuOpen((prev) => !prev)}
                 className="font-dm-mono relative flex h-[22px] w-[22px] cursor-pointer items-center justify-center text-gray-900 transition-opacity hover:opacity-70 md:hidden"
-                aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+                aria-label={isMenuOpen ? t("closeMenu") : t("openMenu")}
               >
                 {/* Hamburger lines — visible when closed */}
                 <div
@@ -219,20 +223,20 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
               </button>
               {isLoggedIn ? (
                 <Link
-                  href="/en/dashboard"
-                  aria-label="Go to dashboard"
+                  href="/dashboard"
+                  aria-label={t("goToDashboard")}
                   className="font-dm-mono hidden max-w-[180px] items-center justify-center gap-2 rounded-lg border border-black bg-white py-1 pr-3 pl-1 text-xs font-medium tracking-[0.1em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-black hover:text-white md:flex"
                 >
                   <span className="relative h-7 w-7 shrink-0 overflow-hidden rounded-full border border-black/10">
                     <Image
                       src={user?.picture || getProfileImage(user?.id)}
-                      alt={user?.name || "Profile"}
+                      alt={user?.name || t("profileAlt")}
                       fill
                       className="object-cover"
                     />
                   </span>
                   <span className="max-w-[90px] truncate">
-                    {user?.name || "Dashboard"}
+                    {user?.name || t("dashboard")}
                   </span>
                 </Link>
               ) : (
@@ -242,7 +246,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                   className="hidden max-w-[220px] md:flex"
                   asChild
                 >
-                  <Link href="/en/login">LOGIN</Link>
+                  <Link href="/login">{t("login")}</Link>
                 </Button>
               )}
             </div>
