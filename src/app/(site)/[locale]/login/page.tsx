@@ -1,12 +1,14 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useToast } from "@/components/ui/toast";
 import { useSendOtp, useVerifyOtp } from "@/hooks/use-auth";
+// The locale-aware router prefixes the active locale, so destinations here are
+// written unprefixed rather than pinned to one language.
+import { useRouter } from "@/i18n/navigation";
 import { trackEvent } from "@/lib/analytics";
 
 const OTP_LENGTH = 6;
@@ -62,7 +64,7 @@ export default function LoginPage() {
           if (!data.otp_required) {
             // Grace period — already authenticated
             trackEvent("login_completed", { method: "email" });
-            router.push("/en/dashboard");
+            router.push("/dashboard");
             return;
           }
           setStep("otp");
@@ -108,7 +110,7 @@ export default function LoginPage() {
         {
           onSuccess: () => {
             trackEvent("login_completed", { method: "email" });
-            router.push("/en/dashboard");
+            router.push("/dashboard");
           },
           onError: () => {
             setIsVerifying(false);

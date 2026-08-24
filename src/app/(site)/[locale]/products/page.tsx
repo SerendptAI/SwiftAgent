@@ -5,16 +5,22 @@ import { CtaSection } from "@/components/landing/cta-section";
 import { Navbar } from "@/components/landing/navbar";
 import { ProductsSection } from "@/components/landing/products-section";
 import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provider";
-import { siteConfig } from "@/lib/site-config";
+import { localeAlternates } from "@/lib/locale-metadata";
 
-export const metadata: Metadata = {
-  title: "Products — Swift Agents",
-  description:
-    "Explore Swift Agents products — AI-powered chat, voice, and support automation tools built for growing businesses.",
-  alternates: {
-    canonical: `${siteConfig.url}/en/products`,
-  },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  return {
+    title: "Products — Swift Agents",
+    description:
+      "Explore Swift Agents products — AI-powered chat, voice, and support automation tools built for growing businesses.",
+    alternates: localeAlternates(locale, "/products"),
+  };
+}
 
 export default function ProductsPage() {
   return (

@@ -7,15 +7,23 @@ import { setRequestLocale } from "next-intl/server";
 import { ContactSection } from "@/components/landing/contact-section";
 import { Navbar } from "@/components/landing/navbar";
 import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provider";
-import { siteConfig } from "@/lib/site-config";
+import { localeAlternates } from "@/lib/locale-metadata";
 import { formatPostDate, getPostSummaries } from "@/sanity/posts";
 
-export const metadata: Metadata = {
-  title: "Blog — Swift Agents",
-  description:
-    "Field notes on customer support automation — what works, what breaks, and what the numbers actually say.",
-  alternates: { canonical: `${siteConfig.url}/en/blog` },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  return {
+    title: "Blog — Swift Agents",
+    description:
+      "Field notes on customer support automation — what works, what breaks, and what the numbers actually say.",
+    alternates: localeAlternates(locale, "/blog"),
+  };
+}
 
 export default async function BlogPage({
   params,

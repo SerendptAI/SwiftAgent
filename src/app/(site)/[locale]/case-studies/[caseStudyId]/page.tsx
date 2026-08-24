@@ -12,7 +12,7 @@ import {
   getCaseStudy,
   getCaseStudyPlainDescription,
 } from "@/lib/case-studies";
-import { siteConfig } from "@/lib/site-config";
+import { localeAlternates } from "@/lib/locale-metadata";
 
 interface CaseStudyPageProps {
   params: Promise<{ locale: string; caseStudyId: string }>;
@@ -36,9 +36,7 @@ export async function generateMetadata({
   return {
     title: `${caseStudy.name} Case Study — Swift Agents`,
     description: getCaseStudyPlainDescription(caseStudy),
-    alternates: {
-      canonical: `${siteConfig.url}/${locale}/case-studies/${caseStudy.id}`,
-    },
+    alternates: localeAlternates(locale, `/case-studies/${caseStudy.id}`),
   };
 }
 

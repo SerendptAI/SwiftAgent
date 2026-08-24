@@ -5,16 +5,22 @@ import { DemoHeroSection } from "@/components/landing/demo-hero-section";
 import { DemoSimulatorSection } from "@/components/landing/demo-simulator-section";
 import { Navbar } from "@/components/landing/navbar";
 import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provider";
-import { siteConfig } from "@/lib/site-config";
+import { localeAlternates } from "@/lib/locale-metadata";
 
-export const metadata: Metadata = {
-  title: "Demo — Swift Agents",
-  description:
-    "See your support system before and after Swift Agents. Adjust your numbers and watch how many agents you can avoid hiring as you grow.",
-  alternates: {
-    canonical: `${siteConfig.url}/en/demo`,
-  },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  return {
+    title: "Demo — Swift Agents",
+    description:
+      "See your support system before and after Swift Agents. Adjust your numbers and watch how many agents you can avoid hiring as you grow.",
+    alternates: localeAlternates(locale, "/demo"),
+  };
+}
 
 export default function DemoPage() {
   return (

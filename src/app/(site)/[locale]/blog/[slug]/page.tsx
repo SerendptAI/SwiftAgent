@@ -10,6 +10,7 @@ import { Navbar } from "@/components/landing/navbar";
 import { PostBody } from "@/components/landing/post-body";
 import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provider";
 import { routing } from "@/i18n/routing";
+import { localeAlternates } from "@/lib/locale-metadata";
 import { siteConfig } from "@/lib/site-config";
 import {
   formatPostDate,
@@ -37,12 +38,13 @@ export async function generateMetadata({
   const post = await getPost(slug);
   if (!post) return {};
 
-  const url = `${siteConfig.url}/${locale}/blog/${post.slug}`;
+  const path = `/blog/${post.slug}`;
+  const url = `${siteConfig.url}/${locale}${path}`;
 
   return {
     title: `${post.title} — Swift Agents`,
     description: post.excerpt,
-    alternates: { canonical: url },
+    alternates: localeAlternates(locale, path),
     openGraph: {
       type: "article",
       url,

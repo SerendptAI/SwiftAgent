@@ -13,16 +13,22 @@ import { ResolutionStepsSection } from "@/components/landing/scale-support/resol
 import { RoiCalloutBanner } from "@/components/landing/scale-support/roi-callout-banner";
 import { WhyTeamsSection } from "@/components/landing/scale-support/why-teams-section";
 import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provider";
-import { siteConfig } from "@/lib/site-config";
+import { localeAlternates } from "@/lib/locale-metadata";
 
-export const metadata: Metadata = {
-  title: "Scale Customer Support Without Scaling Your Team",
-  description:
-    "SwiftAgents helps businesses automate customer conversations, reduce support workload, and deliver faster customer experiences across every channel. Live in hours, not weeks.",
-  alternates: {
-    canonical: `${siteConfig.url}/en/landing`,
-  },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  return {
+    title: "Scale Customer Support Without Scaling Your Team",
+    description:
+      "SwiftAgents helps businesses automate customer conversations, reduce support workload, and deliver faster customer experiences across every channel. Live in hours, not weeks.",
+    alternates: localeAlternates(locale, "/landing"),
+  };
+}
 
 export default function ScaleSupportLandingPage() {
   return (

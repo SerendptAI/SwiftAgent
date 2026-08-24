@@ -8,16 +8,22 @@ import { ReferralPathSection } from "@/components/landing/affiliate/referral-pat
 import { SubmitCtaSection } from "@/components/landing/affiliate/submit-cta-section";
 import { ContactSection } from "@/components/landing/contact-section";
 import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provider";
-import { siteConfig } from "@/lib/site-config";
+import { localeAlternates } from "@/lib/locale-metadata";
 
-export const metadata: Metadata = {
-  title: "Affiliate Program — Swift Agents",
-  description:
-    "Refer businesses to Swift Agents and earn 20% of whichever plan they pay for. Introduce us, we build them a working AI agent, and you get paid once they go live.",
-  alternates: {
-    canonical: `${siteConfig.url}/en/affiliate`,
-  },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  return {
+    title: "Affiliate Program — Swift Agents",
+    description:
+      "Refer businesses to Swift Agents and earn 20% of whichever plan they pay for. Introduce us, we build them a working AI agent, and you get paid once they go live.",
+    alternates: localeAlternates(locale, "/affiliate"),
+  };
+}
 
 export default function AffiliatePage() {
   return (

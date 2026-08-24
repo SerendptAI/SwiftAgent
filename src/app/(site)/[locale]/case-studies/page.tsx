@@ -6,16 +6,22 @@ import { ContactSection } from "@/components/landing/contact-section";
 import { Navbar } from "@/components/landing/navbar";
 import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provider";
 import { CASE_STUDIES, getCaseStudyPlainDescription } from "@/lib/case-studies";
-import { siteConfig } from "@/lib/site-config";
+import { localeAlternates } from "@/lib/locale-metadata";
 
-export const metadata: Metadata = {
-  title: "Case Studies — Swift Agents",
-  description:
-    "See how businesses use Swift Agents to automate support, resolve issues faster, and grow without hiring more agents.",
-  alternates: {
-    canonical: `${siteConfig.url}/en/case-studies`,
-  },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  return {
+    title: "Case Studies — Swift Agents",
+    description:
+      "See how businesses use Swift Agents to automate support, resolve issues faster, and grow without hiring more agents.",
+    alternates: localeAlternates(locale, "/case-studies"),
+  };
+}
 
 export default function CaseStudiesPage() {
   return (
