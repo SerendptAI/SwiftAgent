@@ -1,0 +1,65 @@
+{
+  "hero": {
+    "headline": {
+      "customer": "Huduma",
+      "support": "kwa wateja",
+      "that": "bila",
+      "doesnt": "kuongeza",
+      "scale": "idadi ya",
+      "your": "wafanyakazi",
+      "headcount": "wako"
+    },
+    "subtitle": "Swift Agents husaidia biashara kuendesha mazungumzo na wateja kiotomatiki, kupunguza mzigo wa timu ya huduma, na kutoa huduma ya haraka zaidi katika kila njia ya mawasiliano.",
+    "callouts": {
+      "hours": "Tayari kwa saa chache — si wiki.",
+      "setup": "Hakuna usanidi mzito. Hakuna mizunguko mirefu ya utekelezaji."
+    },
+    "bookDemo": "Panga onyesho",
+    "getStarted": "Anza sasa"
+  },
+  "valueProps": {
+    "heading": "Imeundwa kwa biashara zinazokua haraka kuliko timu zao za huduma",
+    "items": {
+      "repetitiveRequests": {
+        "title": "Punguza maswali yanayojirudia",
+        "description": "Shughulikia kiotomatiki hadi asilimia 70 ya maswali ya kawaida ya ngazi ya kwanza, papo hapo na bila msaada wa binadamu."
+      },
+      "responseTimes": {
+        "title": "Boresha muda wa kujibu",
+        "description": "Jibu wateja wako saa 24 kwa siku, siku 7 kwa wiki, katika kila njia, na upunguze muda wa kusubiri hadi sifuri."
+      },
+      "betterExperiences": {
+        "title": "Toa huduma bora zaidi",
+        "description": "Wape wateja wako majibu sahihi, yaliyotolewa moja kwa moja kutoka kwenye nyaraka zako."
+      },
+      "scaleSupport": {
+        "title": "Kuza huduma kwa ufanisi",
+        "description": "Shughulikia mazungumzo mara kumi zaidi bila kuongeza gharama zako za uendeshaji."
+      }
+    }
+  },
+  "liveInHours": {
+    "banner": "Tayari kwa saa chache, si wiki"
+  },
+  "trustedBy": {
+    "heading": "Inaaminiwa na kampuni changa, kampuni za SaaS, fintech, na biashara za mtandaoni."
+  },
+  "howItWorks": {
+    "eyebrow": "Jinsi inavyofanya kazi",
+    "heading": "Kutoka sifuri hadi tayari\nkwa saa chache",
+    "steps": {
+      "connect": {
+        "title": "Unganisha\nmaarifa yako",
+        "description": "Pakia nyaraka zako, maswali yanayoulizwa mara kwa mara, na maudhui ya tovuti yako. SwiftAgents hupanga yote kwa dakika chache."
+      },
+      "train": {
+        "title": "Ifundishe kuhusu\nbiashara yako",
+        "description": "SwiftAgents hujifunza bidhaa zako, taratibu zako, na sera zako ili ijibu kama mfanyakazi wako bora wa huduma"
+      },
+      "goLive": {
+        "title": "Anza kutumia",
+        "description": "Anza kutatua maswali ya wateja katika kila njia ya huduma. Kwa saa chache, si wiki."
+      }
+    }
+  }
+}

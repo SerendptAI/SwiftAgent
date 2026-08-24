@@ -1,0 +1,49 @@
+{
+  "links": {
+    "home": "Mwanzo",
+    "agents": "Mawakala",
+    "products": "Bidhaa",
+    "earn": "Pata mapato",
+    "demo": "Onyesho",
+    "resources": "Rasilimali",
+    "pricing": "Bei"
+  },
+  "dropdowns": {
+    "products": {
+      "title": "Bidhaa zetu",
+      "links": {
+        "downloadApp": "Pakua programu ya Swift Agents",
+        "useSdks": "Tumia SDK zetu"
+      }
+    },
+    "earn": {
+      "title": "Anza kupata mapato",
+      "links": {
+        "affiliate": "Programu ya ushirika",
+        "refer": "Pendekeza na upate mapato"
+      }
+    },
+    "demo": {
+      "title": "Jaribu onyesho",
+      "links": {
+        "costCalculator": "Kikokotoo cha gharama",
+        "usecaseAnalysis": "Uchambuzi wa matumizi"
+      }
+    },
+    "resources": {
+      "title": "Soma zaidi",
+      "links": {
+        "blog": "Blogu",
+        "documentation": "Nyaraka"
+      }
+    }
+  },
+  "login": "Ingia",
+  "dashboard": "Dashibodi",
+  "goToDashboard": "Nenda kwenye dashibodi",
+  "openMenu": "Fungua menyu",
+  "closeMenu": "Funga menyu",
+  "logoAlt": "Nembo",
+  "profileAlt": "Wasifu",
+  "productPreviewAlt": "Muhtasari wa bidhaa ya Swift Agents"
+}

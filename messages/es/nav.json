@@ -1,0 +1,49 @@
+{
+  "links": {
+    "home": "Inicio",
+    "agents": "Agentes",
+    "products": "Productos",
+    "earn": "Gana",
+    "demo": "Demo",
+    "resources": "Recursos",
+    "pricing": "Precios"
+  },
+  "dropdowns": {
+    "products": {
+      "title": "Nuestros productos",
+      "links": {
+        "downloadApp": "Descarga la app de Swift Agents",
+        "useSdks": "Usa nuestros SDK"
+      }
+    },
+    "earn": {
+      "title": "Empieza a ganar",
+      "links": {
+        "affiliate": "Programa de afiliados",
+        "refer": "Recomienda y gana"
+      }
+    },
+    "demo": {
+      "title": "Prueba la demo",
+      "links": {
+        "costCalculator": "Calculadora de costes",
+        "usecaseAnalysis": "Análisis de casos de uso"
+      }
+    },
+    "resources": {
+      "title": "Para leer",
+      "links": {
+        "blog": "Blog",
+        "documentation": "Documentación"
+      }
+    }
+  },
+  "login": "Iniciar sesión",
+  "dashboard": "Panel",
+  "goToDashboard": "Ir al panel",
+  "openMenu": "Abrir menú",
+  "closeMenu": "Cerrar menú",
+  "logoAlt": "Logo",
+  "profileAlt": "Perfil",
+  "productPreviewAlt": "Vista previa del producto Swift Agents"
+}

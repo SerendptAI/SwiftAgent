@@ -1,0 +1,20 @@
+{
+  "welcomeBack": "Bienvenido de nuevo",
+  "logInToYourAccount": "Inicia sesión en tu cuenta",
+  "googleLogin": "Iniciar sesión con",
+  "serendptLogin": "Iniciar sesión con",
+  "or": "O",
+  "companyEmailPlaceholder": "Correo de empresa",
+  "signIn": "Iniciar sesión",
+  "invalidEmail": "Introduce una dirección de correo válida",
+  "signingIn": "Iniciando sesión...",
+  "incorrectOtp": "Código incorrecto",
+  "otpExpired": "El código ha caducado. Solicita uno nuevo.",
+  "otpSendFailed": "No se pudo enviar el código. Inténtalo de nuevo.",
+  "enterEmail": "Introduce tu correo para recibir un código",
+  "sendCode": "Enviar código",
+  "backToEmail": "Cambiar de correo",
+  "checkSpam": "Te hemos enviado un código por correo. ¿No lo encuentras? Revisa tu carpeta de spam o correo no deseado.",
+  "resendCode": "Reenviar código",
+  "codeResent": "Se ha enviado un código nuevo."
+}

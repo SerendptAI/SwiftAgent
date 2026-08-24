@@ -53,8 +53,15 @@ describe("localeAlternates", () => {
     );
   });
 
-  it("does not advertise a locale that is not in the routing config", () => {
-    expect(localeLanguages("/agents")).not.toHaveProperty("fr");
+  it("advertises exactly the configured locales and nothing else", () => {
+    const languages = localeLanguages("/agents");
+
+    for (const locale of routing.locales) {
+      expect(languages).toHaveProperty(locale);
+    }
+    // `pl` was retired; a stale hreflang would keep pointing crawlers at URLs
+    // that now redirect.
+    expect(languages).not.toHaveProperty("pl");
   });
 });
 

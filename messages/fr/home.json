@@ -1,0 +1,65 @@
+{
+  "hero": {
+    "headline": {
+      "customer": "Un support",
+      "support": "client",
+      "that": "qui",
+      "doesnt": "ne fait pas",
+      "scale": "grimper",
+      "your": "vos",
+      "headcount": "effectifs"
+    },
+    "subtitle": "Swift Agents aide les entreprises à automatiser leurs conversations clients, à alléger la charge du support et à offrir une expérience plus rapide sur tous les canaux.",
+    "callouts": {
+      "hours": "En ligne en quelques heures — pas en semaines.",
+      "setup": "Aucune installation lourde. Aucun long cycle de déploiement."
+    },
+    "bookDemo": "Réserver une démo",
+    "getStarted": "Commencer"
+  },
+  "valueProps": {
+    "heading": "Conçu pour les entreprises qui grandissent plus vite que leur équipe support",
+    "items": {
+      "repetitiveRequests": {
+        "title": "Réduisez les demandes répétitives",
+        "description": "Automatisez jusqu'à 70 % des demandes courantes de niveau 1, instantanément et sans intervention humaine."
+      },
+      "responseTimes": {
+        "title": "Améliorez vos temps de réponse",
+        "description": "Répondez à vos clients 24h/24 et 7j/7 sur tous les canaux, et ramenez les temps d'attente à zéro."
+      },
+      "betterExperiences": {
+        "title": "Offrez de meilleures expériences",
+        "description": "Donnez à vos clients des réponses précises, tirées directement de votre documentation."
+      },
+      "scaleSupport": {
+        "title": "Développez votre support efficacement",
+        "description": "Absorbez dix fois plus de conversations sans augmenter vos coûts opérationnels."
+      }
+    }
+  },
+  "liveInHours": {
+    "banner": "En ligne en quelques heures, pas en semaines"
+  },
+  "trustedBy": {
+    "heading": "La confiance de startups, d'éditeurs SaaS, de fintechs et de marques e-commerce."
+  },
+  "howItWorks": {
+    "eyebrow": "Comment ça marche",
+    "heading": "De zéro à en ligne\nen quelques heures",
+    "steps": {
+      "connect": {
+        "title": "Connectez vos\nconnaissances",
+        "description": "Importez vos documents, vos FAQ et le contenu de votre site. SwiftAgents indexe le tout en quelques minutes."
+      },
+      "train": {
+        "title": "Formez-le à votre\nentreprise",
+        "description": "SwiftAgents apprend vos produits, vos processus et vos politiques pour répondre comme votre meilleur agent"
+      },
+      "goLive": {
+        "title": "Passez en ligne",
+        "description": "Commencez à résoudre les demandes clients sur tous vos canaux de support. En heures, pas en semaines."
+      }
+    }
+  }
+}

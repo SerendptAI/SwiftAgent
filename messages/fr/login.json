@@ -1,0 +1,20 @@
+{
+  "welcomeBack": "Bon retour",
+  "logInToYourAccount": "Connectez-vous à votre compte",
+  "googleLogin": "Se connecter avec",
+  "serendptLogin": "Se connecter avec",
+  "or": "OU",
+  "companyEmailPlaceholder": "E-mail professionnel",
+  "signIn": "Se connecter",
+  "invalidEmail": "Veuillez saisir une adresse e-mail valide",
+  "signingIn": "Connexion en cours...",
+  "incorrectOtp": "Code incorrect",
+  "otpExpired": "Code expiré. Veuillez en demander un nouveau.",
+  "otpSendFailed": "Échec de l'envoi du code. Veuillez réessayer.",
+  "enterEmail": "Saisissez votre e-mail pour recevoir un code",
+  "sendCode": "Envoyer le code",
+  "backToEmail": "Changer d'e-mail",
+  "checkSpam": "Nous vous avons envoyé un code par e-mail. Vous ne le trouvez pas ? Vérifiez vos spams ou courriers indésirables.",
+  "resendCode": "Renvoyer le code",
+  "codeResent": "Un nouveau code a été envoyé."
+}
