@@ -2,11 +2,13 @@
 
 import gsap from "gsap";
 import Image from "next/image";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
+import { LocaleSwitcher } from "@/components/locale-switcher";
 import { useCurrentUser } from "@/hooks/use-auth";
+import { Link } from "@/i18n/navigation";
 import { cn, getProfileImage } from "@/lib/utils";
 
 import { Icons } from "../icons";
@@ -30,6 +32,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const pathname = usePathname();
   const { data: user } = useCurrentUser();
+  const t = useTranslations("nav");
 
   const isLoggedIn = isMounted && !!user;
 
@@ -123,22 +126,20 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
               );
 
               if (link.dropdown) {
-                const isOpen = openDropdown === link.label;
+                const isOpen = openDropdown === link.id;
 
                 return (
                   <div key={link.href} className="m-4">
                     {/* Accordion trigger */}
                     <button
-                      onClick={() =>
-                        setOpenDropdown(isOpen ? null : link.label)
-                      }
+                      onClick={() => setOpenDropdown(isOpen ? null : link.id)}
                       className={cn(
                         "font-dm-mono flex w-full items-center justify-between px-6 py-3 text-base font-normal tracking-[0.2em] text-gray-900 uppercase transition-colors hover:bg-gray-50",
                         isActive &&
                           "border border-black bg-gray-50 font-medium",
                       )}
                     >
-                      {link.label}
+                      {t(`links.${link.id}`)}
                       <span
                         className={cn(
                           "transition-transform duration-200",
@@ -162,7 +163,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                             // eslint-disable-next-line @next/next/no-img-element
                             <img
                               src={link.dropdown.previewImage}
-                              alt="Swift Agents product preview"
+                              alt={t("productPreviewAlt")}
                               className="w-full object-cover"
                               style={{ aspectRatio: "265 / 100" }}
                             />
@@ -172,7 +173,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                               const isExternal = isExternalHref(item.href);
                               return (
                                 <Link
-                                  key={item.href + item.label}
+                                  key={item.href + item.id}
                                   href={item.href}
                                   onClick={onClose}
                                   target={isExternal ? "_blank" : undefined}
@@ -183,7 +184,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                                   }
                                   className="font-dm-mono flex items-center gap-2 text-sm tracking-[0.12em] text-black uppercase hover:opacity-60"
                                 >
-                                  {item.label}
+                                  {t(`dropdowns.${link.id}.links.${item.id}`)}
                                   {item.arrow && (
                                     <Icons.ArrowUpRight
                                       width={16}
@@ -212,38 +213,42 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                     isActive && "border border-black bg-gray-50 font-medium",
                   )}
                 >
-                  {link.label}
+                  {t(`links.${link.id}`)}
                 </Link>
               );
             })}
+
+            <div className="px-4 pt-4">
+              <LocaleSwitcher variant="row" onSwitch={onClose} />
+            </div>
 
             {/* Login / profile button inside menu */}
             <div className="p-4">
               {isLoggedIn ? (
                 <Link
-                  href="/en/dashboard"
+                  href="/dashboard"
                   onClick={onClose}
                   className="font-dm-mono flex w-full items-center justify-center gap-3 rounded-lg border bg-[#F2B035] px-8 py-3 text-base font-normal tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-800"
                 >
                   <span className="relative h-7 w-7 shrink-0 overflow-hidden rounded-full border border-black/10">
                     <Image
                       src={user?.picture || getProfileImage(user?.id)}
-                      alt={user?.name || "Profile"}
+                      alt={user?.name || t("profileAlt")}
                       fill
                       className="object-cover"
                     />
                   </span>
                   <span className="max-w-[160px] truncate">
-                    {user?.name || "Dashboard"}
+                    {user?.name || t("dashboard")}
                   </span>
                 </Link>
               ) : (
                 <Link
-                  href="/en/login"
+                  href="/login"
                   onClick={onClose}
                   className="font-dm-mono flex w-full items-center justify-center rounded-lg border bg-[#F2B035] px-8 py-3 text-base font-normal tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-800"
                 >
-                  LOGIN
+                  {t("login")}
                 </Link>
               )}
             </div>

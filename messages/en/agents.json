@@ -1,0 +1,23 @@
+{
+  "eyebrow": "Our AI agents",
+  "heading": "Our agents accomplish different functions",
+  "quote": "All these agents play a\ncrucial role in\nenhancing the\ncustomer experience during live chats.",
+  "list": {
+    "047": {
+      "name": "Agent 047",
+      "description": "Agent 047 possesses the capability to locate any feature within a dashboard for users, regardless of the dashboard's complexity. This agent is aware of the precise location of each feature and can provide detailed directions along with screenshots upon request."
+    },
+    "007": {
+      "name": "Agent 007",
+      "description": "Agent 007 has the ability to thoroughly search an entire website to retrieve information for customers when the answer is not available in its database."
+    },
+    "626": {
+      "name": "Agent 626",
+      "description": "Agent 626 possesses the capability to analyze cryptocurrency transactions via hashcodes and inform users of any potential issues that may arise during the transaction process."
+    },
+    "001": {
+      "name": "Agent 001",
+      "description": "Agent 001 reviews bank records and updates customers on payment statuses, including refund processes, bank acknowledgments, and any payment issues."
+    }
+  }
+}

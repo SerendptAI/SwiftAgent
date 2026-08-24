@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 const SVG_W = 789;
@@ -17,6 +18,7 @@ const ARROWS = [
 const MARQUEE_ARROWS = [...ARROWS, ...ARROWS];
 
 export function LiveInHoursBanner() {
+  const t = useTranslations("home.liveInHours");
   const containerRef = useRef<HTMLDivElement>(null);
   const [arrowW, setArrowW] = useState(SVG_W);
   const [overlap, setOverlap] = useState(SVG_W * OVERLAP_RATIO);
@@ -70,7 +72,7 @@ export function LiveInHoursBanner() {
         {/* Static text overlay */}
         <div className="pointer-events-none absolute inset-0 z-50 flex items-center px-6 md:px-10 lg:px-16">
           <span className="font-greed-narrow mx-auto w-full max-w-360 text-2xl leading-[1.2] font-medium tracking-[10%] text-white uppercase md:text-4xl lg:text-[48px]">
-            LIVE IN HOURS, NOT WEEKS
+            {t("banner")}
           </span>
         </div>
       </div>

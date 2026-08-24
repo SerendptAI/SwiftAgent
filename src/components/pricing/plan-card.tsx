@@ -1,8 +1,7 @@
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 import { DemoBookingLink } from "@/components/landing/demo-booking-link";
-
-import { CONTACT_SALES_LABEL } from "./plans";
 
 export interface Plan {
   name: string;
@@ -47,6 +46,8 @@ export function PlanCard({
   subscribeDisabled = false,
   isCurrentPlan = false,
 }: PlanCardProps) {
+  const t = useTranslations("pricing");
+
   return (
     <div
       className={`flex min-w-0 flex-col border border-gray-200 bg-white ${className}`}
@@ -77,7 +78,7 @@ export function PlanCard({
 
         <p className="mb-3 flex items-baseline gap-2 text-sm leading-none text-gray-900 md:mb-3.5 md:text-base">
           {plan.contactSales ? (
-            <span>{CONTACT_SALES_LABEL}</span>
+            <span>{t("contactSales")}</span>
           ) : (
             <>
               {plan.priceOriginal ? (
@@ -113,14 +114,14 @@ export function PlanCard({
         <div className="mt-6 px-4 pb-6 md:mt-8 md:px-6 md:pb-12 lg:mt-12">
           {isCurrentPlan ? (
             <button type="button" disabled className={CTA_CLASS}>
-              CURRENT PLAN
+              {t("currentPlan")}
             </button>
           ) : plan.contactSales ? (
             <DemoBookingLink
               location="pricing-enterprise"
               className={CTA_CLASS}
             >
-              {CONTACT_SALES_LABEL}
+              {t("contactSales")}
             </DemoBookingLink>
           ) : (
             <button
@@ -129,7 +130,7 @@ export function PlanCard({
               disabled={subscribeDisabled}
               className={CTA_CLASS}
             >
-              SUBSCRIBE
+              {t("subscribe")}
             </button>
           )}
         </div>

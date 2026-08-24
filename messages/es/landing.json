@@ -1,0 +1,141 @@
+{
+  "hero": {
+    "headline": {
+      "scale": "Escala",
+      "customer": "La atención",
+      "supportWithout": "Al cliente sin",
+      "scalingYour": "Ampliar tu",
+      "team": "Equipo"
+    },
+    "subtitle": "SwiftAgents ayuda a las empresas a automatizar las conversaciones con sus clientes, reducir la carga de soporte y ofrecer experiencias más rápidas en todos los canales.",
+    "bookDemo": "Reservar una demo",
+    "getStarted": "Empezar"
+  },
+  "checklist": {
+    "eyebrow": "Creado para crecer",
+    "heading": "Creado para empresas que crecen más rápido que su equipo de soporte",
+    "items": {
+      "repetitive": "Reducir las consultas repetitivas",
+      "responseTimes": "Mejorar los tiempos de respuesta",
+      "experiences": "Ofrecer mejores experiencias de cliente",
+      "scale": "Escalar el soporte con más eficiencia"
+    }
+  },
+  "steps": {
+    "eyebrow": "Cómo funciona",
+    "heading": "De la consulta del cliente a su resolución en segundos",
+    "items": {
+      "connect": {
+        "title": "Conecta tu conocimiento",
+        "description": "Sube tu documentación, el contenido de tu web, tus FAQ y tus recursos de soporte."
+      },
+      "train": {
+        "title": "Entrena a SwiftAgents en tu negocio",
+        "description": "SwiftAgents aprende tus productos, flujos de trabajo, políticas y procesos de cliente."
+      },
+      "goLive": {
+        "title": "Ponlo en marcha",
+        "description": "Empieza a resolver consultas de clientes en tus canales de soporte en horas, no en semanas."
+      }
+    }
+  },
+  "capabilities": {
+    "eyebrow": "Capacidades",
+    "heading": "Todo lo que tu equipo necesita para atender a los clientes a gran escala",
+    "items": {
+      "instantSupport": {
+        "title": "Atención al cliente inmediata",
+        "description": "Responde a las preguntas de tus clientes 24/7: soporte, primeros pasos, facturación y consultas de producto."
+      },
+      "productGuidance": {
+        "title": "Guía de producto",
+        "description": "Ayuda a tus usuarios a moverse por la plataforma, encontrar funciones y completar acciones sin esperar al soporte."
+      },
+      "paymentSupport": {
+        "title": "Soporte de pagos y transacciones",
+        "description": "Acompaña a tus clientes en la verificación de pagos, los reembolsos, el estado de las transacciones y las consultas de cuenta."
+      },
+      "knowledgeSearch": {
+        "title": "Búsqueda inteligente",
+        "description": "Encuentra respuestas al instante en tu web, tu documentación y tus recursos de soporte."
+      }
+    }
+  },
+  "outcomes": {
+    "eyebrow": "Resultados, no tickets",
+    "heading": "Las plataformas de soporte tradicionales ayudan a gestionar el soporte. SwiftAgents ayuda a reducirlo.",
+    "body": "La mayoría de las plataformas de soporte se diseñaron en torno a tickets, paneles y flujos de trabajo. SwiftAgents se diseñó en torno a resultados.",
+    "items": {
+      "fasterResponses": "Respuestas más rápidas",
+      "lessManualWork": "Menos trabajo manual",
+      "experiences": "Mejores experiencias de cliente",
+      "lowerCosts": "Menores costes de soporte"
+    }
+  },
+  "whyTeams": {
+    "eyebrow": "Por qué cambian los equipos",
+    "heading": "Por qué los equipos dejan atrás las plataformas de soporte tradicionales",
+    "body": "Tanto si usas Zendesk, Intercom, Freshworks o Tidio como si gestionas el soporte a mano, el reto es el mismo: más clientes generan más conversaciones, y más conversaciones generan más trabajo de soporte. SwiftAgents te ayuda a reducir esa carga antes de que llegue a tu equipo.",
+    "items": {
+      "fasterSetup": {
+        "title": "Puesta en marcha más rápida",
+        "description": "En marcha en horas, no en semanas."
+      },
+      "smarterAutomation": {
+        "title": "Automatización más inteligente",
+        "description": "Reduce automáticamente las consultas repetitivas."
+      },
+      "simplerOperations": {
+        "title": "Operaciones más simples",
+        "description": "Sin flujos de trabajo recargados ni complejidad innecesaria."
+      },
+      "predictableGrowth": {
+        "title": "Crecimiento predecible",
+        "description": "Escala la atención al cliente sin escalar los costes operativos."
+      }
+    }
+  },
+  "deploy": {
+    "eyebrow": "Despliegue",
+    "heading": "Despliega en horas, no en semanas",
+    "body": "La mayoría de los sistemas de soporte exigen una puesta en marcha larga, con configuración y ajustes interminables. SwiftAgents está diseñado para poner a tu equipo en marcha rápido y que empieces a ver resultados de inmediato.",
+    "points": {
+      "noProjects": "Sin proyectos de implantación complejos",
+      "noEnterpriseSetup": "Sin requisitos de configuración de nivel empresarial",
+      "noWaiting": "Sin esperar semanas para empezar"
+    }
+  },
+  "pricingTeaser": {
+    "eyebrow": "Precios",
+    "heading": "Precios sencillos para cada etapa de crecimiento",
+    "tiers": {
+      "starter": {
+        "name": "Starter",
+        "description": "Para equipos incipientes que automatizan su soporte por primera vez."
+      },
+      "growth": {
+        "name": "Growth",
+        "description": "Para empresas en crecimiento con un volumen de soporte creciente."
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "description": "Para organizaciones que necesitan personalización avanzada y escala."
+      }
+    },
+    "viewPricing": "Ver precios"
+  },
+  "roiBanner": {
+    "first": {
+      "eyebrow": "Calculadora de ROI",
+      "heading": "Descubre cuánto estás pagando de más en soporte",
+      "description": "Calcula cuántos agentes de soporte podrías evitar contratar con SwiftAgents.",
+      "cta": "Calcular mi ahorro"
+    },
+    "second": {
+      "eyebrow": "¿Sigues escalando el soporte a base de contratar?",
+      "heading": "La mayoría de los equipos solo ve su ineficiencia de soporte cuando la calcula",
+      "description": "Haz números y comprueba lo que SwiftAgents podría ahorrarte.",
+      "cta": "Calcular el ROI"
+    }
+  }
+}

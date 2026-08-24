@@ -1,0 +1,49 @@
+{
+  "cta": {
+    "heading": "Wateja wako wanataka majibu papo hapo.",
+    "body": "Timu yako inataka kazi chache zinazojirudia. Swift Agents inatoa vyote viwili.",
+    "bookDemo": "Panga onyesho",
+    "getStarted": "Anza sasa",
+    "imageAlt": "Muhtasari wa mazungumzo ya SwiftAgent"
+  },
+  "contact": {
+    "eyebrow": "Ungependa kuwasiliana nasi?",
+    "heading": "Wasiliana nasi",
+    "imageAlt": "Mwonekano wa barabara",
+    "privacyPolicy": "Sera ya faragha",
+    "termsOfService": "Masharti ya huduma",
+    "links": {
+      "twitter": "Twitter",
+      "instagram": "Instagram",
+      "careers": "Nafasi za kazi",
+      "blog": "Blogu",
+      "email": "Barua pepe"
+    }
+  },
+  "platforms": {
+    "website": {
+      "label": "Tovuti",
+      "description": "Weka chatbot yetu mahiri kwenye tovuti yako ili kushughulikia mazungumzo na wageni. Swali lolote lisiloweza kujibiwa hupelekwa kwa mfanyakazi halisi."
+    },
+    "webapp": {
+      "label": "Programu ya wavuti",
+      "description": "Unganisha chatbot yetu mahiri kwenye programu yako ya wavuti ili kusimamia mawasiliano na wageni."
+    },
+    "mobile": {
+      "label": "Programu ya simu",
+      "description": "Unganisha chatbot yetu mahiri kwenye programu zako kwa kutumia SDK yetu"
+    }
+  },
+  "caseStudies": {
+    "eyebrow": "Jinsi Swift Agents inavyoweza kusaidia biashara yako",
+    "heading": "Uchambuzi wa matumizi",
+    "howWeHelp": "Jinsi tunavyosaidia"
+  },
+  "blog": {
+    "eyebrow": "Maelezo kuhusu huduma, uendeshaji kiotomatiki na AI",
+    "heading": "Blogu",
+    "emptyTitle": "Bado hakuna makala",
+    "emptyBody": "Tunaandika za kwanza. Rudi hivi karibuni, au panga onyesho ikiwa ungependa kuona bidhaa moja kwa moja.",
+    "readPost": "Soma makala →"
+  }
+}

@@ -20,6 +20,15 @@ const ADMIN_HOST = process.env.ADMIN_HOST || "ns.swiftagents.org";
 const ADMIN_ANALYTICS_PATH = "/admin/analytics";
 const ADMIN_ANALYTICS_API_PATH = `/api${ADMIN_ANALYTICS_PATH}`;
 
+/**
+ * Locales that were published and may still be indexed. Once one leaves
+ * `routing`, intl routing reads its stale prefix as a path segment and sends
+ * /pl/agents to /en/pl/agents, so the rewrite to the default locale has to
+ * happen before that runs. `next.config.ts` redirects are too late: middleware
+ * is ahead of them in the request pipeline.
+ */
+const RETIRED_LOCALE_PATTERN = /^\/pl(?=\/|$)/;
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
@@ -89,6 +98,15 @@ export default function middleware(req: NextRequest) {
   // Skip intl middleware for auth callback to preserve query params (tokens)
   if (pathname.includes("/auth/callback")) {
     return NextResponse.next();
+  }
+
+  if (RETIRED_LOCALE_PATTERN.test(pathname)) {
+    const url = req.nextUrl.clone();
+    url.pathname = pathname.replace(
+      RETIRED_LOCALE_PATTERN,
+      `/${routing.defaultLocale}`,
+    );
+    return NextResponse.redirect(url, 308);
   }
 
   // Everything else — intl routing

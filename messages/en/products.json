@@ -1,0 +1,16 @@
+{
+  "eyebrow": "Our products",
+  "app": {
+    "heading": "Swift Agents app",
+    "body1": "The Swift Agent app enables businesses to engage with customers directly through their mobile devices.",
+    "body2": "Users can communicate seamlessly, update their profiles, and interact with AI agents for tasks such as retrieving OTPs for their assigned accounts.",
+    "playStore": "Download on Playstore",
+    "appleStore": "Download on Apple Store"
+  },
+  "sdk": {
+    "heading": "Swift Agents SDK",
+    "body1": "The Swift Agent SDK is designed for seamless integration into mobile applications, enhancing customer service capabilities.",
+    "body2": "This allows customers to effortlessly communicate with agents directly through their mobile devices, ensuring a more efficient and responsive support experience.",
+    "cta": "Get started"
+  }
+}

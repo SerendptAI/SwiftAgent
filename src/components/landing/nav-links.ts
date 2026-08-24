@@ -1,22 +1,29 @@
+import { stripLocalePrefix } from "@/lib/locale-path";
+
+/**
+ * Nav entries carry structure only — an `id` that names their copy in the
+ * `nav` catalogue, and an unprefixed href the locale-aware Link resolves.
+ * Labels live in messages/<locale>/nav.json.
+ */
 export const PRODUCTS_DROPDOWN_LINKS = [
-  { label: "DOWNLOAD THE SWIFT AGENTS APP", href: "/products", arrow: true },
-  { label: "USE OUR SDKS", href: "/products#sdks", arrow: true },
+  { id: "downloadApp", href: "/products", arrow: true },
+  { id: "useSdks", href: "/products#sdks", arrow: true },
 ] as const;
 
 export const EARN_DROPDOWN_LINKS = [
-  { label: "AFFILIATE PROGRAM", href: "/affiliate", arrow: true },
-  { label: "REFER & EARN", href: "/refer", arrow: true },
+  { id: "affiliate", href: "/affiliate", arrow: true },
+  { id: "refer", href: "/refer", arrow: true },
 ] as const;
 
 export const DEMO_DROPDOWN_LINKS = [
-  { label: "COST CALCULATOR", href: "/demo", arrow: true },
-  { label: "USECASE ANALYSIS", href: "/case-studies", arrow: true },
+  { id: "costCalculator", href: "/demo", arrow: true },
+  { id: "usecaseAnalysis", href: "/case-studies", arrow: true },
 ] as const;
 
 export const RESOURCES_DROPDOWN_LINKS = [
-  { label: "BLOG", href: "/blog", arrow: true },
+  { id: "blog", href: "/blog", arrow: true },
   {
-    label: "DOCUMENTATION",
+    id: "documentation",
     href: "https://docs.swiftagents.org/",
     arrow: true,
   },
@@ -28,49 +35,47 @@ export function isExternalHref(href: string): boolean {
 }
 
 interface NavDropdownLink {
-  readonly label: string;
+  readonly id: string;
   readonly href: string;
   readonly arrow?: boolean;
 }
 
 interface NavLink {
-  readonly label: string;
+  readonly id: string;
   readonly href: string;
   readonly dropdown?: {
-    readonly title: string;
     readonly links: readonly NavDropdownLink[];
     readonly previewImage?: string;
   };
 }
 
 export const LANDING_NAV_LINKS: readonly NavLink[] = [
-  { label: "HOME", href: "/" },
-  { label: "AGENTS", href: "/agents" },
+  { id: "home", href: "/" },
+  { id: "agents", href: "/agents" },
   {
-    label: "PRODUCTS",
+    id: "products",
     href: "/products",
     dropdown: {
-      title: "OUR PRODUCTS",
       links: PRODUCTS_DROPDOWN_LINKS,
       previewImage: "/images/product-dropdown.svg",
     },
   },
   {
-    label: "EARN",
+    id: "earn",
     href: "/refer",
-    dropdown: { title: "START EARNING", links: EARN_DROPDOWN_LINKS },
+    dropdown: { links: EARN_DROPDOWN_LINKS },
   },
   {
-    label: "DEMO",
+    id: "demo",
     href: "/demo",
-    dropdown: { title: "TRY THE DEMO", links: DEMO_DROPDOWN_LINKS },
+    dropdown: { links: DEMO_DROPDOWN_LINKS },
   },
   {
-    label: "RESOURCES",
+    id: "resources",
     href: "/blog",
-    dropdown: { title: "READ UP", links: RESOURCES_DROPDOWN_LINKS },
+    dropdown: { links: RESOURCES_DROPDOWN_LINKS },
   },
-  { label: "PRICING", href: "/#pricing" },
+  { id: "pricing", href: "/#pricing" },
 ];
 
 export function isLandingNavLinkActive(
@@ -78,16 +83,14 @@ export function isLandingNavLinkActive(
   pathname: string,
   hash = "",
 ) {
-  if (href === "/") {
-    return pathname === "/" || pathname === "/en" || pathname === "/pl";
-  }
-
+  // Nav hrefs are written unprefixed, so the current path is compared with its
+  // locale segment removed rather than against one variant per locale.
+  const path = stripLocalePrefix(pathname);
   const [hrefPath, hrefHash] = href.split("#");
-  const normalizedPaths = [hrefPath, `/en${hrefPath}`, `/pl${hrefPath}`];
 
   if (hrefHash) {
-    return normalizedPaths.includes(pathname) && hash === `#${hrefHash}`;
+    return path === hrefPath && hash === `#${hrefHash}`;
   }
 
-  return normalizedPaths.includes(pathname);
+  return path === hrefPath;
 }

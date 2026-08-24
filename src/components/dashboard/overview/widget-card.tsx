@@ -5,6 +5,8 @@ import {
   ChevronDown,
   ChevronLeft,
   Copy,
+  Eye,
+  EyeOff,
   XCircle,
 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -53,6 +55,7 @@ export function WidgetCard() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [modeDropdownOpen, setModeDropdownOpen] = useState(false);
   const [mode, setMode] = useState<WidgetMode>("widget");
+  const [revealed, setRevealed] = useState(false);
   const [toast, setToast] = useState<{
     kind: "success" | "error";
     message: string;
@@ -116,6 +119,22 @@ export function WidgetCard() {
     }
     return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" data-api-key="YOUR_API_KEY" defer></script>`;
   }, [companyId, mode]);
+
+  /**
+   * Dashboards get screenshotted and screen-shared, so the company id is masked
+   * until asked for. It is the only real secret in the snippet — the api key is
+   * the literal placeholder `YOUR_API_KEY` until the reader swaps it out.
+   *
+   * Deliberately not persisted: reveal lasts for the view and resets on the next
+   * mount, since a remembered "revealed" is the same as never masking at all.
+   */
+  const displayedSnippet = useMemo(
+    () =>
+      revealed || !companyId
+        ? codeSnippet
+        : codeSnippet.replaceAll(companyId, "•".repeat(companyId.length)),
+    [codeSnippet, companyId, revealed],
+  );
 
   const handleCopy = useCallback(() => {
     if (!codeSnippet || locked) return;
@@ -198,12 +217,26 @@ export function WidgetCard() {
             <div className="rounded-[21px] border border-gray-100 bg-white px-6 pt-[84px] pb-6 shadow-sm">
               <div className="relative">
                 <pre
-                  className={`font-stolzl max-h-[125px] overflow-auto text-[13px] leading-[1.8] break-all whitespace-pre-wrap text-[#7E7E7E] sm:text-[14px] ${
+                  className={`font-stolzl max-h-[125px] overflow-auto pr-23 text-[13px] leading-[1.8] break-all whitespace-pre-wrap text-[#7E7E7E] sm:text-[14px] ${
                     locked ? "pointer-events-none blur-sm select-none" : ""
                   }`}
                 >
-                  {codeSnippet || "No widget code found."}
+                  {displayedSnippet || "No widget code found."}
                 </pre>
+                {codeSnippet && !locked && (
+                  <button
+                    onClick={() => setRevealed((v) => !v)}
+                    aria-pressed={revealed}
+                    className="font-dm-mono absolute top-0 right-0 flex items-center gap-1.5 rounded-[6px] bg-[#EDEDED] px-2.5 py-1.5 text-[11px] font-bold tracking-wider text-gray-600 uppercase transition-colors hover:bg-gray-200"
+                  >
+                    {revealed ? (
+                      <EyeOff className="h-3.5 w-3.5" />
+                    ) : (
+                      <Eye className="h-3.5 w-3.5" />
+                    )}
+                    {revealed ? "Hide" : "Reveal"}
+                  </button>
+                )}
                 {locked && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-lg bg-white/50">
                     <p className="font-dm-mono max-w-[260px] text-center text-xs font-bold tracking-wider text-gray-700 uppercase">

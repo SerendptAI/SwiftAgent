@@ -1,12 +1,13 @@
 import { MetadataRoute } from "next";
 
+import { routing } from "@/i18n/routing";
 import { CASE_STUDIES } from "@/lib/case-studies";
+import { localeLanguages } from "@/lib/locale-metadata";
 import { siteConfig } from "@/lib/site-config";
 import { getPostSummaries } from "@/sanity/posts";
 
 const BASE_URL = siteConfig.url;
-const locales = ["en", "pl"] as const;
-const defaultLocale = "en";
+const { locales } = routing;
 
 interface PublicRoute {
   path: string;
@@ -48,12 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   return routes.flatMap((route) => {
-    const languages = {
-      ...Object.fromEntries(
-        locales.map((locale) => [locale, `${BASE_URL}/${locale}${route.path}`]),
-      ),
-      "x-default": `${BASE_URL}/${defaultLocale}${route.path}`,
-    };
+    const languages = localeLanguages(route.path);
 
     return locales.map((locale) => ({
       url: `${BASE_URL}/${locale}${route.path}`,

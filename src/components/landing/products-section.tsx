@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 
 import { Link } from "@/i18n/navigation";
@@ -57,6 +58,8 @@ function StoreButton({
 }
 
 export function ProductsSection() {
+  const t = useTranslations("products");
+
   return (
     <section
       id="products"
@@ -65,10 +68,10 @@ export function ProductsSection() {
       <div className="mx-auto flex max-w-296 flex-col gap-24 md:gap-32 lg:gap-40">
         <div>
           <p className="font-dm-mono mb-8 text-base leading-[1.2] tracking-[10%] text-black/60 uppercase md:text-lg">
-            OUR PRODUCTS
+            {t("eyebrow")}
           </p>
           <h2 className="font-greed-narrow mb-8 text-4xl leading-[1.34] font-medium tracking-[-2%] uppercase md:mb-14 md:text-5xl lg:text-[66px]">
-            SWIFT AGENTS APP
+            {t("app.heading")}
           </h2>
 
           <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:gap-16">
@@ -78,24 +81,17 @@ export function ProductsSection() {
             />
 
             <div className="font-dm-mono flex flex-col gap-6 text-base leading-[1.66] tracking-[10%] text-black/80 uppercase md:text-lg lg:w-[55%] lg:text-xl xl:text-2xl">
-              <p>
-                THE SWIFT AGENT APP ENABLES BUSINESSES TO ENGAGE WITH CUSTOMERS
-                DIRECTLY THROUGH THEIR MOBILE DEVICES.
-              </p>
-              <p>
-                USERS CAN COMMUNICATE SEAMLESSLY, UPDATE THEIR PROFILES, AND
-                INTERACT WITH AI AGENTS FOR TASKS SUCH AS RETRIEVING OTPS FOR
-                THEIR ASSIGNED ACCOUNTS.
-              </p>
+              <p>{t("app.body1")}</p>
+              <p>{t("app.body2")}</p>
 
               <div className="mt-2 flex flex-col gap-4">
                 <StoreButton href="#" className="w-fit">
                   <PlayStoreIcon />
-                  DOWNLOAD ON PLAYSTORE
+                  {t("app.playStore")}
                 </StoreButton>
                 <StoreButton href="#" className="w-fit">
                   <AppleIcon />
-                  DOWNLOAD ON APPLE STORE
+                  {t("app.appleStore")}
                 </StoreButton>
               </div>
             </div>
@@ -104,7 +100,7 @@ export function ProductsSection() {
 
         <div id="sdks">
           <h2 className="font-greed-narrow mb-8 text-4xl leading-[1.34] font-medium tracking-[-2%] uppercase md:mb-14 md:text-5xl lg:text-right lg:text-[66px]">
-            SWIFT AGENTS SDK
+            {t("sdk.heading")}
           </h2>
 
           {/* Copy top-aligned left, image right — on mobile: image first, then copy */}
@@ -115,22 +111,15 @@ export function ProductsSection() {
             />
 
             <div className="font-dm-mono flex flex-col gap-6 text-base leading-[1.66] tracking-[10%] text-black/80 uppercase md:text-lg lg:w-[45%] lg:text-xl xl:text-2xl">
-              <p>
-                THE SWIFT AGENT SDK IS DESIGNED FOR SEAMLESS INTEGRATION INTO
-                MOBILE APPLICATIONS, ENHANCING CUSTOMER SERVICE CAPABILITIES.
-              </p>
-              <p>
-                THIS ALLOWS CUSTOMERS TO EFFORTLESSLY COMMUNICATE WITH AGENTS
-                DIRECTLY THROUGH THEIR MOBILE DEVICES, ENSURING A MORE EFFICIENT
-                AND RESPONSIVE SUPPORT EXPERIENCE.
-              </p>
+              <p>{t("sdk.body1")}</p>
+              <p>{t("sdk.body2")}</p>
 
               <div className="mt-2">
                 <StoreButton
                   href="/signup"
                   className="flex w-fit max-w-81.5 items-center justify-center text-center sm:w-full"
                 >
-                  GET STARTED
+                  {t("sdk.cta")}
                 </StoreButton>
               </div>
             </div>

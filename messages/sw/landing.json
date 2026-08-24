@@ -1,0 +1,141 @@
+{
+  "hero": {
+    "headline": {
+      "scale": "Kuza",
+      "customer": "Huduma",
+      "supportWithout": "Kwa wateja bila",
+      "scalingYour": "Kupanua",
+      "team": "Timu yako"
+    },
+    "subtitle": "SwiftAgents husaidia biashara kuendesha mazungumzo na wateja kiotomatiki, kupunguza mzigo wa huduma, na kutoa huduma ya haraka zaidi katika kila njia.",
+    "bookDemo": "Panga onyesho",
+    "getStarted": "Anza sasa"
+  },
+  "checklist": {
+    "eyebrow": "Imeundwa kwa ukuaji",
+    "heading": "Imeundwa kwa biashara zinazokua haraka kuliko timu zao za huduma",
+    "items": {
+      "repetitive": "Punguza maswali yanayojirudia",
+      "responseTimes": "Boresha muda wa kujibu",
+      "experiences": "Toa huduma bora zaidi kwa wateja",
+      "scale": "Kuza huduma kwa ufanisi zaidi"
+    }
+  },
+  "steps": {
+    "eyebrow": "Jinsi inavyofanya kazi",
+    "heading": "Kutoka swali la mteja hadi jibu ndani ya sekunde chache",
+    "items": {
+      "connect": {
+        "title": "Unganisha maarifa yako",
+        "description": "Pakia nyaraka zako, maudhui ya tovuti yako, maswali yanayoulizwa mara kwa mara, na rasilimali zako za huduma."
+      },
+      "train": {
+        "title": "Ifundishe SwiftAgents kuhusu biashara yako",
+        "description": "SwiftAgents hujifunza bidhaa zako, taratibu zako, sera zako, na mtiririko wa huduma kwa wateja."
+      },
+      "goLive": {
+        "title": "Anza kutumia",
+        "description": "Anza kutatua maswali ya wateja katika njia zako za huduma ndani ya saa chache, si wiki."
+      }
+    }
+  },
+  "capabilities": {
+    "eyebrow": "Uwezo",
+    "heading": "Kila kitu timu yako inahitaji kuhudumia wateja kwa kiwango kikubwa",
+    "items": {
+      "instantSupport": {
+        "title": "Huduma ya papo hapo kwa wateja",
+        "description": "Jibu maswali ya wateja saa 24 kwa siku: huduma, kuanza kutumia, malipo, na maswali kuhusu bidhaa."
+      },
+      "productGuidance": {
+        "title": "Mwongozo wa bidhaa",
+        "description": "Saidia watumiaji kupata njia yao ndani ya mfumo wako, kugundua vipengele, na kukamilisha shughuli bila kusubiri msaada."
+      },
+      "paymentSupport": {
+        "title": "Msaada wa malipo na miamala",
+        "description": "Saidia wateja kuthibitisha malipo, kurejeshewa fedha, kufuatilia hali ya miamala, na maswali kuhusu akaunti zao."
+      },
+      "knowledgeSearch": {
+        "title": "Utafutaji wa maarifa kwa akili",
+        "description": "Pata majibu papo hapo kutoka kwenye tovuti yako, nyaraka zako, na rasilimali zako za huduma."
+      }
+    }
+  },
+  "outcomes": {
+    "eyebrow": "Matokeo, si tiketi",
+    "heading": "Mifumo ya kawaida ya huduma husaidia timu kusimamia huduma. SwiftAgents husaidia timu kuipunguza.",
+    "body": "Mifumo mingi ya huduma ilijengwa kuzunguka tiketi, dashibodi, na taratibu. SwiftAgents ilijengwa kuzunguka matokeo.",
+    "items": {
+      "fasterResponses": "Majibu ya haraka zaidi",
+      "lessManualWork": "Kazi chache za mikono",
+      "experiences": "Huduma bora zaidi kwa wateja",
+      "lowerCosts": "Gharama ndogo za huduma"
+    }
+  },
+  "whyTeams": {
+    "eyebrow": "Kwa nini timu zinabadilika",
+    "heading": "Kwa nini timu zinaachana na mifumo ya kawaida ya huduma",
+    "body": "Iwe unatumia Zendesk, Intercom, Freshworks, Tidio, au unasimamia huduma kwa mikono, changamoto ni ile ile: wateja wengi zaidi huleta mazungumzo mengi zaidi, na mazungumzo mengi zaidi huleta kazi nyingi zaidi za huduma. SwiftAgents hukusaidia kupunguza mzigo huo kabla haujafika kwa timu yako.",
+    "items": {
+      "fasterSetup": {
+        "title": "Usanidi wa haraka zaidi",
+        "description": "Anza kutumia kwa saa chache, si wiki."
+      },
+      "smarterAutomation": {
+        "title": "Uendeshaji wa kiotomatiki wenye akili",
+        "description": "Punguza kiotomatiki maswali yanayojirudia."
+      },
+      "simplerOperations": {
+        "title": "Uendeshaji rahisi zaidi",
+        "description": "Hakuna taratibu zilizojaa wala ugumu usio wa lazima."
+      },
+      "predictableGrowth": {
+        "title": "Ukuaji unaotabirika",
+        "description": "Kuza huduma kwa wateja bila kukuza gharama za uendeshaji."
+      }
+    }
+  },
+  "deploy": {
+    "eyebrow": "Usambazaji",
+    "heading": "Anza kutumia kwa saa chache, si wiki",
+    "body": "Mifumo mingi ya huduma inahitaji maandalizi marefu, usanidi, na mipangilio mingi. SwiftAgents imeundwa kuiwezesha timu yako kuanza haraka ili uone manufaa mara moja.",
+    "points": {
+      "noProjects": "Hakuna miradi migumu ya utekelezaji",
+      "noEnterpriseSetup": "Hakuna mahitaji ya usanidi wa kiwango cha shirika kubwa",
+      "noWaiting": "Hakuna kusubiri wiki kadhaa ili kuanza"
+    }
+  },
+  "pricingTeaser": {
+    "eyebrow": "Bei",
+    "heading": "Bei rahisi kwa kila hatua ya ukuaji",
+    "tiers": {
+      "starter": {
+        "name": "Starter",
+        "description": "Kwa timu changa zinazoanza kuendesha huduma kiotomatiki kwa mara ya kwanza."
+      },
+      "growth": {
+        "name": "Growth",
+        "description": "Kwa biashara zinazokua zenye ongezeko la kazi za huduma."
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "description": "Kwa mashirika yanayohitaji ubinafsishaji wa hali ya juu na ukuaji mkubwa."
+      }
+    },
+    "viewPricing": "Angalia bei"
+  },
+  "roiBanner": {
+    "first": {
+      "eyebrow": "Kikokotoo cha faida",
+      "heading": "Ona kiasi gani unacholipa zaidi kwa huduma kwa sasa",
+      "description": "Kokotoa ni wafanyakazi wangapi wa huduma ungeweza kuepuka kuajiri ukitumia SwiftAgents.",
+      "cta": "Kokotoa akiba yangu"
+    },
+    "second": {
+      "eyebrow": "Bado unakuza huduma kwa kuajiri watu zaidi?",
+      "heading": "Timu nyingi hutambua upotevu wa huduma zao baada tu ya kuukokotoa",
+      "description": "Fanya hesabu na uone SwiftAgents inaweza kukuokolea kiasi gani.",
+      "cta": "Fanya hesabu ya faida"
+    }
+  }
+}

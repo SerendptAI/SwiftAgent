@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { SERVICE_COMPANIES } from "./referral-companies";
@@ -11,6 +12,7 @@ interface ReferScreenTwoProps {
 }
 
 export function ReferScreenTwo({ onBack, onNext }: ReferScreenTwoProps) {
+  const t = useTranslations("refer.companies");
   const [activeTab, setActiveTab] = useState<"service" | "crypto">("service");
 
   return (
@@ -34,12 +36,11 @@ export function ReferScreenTwo({ onBack, onNext }: ReferScreenTwoProps) {
 
       <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1180px] flex-col items-center px-4 pt-[128px] pb-16 text-center sm:px-5 md:pt-[160px] md:pb-24">
         <h1 className="font-greed-narrow w-full max-w-[700px] text-center text-[42px] leading-[1.08] font-medium tracking-[-0.02em] text-black uppercase sm:text-[52px] md:text-[60px] md:leading-[1.34]">
-          List of commpanies we&apos;d love to work with
+          {t("heading")}
         </h1>
 
         <p className="font-dm-mono mt-[30px] max-w-[790px] text-center text-base leading-[1.45] tracking-[0.08em] text-black/60 uppercase sm:text-lg sm:leading-[1.39] sm:tracking-widest">
-          Share the contact details of any founder from the listed companies,
-          and you will receive 10,000 NGN once we verify their identity.
+          {t("subtitle")}
         </p>
 
         <div className="mt-10.5 grid w-fit grid-cols-1 gap-2 sm:grid-cols-2 md:mt-14 md:gap-8">
@@ -61,7 +62,7 @@ export function ReferScreenTwo({ onBack, onNext }: ReferScreenTwoProps) {
               aria-hidden="true"
               className="size-7 shrink-0"
             />
-            Service companies
+            {t("serviceTab")}
           </button>
           <button
             type="button"
@@ -83,7 +84,7 @@ export function ReferScreenTwo({ onBack, onNext }: ReferScreenTwoProps) {
                 activeTab === "crypto" ? "" : "opacity-60"
               }`}
             />
-            Crypto companies
+            {t("cryptoTab")}
           </button>
         </div>
 
@@ -125,7 +126,7 @@ export function ReferScreenTwo({ onBack, onNext }: ReferScreenTwoProps) {
               aria-hidden="true"
               className="size-5.5 shrink-0"
             />
-            Refer a founder
+            {t("referCta")}
           </button>
         </div>
 

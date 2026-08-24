@@ -1,0 +1,77 @@
+{
+  "intro": {
+    "heading": "Recommandez un fondateur et remportez le défi",
+    "subtitle": "Nous cherchons à entrer en contact avec quelques fondateurs pour utiliser Swift Agents",
+    "rulesTitle": "Règles",
+    "rules": {
+      "foundersOnly": "Ne recommandez que des dirigeants et des fondateurs",
+      "mustHaveCustomers": "Les entreprises recommandées doivent avoir des clients",
+      "listed": "Les start-ups listées valent 10 000 NGN.",
+      "unlisted": "Les start-ups non listées valent 5 000 NGN.",
+      "afterConfirmation": "Les fonds sont versés après confirmation de l’identité"
+    },
+    "continue": "Continuer",
+    "terms": "Conditions générales applicables"
+  },
+  "companies": {
+    "heading": "Les entreprises avec lesquelles nous aimerions travailler",
+    "subtitle": "Partagez les coordonnées d’un fondateur de l’une des entreprises listées et recevez 10 000 NGN dès que nous aurons vérifié son identité.",
+    "serviceTab": "Entreprises de services",
+    "cryptoTab": "Entreprises crypto",
+    "referCta": "Recommander un fondateur",
+    "back": "Retour"
+  },
+  "form": {
+    "heading": "Remplissez le formulaire fondateur",
+    "subtitle": "Nous cherchons à entrer en contact avec quelques fondateurs pour utiliser Swift Agents",
+    "founderInfo": "Informations sur le fondateur",
+    "yourInfo": "Vos informations",
+    "next": "Suivant",
+    "submit": "Envoyer",
+    "back": "Retour",
+    "fields": {
+      "founderName": {
+        "label": "Nom du fondateur",
+        "placeholder": "Nom complet du fondateur"
+      },
+      "companyName": {
+        "label": "Nom de l’entreprise",
+        "placeholder": "Choisir une entreprise"
+      },
+      "position": {
+        "label": "Poste du fondateur dans l’entreprise",
+        "placeholder": "Choisir"
+      },
+      "phone": {
+        "label": "Téléphone du fondateur",
+        "placeholder": "+234"
+      },
+      "email": {
+        "label": "E-mail du fondateur",
+        "placeholder": "fondateur@fg.com"
+      },
+      "bankName": {
+        "label": "Nom de votre banque",
+        "placeholder": "Nom de la banque"
+      },
+      "accountNumber": {
+        "label": "Votre numéro de compte",
+        "placeholder": "2245XXXXXXXX"
+      },
+      "accountName": {
+        "label": "Nom du titulaire du compte",
+        "placeholder": "Jean Dupont"
+      },
+      "yourEmail": {
+        "label": "Votre e-mail",
+        "placeholder": "jeandupont@swftgo.com"
+      }
+    }
+  },
+  "done": {
+    "heading": "Merci !",
+    "body": "Merci pour cette recommandation. Nous vérifierons l’identité et enverrons les fonds, si tout est correct.",
+    "expectedLabel": "Montant attendu",
+    "signoff": "Nous aimons les gens qui ne laissent pas d’argent sur la table ~ L’équipe Swift Agents"
+  }
+}

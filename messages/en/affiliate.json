@@ -1,0 +1,83 @@
+{
+  "hero": {
+    "headline": "You already know the\nbusinesses we’re\nlooking for",
+    "body": "SwiftAgents empowers websites with smart AI assistants that handle live chats, ticketing, and support flows seamlessly. Introduce us to businesses struggling with manual support, and get paid when they go live. It’s that simple.",
+    "submitReferral": "Submit referral",
+    "viewPlanMetrics": "View plan metrics",
+    "proReferrer": "Pro referrer"
+  },
+  "path": {
+    "eyebrow": "Referral path",
+    "heading": "The pathway to permanent commission",
+    "steps": {
+      "you": {
+        "label": "You",
+        "caption": "the referrer"
+      },
+      "intro": {
+        "label": "Intro",
+        "caption": "warm handoff"
+      },
+      "business": {
+        "label": "Business",
+        "caption": "sees a demo"
+      },
+      "live": {
+        "label": "Live",
+        "caption": "you get paid"
+      }
+    }
+  },
+  "audience": {
+    "forWho": {
+      "title": "Who this is for",
+      "bullets": {
+        "developers": "Web developers and designers who build or maintain business websites",
+        "agencies": "Agency owners and freelancers with active business clients",
+        "anyone": "Anyone with a friend, family member, or contact who runs a business with a website"
+      }
+    },
+    "whyYes": {
+      "title": "Why owners say yes",
+      "bullets": {
+        "answers": "Their website starts answering customer questions on its own, day and night",
+        "noDevTime": "No developer time needed to set it up, SwiftAgents learns the site directly",
+        "liveFast": "Live within days, across web chat, WhatsApp, and social messages"
+      }
+    }
+  },
+  "protocol": {
+    "eyebrow": "How it works",
+    "heading": "A simplified referral protocol",
+    "steps": {
+      "refer": {
+        "title": "Refer",
+        "body": "Send us the business name and website, or introduce us directly."
+      },
+      "demo": {
+        "title": "Demo",
+        "body": "We show the owner a working AI agent built on their own site and support flow."
+      },
+      "signUp": {
+        "title": "Sign up",
+        "body": "If they come on board, you’re logged as the referral source."
+      },
+      "getPaid": {
+        "title": "Get paid",
+        "body": "Your payout goes out once the business is active."
+      }
+    }
+  },
+  "payout": {
+    "rewardLabel": "Affiliate reward",
+    "rewardCaption": "Of whichever plan they pay for",
+    "heading": "Submit multiple deals",
+    "body": "You earn 20% of whichever plan the person you refer pays for. The more referrals, the more you earn — it’s that simple."
+  },
+  "submit": {
+    "heading": "Ready to send your first referral?",
+    "body": "Reply with the business name, or send them straight to us.",
+    "channelLabel": "Submission channel",
+    "emailNow": "Email now"
+  }
+}

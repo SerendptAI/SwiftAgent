@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 import { SERVICE_COMPANY_NAMES } from "./referral-companies";
@@ -329,6 +330,7 @@ function RecaptchaField({
 }
 
 export function ReferScreenThree({ onBack, onNext }: ReferScreenThreeProps) {
+  const t = useTranslations("refer.form");
   const [formScreen, setFormScreen] = useState<FormScreen>("founder");
   const [values, setValues] = useState<FormValues>(initialValues);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -404,11 +406,11 @@ export function ReferScreenThree({ onBack, onNext }: ReferScreenThreeProps) {
 
       <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1180px] flex-col items-center px-4 pt-[128px] pb-16 text-center sm:px-5 md:pt-[160px] md:pb-24">
         <h1 className="font-greed-narrow w-full max-w-[700px] text-center text-[42px] leading-[1.08] font-medium tracking-[-0.02em] text-black uppercase sm:text-[52px] md:text-[60px] md:leading-[1.34]">
-          Fill the founders form
+          {t("heading")}
         </h1>
 
         <p className="font-dm-mono mt-[30px] max-w-[790px] text-center text-base leading-[1.45] tracking-[0.08em] text-black/60 uppercase sm:text-lg sm:leading-[1.39] sm:tracking-widest">
-          We&apos;re looking to connect with a few founders to use Swift Agents
+          {t("subtitle")}
         </p>
 
         <div className="mt-[42px] w-full max-w-[842px] rounded-[28px] border border-black/25 bg-white px-4 pt-7 pb-9 text-center sm:mt-[50px] sm:px-6 md:mt-[57px] md:rounded-[49px] md:px-8 md:pt-9 md:pb-12">
@@ -416,7 +418,7 @@ export function ReferScreenThree({ onBack, onNext }: ReferScreenThreeProps) {
             <div className="flex flex-wrap gap-5 text-left">
               <div className="w-fit">
                 <p className="font-dm-mono text-sm leading-[22px] font-medium text-black uppercase">
-                  Founder information
+                  {t("founderInfo")}
                 </p>
                 <div className="-mx-2 mt-3 h-1 rounded-t-[5px] bg-[#7132D7]" />
               </div>
@@ -426,7 +428,7 @@ export function ReferScreenThree({ onBack, onNext }: ReferScreenThreeProps) {
                     formScreen === "you" ? "text-black" : "text-black/25"
                   }`}
                 >
-                  Your information
+                  {t("yourInfo")}
                 </p>
                 <div
                   className={`-mx-2 mt-3 h-1 rounded-t-[5px] ${
@@ -439,9 +441,9 @@ export function ReferScreenThree({ onBack, onNext }: ReferScreenThreeProps) {
             {formScreen === "founder" ? (
               <div className="mt-14 space-y-5">
                 <Field
-                  label="Founders name"
+                  label={t("fields.founderName.label")}
                   name="founderName"
-                  placeholder="FOUNDERS FULLNAME"
+                  placeholder={t("fields.founderName.placeholder")}
                   required
                   value={values.founderName}
                   error={errors.founderName}
@@ -449,9 +451,9 @@ export function ReferScreenThree({ onBack, onNext }: ReferScreenThreeProps) {
                   onChange={setFieldValue}
                 />
                 <SelectField
-                  label="Company name"
+                  label={t("fields.companyName.label")}
                   name="companyName"
-                  placeholder="SELECT COMPANY"
+                  placeholder={t("fields.companyName.placeholder")}
                   options={SERVICE_COMPANY_NAMES}
                   value={values.companyName}
                   error={errors.companyName}
@@ -459,9 +461,9 @@ export function ReferScreenThree({ onBack, onNext }: ReferScreenThreeProps) {
                   onChange={setFieldValue}
                 />
                 <SelectField
-                  label="Founders Position in company"
+                  label={t("fields.position.label")}
                   name="founderPosition"
-                  placeholder="SELECT"
+                  placeholder={t("fields.position.placeholder")}
                   options={[
                     "Founder",
                     "Co-founder",
@@ -474,9 +476,9 @@ export function ReferScreenThree({ onBack, onNext }: ReferScreenThreeProps) {
                   onChange={setFieldValue}
                 />
                 <Field
-                  label="Founders Phone number"
+                  label={t("fields.phone.label")}
                   name="founderPhone"
-                  placeholder="+234"
+                  placeholder={t("fields.phone.placeholder")}
                   required
                   type="tel"
                   inputMode="tel"
@@ -486,9 +488,9 @@ export function ReferScreenThree({ onBack, onNext }: ReferScreenThreeProps) {
                   onChange={setFieldValue}
                 />
                 <Field
-                  label="Founders Email"
+                  label={t("fields.email.label")}
                   name="founderEmail"
-                  placeholder="FOUNDER@FG.COM"
+                  placeholder={t("fields.email.placeholder")}
                   required
                   type="email"
                   value={values.founderEmail}
@@ -500,9 +502,9 @@ export function ReferScreenThree({ onBack, onNext }: ReferScreenThreeProps) {
             ) : (
               <div className="mt-14 space-y-5">
                 <Field
-                  label="Name of your bank"
+                  label={t("fields.bankName.label")}
                   name="bankName"
-                  placeholder="BANK NAME"
+                  placeholder={t("fields.bankName.placeholder")}
                   required
                   value={values.bankName}
                   error={errors.bankName}
@@ -510,9 +512,9 @@ export function ReferScreenThree({ onBack, onNext }: ReferScreenThreeProps) {
                   onChange={setFieldValue}
                 />
                 <Field
-                  label="Your account number"
+                  label={t("fields.accountNumber.label")}
                   name="accountNumber"
-                  placeholder="2245XXXXXXXX"
+                  placeholder={t("fields.accountNumber.placeholder")}
                   required
                   inputMode="numeric"
                   value={values.accountNumber}
@@ -521,9 +523,9 @@ export function ReferScreenThree({ onBack, onNext }: ReferScreenThreeProps) {
                   onChange={setFieldValue}
                 />
                 <Field
-                  label="Your account name"
+                  label={t("fields.accountName.label")}
                   name="accountName"
-                  placeholder="JOHN DOE"
+                  placeholder={t("fields.accountName.placeholder")}
                   required
                   value={values.accountName}
                   error={errors.accountName}
@@ -531,9 +533,9 @@ export function ReferScreenThree({ onBack, onNext }: ReferScreenThreeProps) {
                   onChange={setFieldValue}
                 />
                 <Field
-                  label="Your email"
+                  label={t("fields.yourEmail.label")}
                   name="yourEmail"
-                  placeholder="JOHNDOE@SWFTGO.COM"
+                  placeholder={t("fields.yourEmail.placeholder")}
                   required
                   type="email"
                   value={values.yourEmail}
@@ -561,7 +563,7 @@ export function ReferScreenThree({ onBack, onNext }: ReferScreenThreeProps) {
               onClick={handlePrimaryAction}
               className="font-dm-mono mx-auto mt-18 flex h-11 w-full max-w-[440px] shrink-0 cursor-pointer items-center justify-center rounded-md bg-[#F2B035] text-base leading-none font-medium text-black uppercase shadow-[-3px_4px_0_#000]"
             >
-              {formScreen === "founder" ? "Next" : "Submit"}
+              {formScreen === "founder" ? t("next") : t("submit")}
             </button>
 
             <button
@@ -569,7 +571,7 @@ export function ReferScreenThree({ onBack, onNext }: ReferScreenThreeProps) {
               onClick={handleBack}
               className="font-dm-mono mt-8 cursor-pointer text-sm tracking-[0.08em] text-black/50 uppercase underline underline-offset-4 md:text-base"
             >
-              Back
+              {t("back")}
             </button>
           </div>
         </div>

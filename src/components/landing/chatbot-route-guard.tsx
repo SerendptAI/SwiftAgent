@@ -3,13 +3,15 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
+import { stripLocalePrefix } from "@/lib/locale-path";
+
 import { cleanupChatbotDom } from "./homepage-chatbot";
 
 function isHomepagePath(pathname: string) {
   const normalizedPathname =
     pathname.length > 1 ? pathname.replace(/\/$/, "") : pathname;
 
-  return ["/", "/en", "/pl"].includes(normalizedPathname);
+  return stripLocalePrefix(normalizedPathname) === "/";
 }
 
 // The dashboard intentionally hosts its own button-mode support widget

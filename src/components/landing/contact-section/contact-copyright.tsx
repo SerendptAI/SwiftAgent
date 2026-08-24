@@ -1,9 +1,13 @@
+import { useTranslations } from "next-intl";
+
 import { Link } from "@/i18n/navigation";
 
 import { COPYRIGHT_TEXT } from "./constants";
 
 /** Copyright footer centered at the bottom of the contact image */
 export function ContactCopyright() {
+  const t = useTranslations("common.contact");
+
   return (
     <div className="absolute bottom-30 left-0 z-20 flex w-full flex-col items-center gap-2 text-center md:bottom-12">
       <span className="font-mono text-[10px] tracking-widest text-white uppercase sm:text-xs">
@@ -14,11 +18,11 @@ export function ContactCopyright() {
           href="/privacy-policy"
           className="transition-colors hover:text-white"
         >
-          Privacy Policy
+          {t("privacyPolicy")}
         </Link>
         <span className="text-white/20">|</span>
         <Link href="/" className="transition-colors hover:text-white">
-          Terms of Service
+          {t("termsOfService")}
         </Link>
       </div>
     </div>
