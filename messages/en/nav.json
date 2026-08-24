@@ -45,5 +45,6 @@
   "closeMenu": "Close menu",
   "logoAlt": "Logo",
   "profileAlt": "Profile",
-  "productPreviewAlt": "Swift Agents product preview"
+  "productPreviewAlt": "Swift Agents product preview",
+  "changeLanguage": "Change language"
 }

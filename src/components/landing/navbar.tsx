@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { forwardRef, useEffect, useRef, useState } from "react";
 
+import { LocaleSwitcher } from "@/components/locale-switcher";
 import { useCurrentUser } from "@/hooks/use-auth";
 // Nav hrefs are unprefixed, so they go through the locale-aware Link rather
 // than next/link, which would drop the visitor out of their locale.
@@ -221,6 +222,9 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                   <Icons.Cross />
                 </span>
               </button>
+
+              <LocaleSwitcher className="hidden md:block" />
+
               {isLoggedIn ? (
                 <Link
                   href="/dashboard"

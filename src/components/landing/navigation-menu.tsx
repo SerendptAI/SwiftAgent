@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
+import { LocaleSwitcher } from "@/components/locale-switcher";
 import { useCurrentUser } from "@/hooks/use-auth";
 import { Link } from "@/i18n/navigation";
 import { cn, getProfileImage } from "@/lib/utils";
@@ -216,6 +217,10 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                 </Link>
               );
             })}
+
+            <div className="px-4 pt-4">
+              <LocaleSwitcher variant="row" onSwitch={onClose} />
+            </div>
 
             {/* Login / profile button inside menu */}
             <div className="p-4">
