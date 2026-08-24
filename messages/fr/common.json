@@ -1,0 +1,49 @@
+{
+  "cta": {
+    "heading": "Vos clients veulent des réponses immédiates.",
+    "body": "Votre équipe veut moins de tâches répétitives. Swift Agents offre les deux.",
+    "bookDemo": "Réserver une démo",
+    "getStarted": "Commencer",
+    "imageAlt": "Aperçu de la messagerie SwiftAgent"
+  },
+  "contact": {
+    "eyebrow": "Envie de nous joindre ?",
+    "heading": "Nous contacter",
+    "imageAlt": "Vue de la rue",
+    "privacyPolicy": "Politique de confidentialité",
+    "termsOfService": "Conditions d’utilisation",
+    "links": {
+      "twitter": "Twitter",
+      "instagram": "Instagram",
+      "careers": "Carrières",
+      "blog": "Blog",
+      "email": "E-mail"
+    }
+  },
+  "platforms": {
+    "website": {
+      "label": "Site web",
+      "description": "Déployez notre chatbot intelligent sur votre site pour gérer les échanges avec vos visiteurs. Toute question sans réponse est transmise à un agent humain."
+    },
+    "webapp": {
+      "label": "Application web",
+      "description": "Intégrez notre chatbot intelligent à votre application web pour gérer les interactions avec vos visiteurs."
+    },
+    "mobile": {
+      "label": "Application mobile",
+      "description": "Intégrez notre chatbot intelligent à vos applications grâce à notre SDK"
+    }
+  },
+  "caseStudies": {
+    "eyebrow": "Comment Swift Agents peut aider votre entreprise",
+    "heading": "Analyse de cas d’usage",
+    "howWeHelp": "Comment nous aidons"
+  },
+  "blog": {
+    "eyebrow": "Notes sur le support, l’automatisation et l’IA",
+    "heading": "Blog",
+    "emptyTitle": "Pas encore d’articles",
+    "emptyBody": "Nous écrivons les premiers. Revenez bientôt, ou réservez une démo si vous préférez voir le produit directement.",
+    "readPost": "Lire l’article →"
+  }
+}

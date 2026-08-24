@@ -28,6 +28,16 @@ function leafKeys(value: unknown, prefix = ""): string[] {
   );
 }
 
+/** Names that are the same in every language and so carry no signal here. */
+const BRAND_TOKENS = /Swift\s*Agents|SwiftAgents|Serendpt|SDK|ROI|AI/gi;
+
+function translatableWordCount(value: string): number {
+  return value
+    .replace(BRAND_TOKENS, " ")
+    .split(/[\s—–-]+/)
+    .filter((word) => /[a-z]/i.test(word)).length;
+}
+
 const { defaultLocale, locales } = routing;
 const translatedLocales = locales.filter((l) => l !== defaultLocale);
 
@@ -76,9 +86,11 @@ describe("message catalogues", () => {
 
         for (const key of leafKeys(translated)) {
           const value = read(translated, key);
-          // Proper nouns and shared tokens legitimately match across locales.
-          if (typeof value !== "string" || value.split(" ").length < 4)
-            continue;
+          if (typeof value !== "string") continue;
+          // Short strings legitimately match across locales, and brand names
+          // never translate — "Blog — Swift Agents" is correct French. Measure
+          // only the prose, so the check still catches a copy-pasted sentence.
+          if (translatableWordCount(value) < 4) continue;
           if (value === read(english, key))
             suspicious.push(`${namespace}.${key}`);
         }

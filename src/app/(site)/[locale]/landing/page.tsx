@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import { ContactSection } from "@/components/landing/contact-section";
 import { CtaSection } from "@/components/landing/cta-section";
@@ -21,16 +22,18 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta.landing" });
 
   return {
-    title: "Scale Customer Support Without Scaling Your Team",
-    description:
-      "SwiftAgents helps businesses automate customer conversations, reduce support workload, and deliver faster customer experiences across every channel. Live in hours, not weeks.",
+    title: t("title"),
+    description: t("description"),
     alternates: localeAlternates(locale, "/landing"),
   };
 }
 
-export default function ScaleSupportLandingPage() {
+export default async function ScaleSupportLandingPage() {
+  const t = await getTranslations("landing.roiBanner");
+
   return (
     <SmoothScrollProvider>
       <main className="min-h-screen bg-white">
@@ -41,19 +44,19 @@ export default function ScaleSupportLandingPage() {
         <OutcomesSection />
         <WhyTeamsSection />
         <RoiCalloutBanner
-          eyebrow="ROI Calculator"
-          heading="See how much support cost you're currently overpaying"
-          description="Calculate how many support agents you could avoid hiring with SwiftAgents."
-          cta="Calculate My Savings"
+          eyebrow={t("first.eyebrow")}
+          heading={t("first.heading")}
+          description={t("first.description")}
+          cta={t("first.cta")}
         />
         <DeploySection />
         <IndustriesSection />
         <PricingTeaserSection />
         <RoiCalloutBanner
-          eyebrow="Still scaling support with headcount?"
-          heading="Most teams only realize their support inefficiency after they calculate it"
-          description="Run the numbers and see what SwiftAgents could save you."
-          cta="Run ROI Calculation"
+          eyebrow={t("second.eyebrow")}
+          heading={t("second.heading")}
+          description={t("second.description")}
+          cta={t("second.cta")}
           variant="dark"
         />
         <CtaSection />

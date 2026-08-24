@@ -1,13 +1,15 @@
 "use client";
 
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
+/** Copy lives in the `refer.intro.rules` catalogue, keyed by id. */
 const RULES = [
-  "REFER CEO'S AND FOUNDERS ONLY",
-  "REFERRED BUSINESSES MUST HAVE CUSTOMERS",
-  "LISTED START UPS ARE WORTH 10,000 NGN.",
-  "UNLISTED START UPS ARE WORTH 5,000 NGN.",
-  "FUNDS ARE RELEASED AFTER IDENTITY CONFIRMATION",
+  "foundersOnly",
+  "mustHaveCustomers",
+  "listed",
+  "unlisted",
+  "afterConfirmation",
 ];
 
 interface ReferScreenOneProps {
@@ -15,6 +17,7 @@ interface ReferScreenOneProps {
 }
 
 export function ReferScreenOne({ onNext }: ReferScreenOneProps) {
+  const t = useTranslations("refer.intro");
   return (
     <>
       <Image
@@ -46,16 +49,16 @@ export function ReferScreenOne({ onNext }: ReferScreenOneProps) {
 
       <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1180px] flex-col items-center px-4 pt-[128px] pb-14 text-center sm:px-5 md:pt-[160px] md:pb-20">
         <h1 className="font-greed-narrow w-full max-w-[700px] text-center text-[42px] leading-[1.08] font-medium tracking-[-0.02em] text-black uppercase sm:text-[52px] md:text-[60px] md:leading-[1.34]">
-          Refer a founder and win challenge
+          {t("heading")}
         </h1>
 
         <p className="font-dm-mono mt-[30px] max-w-[760px] text-center text-base leading-[1.45] tracking-[0.08em] text-black/60 uppercase sm:text-lg sm:leading-[1.39] sm:tracking-widest">
-          We&apos;re looking to connect with a few founders to use Swift Agents
+          {t("subtitle")}
         </p>
 
         <div className="mt-[42px] w-full max-w-[720px] rounded-[28px] border border-black/25 bg-white px-4 pt-7 pb-9 text-center sm:mt-[50px] sm:px-6 md:mt-[57px] md:rounded-[49px] md:px-8 md:pt-9 md:pb-12">
           <h2 className="font-greed-narrow text-center text-[32px] leading-[1.34] font-medium tracking-[-0.02em] text-black uppercase">
-            Rules
+            {t("rulesTitle")}
           </h2>
 
           <div className="mt-8 flex flex-col gap-5">
@@ -68,7 +71,7 @@ export function ReferScreenOne({ onNext }: ReferScreenOneProps) {
                   {index + 1}
                 </span>
                 <span className="font-dm-mono min-w-0 text-left text-sm leading-[1.45] tracking-[0.08em] text-black uppercase sm:text-base md:text-lg md:leading-[1.39] md:tracking-widest">
-                  {rule}
+                  {t(`rules.${rule}`)}
                 </span>
               </div>
             ))}
@@ -79,14 +82,14 @@ export function ReferScreenOne({ onNext }: ReferScreenOneProps) {
             onClick={onNext}
             className="font-dm-mono mx-auto mt-9 flex h-11 w-full max-w-[440px] shrink-0 cursor-pointer items-center justify-center gap-4 rounded-md bg-[#F2B035] text-base leading-none font-medium text-black uppercase shadow-[-3px_4px_0_#000] md:gap-5"
           >
-            Continue
+            {t("continue")}
           </button>
 
           <a
             href="#terms"
             className="font-dm-mono mt-[46px] inline-block text-xs tracking-[0.08em] text-black uppercase underline underline-offset-4 sm:text-sm"
           >
-            Terms and conditions apply
+            {t("terms")}
           </a>
         </div>
       </section>

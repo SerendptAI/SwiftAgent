@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import { AudienceSection } from "@/components/landing/affiliate/audience-section";
 import { AffiliateHeroSection } from "@/components/landing/affiliate/hero-section";
@@ -16,11 +17,11 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta.affiliate" });
 
   return {
-    title: "Affiliate Program — Swift Agents",
-    description:
-      "Refer businesses to Swift Agents and earn 20% of whichever plan they pay for. Introduce us, we build them a working AI agent, and you get paid once they go live.",
+    title: t("title"),
+    description: t("description"),
     alternates: localeAlternates(locale, "/affiliate"),
   };
 }

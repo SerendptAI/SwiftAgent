@@ -1,0 +1,51 @@
+{
+  "hero": {
+    "eyebrow": "Simulador del sistema de soporte",
+    "heading": "Deja de aumentar la plantilla de soporte de forma lineal.",
+    "body": "Mira cómo queda tu soporte antes y después de Swift Agents. Ajusta tus cifras y comprueba cuántos agentes puedes evitar contratar a medida que creces."
+  },
+  "currency": {
+    "label": "Moneda"
+  },
+  "yourNumbers": {
+    "title": "Tus cifras",
+    "monthlyConversations": "Conversaciones al mes",
+    "convosSuffix": "conversaciones",
+    "currentTeamSize": "Tamaño actual del equipo",
+    "humanAgentsSuffix": "agentes humanos",
+    "monthlyCostPerAgent": "Coste mensual por agente",
+    "perAgentSuffix": "/agente humano",
+    "benchmark": "Según una referencia del sector de {count} tickets resueltos por agente y mes."
+  },
+  "currentReality": {
+    "badge": "Sin Swift Agents",
+    "title": "Tu realidad actual de soporte",
+    "monthlyConversations": "Conversaciones al mes",
+    "monthlyTickets": "Tickets de soporte al mes",
+    "agentsRequired": "Agentes humanos necesarios",
+    "monthlyTeamCost": "Coste mensual del equipo",
+    "note": "Cada cliente nuevo suma carga de soporte. Para seguir el ritmo, contratas más agentes."
+  },
+  "automated": {
+    "badge": "Con Swift Agents",
+    "automatedPercent": "{rate} % automatizado",
+    "title": "Tu sistema de soporte automatizado",
+    "ticketsAutomated": "Tickets automatizados / mes",
+    "ticketsRemoved": "Tickets retirados a los agentes humanos",
+    "agentsNoLongerNeeded": "Agentes que ya no necesitas",
+    "newSupportLoad": "Nueva carga real de soporte",
+    "costAfter": "Coste mensual tras la automatización"
+  },
+  "fte": {
+    "eyebrow": "Agentes de soporte que no necesitas contratar",
+    "unit": "ETC evitados / mes",
+    "needed": "necesarios"
+  },
+  "cta": {
+    "heading": "Swift Agents no solo reduce costes: elimina la necesidad de hacer crecer tu equipo de soporte.",
+    "bodyLead": "Sin automatización,",
+    "bodyRest": " el soporte crece al mismo ritmo que tu base de clientes. Cada 1.200 tickets nuevos = una contratación más, una incorporación más, un quebradero de cabeza más.",
+    "strip": "Despliega un agente de IA de SwiftAgents en menos de un día.",
+    "bookDemo": "Reservar una demo"
+  }
+}

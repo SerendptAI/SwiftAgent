@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import { ComparisonSection } from "@/components/landing/comparison-section";
 import { ContactSection } from "@/components/landing/contact-section";
@@ -27,11 +28,11 @@ export async function generateMetadata({
   params,
 }: HomePageProps): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta.home" });
 
   return {
-    title: "Swift Agents - AI-Powered Customer Engagement Platform",
-    description:
-      "Embed an intelligent AI agent on your website in minutes. Swift Agents handles customer support, sales, and voice conversations — 24/7, without lifting a finger.",
+    title: t("title"),
+    description: t("description"),
     alternates: localeAlternates(locale, ""),
   };
 }

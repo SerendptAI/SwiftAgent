@@ -2,6 +2,7 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 
 import { cn } from "@/lib/utils";
@@ -9,15 +10,16 @@ import { cn } from "@/lib/utils";
 gsap.registerPlugin(ScrollTrigger);
 
 const STEPS = [
-  { label: "You", caption: "the referrer" },
-  { label: "Intro", caption: "warm handoff" },
-  { label: "Business", caption: "sees a demo" },
-  { label: "Live", caption: "you get paid", highlight: true },
+  { id: "you" },
+  { id: "intro" },
+  { id: "business" },
+  { id: "live", highlight: true },
 ];
 
 const LINE_DURATION = 1.3;
 
 export function ReferralPathSection() {
+  const t = useTranslations("affiliate.path");
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const flowRef = useRef<HTMLDivElement>(null);
@@ -96,10 +98,10 @@ export function ReferralPathSection() {
       <div className="mx-auto max-w-360">
         <div ref={headerRef} className="flex flex-col gap-4">
           <p className="font-dm-mono text-sm tracking-[0.15em] text-[#6433cc] uppercase">
-            Referral path
+            {t("eyebrow")}
           </p>
           <h2 className="font-greed-narrow max-w-3xl text-3xl leading-[1.1] font-medium tracking-[-0.02em] text-[#1f1f1f] uppercase md:text-4xl lg:text-5xl">
-            The pathway to permanent commission
+            {t("heading")}
           </h2>
         </div>
 
@@ -114,10 +116,7 @@ export function ReferralPathSection() {
 
           <div className="relative flex items-start gap-3 md:gap-0">
             {STEPS.map((step) => (
-              <div
-                key={step.label}
-                className="flex flex-1 flex-col items-center"
-              >
+              <div key={step.id} className="flex flex-1 flex-col items-center">
                 <div
                   data-node
                   className={cn(
@@ -135,7 +134,7 @@ export function ReferralPathSection() {
                       step.highlight ? "text-[#F2B035]" : "text-[#1f1f1f]",
                     )}
                   >
-                    {step.label}
+                    {t(`steps.${step.id}.label`)}
                   </span>
                   <span
                     className={cn(
@@ -145,7 +144,7 @@ export function ReferralPathSection() {
                         : "text-[#7e7e7e]",
                     )}
                   >
-                    {step.caption}
+                    {t(`steps.${step.id}.caption`)}
                   </span>
                 </div>
               </div>

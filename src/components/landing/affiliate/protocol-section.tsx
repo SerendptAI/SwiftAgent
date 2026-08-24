@@ -2,34 +2,21 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
+/** Copy lives in the `affiliate.protocol.steps` catalogue, keyed by id. */
 const STEPS = [
-  {
-    number: "01",
-    title: "Refer",
-    body: "Send us the business name and website, or introduce us directly.",
-  },
-  {
-    number: "02",
-    title: "Demo",
-    body: "We show the owner a working AI agent built on their own site and support flow.",
-  },
-  {
-    number: "03",
-    title: "Sign up",
-    body: "If they come on board, you're logged as the referral source.",
-  },
-  {
-    number: "04",
-    title: "Get paid",
-    body: "Your payout goes out once the business is active.",
-  },
+  { id: "refer", number: "01" },
+  { id: "demo", number: "02" },
+  { id: "signUp", number: "03" },
+  { id: "getPaid", number: "04" },
 ];
 
 export function ProtocolSection() {
+  const t = useTranslations("affiliate.protocol");
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -72,10 +59,10 @@ export function ProtocolSection() {
       <div className="mx-auto max-w-360">
         <div ref={headerRef} className="flex flex-col gap-3">
           <p className="font-dm-mono text-sm tracking-[0.15em] text-[#111827] uppercase">
-            How it works
+            {t("eyebrow")}
           </p>
           <h2 className="font-greed-narrow text-3xl leading-[1.1] font-medium tracking-[-0.02em] text-[#111827] uppercase md:text-4xl lg:text-5xl">
-            A simplified referral protocol
+            {t("heading")}
           </h2>
         </div>
 
@@ -85,7 +72,7 @@ export function ProtocolSection() {
         >
           {STEPS.map((step) => (
             <div
-              key={step.number}
+              key={step.id}
               className="flex flex-col gap-6 rounded-[8px] border border-[#111827] bg-white p-8 shadow-[-3px_4px_0px_0px_#111827]"
             >
               <span className="font-dm-mono text-[32px] text-[#f25430]">
@@ -93,10 +80,10 @@ export function ProtocolSection() {
               </span>
               <div className="flex flex-col gap-2">
                 <h3 className="font-greed-narrow text-2xl font-medium text-[#111827] uppercase">
-                  {step.title}
+                  {t(`steps.${step.id}.title`)}
                 </h3>
                 <p className="font-stolzl text-[15px] leading-[1.5] text-[#374151]">
-                  {step.body}
+                  {t(`steps.${step.id}.body`)}
                 </p>
               </div>
             </div>

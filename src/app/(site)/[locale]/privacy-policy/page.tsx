@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import { ContactSection } from "@/components/landing/contact-section";
 import { Navbar } from "@/components/landing/navbar";
@@ -13,11 +14,11 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta.privacy" });
 
   return {
-    title: "Privacy Policy — Swift Agents",
-    description:
-      "Review the privacy policy for Swift Agents by Serendpt AI. Learn how we handle company, log, and user query data.",
+    title: t("title"),
+    description: t("description"),
     alternates: localeAlternates(locale, "/privacy-policy"),
   };
 }

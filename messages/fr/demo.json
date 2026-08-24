@@ -1,0 +1,51 @@
+{
+  "hero": {
+    "eyebrow": "Simulateur de système de support",
+    "heading": "Arrêtez de faire croître vos effectifs de support de façon linéaire.",
+    "body": "Visualisez votre support avant et après Swift Agents. Ajustez vos chiffres et voyez combien d’agents vous pouvez éviter de recruter à mesure que vous grandissez."
+  },
+  "currency": {
+    "label": "Devise"
+  },
+  "yourNumbers": {
+    "title": "Vos chiffres",
+    "monthlyConversations": "Conversations par mois",
+    "convosSuffix": "conversations",
+    "currentTeamSize": "Taille actuelle de l’équipe",
+    "humanAgentsSuffix": "agents humains",
+    "monthlyCostPerAgent": "Coût mensuel par agent",
+    "perAgentSuffix": "/agent humain",
+    "benchmark": "Sur la base d’une référence sectorielle de {count} tickets résolus par agent et par mois."
+  },
+  "currentReality": {
+    "badge": "Sans Swift Agents",
+    "title": "Votre réalité actuelle du support",
+    "monthlyConversations": "Conversations par mois",
+    "monthlyTickets": "Tickets de support par mois",
+    "agentsRequired": "Agents humains nécessaires",
+    "monthlyTeamCost": "Coût mensuel de l’équipe",
+    "note": "Chaque nouveau client ajoute de la charge. Pour suivre, vous recrutez encore."
+  },
+  "automated": {
+    "badge": "Avec Swift Agents",
+    "automatedPercent": "{rate} % automatisé",
+    "title": "Votre support automatisé",
+    "ticketsAutomated": "Tickets automatisés / mois",
+    "ticketsRemoved": "Tickets retirés aux agents humains",
+    "agentsNoLongerNeeded": "Agents dont vous n’avez plus besoin",
+    "newSupportLoad": "Nouvelle charge de support réelle",
+    "costAfter": "Coût mensuel après automatisation"
+  },
+  "fte": {
+    "eyebrow": "Des agents de support que vous n’avez pas à recruter",
+    "unit": "ETP évités / mois",
+    "needed": "nécessaires"
+  },
+  "cta": {
+    "heading": "Swift Agents ne réduit pas seulement les coûts — il supprime le besoin d’agrandir votre équipe de support.",
+    "bodyLead": "Sans automatisation,",
+    "bodyRest": " le support croît au même rythme que votre base clients. Tous les 1 200 nouveaux tickets = un recrutement de plus, une intégration de plus, un casse-tête de plus pour le manager.",
+    "strip": "Déployez un agent IA SwiftAgents en moins d’une journée.",
+    "bookDemo": "Réserver une démo"
+  }
+}

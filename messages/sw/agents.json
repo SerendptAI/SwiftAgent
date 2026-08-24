@@ -1,0 +1,23 @@
+{
+  "eyebrow": "Mawakala wetu wa AI",
+  "heading": "Mawakala wetu hufanya kazi tofauti tofauti",
+  "quote": "Mawakala hawa wote wana\nnafasi muhimu katika\nkuboresha\nhuduma kwa wateja wakati wa mazungumzo ya moja kwa moja.",
+  "list": {
+    "047": {
+      "name": "Wakala 047",
+      "description": "Wakala 047 ana uwezo wa kupata kipengele chochote ndani ya dashibodi kwa ajili ya watumiaji, hata kama dashibodi ni ngumu kiasi gani. Anajua mahali hasa kila kipengele kilipo na anaweza kutoa maelekezo ya kina pamoja na picha za skrini akiombwa."
+    },
+    "007": {
+      "name": "Wakala 007",
+      "description": "Wakala 007 ana uwezo wa kutafuta katika tovuti nzima ili kupata taarifa kwa wateja pale jibu halipatikani kwenye kanzidata yake."
+    },
+    "626": {
+      "name": "Wakala 626",
+      "description": "Wakala 626 ana uwezo wa kuchambua miamala ya sarafu za kidijitali kupitia hashcode na kuwajulisha watumiaji matatizo yoyote yanayoweza kutokea wakati wa muamala."
+    },
+    "001": {
+      "name": "Wakala 001",
+      "description": "Wakala 001 hukagua kumbukumbu za benki na kuwapa wateja taarifa kuhusu hali ya malipo yao, ikiwa ni pamoja na marejesho ya fedha, uthibitisho wa benki, na matatizo yoyote ya malipo."
+    }
+  }
+}

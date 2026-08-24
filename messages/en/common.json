@@ -1,0 +1,49 @@
+{
+  "cta": {
+    "heading": "Your customers want instant answers.",
+    "body": "Your team wants less repetitive work. Swift Agents delivers both.",
+    "bookDemo": "Book a demo",
+    "getStarted": "Get started",
+    "imageAlt": "SwiftAgent chat preview"
+  },
+  "contact": {
+    "eyebrow": "Want to reach us?",
+    "heading": "Contact us",
+    "imageAlt": "Street view",
+    "privacyPolicy": "Privacy policy",
+    "termsOfService": "Terms of service",
+    "links": {
+      "twitter": "Twitter",
+      "instagram": "Instagram",
+      "careers": "Careers",
+      "blog": "Blog",
+      "email": "Email"
+    }
+  },
+  "platforms": {
+    "website": {
+      "label": "Website",
+      "description": "Deploy our smart chatbot on your site to handle conversations with visitors. Any questions that can’t be answered get escalated to a real human agent to answer."
+    },
+    "webapp": {
+      "label": "Web app",
+      "description": "Integrate our intelligent chatbot into your web application to manage visitor interactions."
+    },
+    "mobile": {
+      "label": "Mobile app",
+      "description": "Integrate our intelligent chatbot into your apps using our SDK"
+    }
+  },
+  "caseStudies": {
+    "eyebrow": "How Swift Agents can help your business",
+    "heading": "Usecase analysis",
+    "howWeHelp": "How we help?"
+  },
+  "blog": {
+    "eyebrow": "Notes on support, automation and AI",
+    "heading": "Blog",
+    "emptyTitle": "No posts yet",
+    "emptyBody": "We’re writing the first ones. Check back shortly, or book a demo if you’d rather just see the product.",
+    "readPost": "Read post →"
+  }
+}

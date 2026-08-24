@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 import { ContactSection } from "@/components/landing/contact-section";
 import { Navbar } from "@/components/landing/navbar";
@@ -14,16 +15,18 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta.caseStudies" });
 
   return {
-    title: "Case Studies — Swift Agents",
-    description:
-      "See how businesses use Swift Agents to automate support, resolve issues faster, and grow without hiring more agents.",
+    title: t("title"),
+    description: t("description"),
     alternates: localeAlternates(locale, "/case-studies"),
   };
 }
 
-export default function CaseStudiesPage() {
+export default async function CaseStudiesPage() {
+  const t = await getTranslations("common.caseStudies");
+
   return (
     <SmoothScrollProvider>
       <main className="min-h-screen bg-white">
@@ -31,10 +34,10 @@ export default function CaseStudiesPage() {
         <div className="w-full px-6 pt-36 pb-16 md:px-10 md:pt-48 md:pb-20 lg:px-16 lg:pt-56 lg:pb-26">
           <div className="mx-auto max-w-360">
             <p className="font-dm-mono mb-4 text-base leading-[1.2] tracking-[10%] text-black/60 uppercase md:text-lg">
-              HOW SWIFT AGENTS CAN HELP YOUR BUSINESS
+              {t("eyebrow")}
             </p>
             <h1 className="font-greed-narrow mb-10 text-4xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase sm:text-5xl md:mb-14 md:text-[56px] lg:text-[66px]">
-              USECASE ANALYSIS
+              {t("heading")}
             </h1>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8 xl:grid-cols-3">

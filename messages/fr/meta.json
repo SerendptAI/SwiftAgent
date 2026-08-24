@@ -1,0 +1,42 @@
+{
+  "home": {
+    "title": "Swift Agents — Plateforme d’engagement client par IA",
+    "description": "Intégrez un agent IA intelligent à votre site en quelques minutes. Swift Agents gère le support client, les ventes et les conversations vocales, 24h/24, sans lever le petit doigt."
+  },
+  "agents": {
+    "title": "Agents — Swift Agents",
+    "description": "Des agents IA qui gèrent le support client, les ventes et les conversations vocales de votre entreprise, 24h/24."
+  },
+  "products": {
+    "title": "Produits — Swift Agents",
+    "description": "Découvrez les produits Swift Agents : chat, voix et automatisation du support propulsés par l’IA, conçus pour les entreprises en croissance."
+  },
+  "demo": {
+    "title": "Démo — Swift Agents",
+    "description": "Visualisez votre support avant et après Swift Agents. Ajustez vos chiffres et voyez combien d’agents vous pouvez éviter de recruter à mesure que vous grandissez."
+  },
+  "landing": {
+    "title": "Développez votre support client sans agrandir votre équipe",
+    "description": "SwiftAgents aide les entreprises à automatiser leurs conversations clients, à alléger la charge du support et à offrir une expérience plus rapide sur tous les canaux. En ligne en quelques heures, pas en semaines."
+  },
+  "affiliate": {
+    "title": "Programme d’affiliation — Swift Agents",
+    "description": "Recommandez des entreprises à Swift Agents et touchez 20 % de la formule qu’elles choisissent. Présentez-nous, nous leur construisons un agent IA fonctionnel, et vous êtes payé dès leur mise en ligne."
+  },
+  "refer": {
+    "title": "Recommandez un fondateur",
+    "description": "Recommandez un fondateur à Swift Agents et remportez des récompenses. Partagez votre lien de parrainage et gagnez quand les entreprises que vous connaissez automatisent leur support client."
+  },
+  "caseStudies": {
+    "title": "Études de cas — Swift Agents",
+    "description": "Découvrez comment des entreprises utilisent Swift Agents pour automatiser leur support, résoudre plus vite et grandir sans recruter davantage."
+  },
+  "blog": {
+    "title": "Blog — Swift Agents",
+    "description": "Notes de terrain sur l’automatisation du support client : ce qui marche, ce qui casse, et ce que disent vraiment les chiffres."
+  },
+  "privacy": {
+    "title": "Politique de confidentialité — Swift Agents",
+    "description": "Consultez la politique de confidentialité de Swift Agents by Serendpt AI. Découvrez comment nous traitons les données d’entreprise, les journaux et les requêtes des utilisateurs."
+  }
+}

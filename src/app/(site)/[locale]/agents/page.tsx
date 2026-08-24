@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import { ContactSection } from "@/components/landing/contact-section";
 import { CtaSection } from "@/components/landing/cta-section";
@@ -13,11 +14,11 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta.agents" });
 
   return {
-    title: "Agents — Swift Agents",
-    description:
-      "AI agents that handle customer support, sales, and voice conversations for your business — 24/7.",
+    title: t("title"),
+    description: t("description"),
     alternates: localeAlternates(locale, "/agents"),
   };
 }

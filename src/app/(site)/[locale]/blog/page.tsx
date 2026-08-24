@@ -2,7 +2,7 @@
    Sanity CDN, which already serves sized transforms. */
 import type { Metadata } from "next";
 import Link from "next/link";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { ContactSection } from "@/components/landing/contact-section";
 import { Navbar } from "@/components/landing/navbar";
@@ -16,11 +16,11 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta.blog" });
 
   return {
-    title: "Blog — Swift Agents",
-    description:
-      "Field notes on customer support automation — what works, what breaks, and what the numbers actually say.",
+    title: t("title"),
+    description: t("description"),
     alternates: localeAlternates(locale, "/blog"),
   };
 }
@@ -33,6 +33,7 @@ export default async function BlogPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
+  const t = await getTranslations("common.blog");
   const posts = await getPostSummaries();
 
   return (
@@ -42,20 +43,19 @@ export default async function BlogPage({
         <div className="w-full px-6 pt-36 pb-16 md:px-10 md:pt-48 md:pb-20 lg:px-16 lg:pt-56 lg:pb-26">
           <div className="mx-auto max-w-360">
             <p className="font-dm-mono mb-4 text-base leading-[1.2] tracking-[10%] text-black/60 uppercase md:text-lg">
-              NOTES ON SUPPORT, AUTOMATION AND AI
+              {t("eyebrow")}
             </p>
             <h1 className="font-greed-narrow mb-10 text-4xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase sm:text-5xl md:mb-14 md:text-[56px] lg:text-[66px]">
-              BLOG
+              {t("heading")}
             </h1>
 
             {posts.length === 0 ? (
               <div className="rounded-[10px] border border-black/30 bg-[#F6F4EF]/50 p-10 text-center md:p-16">
                 <p className="font-dm-mono text-base tracking-[10%] text-black uppercase md:text-lg">
-                  No posts yet
+                  {t("emptyTitle")}
                 </p>
                 <p className="font-stolzl mx-auto mt-4 max-w-lg text-sm leading-[1.66] text-black/70 md:text-base">
-                  We&rsquo;re writing the first ones. Check back shortly, or
-                  book a demo if you&rsquo;d rather just see the product.
+                  {t("emptyBody")}
                 </p>
               </div>
             ) : (
@@ -88,7 +88,7 @@ export default async function BlogPage({
                       {post.excerpt}
                     </p>
                     <span className="font-dm-mono mt-auto text-sm font-medium tracking-[10%] text-black uppercase transition-transform group-hover:translate-x-1 md:text-base">
-                      Read post →
+                      {t("readPost")}
                     </span>
                   </Link>
                 ))}

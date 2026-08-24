@@ -1,0 +1,51 @@
+{
+  "hero": {
+    "eyebrow": "Support system simulator",
+    "heading": "Stop scaling support headcount linearly.",
+    "body": "See your support system before and after Swift Agents. Adjust your numbers and watch how many agents you can avoid hiring as you grow."
+  },
+  "currency": {
+    "label": "Currency"
+  },
+  "yourNumbers": {
+    "title": "Your numbers",
+    "monthlyConversations": "Monthly conversations",
+    "convosSuffix": "convos",
+    "currentTeamSize": "Current team size",
+    "humanAgentsSuffix": "human agents",
+    "monthlyCostPerAgent": "Monthly cost per agent",
+    "perAgentSuffix": "/human agents",
+    "benchmark": "Based on an industry benchmark of {count} tickets resolved per agent per month."
+  },
+  "currentReality": {
+    "badge": "Without Swift Agents",
+    "title": "Your current support reality",
+    "monthlyConversations": "Monthly conversations",
+    "monthlyTickets": "Monthly support tickets",
+    "agentsRequired": "Human agents required",
+    "monthlyTeamCost": "Monthly team cost",
+    "note": "Every new customer adds support load. To keep up, you hire more agents."
+  },
+  "automated": {
+    "badge": "With Swift Agents",
+    "automatedPercent": "{rate}% automated",
+    "title": "Your automated support system",
+    "ticketsAutomated": "Tickets automated / month",
+    "ticketsRemoved": "Tickets removed from human agents",
+    "agentsNoLongerNeeded": "Agents you no longer need",
+    "newSupportLoad": "New effective support load",
+    "costAfter": "Monthly cost after automation"
+  },
+  "fte": {
+    "eyebrow": "Support agents you don’t need to hire",
+    "unit": "FTE avoided / month",
+    "needed": "needed"
+  },
+  "cta": {
+    "heading": "Swift Agents doesn’t just reduce cost — it removes the need to scale your support team.",
+    "bodyLead": "Without automation,",
+    "bodyRest": " support grows linearly with your customer base. Every 1,200 new tickets = one more hire, one more onboarding, one more manager headache.",
+    "strip": "Deploy a SwiftAgents AI agent in under a day.",
+    "bookDemo": "Book a demo"
+  }
+}

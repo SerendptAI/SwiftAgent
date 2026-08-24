@@ -1,5 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 
+import { useTranslations } from "next-intl";
+
 import { cn } from "@/lib/utils";
 
 import { NumberInput } from "./number-input";
@@ -31,6 +33,8 @@ export function YourNumbersPanel({
   currency,
 }: YourNumbersPanelProps) {
   const isNGN = currency === "NGN";
+  const t = useTranslations("demo.yourNumbers");
+
   return (
     <div className="relative isolate grid min-h-71 overflow-hidden bg-[#03A84E] px-6 pt-8 pb-32 md:px-10 lg:px-14 lg:pb-12">
       <img
@@ -46,7 +50,7 @@ export function YourNumbersPanel({
 
       <div className="relative grid w-full">
         <p className="font-dm-mono mb-6 text-base leading-[1.2] tracking-[10%] text-white uppercase md:text-lg">
-          YOUR NUMBERS
+          {t("title")}
         </p>
 
         <div
@@ -67,34 +71,34 @@ export function YourNumbersPanel({
           >
             <div>
               <p className="font-dm-mono mb-2.5 text-sm leading-normal font-medium tracking-[10%] text-white/50 uppercase md:text-base">
-                MONTHLY CONVERSATIONS
+                {t("monthlyConversations")}
               </p>
               <NumberInput
                 value={monthlyConvos}
                 onChange={setMonthlyConvos}
-                suffix="CONVOS"
+                suffix={t("convosSuffix")}
               />
             </div>
 
             <div>
               <p className="font-dm-mono mb-2.5 text-sm leading-normal font-medium tracking-[10%] text-white/50 uppercase md:text-base">
-                CURRENT TEAM SIZE
+                {t("currentTeamSize")}
               </p>
               <NumberInput
                 value={teamSize}
                 onChange={setTeamSize}
-                suffix="HUMAN AGENTS"
+                suffix={t("humanAgentsSuffix")}
               />
             </div>
 
             <div>
               <p className="font-dm-mono mb-2.5 text-sm leading-normal font-medium tracking-[10%] text-white/50 uppercase md:text-base">
-                MONTHLY COST PER AGENT
+                {t("monthlyCostPerAgent")}
               </p>
               <NumberInput
                 value={costPerAgent}
                 onChange={setCostPerAgent}
-                suffix="/HUMAN AGENTS"
+                suffix={t("perAgentSuffix")}
                 prefix={sym}
               />
             </div>
@@ -124,8 +128,7 @@ export function YourNumbersPanel({
         </div>
 
         <p className="font-dm-mono mt-8 w-full max-w-196 text-sm leading-normal tracking-[10%] text-white uppercase md:text-base">
-          BASED ON AN INDUSTRY BENCHMARK OF {BENCHMARK.toLocaleString()} TICKETS
-          RESOLVED PER AGENT PER MONTH.
+          {t("benchmark", { count: BENCHMARK.toLocaleString() })}
         </p>
       </div>
     </div>

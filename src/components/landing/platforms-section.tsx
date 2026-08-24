@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { Icons } from "@/components/icons";
@@ -10,29 +11,21 @@ import { cn } from "@/lib/utils";
 
 import { DemoBookingLink } from "./demo-booking-link";
 
+/** Copy lives in the `common.platforms` catalogue, keyed by id. */
 const PLATFORMS = [
   {
     id: "website",
-    label: "WEBSITE",
     icon: Icons.PlatformWebsite,
-    description:
-      "Deploy our smart chatbot on your site to handle conversations with visitors. Any questions that can't be answered get escalated to a real human agent to answer.",
     video: "/videos/platforms/website.mp4",
   },
   {
     id: "webapp",
-    label: "WEB-APP",
     icon: Icons.PlatformWebApp,
-    description:
-      "Integrate our intelligent chatbot into your web application to manage visitor interactions.",
     video: "/videos/platforms/web-app.mp4",
   },
   {
     id: "mobile",
-    label: "MOBILE APP",
     icon: Icons.PlatformMobile,
-    description:
-      "Integrate our intelligent chatbot into your apps using our SDK",
     video: "/videos/platforms/mobile-app.mp4",
   },
 ];
@@ -60,6 +53,8 @@ function PlatformVideo({
 }
 
 export function PlatformsSection() {
+  const t = useTranslations("common");
+  const tc = useTranslations("common.cta");
   const [active, setActive] = useState(0);
 
   return (
@@ -76,7 +71,7 @@ export function PlatformsSection() {
                 )}
               >
                 {p.icon}
-                {p.label}
+                {t(`platforms.${p.id}.label`)}
               </button>
 
               {/* Expanded content — accordion with smooth height animation */}
@@ -89,7 +84,7 @@ export function PlatformsSection() {
                 <div className="overflow-hidden">
                   <div className="flex flex-col gap-4 pt-4 pb-3">
                     <p className="font-stolzl px-3 text-base leading-relaxed text-black">
-                      {p.description}
+                      {t(`platforms.${p.id}.description`)}
                     </p>
                     <PlatformVideo
                       src={p.video}
@@ -119,24 +114,24 @@ export function PlatformsSection() {
                   )}
                 >
                   {p.icon}
-                  {p.label}
+                  {t(`platforms.${p.id}.label`)}
                 </button>
               ))}
             </div>
           </div>
 
           <p className="font-stolzl mb-8 max-w-235 text-center text-sm leading-relaxed md:mb-12 md:text-base">
-            {PLATFORMS[active].description}
+            {t(`platforms.${PLATFORMS[active].id}.description`)}
           </p>
 
           <div className="mb-10 flex max-w-107.5 flex-wrap justify-center gap-4 md:grid md:grid-cols-2 md:gap-8">
             <Button variant="outline" size="lg" asChild>
               <DemoBookingLink location="landing-platforms">
-                BOOK A DEMO
+                {tc("bookDemo")}
               </DemoBookingLink>
             </Button>
             <Button size="lg" asChild>
-              <Link href="/signup">GET STARTED</Link>
+              <Link href="/signup">{tc("getStarted")}</Link>
             </Button>
           </div>
           <div className="relative w-full">

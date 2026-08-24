@@ -1,0 +1,23 @@
+{
+  "eyebrow": "Nuestros agentes de IA",
+  "heading": "Nuestros agentes cumplen funciones distintas",
+  "quote": "Todos estos agentes tienen un\npapel clave a la hora de\nmejorar la\nexperiencia del cliente en los chats en directo.",
+  "list": {
+    "047": {
+      "name": "Agente 047",
+      "description": "El agente 047 es capaz de localizar cualquier función dentro de un panel para tus usuarios, por complejo que sea. Conoce la ubicación exacta de cada función y puede dar indicaciones detalladas acompañadas de capturas de pantalla si se le piden."
+    },
+    "007": {
+      "name": "Agente 007",
+      "description": "El agente 007 puede rastrear un sitio web entero para encontrar información para los clientes cuando la respuesta no está en su base de conocimiento."
+    },
+    "626": {
+      "name": "Agente 626",
+      "description": "El agente 626 es capaz de analizar transacciones de criptomonedas a partir de su hash e informar a los usuarios de cualquier incidencia que pueda surgir durante la transacción."
+    },
+    "001": {
+      "name": "Agente 001",
+      "description": "El agente 001 revisa los registros bancarios y mantiene informados a los clientes sobre el estado de sus pagos: reembolsos, confirmaciones bancarias y cualquier incidencia."
+    }
+  }
+}

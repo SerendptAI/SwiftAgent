@@ -2,6 +2,7 @@
 
 import gsap from "gsap";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Fragment, useEffect, useRef } from "react";
 
 import { Link } from "@/i18n/navigation";
@@ -42,6 +43,8 @@ function ReferrerBadge({
   color: string;
   className?: string;
 }) {
+  const t = useTranslations("affiliate.hero");
+
   return (
     <div
       className={cn(
@@ -50,7 +53,7 @@ function ReferrerBadge({
       )}
     >
       <span className="font-dm-mono text-sm whitespace-nowrap text-[#1f1f1f] uppercase">
-        Pro referrer
+        {t("proReferrer")}
       </span>
       <span
         className="font-stolzl text-base font-bold whitespace-nowrap xl:text-lg"
@@ -71,6 +74,7 @@ function ReferrerAvatar({ src, name }: { src: string; name: string }) {
 }
 
 export function AffiliateHeroSection() {
+  const t = useTranslations("affiliate.hero");
   const sectionRef = useRef<HTMLElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
@@ -152,10 +156,9 @@ export function AffiliateHeroSection() {
             ref={headlineRef}
             className="font-greed-narrow max-w-[720px] text-[40px] leading-[1.15] font-medium tracking-[-0.02em] text-[#1f1f1f] uppercase sm:text-[52px] lg:text-[64px] xl:text-[72px]"
           >
-            <span className="block">You already know the</span>
-            <span className="block">businesses we&apos;re</span>
-            <span className="block">
-              looking for<span className="text-[#F2B035]">.</span>
+            <span className="block whitespace-pre-line">
+              {t("headline")}
+              <span className="text-[#F2B035]">.</span>
             </span>
           </h1>
 
@@ -163,10 +166,7 @@ export function AffiliateHeroSection() {
             ref={subtitleRef}
             className="font-stolzl mt-8 max-w-[633px] text-base leading-[1.6] text-[#7e7e7e] md:text-lg"
           >
-            SwiftAgents empowers websites with smart AI assistants that handle
-            live chats, ticketing, and support flows seamlessly. Introduce us to
-            businesses struggling with manual support, and get paid when they go
-            live. It&apos;s that simple.
+            {t("body")}
           </p>
 
           <div ref={ctaRef} className="mt-10 flex flex-wrap gap-5">
@@ -174,13 +174,13 @@ export function AffiliateHeroSection() {
               href="/refer"
               className="font-dm-mono inline-flex w-full items-center justify-center rounded-lg border border-black bg-[#F2B035] px-9 py-[18px] text-sm tracking-[0.1em] text-[#1f1f1f] uppercase shadow-[-4px_5px_0px_0px_#000000] transition-all hover:translate-x-[-1px] hover:translate-y-[1px] hover:shadow-[-3px_4px_0px_0px_#000000] sm:w-auto md:text-[18px]"
             >
-              Submit referral
+              {t("submitReferral")}
             </Link>
             <Link
               href="/#pricing"
               className="font-dm-mono inline-flex w-full items-center justify-center rounded-lg border border-black bg-white px-9 py-[18px] text-sm tracking-[0.1em] text-[#1f1f1f] uppercase shadow-[-4px_5px_0px_0px_#000000] transition-all hover:translate-x-[-1px] hover:translate-y-[1px] hover:shadow-[-3px_4px_0px_0px_#000000] sm:w-auto md:text-[18px]"
             >
-              View plan metrics
+              {t("viewPlanMetrics")}
             </Link>
           </div>
         </div>

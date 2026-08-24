@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 import { cn } from "@/lib/utils";
 
 import { CURRENCIES, CurrencyCode } from "./utils";
@@ -15,10 +17,12 @@ export function CurrencySelector({
   onSelect,
   onToggle,
 }: CurrencySelectorProps) {
+  const t = useTranslations("demo.currency");
+
   return (
     <div className="mb-6 flex items-center justify-end gap-5">
       <span className="font-dm-mono xs:text-lg -mb-1 text-base leading-[1.59] font-medium tracking-[10%] text-black uppercase md:text-xl">
-        CURRENCY
+        {t("label")}
       </span>
       <div className="relative">
         <button

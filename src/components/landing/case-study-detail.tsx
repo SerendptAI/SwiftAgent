@@ -2,6 +2,7 @@
 
 import { Check, ChevronDown } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
@@ -109,6 +110,7 @@ export function CaseStudyDetail({
   caseStudy: CaseStudy;
   showFullCaseStudyLink?: boolean;
 }) {
+  const t = useTranslations("common.caseStudies");
   const [activeUseCase, setActiveUseCase] = useState(0);
   const [unplayableVideo, setUnplayableVideo] = useState<string | null>(null);
   const [mode, setMode] = useState<PlayerMode>("inline");
@@ -323,7 +325,7 @@ export function CaseStudyDetail({
           />
 
           <p className="font-dm-mono text-base leading-[1.2] font-medium tracking-[10%] text-black uppercase md:text-lg">
-            HOW WE HELP?
+            {t("howWeHelp")}
           </p>
         </div>
 

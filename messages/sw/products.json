@@ -1,0 +1,16 @@
+{
+  "eyebrow": "Bidhaa zetu",
+  "app": {
+    "heading": "Programu ya Swift Agents",
+    "body1": "Programu ya Swift Agent huwezesha biashara kuwasiliana na wateja moja kwa moja kupitia simu zao.",
+    "body2": "Watumiaji wanaweza kuwasiliana bila vikwazo, kusasisha wasifu wao, na kutumia mawakala wa AI kwa shughuli kama kupata misimbo ya matumizi ya mara moja kwa akaunti walizopewa.",
+    "playStore": "Pakua kwenye Play Store",
+    "appleStore": "Pakua kwenye Apple Store"
+  },
+  "sdk": {
+    "heading": "SDK ya Swift Agents",
+    "body1": "SDK ya Swift Agent imeundwa kuunganishwa kwa urahisi kwenye programu za simu, ikiongeza uwezo wako wa kuhudumia wateja.",
+    "body2": "Hii huwawezesha wateja kuwasiliana kwa urahisi na mawakala moja kwa moja kupitia simu zao, na hivyo kupata huduma yenye ufanisi na mwitikio wa haraka zaidi.",
+    "cta": "Anza sasa"
+  }
+}

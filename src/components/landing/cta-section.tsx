@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
@@ -10,6 +12,7 @@ interface CtaSectionProps {
 
 export function CtaSection({ variant = "light" }: CtaSectionProps) {
   const isGreen = variant === "green";
+  const t = useTranslations("common.cta");
 
   return (
     <section className="w-full px-6 py-16 md:px-10 md:py-20 lg:px-16 lg:py-26">
@@ -26,7 +29,7 @@ export function CtaSection({ variant = "light" }: CtaSectionProps) {
               isGreen ? "text-white" : "text-black",
             )}
           >
-            YOUR CUSTOMERS WANT INSTANT ANSWERS.
+            {t("heading")}
           </h2>
           <p
             className={cn(
@@ -34,13 +37,13 @@ export function CtaSection({ variant = "light" }: CtaSectionProps) {
               isGreen ? "text-white" : "text-black",
             )}
           >
-            Your team wants less repetitive work. Swift Agents delivers both.
+            {t("body")}
           </p>
 
           <div className="xs:max-w-107.5 flex w-full flex-wrap gap-4 sm:grid sm:grid-cols-2 md:gap-8">
             <Button variant="outline" size="lg" className="w-full" asChild>
               <DemoBookingLink location="landing-cta">
-                BOOK A DEMO
+                {t("bookDemo")}
               </DemoBookingLink>
             </Button>
             <Button
@@ -50,7 +53,7 @@ export function CtaSection({ variant = "light" }: CtaSectionProps) {
               })}
               asChild
             >
-              <Link href="/signup">GET STARTED</Link>
+              <Link href="/signup">{t("getStarted")}</Link>
             </Button>
           </div>
         </div>
@@ -59,7 +62,7 @@ export function CtaSection({ variant = "light" }: CtaSectionProps) {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/images/cta.svg"
-            alt="SwiftAgent chat preview"
+            alt={t("imageAlt")}
             className="absolute right-7 bottom-0 h-auto w-auto origin-bottom object-contain object-center"
           />
         </div>
@@ -67,7 +70,7 @@ export function CtaSection({ variant = "light" }: CtaSectionProps) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/images/cta-mobile.svg"
-          alt="SwiftAgent chat preview"
+          alt={t("imageAlt")}
           className="-mt-12 w-full max-w-120 translate-y-24 rotate-10 lg:hidden"
         />
       </div>
