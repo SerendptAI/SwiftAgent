@@ -1,3 +1,5 @@
+import { stripLocalePrefix } from "@/lib/locale-path";
+
 export const PRODUCTS_DROPDOWN_LINKS = [
   { label: "DOWNLOAD THE SWIFT AGENTS APP", href: "/products", arrow: true },
   { label: "USE OUR SDKS", href: "/products#sdks", arrow: true },
@@ -78,16 +80,14 @@ export function isLandingNavLinkActive(
   pathname: string,
   hash = "",
 ) {
-  if (href === "/") {
-    return pathname === "/" || pathname === "/en" || pathname === "/pl";
-  }
-
+  // Nav hrefs are written unprefixed, so the current path is compared with its
+  // locale segment removed rather than against one variant per locale.
+  const path = stripLocalePrefix(pathname);
   const [hrefPath, hrefHash] = href.split("#");
-  const normalizedPaths = [hrefPath, `/en${hrefPath}`, `/pl${hrefPath}`];
 
   if (hrefHash) {
-    return normalizedPaths.includes(pathname) && hash === `#${hrefHash}`;
+    return path === hrefPath && hash === `#${hrefHash}`;
   }
 
-  return normalizedPaths.includes(pathname);
+  return path === hrefPath;
 }

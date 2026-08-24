@@ -1,26 +1,29 @@
 import { MetadataRoute } from "next";
 
+import { routing } from "@/i18n/routing";
 import { siteConfig } from "@/lib/site-config";
 
 const BASE_URL = siteConfig.url;
+
+/** Locale-prefixed sections that sit behind auth and hold nothing to index. */
+const PRIVATE_PATHS = [
+  "/dashboard",
+  "/login",
+  "/onboarding",
+  "/invite",
+  "/auth",
+];
 
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
         userAgent: "*",
-        allow: ["/en/", "/pl/"],
+        allow: routing.locales.map((locale) => `/${locale}/`),
         disallow: [
-          "/en/dashboard",
-          "/pl/dashboard",
-          "/en/login",
-          "/pl/login",
-          "/en/onboarding",
-          "/pl/onboarding",
-          "/en/invite",
-          "/pl/invite",
-          "/en/auth",
-          "/pl/auth",
+          ...routing.locales.flatMap((locale) =>
+            PRIVATE_PATHS.map((path) => `/${locale}${path}`),
+          ),
           "/api/",
           // The CMS is not locale-prefixed and has nothing to index.
           "/studio",
