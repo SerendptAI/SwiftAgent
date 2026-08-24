@@ -120,31 +120,31 @@ export function HeroSection() {
             ref={headlineRef}
             className="font-greed-narrow flex flex-col gap-6 text-[50px] leading-normal font-medium tracking-[-2%] uppercase md:text-5xl lg:text-[56px] xl:text-[65px]"
           >
-            <div className="xs:flex-row xs:items-center flex flex-col gap-6">
+            <div className="xs:flex-row xs:items-center flex flex-col flex-wrap gap-6">
               <span
-                className="hero-badge xs:w-auto xs:justify-start inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
+                className="hero-badge xs:w-auto xs:justify-start xs:whitespace-nowrap inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
                 style={{ backgroundColor: "#03A84E" }}
               >
                 {t("headline.scale")}
               </span>
               <span
-                className="hero-badge xs:w-auto xs:justify-start inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
+                className="hero-badge xs:w-auto xs:justify-start xs:whitespace-nowrap inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
                 style={{ backgroundColor: "#F25430" }}
               >
                 {t("headline.customer")}
               </span>
             </div>
 
-            <span className="hero-text text-black">
+            <span className="hero-text xs:whitespace-nowrap text-black">
               {t("headline.supportWithout")}
             </span>
 
-            <div className="xs:flex-row xs:items-center flex flex-col gap-6">
-              <span className="hero-text text-black">
+            <div className="xs:flex-row xs:items-center flex flex-col flex-wrap gap-6">
+              <span className="hero-text xs:whitespace-nowrap text-black">
                 {t("headline.scalingYour")}
               </span>
               <span
-                className="hero-badge xs:w-auto xs:justify-start inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
+                className="hero-badge xs:w-auto xs:justify-start xs:whitespace-nowrap inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
                 style={{ backgroundColor: "#7F9FFF" }}
               >
                 {t("headline.team")}
@@ -165,12 +165,21 @@ export function HeroSection() {
             ref={ctaRef}
             className="mt-8 grid w-full max-w-140 grid-cols-1 gap-4 md:mt-10 md:grid-cols-2 lg:gap-6 xl:gap-8"
           >
-            <Button variant="outline" size="lg" className="w-full" asChild>
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full px-4 text-center leading-tight whitespace-normal"
+              asChild
+            >
               <DemoBookingLink location="scale-support-hero">
                 {t("bookDemo")}
               </DemoBookingLink>
             </Button>
-            <Button size="lg" className="w-full" asChild>
+            <Button
+              size="lg"
+              className="w-full px-4 text-center leading-tight whitespace-normal"
+              asChild
+            >
               <Link href="/signup">{t("getStarted")}</Link>
             </Button>
           </div>

@@ -23,7 +23,7 @@ export function RoiCalculatorSection() {
           <Button
             variant="outline"
             size="lg"
-            className="w-full max-w-100 border-[#1f1f1f] lg:w-fit lg:max-w-none"
+            className="w-full max-w-100 border-[#1f1f1f] px-4 text-center leading-tight whitespace-normal lg:w-fit lg:max-w-none"
             asChild
           >
             <Link href="/demo">{t("cta")}</Link>

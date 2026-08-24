@@ -247,7 +247,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                 <Button
                   variant="outline"
                   size="lg"
-                  className="hidden max-w-[220px] md:flex"
+                  className="hidden max-w-[220px] px-4 md:flex"
                   asChild
                 >
                   <Link href="/login">{t("login")}</Link>

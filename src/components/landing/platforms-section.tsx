@@ -125,12 +125,21 @@ export function PlatformsSection() {
           </p>
 
           <div className="mb-10 flex max-w-107.5 flex-wrap justify-center gap-4 md:grid md:grid-cols-2 md:gap-8">
-            <Button variant="outline" size="lg" asChild>
+            <Button
+              variant="outline"
+              size="lg"
+              className="px-4 text-center leading-tight whitespace-normal"
+              asChild
+            >
               <DemoBookingLink location="landing-platforms">
                 {tc("bookDemo")}
               </DemoBookingLink>
             </Button>
-            <Button size="lg" asChild>
+            <Button
+              size="lg"
+              className="px-4 text-center leading-tight whitespace-normal"
+              asChild
+            >
               <Link href="/signup">{tc("getStarted")}</Link>
             </Button>
           </div>

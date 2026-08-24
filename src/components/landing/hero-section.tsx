@@ -137,26 +137,31 @@ export function HeroSection() {
         {/* Right Column — Headline + subtitle + CTAs */}
         <div className="flex w-full flex-col justify-center py-12 md:w-[78%] md:px-10 md:py-0 lg:w-[55%] lg:px-16">
           {/*
-            The headline is seven separately-styled word badges, so its layout
-            encodes English word order. Translating the words alone will not
-            produce a correct headline in a language that orders them
-            differently — a new locale needs a design pass here, not just a
-            catalogue entry.
+            The headline is seven separately-styled word badges. Each badge is
+            one short word in English, but a translation can put a phrase in
+            one — Swahili's "customer" is "kwa wateja". So a badge never breaks
+            its own text (that would make a two-line pill and throw the row
+            heights out); instead the row wraps and the whole badge moves down
+            intact. Below `xs` the badges are full-width and already one per
+            line, so wrapping inside them is fine and avoids overflow.
+
+            The word order is still English's — a locale that orders them
+            differently needs a design pass here, not just a catalogue entry.
           */}
           <div
             ref={headlineRef}
             className="font-greed-narrow flex flex-col gap-6 text-[50px] leading-normal font-medium tracking-[-2%] uppercase md:text-5xl lg:text-[56px] xl:text-[65px]"
           >
             {/* Row 1 desktop: CUSTOMER + SUPPORT. Mobile: stacked */}
-            <div className="xs:flex-row xs:items-center flex flex-col gap-6">
+            <div className="xs:flex-row xs:items-center flex flex-col flex-wrap gap-6">
               <span
-                className="hero-badge xs:w-auto xs:justify-start inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
+                className="hero-badge xs:w-auto xs:justify-start xs:whitespace-nowrap inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
                 style={{ backgroundColor: "#03A84E" }}
               >
                 {t("headline.customer")}
               </span>
               <span
-                className="hero-badge xs:w-auto xs:justify-start inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
+                className="hero-badge xs:w-auto xs:justify-start xs:whitespace-nowrap inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
                 style={{ backgroundColor: "#F25430" }}
               >
                 {t("headline.support")}
@@ -164,13 +169,15 @@ export function HeroSection() {
             </div>
 
             {/* Row 2 desktop: THAT DOESN'T + SCALE. Mobile: THAT DOESN'T alone */}
-            <div className="flex items-center gap-6">
-              <span className="hero-text flex gap-4 text-black">
-                <span>{t("headline.that")}</span>{" "}
-                <span>{t("headline.doesnt")}</span>
+            <div className="flex flex-wrap items-center gap-6">
+              <span className="hero-text flex flex-wrap gap-4 text-black">
+                <span className="whitespace-nowrap">{t("headline.that")}</span>{" "}
+                <span className="whitespace-nowrap">
+                  {t("headline.doesnt")}
+                </span>
               </span>
               <span
-                className="hero-badge xs:inline-flex hidden h-fit items-center rounded-4xl px-5 text-black"
+                className="hero-badge xs:inline-flex xs:whitespace-nowrap hidden h-fit items-center rounded-4xl px-5 text-black"
                 style={{ backgroundColor: "#F2B035" }}
               >
                 {t("headline.scale")}
@@ -178,7 +185,7 @@ export function HeroSection() {
             </div>
 
             {/* Mobile only: SCALE + YOUR share a row */}
-            <div className="xs:hidden flex items-center gap-6">
+            <div className="xs:hidden flex flex-wrap items-center gap-6">
               <span
                 className="hero-badge inline-flex h-fit items-center rounded-4xl px-5 text-black"
                 style={{ backgroundColor: "#F2B035" }}
@@ -191,12 +198,12 @@ export function HeroSection() {
             </div>
 
             {/* Row 3 desktop: YOUR + HEADCOUNT. Mobile: HEADCOUNT alone */}
-            <div className="flex items-center gap-6">
-              <span className="hero-text xs:inline hidden text-black">
+            <div className="flex flex-wrap items-center gap-6">
+              <span className="hero-text xs:inline xs:whitespace-nowrap hidden text-black">
                 {t("headline.your")}
               </span>
               <span
-                className="hero-badge xs:w-auto xs:justify-start inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
+                className="hero-badge xs:w-auto xs:justify-start xs:whitespace-nowrap inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
                 style={{ backgroundColor: "#7F9FFF" }}
               >
                 {t("headline.headcount")}
@@ -236,12 +243,21 @@ export function HeroSection() {
             ref={ctaRef}
             className="mt-8 grid w-full max-w-140 grid-cols-1 gap-4 md:mt-10 md:grid-cols-2 lg:gap-6 xl:gap-8"
           >
-            <Button variant="outline" size="lg" className="w-full" asChild>
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full px-4 text-center leading-tight whitespace-normal"
+              asChild
+            >
               <DemoBookingLink location="landing-hero">
                 {t("bookDemo")}
               </DemoBookingLink>
             </Button>
-            <Button size="lg" className="w-full" asChild>
+            <Button
+              size="lg"
+              className="w-full px-4 text-center leading-tight whitespace-normal"
+              asChild
+            >
               <Link href="/signup">{t("getStarted")}</Link>
             </Button>
           </div>

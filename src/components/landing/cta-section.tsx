@@ -41,16 +41,24 @@ export function CtaSection({ variant = "light" }: CtaSectionProps) {
           </p>
 
           <div className="xs:max-w-107.5 flex w-full flex-wrap gap-4 sm:grid sm:grid-cols-2 md:gap-8">
-            <Button variant="outline" size="lg" className="w-full" asChild>
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full px-4 text-center leading-tight whitespace-normal"
+              asChild
+            >
               <DemoBookingLink location="landing-cta">
                 {t("bookDemo")}
               </DemoBookingLink>
             </Button>
             <Button
               size="lg"
-              className={cn("w-full", {
-                "border-transparent": isGreen,
-              })}
+              className={cn(
+                "w-full px-4 text-center leading-tight whitespace-normal",
+                {
+                  "border-transparent": isGreen,
+                },
+              )}
               asChild
             >
               <Link href="/signup">{t("getStarted")}</Link>
