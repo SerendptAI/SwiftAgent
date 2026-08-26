@@ -48,6 +48,20 @@ export function strollFormFromConfig(
   };
 }
 
+/**
+ * Whether the operator actually edited the stroll settings. The widget sidebar
+ * saves several unrelated settings together, and writing the stroll config on
+ * every save overwrote a working one with whatever the form happened to hold.
+ */
+export function strollFormChanged(
+  a: StrollFormValue,
+  b: StrollFormValue,
+): boolean {
+  return (Object.keys(a) as (keyof StrollFormValue)[]).some(
+    (key) => a[key] !== b[key],
+  );
+}
+
 export function strollFormToPayload(
   value: StrollFormValue,
 ): StrollConfigPayload {

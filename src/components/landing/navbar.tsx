@@ -75,9 +75,19 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
             </Link>
 
             {/* Right Section — Nav Links + Login */}
-            <div className="flex h-full items-center justify-end gap-10 lg:gap-14">
+            {/*
+              The full link row only appears from xl up. English is the only
+              language whose seven labels fit in less: "Parrainage" and
+              "Rasilimali" are roughly double "Earn", and with the locale
+              switcher and the account chip the row needs about 1230px in
+              fr/sw. Below xl the hamburger menu carries the links instead.
+
+              The gaps tighten in the xl–2xl band for the same reason — at the
+              2xl spacing the row overflows its own border in fr/sw.
+            */}
+            <div className="flex h-full items-center justify-end gap-6 2xl:gap-14">
               {/* Desktop nav links */}
-              <div className="hidden items-center gap-8 md:flex lg:gap-10">
+              <div className="hidden items-center gap-5 xl:flex 2xl:gap-10">
                 {LANDING_NAV_LINKS.map((link) => {
                   const isActive = isLandingNavLinkActive(
                     link.href,
@@ -108,7 +118,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                           href={link.href}
                           aria-current={isActive ? "page" : undefined}
                           className={cn(
-                            "font-dm-mono flex h-full items-center gap-1.5 text-sm tracking-[0.2em] text-black uppercase transition-opacity hover:opacity-60",
+                            "font-dm-mono flex h-full items-center gap-1.5 text-sm tracking-[0.2em] whitespace-nowrap text-black uppercase transition-opacity hover:opacity-60",
                             isActive
                               ? "font-medium hover:opacity-100"
                               : "font-normal",
@@ -181,7 +191,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                       href={link.href}
                       aria-current={isActive ? "page" : undefined}
                       className={cn(
-                        "font-dm-mono text-sm tracking-[0.2em] text-gray-900 uppercase transition-opacity hover:opacity-60",
+                        "font-dm-mono text-sm tracking-[0.2em] whitespace-nowrap text-gray-900 uppercase transition-opacity hover:opacity-60",
                         isActive ? "font-medium" : "font-normal",
                       )}
                     >
@@ -194,7 +204,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
               {/* Mobile hamburger / close toggle */}
               <button
                 onClick={() => setIsMenuOpen((prev) => !prev)}
-                className="font-dm-mono relative flex h-[22px] w-[22px] cursor-pointer items-center justify-center text-gray-900 transition-opacity hover:opacity-70 md:hidden"
+                className="font-dm-mono relative flex h-[22px] w-[22px] cursor-pointer items-center justify-center text-gray-900 transition-opacity hover:opacity-70 xl:hidden"
                 aria-label={isMenuOpen ? t("closeMenu") : t("openMenu")}
               >
                 {/* Hamburger lines — visible when closed */}
@@ -223,13 +233,16 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                 </span>
               </button>
 
-              <LocaleSwitcher className="hidden md:block" />
+              <LocaleSwitcher className="hidden shrink-0 xl:block" />
 
               {isLoggedIn ? (
                 <Link
                   href="/dashboard"
                   aria-label={t("goToDashboard")}
-                  className="font-dm-mono hidden max-w-[180px] items-center justify-center gap-2 rounded-lg border border-black bg-white py-1 pr-3 pl-1 text-xs font-medium tracking-[0.1em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-black hover:text-white md:flex"
+                  // The chip is capped tighter than the login button it
+                  // replaces so that signing in cannot widen the row past
+                  // what the logged-out layout already fits.
+                  className="font-dm-mono hidden max-w-[150px] shrink-0 items-center justify-center gap-2 rounded-lg border border-black bg-white py-1 pr-3 pl-1 text-xs font-medium tracking-[0.1em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-black hover:text-white xl:flex"
                 >
                   <span className="relative h-7 w-7 shrink-0 overflow-hidden rounded-full border border-black/10">
                     <Image
@@ -239,7 +252,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                       className="object-cover"
                     />
                   </span>
-                  <span className="max-w-[90px] truncate">
+                  <span className="max-w-[70px] truncate">
                     {user?.name || t("dashboard")}
                   </span>
                 </Link>
@@ -247,7 +260,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                 <Button
                   variant="outline"
                   size="lg"
-                  className="hidden max-w-[220px] px-4 md:flex"
+                  className="hidden max-w-[220px] shrink-0 px-4 xl:flex"
                   asChild
                 >
                   <Link href="/login">{t("login")}</Link>

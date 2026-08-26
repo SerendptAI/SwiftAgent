@@ -15,6 +15,7 @@
     "humanAgentsSuffix": "human agents",
     "monthlyCostPerAgent": "Monthly cost per agent",
     "perAgentSuffix": "/human agents",
+    "repetitiveQueries": "Repetitive support queries",
     "benchmark": "Based on an industry benchmark of {count} tickets resolved per agent per month."
   },
   "currentReality": {
@@ -34,7 +35,8 @@
     "ticketsRemoved": "Tickets removed from human agents",
     "agentsNoLongerNeeded": "Agents you no longer need",
     "newSupportLoad": "New effective support load",
-    "costAfter": "Monthly cost after automation"
+    "costAfter": "Monthly cost after automation",
+    "monthlySavings": "Monthly savings"
   },
   "fte": {
     "eyebrow": "Support agents you don’t need to hire",

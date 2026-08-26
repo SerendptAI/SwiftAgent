@@ -49,6 +49,15 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
     if (!overlayRef.current || !containerRef.current || !linksRef.current)
       return;
 
+    // A close tween still running from an earlier toggle would otherwise fire
+    // its `display: none` onComplete after this open animation, leaving the
+    // panel invisible while the button already shows its close icon.
+    gsap.killTweensOf([
+      overlayRef.current,
+      containerRef.current,
+      ...linksRef.current.children,
+    ]);
+
     if (isOpen) {
       gsap.set(overlayRef.current, { display: "block" });
       gsap.to(overlayRef.current, {
@@ -111,12 +120,22 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
         ref={containerRef}
-        className="absolute top-22.5 right-0 left-0 overflow-hidden px-6"
+        // The panel tucks 6px under the navbar so the bar's bottom border
+        // reads as the panel's top border. The bar is h-18 below md and h-20
+        // from md up, hence the two offsets.
+        className="absolute top-22.5 right-0 left-0 overflow-hidden px-6 md:top-24.5"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
         role="document"
       >
-        <div className="mx-auto w-full max-w-360 border-r border-b border-l border-black bg-white pt-8">
+        {/*
+          The panel is taller than a short viewport once every link, the
+          locale row and the login button are stacked, and the container
+          above it is overflow-hidden — so without a bound the login button
+          is simply unreachable. The subtracted height is the panel's own top
+          offset plus 24px of breathing room at the bottom.
+        */}
+        <div className="mx-auto max-h-[calc(100dvh-7.125rem)] w-full max-w-360 overflow-y-auto border-r border-b border-l border-black bg-white pt-8 md:max-h-[calc(100dvh-7.625rem)]">
           <div ref={linksRef} className="flex flex-col">
             {LANDING_NAV_LINKS.map((link) => {
               const isActive = isLandingNavLinkActive(

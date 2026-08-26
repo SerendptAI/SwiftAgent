@@ -12,6 +12,7 @@ export function UpgradeModalTrigger() {
   const pathname = usePathname();
   const storeOpen = useUpgradeModalStore((s) => s.open);
   const hideStore = useUpgradeModalStore((s) => s.hide);
+  const feature = useUpgradeModalStore((s) => s.feature);
 
   const urlOpen = params.get("upgrade") === "1";
   const open = urlOpen || storeOpen;
@@ -28,5 +29,12 @@ export function UpgradeModalTrigger() {
     }
   };
 
-  return <UpgradePlanModal open={open} onClose={close} dismissible />;
+  return (
+    <UpgradePlanModal
+      open={open}
+      onClose={close}
+      dismissible
+      feature={feature ?? undefined}
+    />
+  );
 }

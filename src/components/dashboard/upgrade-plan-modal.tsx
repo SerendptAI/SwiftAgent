@@ -93,6 +93,12 @@ interface UpgradePlanModalProps {
   dismissible?: boolean;
   /** Shows the "choose a plan to get started" activation copy instead of the upgrade copy. */
   getStarted?: boolean;
+  /**
+   * What the visitor was trying to reach, named as a noun phrase ("the widget
+   * settings"). Falls back to generic copy — the sentence previously carried an
+   * unwired `{feature}` placeholder that rendered literally on screen.
+   */
+  feature?: string;
 }
 
 export function UpgradePlanModal({
@@ -100,6 +106,7 @@ export function UpgradePlanModal({
   onClose,
   dismissible = true,
   getStarted = false,
+  feature,
 }: UpgradePlanModalProps) {
   const companyId = useActiveCompanyId();
   const { data: details } = useBillingDetails(companyId);
@@ -188,14 +195,11 @@ export function UpgradePlanModal({
             : "Upgrade your plan to have access to that"}
         </h2>
         <p className="font-dm-mono mx-auto mt-[22px] w-[492px] max-w-full text-center text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase">
-          {getStarted ? (
-            "Select a plan to activate your account and start using SwiftAgent"
-          ) : (
-            <>
-              Your plan currently supports {`{feature}`} to use {`{feature}`}{" "}
-              you have to upgrade
-            </>
-          )}
+          {getStarted
+            ? "Select a plan to activate your account and start using SwiftAgent"
+            : feature
+              ? `Your current plan doesn't include ${feature}. Upgrade to unlock it.`
+              : "Your current plan doesn't include this feature. Upgrade to unlock it."}
         </p>
 
         <ul className="mx-auto mt-[47px] mb-[40px] flex w-[685px] max-w-full flex-col gap-[29px]">
