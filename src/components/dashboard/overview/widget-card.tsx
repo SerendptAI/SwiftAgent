@@ -15,6 +15,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   emptyStrollForm,
   StrollConfigFields,
+  strollFormChanged,
   strollFormFromConfig,
   strollFormToPayload,
   type StrollFormValue,
@@ -30,6 +31,7 @@ import {
 } from "@/hooks/use-integrations";
 import { useStrollConfig, useUpdateStrollConfig } from "@/hooks/use-stroll";
 import { Link } from "@/i18n/navigation";
+import { getApiErrorMessage } from "@/lib/api-error";
 import type {
   IntegrationCreatePayload,
   IntegrationUpdatePayload,
@@ -91,7 +93,7 @@ export function WidgetCard() {
     if (hasActivePlan) {
       setIsSettingsOpen(true);
     } else {
-      showUpgrade();
+      showUpgrade("the widget settings");
     }
   }, [searchParams, pathname, router, hasActivePlan, showUpgrade]);
 
@@ -201,7 +203,7 @@ export function WidgetCard() {
                 <button
                   onClick={() => {
                     if (locked) {
-                      showUpgrade();
+                      showUpgrade("the widget settings");
                       return;
                     }
                     setIsSettingsOpen(true);
@@ -243,7 +245,7 @@ export function WidgetCard() {
                       Subscribe to a plan to unlock your widget code
                     </p>
                     <button
-                      onClick={showUpgrade}
+                      onClick={() => showUpgrade("your widget code")}
                       className="font-dm-mono rounded-md bg-[#006BE5] px-5 py-2 text-xs font-semibold tracking-wider text-white uppercase transition-colors hover:bg-[#0055B8]"
                     >
                       Upgrade
@@ -371,7 +373,9 @@ function ChatbotSettingsSidebar({
   onSaved?: (opts?: { indexing?: boolean }) => void;
   onError?: (message: string) => void;
 }) {
-  const { data: config } = useStrollConfig(companyId || null);
+  const { data: config, isSuccess: strollLoaded } = useStrollConfig(
+    companyId || null,
+  );
   const updateConfig = useUpdateStrollConfig();
   const { data: company } = useCompanyQuery(companyId || null);
   const { updateCompany } = useCompanyMutations();
@@ -392,10 +396,19 @@ function ChatbotSettingsSidebar({
     () => emptyApiIntegration(),
   );
 
+  // `config` is null for a company with no stroll config yet and undefined
+  // while another company's config loads, and both have to clear the form —
+  // otherwise the previous company's credentials stay on screen and the next
+  // save writes them onto the wrong company.
+  const loadedStrollForm = useMemo(
+    () =>
+      strollLoaded && config ? strollFormFromConfig(config) : emptyStrollForm(),
+    [config, strollLoaded],
+  );
+
   useEffect(() => {
-    if (!config) return;
-    setStrollForm(strollFormFromConfig(config));
-  }, [config]);
+    setStrollForm(loadedStrollForm);
+  }, [loadedStrollForm]);
 
   useEffect(() => {
     if (!company) return;
@@ -528,12 +541,23 @@ function ChatbotSettingsSidebar({
       }
     }
 
+    const strollChanged = strollFormChanged(strollForm, loadedStrollForm);
+
+    if (strollChanged && !strollForm.dashboardUrl.trim()) {
+      onError?.("Add a Dashboard URL — that's the page Agent 047 strolls.");
+      return;
+    }
+
     try {
       await Promise.all([
-        updateConfig.mutateAsync({
-          companyId,
-          payload: strollFormToPayload(strollForm),
-        }),
+        ...(strollChanged
+          ? [
+              updateConfig.mutateAsync({
+                companyId,
+                payload: strollFormToPayload(strollForm),
+              }),
+            ]
+          : []),
         updateCompany.mutateAsync({
           companyId,
           section: "info",
@@ -548,9 +572,7 @@ function ChatbotSettingsSidebar({
     } catch (err) {
       console.error("Failed to save sandbox credentials:", err);
       onError?.(
-        err instanceof Error
-          ? err.message
-          : "Could not save settings. Please try again.",
+        getApiErrorMessage(err, "Could not save settings. Please try again."),
       );
       return;
     }

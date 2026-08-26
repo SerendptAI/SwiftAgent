@@ -13,6 +13,7 @@ import {
 } from "@/components/dashboard/stroll-config-fields";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useStrollConfig, useUpdateStrollConfig } from "@/hooks/use-stroll";
+import { getApiErrorMessage } from "@/lib/api-error";
 
 const CARD_CLASS =
   "flex min-h-[360px] flex-col gap-5 rounded-[20px] bg-white p-3 shadow-sm sm:min-h-[450px] sm:gap-6 sm:rounded-xl sm:p-4";
@@ -23,6 +24,7 @@ export default function StrollSettingsPage() {
     data: config,
     isLoading,
     isError,
+    isSuccess,
     refetch,
   } = useStrollConfig(companyId);
   const updateConfig = useUpdateStrollConfig();
@@ -33,10 +35,17 @@ export default function StrollSettingsPage() {
     message: string;
   } | null>(null);
 
+  // The active company comes from a store rather than the route, so switching
+  // company re-runs this query without remounting the page. `config` is null
+  // for a company that has no stroll config yet and undefined while the next
+  // one loads, and both have to clear the form — leaving the previous
+  // company's dashboard URL and credentials on screen means the next save
+  // writes them onto the wrong company.
   useEffect(() => {
-    if (!config) return;
-    setForm(strollFormFromConfig(config));
-  }, [config]);
+    setForm(
+      isSuccess && config ? strollFormFromConfig(config) : emptyStrollForm(),
+    );
+  }, [config, isSuccess]);
 
   const handleSave = async () => {
     if (!companyId) return;
@@ -55,12 +64,15 @@ export default function StrollSettingsPage() {
       });
       setStatus({ kind: "success", message: "Stroll configuration saved." });
     } catch (err) {
+      // The API explains a refusal in `detail` — a plan that doesn't cover
+      // strolls answers 402 with the reason. Reading `err.message` instead put
+      // "Request failed with status code 402" on screen and threw that away.
       setStatus({
         kind: "error",
-        message:
-          err instanceof Error
-            ? err.message
-            : "Could not save the configuration. Please try again.",
+        message: getApiErrorMessage(
+          err,
+          "Could not save the configuration. Please try again.",
+        ),
       });
     }
   };
