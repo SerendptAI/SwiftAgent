@@ -15,6 +15,7 @@
     "humanAgentsSuffix": "wafanyakazi",
     "monthlyCostPerAgent": "Gharama ya mwezi kwa mfanyakazi",
     "perAgentSuffix": "/mfanyakazi",
+    "repetitiveQueries": "Maswali ya huduma yanayojirudia",
     "benchmark": "Kwa kuzingatia kiwango cha sekta cha tiketi {count} zinazoshughulikiwa na mfanyakazi mmoja kwa mwezi."
   },
   "currentReality": {
@@ -34,7 +35,8 @@
     "ticketsRemoved": "Tiketi zilizoondolewa kwa wafanyakazi",
     "agentsNoLongerNeeded": "Wafanyakazi usiowahitaji tena",
     "newSupportLoad": "Mzigo mpya halisi wa huduma",
-    "costAfter": "Gharama ya mwezi baada ya uendeshaji kiotomatiki"
+    "costAfter": "Gharama ya mwezi baada ya uendeshaji kiotomatiki",
+    "monthlySavings": "Akiba ya kila mwezi"
   },
   "fte": {
     "eyebrow": "Wafanyakazi wa huduma usiohitaji kuajiri",

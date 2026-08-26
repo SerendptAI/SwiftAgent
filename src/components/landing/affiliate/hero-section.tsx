@@ -10,6 +10,13 @@ import { cn } from "@/lib/utils";
 
 import { Navbar } from "../navbar";
 
+/**
+ * The cluster is only 46% of the container wide and the badges size to their
+ * own label, so a badge placed by `left-%` runs out of the section — which is
+ * `overflow-hidden`, so the label is clipped rather than bled. English is the
+ * only language short enough to fit; the right-most badge is therefore
+ * anchored to the cluster's right edge and grows leftwards instead.
+ */
 const REFERRERS = [
   {
     name: "Marcus K.",
@@ -23,7 +30,7 @@ const REFERRERS = [
     src: "/images/affiliate/avatar-yellow.png",
     color: "#6433cc",
     avatar: "left-[42%] top-[40%]",
-    badge: "left-[72%] top-[40%]",
+    badge: "right-0 top-[40%]",
   },
   {
     name: "Ayden P.",

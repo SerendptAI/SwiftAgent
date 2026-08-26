@@ -15,6 +15,7 @@
     "humanAgentsSuffix": "agents humains",
     "monthlyCostPerAgent": "Coût mensuel par agent",
     "perAgentSuffix": "/agent humain",
+    "repetitiveQueries": "Demandes de support répétitives",
     "benchmark": "Sur la base d’une référence sectorielle de {count} tickets résolus par agent et par mois."
   },
   "currentReality": {
@@ -34,7 +35,8 @@
     "ticketsRemoved": "Tickets retirés aux agents humains",
     "agentsNoLongerNeeded": "Agents dont vous n’avez plus besoin",
     "newSupportLoad": "Nouvelle charge de support réelle",
-    "costAfter": "Coût mensuel après automatisation"
+    "costAfter": "Coût mensuel après automatisation",
+    "monthlySavings": "Économies mensuelles"
   },
   "fte": {
     "eyebrow": "Des agents de support que vous n’avez pas à recruter",

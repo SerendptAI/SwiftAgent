@@ -106,7 +106,7 @@ export function YourNumbersPanel({
 
           <div>
             <div className="font-dm-mono mb-2.5 flex items-center justify-between text-sm leading-normal font-medium tracking-[10%] uppercase md:text-base">
-              <p className="text-white/50">REPETITIVE SUPPORT QUERIES</p>
+              <p className="text-white/50">{t("repetitiveQueries")}</p>
               <span className="text-white">{repetitiveRate}%</span>
             </div>
 

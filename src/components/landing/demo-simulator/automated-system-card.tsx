@@ -72,7 +72,7 @@ export function AutomatedSystemCard({
       </div>
 
       <div className="font-stolzl flex items-center justify-between gap-3 bg-[#F2B035] p-4 leading-normal tracking-[2%] text-black shadow-[-3px_3px_0px_0px_#000000] md:px-6 md:py-5">
-        <span className="min-w-0 flex-1">Monthly savings</span>
+        <span className="min-w-0 flex-1">{t("monthlySavings")}</span>
         <span className="shrink-0 text-xl font-medium whitespace-nowrap sm:text-2xl md:text-[30px]">
           {fmtMoney(monthlySavings, sym)}
         </span>
