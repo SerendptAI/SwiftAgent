@@ -10,7 +10,7 @@ import { routing } from "@/i18n/routing";
 import {
   CASE_STUDIES,
   getCaseStudy,
-  getCaseStudyPlainDescription,
+  getCaseStudyMetaDescription,
 } from "@/lib/case-studies";
 import { localeAlternates } from "@/lib/locale-metadata";
 
@@ -34,8 +34,8 @@ export async function generateMetadata({
   if (!caseStudy) return {};
 
   return {
-    title: `${caseStudy.name} Case Study — Swift Agents`,
-    description: getCaseStudyPlainDescription(caseStudy),
+    title: `${caseStudy.name} Case Study`,
+    description: getCaseStudyMetaDescription(caseStudy),
     alternates: localeAlternates(locale, `/case-studies/${caseStudy.id}`),
   };
 }

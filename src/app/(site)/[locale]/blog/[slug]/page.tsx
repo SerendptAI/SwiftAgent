@@ -42,7 +42,7 @@ export async function generateMetadata({
   const url = `${siteConfig.url}/${locale}${path}`;
 
   return {
-    title: `${post.title} — Swift Agents`,
+    title: post.title,
     description: post.excerpt,
     alternates: localeAlternates(locale, path),
     openGraph: {

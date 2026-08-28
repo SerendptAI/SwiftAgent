@@ -4,15 +4,15 @@
     "description": "Embed an intelligent AI agent on your website in minutes. Swift Agents handles customer support, sales, and voice conversations — 24/7, without lifting a finger."
   },
   "agents": {
-    "title": "Agents — Swift Agents",
+    "title": "Agents",
     "description": "AI agents that handle customer support, sales, and voice conversations for your business — 24/7."
   },
   "products": {
-    "title": "Products — Swift Agents",
+    "title": "Products",
     "description": "Explore Swift Agents products — AI-powered chat, voice, and support automation tools built for growing businesses."
   },
   "demo": {
-    "title": "Demo — Swift Agents",
+    "title": "Demo",
     "description": "See your support system before and after Swift Agents. Adjust your numbers and watch how many agents you can avoid hiring as you grow."
   },
   "landing": {
@@ -20,7 +20,7 @@
     "description": "SwiftAgents helps businesses automate customer conversations, reduce support workload, and deliver faster customer experiences across every channel. Live in hours, not weeks."
   },
   "affiliate": {
-    "title": "Affiliate Program — Swift Agents",
+    "title": "Affiliate Program",
     "description": "Refer businesses to Swift Agents and earn 20% of whichever plan they pay for. Introduce us, we build them a working AI agent, and you get paid once they go live."
   },
   "refer": {
@@ -28,15 +28,15 @@
     "description": "Refer a founder to Swift Agents and win rewards. Share your referral link and earn when the businesses you know start automating their customer support."
   },
   "caseStudies": {
-    "title": "Case Studies — Swift Agents",
+    "title": "Case Studies",
     "description": "See how businesses use Swift Agents to automate support, resolve issues faster, and grow without hiring more agents."
   },
   "blog": {
-    "title": "Blog — Swift Agents",
+    "title": "Blog",
     "description": "Field notes on customer support automation — what works, what breaks, and what the numbers actually say."
   },
   "privacy": {
-    "title": "Privacy Policy — Swift Agents",
+    "title": "Privacy Policy",
     "description": "Review the privacy policy for Swift Agents by Serendpt AI. Learn how we handle company, log, and user query data."
   }
 }
