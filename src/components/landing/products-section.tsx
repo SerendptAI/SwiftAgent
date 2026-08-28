@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 
 import { Link } from "@/i18n/navigation";
+import { videoUrl } from "@/lib/cloudinary";
 import { cn } from "@/lib/utils";
 
 function AutoPlayVideo({
@@ -76,7 +77,7 @@ export function ProductsSection() {
 
           <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:gap-16">
             <AutoPlayVideo
-              src="/videos/products/swift-agents-app.mp4"
+              src={videoUrl("products/swift-agents-app")}
               className="aspect-571/701 w-full object-cover lg:w-[45%]"
             />
 
@@ -106,7 +107,7 @@ export function ProductsSection() {
           {/* Copy top-aligned left, image right — on mobile: image first, then copy */}
           <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16">
             <AutoPlayVideo
-              src="/videos/products/swift-agents-sdk.mp4"
+              src={videoUrl("products/swift-agents-sdk")}
               className="aspect-571/701 w-full object-cover lg:order-last lg:w-[55%]"
             />
 

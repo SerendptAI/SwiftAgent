@@ -1,17 +1,24 @@
 #!/usr/bin/env node
 /**
- * Uploads the case-study partner clips under public/videos/partners to
- * Cloudinary, which is where src/lib/case-studies.ts reads them from.
+ * Uploads the footage under public/videos to Cloudinary, which is where the
+ * site plays it from (src/lib/cloudinary.ts).
  *
- * Adding a partner's footage:
- *   1. drop the clips in public/videos/partners/<partner>/<clip-slug>.mp4
- *   2. node scripts/upload-partner-videos.mjs <partner>
- *   3. reference the printed ids with partnerVideo() in src/lib/case-studies.ts
- *   4. delete the local copies — Cloudinary is the source of truth from here
+ * Adding footage:
+ *   1. drop the file anywhere under public/videos, at any depth
+ *   2. node scripts/upload-videos.mjs [path-prefix …]
+ *   3. reference the printed ids with videoUrl() in the component
+ *   4. delete the local copy — Cloudinary is the source of truth from here
  *
- * With no arguments every partner directory is handled. A clip already on
- * Cloudinary is not re-uploaded unless --force is passed, but every clip is
- * still probed, so a re-run doubles as a check that each one is being served.
+ * With no arguments the whole staged tree is handled; a prefix ("platforms",
+ * "partners/selar") narrows it. A clip already on Cloudinary is not
+ * re-uploaded unless --force is passed, but it is still probed, so re-running
+ * after a run that died partway confirms what did land is being served. Once
+ * the local copies are deleted there is nothing left to walk, which is the
+ * expected end state, not an error.
+ *
+ * Ids mirror the path under public/videos, with each segment slugified, so a
+ * file dropped in as "Agent 001.mp4" is served as "agent-001". The ids to
+ * reference are printed at the end of a run.
  *
  * Needs CLOUD_NAME, API_KEY and API_SECRET in .env.
  */
@@ -20,8 +27,8 @@ import { createHash } from "node:crypto";
 import { readdir, readFile, stat } from "node:fs/promises";
 import { basename, extname, join } from "node:path";
 
-const PARTNERS_DIR = "public/videos/partners";
-const CLOUDINARY_FOLDER = "swift-agents/partners";
+const VIDEOS_DIR = "public/videos";
+const CLOUDINARY_FOLDER = "swift-agents";
 const VIDEO_EXTENSIONS = new Set([".mp4", ".mov", ".webm"]);
 
 /** Cloudinary answers 423 while it is still deriving a transformation. */
@@ -38,6 +45,14 @@ const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 /** `fetch` rejects with a bare "fetch failed"; the cause holds the real reason. */
 function describe(error) {
   return error.cause ? `${error.message} (${error.cause})` : error.message;
+}
+
+/** Keeps ids URL-clean and kebab-case, whatever the dropped file was called. */
+function slugify(segment) {
+  return segment
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 function signature(params, apiSecret) {
@@ -162,40 +177,46 @@ async function warmDelivery(url) {
   throw new Error(`Gave up warming ${url}: ${lastFailure}`);
 }
 
-async function listClips(partners) {
-  // The staging directory is gitignored, so a fresh clone has no partner
-  // footage at all until someone drops a clip in — not an error.
-  const entries = await readdir(PARTNERS_DIR, { withFileTypes: true }).catch(
+async function collectClips(directory, prefix, clips) {
+  // The staging tree is gitignored, so a fresh clone has no footage at all
+  // until someone drops a file in — not an error.
+  const entries = await readdir(directory, { withFileTypes: true }).catch(
     (error) => {
       if (error.code === "ENOENT") return [];
       throw error;
     },
   );
-  const directories = entries
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .filter((name) => partners.length === 0 || partners.includes(name));
 
-  const missing = partners.filter((name) => !directories.includes(name));
-  if (missing.length > 0) {
-    throw new Error(`No such partner directory: ${missing.join(", ")}`);
-  }
-
-  const clips = [];
-  for (const partner of directories.sort()) {
-    const files = await readdir(join(PARTNERS_DIR, partner));
-    for (const file of files.sort()) {
-      const extension = extname(file).toLowerCase();
-      if (!VIDEO_EXTENSIONS.has(extension)) continue;
-      const slug = basename(file, extension);
-      clips.push({
-        path: join(PARTNERS_DIR, partner, file),
-        publicId: `${CLOUDINARY_FOLDER}/${partner}/${slug}`,
-        reference: `${partner}/${slug}`,
-      });
+  for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
+    const path = join(directory, entry.name);
+    if (entry.isDirectory()) {
+      await collectClips(path, `${prefix}${slugify(entry.name)}/`, clips);
+      continue;
     }
+    const extension = extname(entry.name).toLowerCase();
+    if (!VIDEO_EXTENSIONS.has(extension)) continue;
+    const slug = slugify(entry.name.slice(0, -extension.length));
+    clips.push({ path, reference: `${prefix}${slug}` });
   }
-  return clips;
+}
+
+async function listClips(prefixes) {
+  const clips = [];
+  await collectClips(VIDEOS_DIR, "", clips);
+  if (prefixes.length === 0) return clips;
+
+  const matches = (clip, prefix) =>
+    clip.reference === prefix || clip.reference.startsWith(`${prefix}/`);
+
+  const unmatched = prefixes.filter(
+    (prefix) => !clips.some((clip) => matches(clip, prefix)),
+  );
+  if (unmatched.length > 0) {
+    throw new Error(
+      `Nothing under ${VIDEOS_DIR} matches: ${unmatched.join(", ")}`,
+    );
+  }
+  return clips.filter((clip) => prefixes.some((p) => matches(clip, p)));
 }
 
 function readCredentials() {
@@ -224,40 +245,41 @@ function readCredentials() {
 async function main() {
   const args = process.argv.slice(2);
   const force = args.includes("--force");
-  const partners = args.filter((arg) => !arg.startsWith("--"));
+  const prefixes = args.filter((arg) => !arg.startsWith("--"));
 
   const credentials = readCredentials();
-  const clips = await listClips(partners);
+  const clips = await listClips(prefixes);
   if (clips.length === 0) {
-    console.log(`No clips found under ${PARTNERS_DIR}.`);
+    console.log(`No clips found under ${VIDEOS_DIR}.`);
     return;
   }
 
   const references = [];
   for (const clip of clips) {
-    const skip = !force && (await isUploaded(clip.publicId, credentials));
+    const publicId = `${CLOUDINARY_FOLDER}/${clip.reference}`;
+    const skip = !force && (await isUploaded(publicId, credentials));
     if (skip) {
       process.stdout.write(
-        `· ${clip.publicId} — already uploaded, checking … `,
+        `· ${clip.reference} — already uploaded, checking … `,
       );
     } else {
       const { size } = await stat(clip.path);
-      process.stdout.write(`↑ ${clip.publicId} (${formatMb(size)}) … `);
-      await upload(clip.path, clip.publicId, credentials);
+      process.stdout.write(`↑ ${clip.reference} (${formatMb(size)}) … `);
+      await upload(clip.path, publicId, credentials);
     }
 
     // Every clip is probed, uploaded or not, so a re-run doubles as a check
-    // that everything case-studies.ts points at is actually being served.
+    // that everything the site points at is actually being served.
     const delivery = await warmDelivery(
-      `https://res.cloudinary.com/${credentials.cloudName}/video/upload/f_auto:video,q_auto/${encodePublicId(clip.publicId)}`,
+      `https://res.cloudinary.com/${credentials.cloudName}/video/upload/f_auto:video,q_auto/${encodePublicId(publicId)}`,
     );
     console.log(`delivers ${formatMb(delivery.bytes)} as ${delivery.format}`);
     references.push(clip.reference);
   }
 
-  console.log(`\nReference these in src/lib/case-studies.ts:`);
+  console.log(`\nReference these with videoUrl():`);
   for (const reference of references) {
-    console.log(`  video: partnerVideo("${reference}"),`);
+    console.log(`  videoUrl("${reference}")`);
   }
 }
 

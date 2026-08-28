@@ -1,6 +1,6 @@
 /**
- * Cloudinary hosts the heavy marketing media — see
- * scripts/upload-partner-videos.mjs for how assets get there.
+ * Cloudinary hosts the site's video — see scripts/upload-videos.mjs for how it
+ * gets there.
  *
  * The cloud name is a constant rather than an env var: it is a public account
  * identifier that appears in every delivery URL, it is the same in every
@@ -15,6 +15,10 @@ const CLOUD_NAME = "dmzoyse0g";
  */
 const VIDEO_DELIVERY = "f_auto:video,q_auto";
 
-export function cloudinaryVideoUrl(publicId: string): string {
-  return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/${VIDEO_DELIVERY}/${publicId}`;
+/** Ids mirror what used to be public/videos, so `path` reads like the file did. */
+const VIDEO_FOLDER = "swift-agents";
+
+/** @param path e.g. "hero-section", "platforms/website". No extension. */
+export function videoUrl(path: string): string {
+  return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/${VIDEO_DELIVERY}/${VIDEO_FOLDER}/${path}`;
 }

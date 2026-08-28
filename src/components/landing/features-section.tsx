@@ -8,6 +8,7 @@ import { useEffect, useRef } from "react";
 
 import BriggsAnimation from "@/components/briggs-face-animation";
 import { useInViewAutoplay } from "@/hooks/use-in-view-autoplay";
+import { videoUrl } from "@/lib/cloudinary";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,12 +20,12 @@ interface Agent {
 }
 
 const AGENTS: Agent[] = [
-  { id: "047", video: "/videos/Agent 047.mp4" },
-  { id: "007", video: "/videos/Agent 007.mp4" },
-  { id: "626", video: "/videos/Agent 626.mp4" },
+  { id: "047", video: videoUrl("agent-047") },
+  { id: "007", video: videoUrl("agent-007") },
+  { id: "626", video: videoUrl("agent-626") },
 ];
 
-const AGENT_001: Agent = { id: "001", video: "/videos/Agent 001.mp4" };
+const AGENT_001: Agent = { id: "001", video: videoUrl("agent-001") };
 
 // ─── Agent Video — loads only when scrolled into view ─────────
 function AgentVideo({ src }: { src: string }) {

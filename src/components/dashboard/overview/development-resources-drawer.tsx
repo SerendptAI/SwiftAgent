@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
+import { videoUrl } from "@/lib/cloudinary";
 
 const DRAWER_TRANSITION_MS = 520;
 
@@ -23,14 +24,14 @@ const VIDEOS: TutorialVideo[] = [
   {
     title: "How to login",
     recording: {
-      src: "/videos/tutorials/how-to-login.mp4",
+      src: videoUrl("tutorials/how-to-login"),
       captions: "/videos/tutorials/how-to-login.en.vtt",
     },
   },
   {
     title: "How to register account",
     recording: {
-      src: "/videos/tutorials/how-to-register.mp4",
+      src: videoUrl("tutorials/how-to-register"),
       captions: "/videos/tutorials/how-to-register.en.vtt",
     },
   },

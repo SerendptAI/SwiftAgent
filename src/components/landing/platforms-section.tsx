@@ -7,6 +7,7 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { useInViewAutoplay } from "@/hooks/use-in-view-autoplay";
 import { Link } from "@/i18n/navigation";
+import { videoUrl } from "@/lib/cloudinary";
 import { cn } from "@/lib/utils";
 
 import { DemoBookingLink } from "./demo-booking-link";
@@ -16,17 +17,17 @@ const PLATFORMS = [
   {
     id: "website",
     icon: Icons.PlatformWebsite,
-    video: "/videos/platforms/website.mp4",
+    video: videoUrl("platforms/website"),
   },
   {
     id: "webapp",
     icon: Icons.PlatformWebApp,
-    video: "/videos/platforms/web-app.mp4",
+    video: videoUrl("platforms/web-app"),
   },
   {
     id: "mobile",
     icon: Icons.PlatformMobile,
-    video: "/videos/platforms/mobile-app.mp4",
+    video: videoUrl("platforms/mobile-app"),
   },
 ];
 

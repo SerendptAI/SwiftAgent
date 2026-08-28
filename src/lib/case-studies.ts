@@ -1,14 +1,13 @@
-import { cloudinaryVideoUrl } from "@/lib/cloudinary";
+import { videoUrl } from "@/lib/cloudinary";
 import { cn } from "@/lib/utils";
 
 /**
  * Partner footage is hosted on Cloudinary rather than committed to the repo —
  * it is hundreds of megabytes and Cloudinary transcodes it per browser.
- * `clip` is the `<partner>/<clip-slug>` pair that
- * scripts/upload-partner-videos.mjs prints after an upload.
+ * `clip` is the `<partner>/<clip-slug>` pair that scripts/upload-videos.mjs
+ * prints after an upload.
  */
-const partnerVideo = (clip: string) =>
-  cloudinaryVideoUrl(`swift-agents/partners/${clip}`);
+const partnerVideo = (clip: string) => videoUrl(`partners/${clip}`);
 
 export interface CaseStudyUseCase {
   title: string;
