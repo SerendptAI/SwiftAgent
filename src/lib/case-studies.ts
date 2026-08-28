@@ -285,6 +285,162 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
       "delivering world-class support at scale.</p>",
     ].join(""),
   },
+  {
+    id: "selar",
+    name: "SELAR",
+    logo: "/images/Referrals/logos/selar.png",
+    mockup: MOCKUP,
+    videoAspect: "aspect-[9/16]",
+    published: true,
+    description: [
+      "<p><strong>Selar</strong> has become one of Africa's leading platforms ",
+      "for creators and entrepreneurs to sell digital products, online courses, ",
+      "memberships, event tickets, subscriptions, services, and physical ",
+      "products to customers around the world. The platform also supports ",
+      "multiple currencies, automated product delivery, affiliate marketing, ",
+      "and creator payouts, making it an all-in-one commerce platform for ",
+      "digital businesses.</p>",
+      "<p>As Selar continues to grow, so does the number of conversations ",
+      "happening around purchases, creator onboarding, payouts, downloads, ",
+      "customer access, and product management. Most of these conversations do ",
+      "not require a support agent. They simply require the right answer at the ",
+      "right moment.</p>",
+    ].join(""),
+    useCases: [
+      {
+        title: "TURN HELP ARTICLES INTO INSTANT ANSWERS",
+        description: [
+          "<p>Selar already provides detailed documentation and support ",
+          "resources. Instead of asking users to search through articles, ",
+          "SwiftAgents allows them to simply ask:</p>",
+          "<blockquote>",
+          "<p>“Why can’t I access my course?”</p>",
+          "<p>“How do I receive payments in USD?”</p>",
+          "<p>“Where can I find my customer’s receipt?”</p>",
+          "<p>“Why hasn’t my payout arrived?”</p>",
+          "</blockquote>",
+          "<p>The right answer appears instantly in natural conversation.</p>",
+        ].join(""),
+        video: partnerVideo("selar/help-articles"),
+      },
+      {
+        title: "SUPPORT BOTH CREATORS AND BUYERS SIMULTANEOUSLY",
+        description: [
+          "<p>Every transaction creates two different support journeys.</p>",
+          "<p>The creator wants to know:</p>",
+          "<blockquote>",
+          "<p>“Why is my payout pending?”</p>",
+          "<p>“How do I connect my domain?”</p>",
+          "</blockquote>",
+          "<p>While the buyer asks:</p>",
+          "<blockquote>",
+          "<p>“Where’s my download?”</p>",
+          "<p>“I paid but haven’t received access.”</p>",
+          "</blockquote>",
+          "<p>SwiftAgents understands who is asking and provides contextual ",
+          "guidance without adding pressure to the support team.</p>",
+        ].join(""),
+        video: partnerVideo("selar/creators-and-buyers"),
+      },
+      {
+        title: "SCALE KNOWLEDGE, NOT SUPPORT TICKETS",
+        description: [
+          "<p>As more creators join Selar and more customers make purchases ",
+          "across different countries, repetitive questions naturally ",
+          "increase.</p>",
+          "<p>SwiftAgents transforms repetitive conversations into self-service ",
+          "experiences, helping users find answers in seconds while allowing ",
+          "support teams to focus on the conversations that genuinely need ",
+          "human attention.</p>",
+        ].join(""),
+        video: partnerVideo("selar/scale-knowledge"),
+      },
+    ],
+    closing: [
+      "<p>The best customer support isn’t the fastest reply. It’s the answer ",
+      "users never have to wait for.</p>",
+      "<p><strong>SwiftAgents helps Selar turn thousands of support ",
+      "interactions into instant conversations</strong> — creating a better ",
+      "experience for creators, buyers, and the support team alike.</p>",
+    ].join(""),
+  },
+  {
+    id: "rank",
+    name: "RANK",
+    logo: "/images/Referrals/logos/rank.png",
+    mockup: MOCKUP,
+    videoAspect: "aspect-[9/16]",
+    published: true,
+    description: [
+      "<p><strong>Rank</strong>, formerly Moni, is building a new way for ",
+      "Africans to save, spend, send money, and grow wealth together. Built on ",
+      "the trust of community finance, the platform combines digital banking ",
+      "with group savings, payments, and financial tools to make everyday money ",
+      "management simpler.</p>",
+      "<p>As more users trust Rank with their finances, support becomes more ",
+      "than solving problems — it is about maintaining confidence. Questions ",
+      "around account verification, transfers, savings, transaction status, ",
+      "bill payments, and onboarding are part of the daily customer journey. ",
+      "Many of these conversations are repetitive, yet customers expect ",
+      "answers immediately.</p>",
+    ].join(""),
+    useCases: [
+      {
+        title: "MAKE EVERYDAY BANKING FEEL EFFORTLESS",
+        description: [
+          "<p>Instead of searching through FAQs or waiting for a support ",
+          "response, customers can simply ask:</p>",
+          "<blockquote>",
+          "<p>“Why is my transfer still pending?”</p>",
+          "<p>“How do I start a savings plan?”</p>",
+          "<p>“Why hasn’t my account been verified?”</p>",
+          "<p>“How do I increase my transaction limit?”</p>",
+          "</blockquote>",
+          "<p>SwiftAgents provides immediate, conversational guidance, helping ",
+          "customers resolve common issues within seconds.</p>",
+        ].join(""),
+        video: partnerVideo("rank/everyday-banking"),
+      },
+      {
+        title: "TRANSFORM ROUTINE QUESTIONS INTO INSTANT CONVERSATIONS",
+        description: [
+          "<p>Many customer enquiries follow familiar patterns:</p>",
+          "<ul>",
+          "<li>Account onboarding and verification</li>",
+          "<li>Transfer status</li>",
+          "<li>Savings and withdrawal enquiries</li>",
+          "<li>Bill payment issues</li>",
+          "<li>Transaction history</li>",
+          "<li>Account and security questions</li>",
+          "</ul>",
+          "<p>SwiftAgents resolves these conversations instantly, reducing ",
+          "support queues while allowing human agents to focus on more complex ",
+          "financial cases.</p>",
+        ].join(""),
+        video: partnerVideo("rank/routine-questions"),
+      },
+      {
+        title: "GROW CUSTOMER CONFIDENCE ALONGSIDE THE PLATFORM",
+        description: [
+          "<p>As Rank expands its banking and wealth offerings, customer ",
+          "expectations continue to grow.</p>",
+          "<p>SwiftAgents delivers intelligent, 24/7 conversational support ",
+          "that keeps customers informed at every step — whether they are ",
+          "opening an account, sending money, saving towards a goal, or ",
+          "managing everyday finances.</p>",
+          "<p>The result is a faster, more reassuring customer experience that ",
+          "scales with the business.</p>",
+        ].join(""),
+        video: partnerVideo("rank/grow-confidence"),
+      },
+    ],
+    closing: [
+      "<p>Every financial conversation is an opportunity to build trust.</p>",
+      "<p><strong>SwiftAgents helps Rank turn routine support into intelligent ",
+      "conversations</strong> — giving customers instant answers while ",
+      "empowering the support team to focus on what matters most.</p>",
+    ].join(""),
+  },
 ];
 
 /** Only published studies are listed, routed, or put in the sitemap. */
@@ -309,6 +465,14 @@ export function caseStudyChipClass(active: boolean): string {
   );
 }
 
+/**
+ * Descriptions written as several `<p>` blocks would otherwise run their
+ * sentences together — "…digital businesses.As Selar continues…" — in the
+ * card summaries and meta descriptions this feeds.
+ */
 export function getCaseStudyPlainDescription(caseStudy: CaseStudy): string {
-  return caseStudy.description.replace(/<[^>]+>/g, "");
+  return caseStudy.description
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }

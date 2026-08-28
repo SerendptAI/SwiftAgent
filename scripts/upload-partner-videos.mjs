@@ -9,8 +9,9 @@
  *   3. reference the printed ids with partnerVideo() in src/lib/case-studies.ts
  *   4. delete the local copies — Cloudinary is the source of truth from here
  *
- * With no arguments every partner directory is uploaded. Clips already on
- * Cloudinary are skipped unless --force is passed, so re-runs are cheap.
+ * With no arguments every partner directory is handled. A clip already on
+ * Cloudinary is not re-uploaded unless --force is passed, but every clip is
+ * still probed, so a re-run doubles as a check that each one is being served.
  *
  * Needs CLOUD_NAME, API_KEY and API_SECRET in .env.
  */
@@ -122,31 +123,43 @@ async function upload(filePath, publicId, credentials) {
  * that variant is ready Cloudinary keeps serving the original MP4, so early
  * visitors get a working — just larger — file rather than a stall, and this
  * reports whichever variant is live at the time.
+ *
+ * Retries cover both that derivation window and the connection drops a long
+ * upload session attracts; an unwarmed clip still plays, so losing the whole
+ * run to one timed-out probe would be the worse outcome.
  */
 async function warmDelivery(url) {
+  const headers = {
+    Accept: "video/webm,video/ogg,video/*;q=0.9,*/*;q=0.5",
+    Range: "bytes=0-0",
+  };
+
+  let lastFailure = "no attempt completed";
   for (let attempt = 1; attempt <= WARM_ATTEMPTS; attempt += 1) {
-    const response = await fetch(url, {
-      headers: {
-        Accept: "video/webm,video/ogg,video/*;q=0.9,*/*;q=0.5",
-        Range: "bytes=0-0",
-      },
-    });
-    await response.arrayBuffer();
+    if (attempt > 1) await wait(WARM_RETRY_MS);
+
+    let response;
+    try {
+      response = await fetch(url, { headers });
+      await response.arrayBuffer();
+    } catch (error) {
+      lastFailure = describe(error);
+      continue;
+    }
 
     if (response.ok) {
-      const headers = response.headers;
-      const total = headers.get("content-range")?.split("/").at(-1);
+      const total = response.headers.get("content-range")?.split("/").at(-1);
       return {
-        bytes: Number(total ?? headers.get("content-length")) || 0,
-        format: headers.get("content-type") ?? "unknown",
+        bytes: Number(total ?? response.headers.get("content-length")) || 0,
+        format: response.headers.get("content-type") ?? "unknown",
       };
     }
     if (response.status !== PROCESSING_STATUS) {
       throw new Error(`Delivery failed: HTTP ${response.status} for ${url}`);
     }
-    await wait(WARM_RETRY_MS);
+    lastFailure = `HTTP ${PROCESSING_STATUS}, still deriving`;
   }
-  throw new Error(`Still processing after ${WARM_ATTEMPTS} attempts: ${url}`);
+  throw new Error(`Gave up warming ${url}: ${lastFailure}`);
 }
 
 async function listClips(partners) {
@@ -215,21 +228,23 @@ async function main() {
 
   const references = [];
   for (const clip of clips) {
-    if (!force && (await isUploaded(clip.publicId, credentials))) {
-      console.log(`· ${clip.publicId} — already uploaded, skipping`);
-      references.push(clip.reference);
-      continue;
+    const skip = !force && (await isUploaded(clip.publicId, credentials));
+    if (skip) {
+      process.stdout.write(
+        `· ${clip.publicId} — already uploaded, checking … `,
+      );
+    } else {
+      const { size } = await stat(clip.path);
+      process.stdout.write(`↑ ${clip.publicId} (${formatMb(size)}) … `);
+      await upload(clip.path, clip.publicId, credentials);
     }
 
-    const { size } = await stat(clip.path);
-    process.stdout.write(`↑ ${clip.publicId} (${formatMb(size)}) … `);
-    const asset = await upload(clip.path, clip.publicId, credentials);
+    // Every clip is probed, uploaded or not, so a re-run doubles as a check
+    // that everything case-studies.ts points at is actually being served.
     const delivery = await warmDelivery(
-      `https://res.cloudinary.com/${credentials.cloudName}/video/upload/f_auto:video,q_auto/${encodePublicId(asset.public_id)}`,
+      `https://res.cloudinary.com/${credentials.cloudName}/video/upload/f_auto:video,q_auto/${encodePublicId(clip.publicId)}`,
     );
-    console.log(
-      `done — delivers ${formatMb(delivery.bytes)} as ${delivery.format}`,
-    );
+    console.log(`delivers ${formatMb(delivery.bytes)} as ${delivery.format}`);
     references.push(clip.reference);
   }
 

@@ -64,6 +64,11 @@ TODO.md
 videos/*/renders/
 videos/*/snapshots/
 
+# Partner case-study footage is only staged here on the way to Cloudinary,
+# which serves it (scripts/upload-partner-videos.mjs). Keeping these hundreds
+# of megabytes out of the repo and the image is the whole point.
+public/videos/partners/
+
 AGENTS.md
 CLAUDE.md
 .codex
