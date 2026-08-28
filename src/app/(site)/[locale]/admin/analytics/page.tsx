@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { AnalyticsClient } from "./analytics-client";
 
 export const metadata: Metadata = {
-  title: "Analytics — Swift Agents",
+  title: "Analytics",
   robots: { index: false, follow: false },
 };
 

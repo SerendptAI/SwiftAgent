@@ -465,13 +465,35 @@ export function caseStudyChipClass(active: boolean): string {
 }
 
 /**
- * Descriptions written as several `<p>` blocks would otherwise run their
- * sentences together — "…digital businesses.As Selar continues…" — in the
- * card summaries and meta descriptions this feeds.
+ * Only these end a block of text. Inline tags have to close up with no space,
+ * or `<strong>Rank</strong>,` reads as "Rank , formerly Moni"; block ends need
+ * one, or paragraphs weld into "…digital businesses.As Selar continues…".
  */
+const BLOCK_END = /<\/(?:p|li|ul|ol|blockquote|h[1-6]|div)>/gi;
+
+/** Flattens a study's markup for the card summaries and meta descriptions. */
 export function getCaseStudyPlainDescription(caseStudy: CaseStudy): string {
   return caseStudy.description
-    .replace(/<[^>]+>/g, " ")
+    .replace(BLOCK_END, " ")
+    .replace(/<[^>]+>/g, "")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+/** Search results show around this much; past it the tail is wasted. */
+const META_DESCRIPTION_LIMIT = 155;
+
+/**
+ * The studies whose description runs several paragraphs would otherwise emit
+ * the whole thing — Selar's reached 704 characters — so this cuts to a word
+ * boundary instead of letting search engines truncate mid-word.
+ */
+export function getCaseStudyMetaDescription(caseStudy: CaseStudy): string {
+  const plain = getCaseStudyPlainDescription(caseStudy);
+  if (plain.length <= META_DESCRIPTION_LIMIT) return plain;
+
+  const clipped = plain.slice(0, META_DESCRIPTION_LIMIT - 1);
+  const lastSpace = clipped.lastIndexOf(" ");
+  const atWord = lastSpace > 0 ? clipped.slice(0, lastSpace) : clipped;
+  return `${atWord.replace(/[\s,;:—-]+$/, "")}…`;
 }
