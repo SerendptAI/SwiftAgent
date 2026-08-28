@@ -1,4 +1,14 @@
+import { cloudinaryVideoUrl } from "@/lib/cloudinary";
 import { cn } from "@/lib/utils";
+
+/**
+ * Partner footage is hosted on Cloudinary rather than committed to the repo —
+ * it is hundreds of megabytes and Cloudinary transcodes it per browser.
+ * `clip` is the `<partner>/<clip-slug>` pair that
+ * scripts/upload-partner-videos.mjs prints after an upload.
+ */
+const partnerVideo = (clip: string) =>
+  cloudinaryVideoUrl(`swift-agents/partners/${clip}`);
 
 export interface CaseStudyUseCase {
   title: string;
@@ -106,19 +116,19 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
         title: "TURN COMMON QUESTIONS INTO INSTANT CONVERSATIONS",
         description:
           "A customer asking to change their delivery address gets the full answer in chat — what to do before the order is placed, how to reach support once it is already on its way, and when a fee adjustment applies.",
-        video: "/videos/partners/chowdeck/common-questions.mp4",
+        video: partnerVideo("chowdeck/common-questions"),
       },
       {
         title: "REDUCE REPETITIVE SUPPORT WORK",
         description:
           "Order tracking, payment issues, delivery timelines and merchant availability are the same handful of questions over and over. Swift Agents resolves those instantly so human agents keep their attention on the complex cases.",
-        video: "/videos/partners/chowdeck/repetitive-support.mp4",
+        video: partnerVideo("chowdeck/repetitive-support"),
       },
       {
         title: "DISCOVER THROUGH CONVERSATION",
         description:
           "Customers who do not know what they want can just ask. “Three breakfast options under ₦5,000” comes back as real dishes with vendors, prices and ratings, ready to order.",
-        video: "/videos/partners/chowdeck/discover-meals.mp4",
+        video: partnerVideo("chowdeck/discover-meals"),
       },
     ],
   },
@@ -136,19 +146,19 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
         title: "SIMPLIFY ACCOUNT SETUP & ONBOARDING",
         description:
           "New users are walked through verification in chat — which documents are accepted, why an upload was rejected for glare, a name mismatch or an expired proof of address, and exactly where in the dashboard to try again.",
-        video: "/videos/partners/raenest/setup-onboarding.mp4",
+        video: partnerVideo("raenest/setup-onboarding"),
       },
       {
         title: "BRING CLARITY TO CROSS-BORDER PAYMENTS",
         description:
           "International transfers raise questions before, during and after they land. “Has my payment been received?” is answered rather than queued — the agent collects the transaction reference, amount and date, then confirms the status back to the user.",
-        video: "/videos/partners/raenest/payments.mp4",
+        video: partnerVideo("raenest/payments"),
       },
       {
         title: "KEEP USERS INFORMED EVERY STEP OF THE WAY",
         description:
           "Once a transfer clears, the agent confirms the funds reached the recipient and tells them how to find the money in their account. Support should bring trust, not uncertainty.",
-        video: "/videos/partners/raenest/every-step.mp4",
+        video: partnerVideo("raenest/every-step"),
       },
     ],
   },
@@ -173,7 +183,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
           "</blockquote>",
           "<p>SwiftAgents helps guide users to relevant suggestions instantly.</p>",
         ].join(""),
-        video: "/videos/partners/partyverse/describe-what-you-want.mp4",
+        video: partnerVideo("partyverse/describe-what-you-want"),
       },
       {
         title: "HANDLE PAYMENT QUESTIONS FASTER",
@@ -186,13 +196,13 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
           "<li>Refund-related questions</li>",
           "</ul>",
         ].join(""),
-        video: "/videos/partners/partyverse/payment-issues.mp4",
+        video: partnerVideo("partyverse/payment-issues"),
       },
       {
         title: "MAKE SUPPORT FEEL LIKE A CONVERSATION",
         description:
           "Instead of sending customers to support forms or waiting for email responses, users can ask questions naturally and receive immediate guidance.",
-        video: "/videos/partners/partyverse/refund-in-chat.mp4",
+        video: partnerVideo("partyverse/refund-in-chat"),
       },
     ],
     closing: [
@@ -235,7 +245,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
           "<p>SwiftAgents delivers immediate, conversational guidance that helps users ",
           "move forward with confidence.</p>",
         ].join(""),
-        video: "/videos/partners/evolution/simpler-global-finance.mp4",
+        video: partnerVideo("evolution/simpler-global-finance"),
       },
       {
         title: "REDUCE UNCERTAINTY AROUND EVERY TRANSACTION",
@@ -253,7 +263,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
           "greater visibility while allowing the support team to focus on more complex ",
           "financial issues.</p>",
         ].join(""),
-        video: "/videos/partners/evolution/reduce-uncertainty.mp4",
+        video: partnerVideo("evolution/reduce-uncertainty"),
       },
       {
         title: "SUPPORT USERS ACROSS EVERY TIME ZONE",
@@ -265,7 +275,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
           "<p>The result is a smoother customer journey, greater confidence, and a support ",
           "experience that scales as Evolution grows.</p>",
         ].join(""),
-        video: "/videos/partners/evolution/every-time-zone.mp4",
+        video: partnerVideo("evolution/every-time-zone"),
       },
     ],
     closing: [
