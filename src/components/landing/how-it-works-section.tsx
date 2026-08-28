@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { useInViewAutoplay } from "@/hooks/use-in-view-autoplay";
+import { videoUrl } from "@/lib/cloudinary";
 import { cn } from "@/lib/utils";
 
 /** Copy lives in the `home.howItWorks.steps` catalogue, keyed by id. */
@@ -11,19 +12,19 @@ const STEPS = [
   {
     id: "connect",
     number: "1",
-    video: "/videos/how-it-works/01-connect-your-knowledge.mp4",
+    video: videoUrl("how-it-works/01-connect-your-knowledge"),
     accent: "#F2B035",
   },
   {
     id: "train",
     number: "2",
-    video: "/videos/how-it-works/02-train-on-your-business.mp4",
+    video: videoUrl("how-it-works/02-train-on-your-business"),
     accent: "#03A84E",
   },
   {
     id: "goLive",
     number: "3",
-    video: "/videos/how-it-works/03-go-live.mp4",
+    video: videoUrl("how-it-works/03-go-live"),
     accent: "#F25430",
   },
 ];

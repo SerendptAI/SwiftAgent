@@ -8,6 +8,7 @@ import { useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
+import { videoUrl } from "@/lib/cloudinary";
 
 import { DemoBookingLink } from "./demo-booking-link";
 import { Navbar } from "./navbar";
@@ -125,7 +126,7 @@ export function HeroSection() {
         >
           <video
             ref={heroVideoRef}
-            src="/videos/hero-section.mp4"
+            src={videoUrl("hero-section")}
             autoPlay
             loop
             muted

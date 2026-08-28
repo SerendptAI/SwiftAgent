@@ -58,11 +58,20 @@ bun.lock
 # local task checklist
 TODO.md
 
-# HyperFrames build output — the shipped MP4s live in public/videos/tutorials,
-# and snapshots are throwaway QA frames. The compositions themselves are kept
-# so the videos stay re-renderable.
+# HyperFrames build output — snapshots are throwaway QA frames, and the
+# rendered MP4s are uploaded to Cloudinary rather than committed. The
+# compositions themselves are kept so the videos stay re-renderable.
 videos/*/renders/
 videos/*/snapshots/
+
+# Site footage is only staged under public/videos on its way to Cloudinary,
+# which serves it (scripts/upload-videos.mjs). Keeping these hundreds of
+# megabytes out of the repo and the image is the whole point. Caption tracks
+# are a few KB of text and stay committed, so this matches media by extension
+# rather than ignoring the tree.
+public/videos/**/*.mp4
+public/videos/**/*.mov
+public/videos/**/*.webm
 
 AGENTS.md
 CLAUDE.md

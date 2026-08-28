@@ -320,7 +320,7 @@ export function CaseStudyDetail({
           </div>
 
           <div
-            className="font-stolzl mb-8 text-sm leading-[1.66] tracking-[2%] text-black/80 md:text-base lg:text-lg"
+            className="font-stolzl mb-8 text-sm leading-[1.66] tracking-[2%] text-black/80 md:text-base lg:text-lg [&_p+p]:mt-3"
             dangerouslySetInnerHTML={{ __html: caseStudy.description }}
           />
 
