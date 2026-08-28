@@ -163,7 +163,14 @@ async function warmDelivery(url) {
 }
 
 async function listClips(partners) {
-  const entries = await readdir(PARTNERS_DIR, { withFileTypes: true });
+  // The staging directory is gitignored, so a fresh clone has no partner
+  // footage at all until someone drops a clip in — not an error.
+  const entries = await readdir(PARTNERS_DIR, { withFileTypes: true }).catch(
+    (error) => {
+      if (error.code === "ENOENT") return [];
+      throw error;
+    },
+  );
   const directories = entries
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name)
