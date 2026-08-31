@@ -122,6 +122,7 @@
   color: #0a0a0a;
 }
 .hr-field {
+  position: relative;
   display: flex;
   align-items: center;
   height: 72px;
@@ -144,7 +145,17 @@
   line-height: 1.45;
   color: #0a0a0a;
 }
+/* Out of flow. In flow a placeholder keeps its width at opacity 0 and shoves
+   the typed value sideways — the bug this rule exists to make unrepeatable.
+   Inheriting the parent's padding and justification reproduces its in-flow
+   position exactly, so a field only has to be position: relative. */
 .hr-ph {
+  position: absolute;
+  inset: 0;
+  padding: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: inherit;
   color: #6e6e6e;
 }
 .hr-btn {
@@ -248,6 +259,7 @@
 }
 /* A read-only value, as the onboarding wizard renders a prefilled field. */
 .hr-value {
+  position: relative;
   display: flex;
   align-items: center;
   height: 62px;
