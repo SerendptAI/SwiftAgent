@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <link rel="stylesheet" href="assets/tutorial.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #000;
+      }
+      body {
+        font-family: "StolzlV", system-ui, sans-serif;
+      }
+
+      .hr-ground {
+        position: absolute;
+        inset: 0;
+        background: #ffffff;
+      }
+
+      /* Carried from ../swift-agents-howto-create-widget so the two dashboard
+         tutorials read as one series. */
+      .hr-chip-step {
+        position: absolute;
+        left: 96px;
+        top: 52px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        height: 56px;
+        padding: 0 30px 0 22px;
+        background: #f4f4f4;
+        border-radius: 999px;
+        font-family: "DMMonoV", ui-monospace, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 24px;
+        font-weight: 500;
+        color: #0a0a0a;
+      }
+      .hr-chip-num {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
+        padding: 0 16px;
+        background: #ffffff;
+        border-radius: 999px;
+        font-size: 21px;
+        color: #6e6e6e;
+      }
+
+      .hr-caption {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 84px;
+        text-align: center;
+        font-size: 34px;
+        font-weight: 500;
+        color: #0a0a0a;
+      }
+      .hr-caption-sub {
+        display: block;
+        margin-top: 16px;
+        font-size: 27px;
+        color: #6e6e6e;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="86"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div
+        id="hr-ground"
+        class="clip hr-ground"
+        data-start="0"
+        data-duration="86"
+        data-track-index="0"
+      ></div>
+
+      <!-- ── Title card (0-4s) ──────────────────────────────────────── -->
+      <div
+        id="hr-scene-title"
+        class="clip"
+        data-start="0"
+        data-duration="4"
+        data-track-index="1"
+        style="position: absolute; inset: 0"
+      >
+        <svg
+          id="hr-title-logo"
+          viewBox="0 0 72 71"
+          style="
+            position: absolute;
+            left: 50%;
+            top: 348px;
+            margin-left: -52px;
+            width: 104px;
+            height: 104px;
+          "
+        >
+          <path d="M72 0H0V70.23H72V0Z" fill="#F2B035" />
+          <path
+            d="M34.9276 15.8941C34.9285 17.1858 35.4142 19.8319 36.1075 23.0929C36.6746 25.7614 37.395 28.9013 38.1431 32.1609C38.3188 32.9228 38.4944 33.6908 38.6709 34.4614C39.6024 38.5334 40.5315 42.6656 41.228 46.2197C41.9292 49.7929 42.3814 52.7233 42.383 54.4196C42.3853 57.1438 41.5894 59.0924 40.3227 60.3604C39.0546 61.6295 37.237 62.2941 35.0407 62.2978C33.23 62.3013 31.409 61.9127 29.7883 61.2801L31.1906 56.3124C32.0804 56.8583 32.9958 57.1079 33.799 57.1068C34.6141 57.1055 35.3889 56.8098 35.9596 56.2307C36.532 55.6493 36.8549 54.8281 36.8541 53.8521C36.8533 52.1369 36.3864 49.23 35.71 45.8011C35.0296 42.3519 34.1236 38.3104 33.22 34.2944L33.1121 33.8161C32.244 29.9583 31.3863 26.1479 30.7363 22.9141C30.0558 19.5246 29.6185 16.8384 29.617 15.3984C29.6151 13.1224 30.347 11.3287 31.5615 10.1056C32.7746 8.88268 34.5255 8.17404 36.6692 8.17023C38.7225 8.16658 40.4583 8.68812 41.7843 9.321L39.741 13.8356C38.9991 13.4231 38.1123 13.1445 37.3279 13.1459C36.6083 13.1472 35.9781 13.4175 35.5401 13.9452C35.1148 14.457 34.9266 15.1437 34.9276 15.8941Z"
+            fill="#0A0A0A"
+          />
+        </svg>
+        <div
+          id="hr-title-word"
+          class="hr-display"
+          style="
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 500px;
+            text-align: center;
+            font-size: 104px;
+          "
+        >
+          Set up your account
+        </div>
+        <div
+          id="hr-title-sub"
+          class="hr-mono"
+          style="
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 640px;
+            text-align: center;
+            font-size: 28px;
+            color: #6e6e6e;
+          "
+        >
+          Teaching your agents who you are
+        </div>
+      </div>
+
+      <!-- ── The four acts ──────────────────────────────────────────── -->
+      <div
+        data-composition-id="act-website"
+        data-composition-src="compositions/act-website.html"
+        data-start="4"
+        data-duration="16"
+        data-track-index="1"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        data-composition-id="act-info"
+        data-composition-src="compositions/act-info.html"
+        data-start="20"
+        data-duration="22"
+        data-track-index="1"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        data-composition-id="act-identity"
+        data-composition-src="compositions/act-identity.html"
+        data-start="42"
+        data-duration="22"
+        data-track-index="1"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+      <div
+        data-composition-id="act-questions"
+        data-composition-src="compositions/act-questions.html"
+        data-start="64"
+        data-duration="22"
+        data-track-index="1"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+
+      <!-- ── Step chips ─────────────────────────────────────────────── -->
+      <div class="clip hr-chip-step" data-start="4" data-duration="16" data-track-index="2">
+        <span class="hr-chip-num">01/04</span>Start from your website
+      </div>
+      <div class="clip hr-chip-step" data-start="20" data-duration="22" data-track-index="2">
+        <span class="hr-chip-num">02/04</span>Company information
+      </div>
+      <div class="clip hr-chip-step" data-start="42" data-duration="22" data-track-index="2">
+        <span class="hr-chip-num">03/04</span>Company identity
+      </div>
+      <div class="clip hr-chip-step" data-start="64" data-duration="22" data-track-index="2">
+        <span class="hr-chip-num">04/04</span>Answer a few questions
+      </div>
+
+      <!-- ── Captions ───────────────────────────────────────────────── -->
+      <div class="clip hr-caption hr-mono" data-start="4" data-duration="8" data-track-index="3">
+        Give us your website and we&rsquo;ll prefill the rest
+      </div>
+      <div class="clip hr-caption hr-mono" data-start="12" data-duration="8" data-track-index="3">
+        Rather type it yourself? Skip and fill it manually
+      </div>
+
+      <div class="clip hr-caption hr-mono" data-start="20" data-duration="8" data-track-index="3">
+        Everything we found, ready to check
+      </div>
+      <div class="clip hr-caption hr-mono" data-start="28" data-duration="8" data-track-index="3">
+        Fix anything we got wrong
+        <span class="hr-caption-sub">Industry, size, country, timezone</span>
+      </div>
+      <div class="clip hr-caption hr-mono" data-start="36" data-duration="6" data-track-index="3">
+        Press Next
+      </div>
+
+      <div class="clip hr-caption hr-mono" data-start="42" data-duration="8" data-track-index="3">
+        What you do, and the problem you solve
+      </div>
+      <div class="clip hr-caption hr-mono" data-start="50" data-duration="8" data-track-index="3">
+        Pick the tone your agents answer in
+      </div>
+      <div class="clip hr-caption hr-mono" data-start="58" data-duration="6" data-track-index="3">
+        Add the emails support should come from
+      </div>
+
+      <div class="clip hr-caption hr-mono" data-start="64" data-duration="7" data-track-index="3">
+        Last part &mdash; the agents ask about your business
+        <span class="hr-caption-sub">Usually takes 5 minutes</span>
+      </div>
+      <div class="clip hr-caption hr-mono" data-start="71" data-duration="8" data-track-index="3">
+        Answer in the chat, or upload the document
+      </div>
+      <div class="clip hr-caption hr-mono" data-start="79" data-duration="7" data-track-index="3">
+        That&rsquo;s your account set up
+      </div>
+    </div>
+
+    <script>
+      const tl = gsap.timeline({ paused: true });
+
+      tl.fromTo(
+        "#hr-title-logo",
+        { scale: 0.9, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.5, ease: "power2.out" },
+        0.15,
+      );
+      tl.fromTo(
+        "#hr-title-word",
+        { y: 26, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" },
+        0.45,
+      );
+      tl.fromTo(
+        "#hr-title-sub",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.4, ease: "power2.out" },
+        0.75,
+      );
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

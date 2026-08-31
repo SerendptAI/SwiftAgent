@@ -217,43 +217,48 @@ export function WidgetCard() {
             </div>
 
             <div className="rounded-[21px] border border-gray-100 bg-white px-6 pt-[84px] pb-6 shadow-sm">
-              <div className="relative">
+              <div className="relative overflow-hidden rounded-[12px] border border-gray-200/80 bg-[#FBFBFB]">
+                <div className="flex h-[38px] items-center justify-between gap-3 border-b border-gray-200/80 bg-white px-3">
+                  <span className="font-dm-mono text-[10px] font-bold tracking-[0.12em] text-gray-400 uppercase">
+                    {mode === "button" ? "Button snippet" : "Widget snippet"}
+                  </span>
+                  {codeSnippet && !locked && (
+                    <button
+                      onClick={() => setRevealed((v) => !v)}
+                      aria-pressed={revealed}
+                      className="font-dm-mono -mr-1 flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[6px] px-2 py-1 text-[10px] font-bold tracking-[0.12em] text-gray-500 uppercase transition-colors hover:bg-gray-100 hover:text-gray-700"
+                    >
+                      {revealed ? (
+                        <EyeOff className="h-3.5 w-3.5" />
+                      ) : (
+                        <Eye className="h-3.5 w-3.5" />
+                      )}
+                      {revealed ? "Hide" : "Reveal"}
+                    </button>
+                  )}
+                </div>
                 <pre
-                  className={`font-stolzl max-h-[125px] overflow-auto pr-23 text-[13px] leading-[1.8] break-all whitespace-pre-wrap text-[#7E7E7E] sm:text-[14px] ${
+                  className={`font-dm-mono max-h-[132px] overflow-y-auto px-3.5 py-3 text-[12px] leading-[1.75] [overflow-wrap:anywhere] whitespace-pre-wrap text-[#6E6E6E] sm:text-[13px] ${
                     locked ? "pointer-events-none blur-sm select-none" : ""
                   }`}
                 >
                   {displayedSnippet || "No widget code found."}
                 </pre>
-                {codeSnippet && !locked && (
-                  <button
-                    onClick={() => setRevealed((v) => !v)}
-                    aria-pressed={revealed}
-                    className="font-dm-mono absolute top-0 right-0 flex items-center gap-1.5 rounded-[6px] bg-[#EDEDED] px-2.5 py-1.5 text-[11px] font-bold tracking-wider text-gray-600 uppercase transition-colors hover:bg-gray-200"
-                  >
-                    {revealed ? (
-                      <EyeOff className="h-3.5 w-3.5" />
-                    ) : (
-                      <Eye className="h-3.5 w-3.5" />
-                    )}
-                    {revealed ? "Hide" : "Reveal"}
-                  </button>
-                )}
                 {locked && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-lg bg-white/50">
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white/60">
                     <p className="font-dm-mono max-w-[260px] text-center text-xs font-bold tracking-wider text-gray-700 uppercase">
                       Subscribe to a plan to unlock your widget code
                     </p>
                     <button
                       onClick={() => showUpgrade("your widget code")}
-                      className="font-dm-mono rounded-md bg-[#006BE5] px-5 py-2 text-xs font-semibold tracking-wider text-white uppercase transition-colors hover:bg-[#0055B8]"
+                      className="font-dm-mono cursor-pointer rounded-md bg-[#006BE5] px-5 py-2 text-xs font-semibold tracking-wider text-white uppercase transition-colors hover:bg-[#0055B8]"
                     >
                       Upgrade
                     </button>
                   </div>
                 )}
               </div>
-              <p className="font-dm-mono mt-2 text-[11px] text-gray-400">
+              <p className="font-dm-mono mt-3 text-[11px] leading-[1.6] text-gray-400">
                 Replace{" "}
                 <code className="rounded bg-gray-100 px-1 py-0.5 text-gray-600">
                   YOUR_API_KEY
@@ -268,7 +273,7 @@ export function WidgetCard() {
                 .
               </p>
               {mode === "button" && (
-                <p className="font-dm-mono mt-2 text-[11px] text-gray-400">
+                <p className="font-dm-mono mt-2 text-[11px] leading-[1.6] text-gray-400">
                   Add the{" "}
                   <code className="rounded bg-gray-100 px-1 py-0.5 text-gray-600">
                     data-swift-agent-open
@@ -280,7 +285,7 @@ export function WidgetCard() {
               <button
                 onClick={handleCopy}
                 disabled={!codeSnippet || locked}
-                className="font-dm-mono mt-6 flex h-[46px] w-full items-center justify-center gap-2.5 rounded-[8px] bg-[#006BE5] text-[16px] font-normal text-white shadow-[-3px_4px_0px_0px_#000000] transition-all hover:bg-[#1E88E5] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-1px_2px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-50"
+                className="font-dm-mono mt-5 flex h-[46px] w-full cursor-pointer items-center justify-center gap-2.5 rounded-[8px] bg-[#006BE5] text-[16px] font-normal text-white shadow-[-3px_4px_0px_0px_#000000] transition-all hover:bg-[#1E88E5] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-1px_2px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Copy className="h-5 w-5" />
                 {copied ? "Copied!" : "Copy"}

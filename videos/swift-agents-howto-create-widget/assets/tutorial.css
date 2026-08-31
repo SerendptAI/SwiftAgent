@@ -1,0 +1,304 @@
+/*
+ * Shared design primitives for every act of the walkthrough.
+ *
+ * Linked rather than inlined: the compiler scopes each composition file's own
+ * <style> to that file's data-composition-id, so a <style> block here would be
+ * act-local. A <link> is hoisted and stays global, which is what a design
+ * system needs when seven sub-compositions have to look like one video.
+ *
+ * Values come from ../frame.md. Nothing here may introduce a colour outside
+ * that table.
+ */
+
+@font-face {
+  font-family: "GreedNarrow";
+  src: url("fonts/GreedNarrow-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-display: block;
+}
+@font-face {
+  font-family: "StolzlV";
+  src: url("fonts/stolzl_book.otf") format("opentype");
+  font-weight: 400;
+  font-display: block;
+}
+@font-face {
+  font-family: "StolzlV";
+  src: url("fonts/stolzl_medium.otf") format("opentype");
+  font-weight: 600;
+  font-display: block;
+}
+@font-face {
+  font-family: "DMMonoV";
+  src: url("fonts/dmmono-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: block;
+}
+@font-face {
+  font-family: "DMMonoV";
+  src: url("fonts/dmmono-500.woff2") format("woff2");
+  font-weight: 500;
+  font-display: block;
+}
+
+/* ── Type ─────────────────────────────────────────────────────────────── */
+.hr-display {
+  font-family: "GreedNarrow", system-ui, sans-serif;
+  text-transform: uppercase;
+  color: #0a0a0a;
+  letter-spacing: -0.01em;
+}
+.hr-mono {
+  font-family: "DMMonoV", ui-monospace, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.hr-h {
+  font-family: "StolzlV", system-ui, sans-serif;
+  font-weight: 600;
+  color: #0a0a0a;
+}
+.hr-note {
+  font-family: "DMMonoV", ui-monospace, monospace;
+  font-size: 22px;
+  line-height: 1.6;
+  color: #6e6e6e;
+}
+.hr-chip {
+  background: #f3f4f6;
+  border-radius: 6px;
+  padding: 2px 8px;
+  color: #4b5563;
+}
+.hr-code {
+  font-family: "DMMonoV", ui-monospace, monospace;
+  letter-spacing: 0;
+  color: #6e6e6e;
+  overflow-wrap: anywhere;
+}
+/* Only on leaf text nodes. On a container it turns the source's own
+   indentation into rendered blank lines. */
+.hr-pre {
+  white-space: pre-wrap;
+}
+
+/* ── Stage ────────────────────────────────────────────────────────────── */
+/* Every act plays inside this box. It stops short of the caption band so a
+   panned or oversized screen is clipped rather than colliding with the text. */
+.hr-stage {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 96px;
+  height: 812px;
+  overflow: hidden;
+}
+.hr-cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 78px;
+  height: 78px;
+}
+
+/* ── Reconstructed UI ─────────────────────────────────────────────────── */
+.hr-label {
+  font-family: "StolzlV", system-ui, sans-serif;
+  font-size: 26px;
+  color: #0a0a0a;
+}
+.hr-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 72px;
+  padding: 0 26px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  font-family: "DMMonoV", ui-monospace, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 25px;
+  color: #0a0a0a;
+}
+.hr-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 72px;
+  padding: 0 24px;
+  background: #ffffff;
+  border: 2px solid #e5e7eb;
+  border-radius: 14px;
+  font-size: 26px;
+  color: #0a0a0a;
+}
+.hr-textarea {
+  position: relative;
+  padding: 22px 26px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  font-family: "DMMonoV", ui-monospace, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 25px;
+  line-height: 1.45;
+  color: #0a0a0a;
+}
+/* Out of flow. In flow a placeholder keeps its width at opacity 0 and shoves
+   the typed value sideways — the bug this rule exists to make unrepeatable.
+   Inheriting the parent's padding and justification reproduces its in-flow
+   position exactly, so a field only has to be position: relative. */
+.hr-ph {
+  position: absolute;
+  inset: 0;
+  padding: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: inherit;
+  color: #6e6e6e;
+}
+.hr-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  border-radius: 8px;
+  background: #006be5;
+  color: #ffffff;
+  font-family: "DMMonoV", ui-monospace, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 28px;
+  font-weight: 500;
+  box-shadow: -4px 4px 0px 0px #000000;
+}
+.hr-card {
+  background: #ffffff;
+  border: 2px solid #f3f4f6;
+  border-radius: 26px;
+}
+/* A row in an opened select or dropdown. */
+.hr-option {
+  display: flex;
+  align-items: center;
+  padding: 0 26px;
+  font-family: "DMMonoV", ui-monospace, monospace;
+  font-size: 25px;
+  letter-spacing: 0.06em;
+  color: #0a0a0a;
+}
+.hr-menu {
+  background: #ffffff;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.12);
+}
+
+/* The dashboard widget card's own controls. */
+.hr-pill {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 32px;
+  background: #006be5;
+  border-radius: 28px;
+  font-family: "DMMonoV", ui-monospace, monospace;
+  font-size: 32px;
+  font-weight: 500;
+  color: #ffffff;
+}
+.hr-ghost {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 30px;
+  background: #ededed;
+  border-radius: 14px;
+  font-family: "GreedNarrow", system-ui, sans-serif;
+  font-size: 26px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #4b5563;
+}
+/* A panel header label. The app uses gray-400 here, which measures 2.54:1 on
+   white; darkened to --muted for the reason frame.md gives for the
+   placeholder gray. */
+.hr-panel-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: "DMMonoV", ui-monospace, monospace;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6e6e6e;
+}
+.hr-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 82px;
+  padding: 0 28px;
+  font-family: "DMMonoV", ui-monospace, monospace;
+  font-size: 26px;
+  font-weight: 500;
+}
+/* The small uppercase caption that sits over a field. */
+.hr-microlabel {
+  font-family: "DMMonoV", ui-monospace, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 20px;
+  font-weight: 500;
+  color: #6e6e6e;
+}
+/* A read-only value, as the onboarding wizard renders a prefilled field. */
+.hr-value {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 62px;
+  padding: 0 22px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  font-family: "StolzlV", system-ui, sans-serif;
+  font-size: 24px;
+  color: #0a0a0a;
+}
+
+/* ── Browser / editor chrome ──────────────────────────────────────────── */
+.hr-window {
+  position: absolute;
+  background: #ffffff;
+  border: 2px solid #e5e5e5;
+  border-radius: 18px;
+  overflow: hidden;
+}
+.hr-window-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 66px;
+  padding: 0 30px;
+  background: #f6f6f6;
+  border-bottom: 2px solid #e5e5e5;
+  font-family: "DMMonoV", ui-monospace, monospace;
+  font-size: 22px;
+  color: #6e6e6e;
+}
+.hr-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #d9d9d9;
+}
+.hr-line {
+  position: absolute;
+  background: #ededed;
+  border-radius: 8px;
+}
