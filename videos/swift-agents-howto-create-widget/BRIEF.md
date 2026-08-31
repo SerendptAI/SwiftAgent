@@ -2,12 +2,12 @@
 workflow: product-launch-video
 flow: automation
 storyboard: yes
-message: "Creating a widget is the whole path from registering a company to a snippet running on your own page — and the plan is the step that blocks people."
+message: "Your widget already exists as a snippet — you need a plan to see it, a key to pair with it, and a paste into your page."
 angle: step-by-step task walkthrough
-audience: brand-new Swift Agents customers, from before they have an account
+audience: a customer already in the dashboard who has not installed the widget
 destination: in-app help drawer (DevelopmentResourcesDrawer)
 aspect: "16:9"
-length_seconds: 170
+length_seconds: 86
 narration: none
 captions: on-screen, caption-led
 language: en
@@ -15,13 +15,15 @@ language: en
 
 ## Scope
 
-The complete journey, registration → live widget, as one video. The two earlier
-tutorials stay as focused quick references; this one subsumes them so a new
-customer can follow a single clip end to end, which is what it was asked for.
+Dashboard → live widget. Four acts, one sub-composition each under
+`compositions/`, wired from `index.html`.
 
-Seven acts, one sub-composition each under `compositions/`, wired from
-`index.html`. A ~3 minute single file would have been unreadable, and the acts
-are far easier to verify one at a time.
+Deliberately **not** the whole signup journey. This drawer only opens inside the
+authenticated dashboard, so anyone watching has already registered, logged in
+and completed onboarding; those steps also each have their own card in the same
+list (`How to register account`, `How to login`, `Set up your account`). What is
+kept is the plan wall, because that one *is* reachable from the dashboard and is
+what actually stops people.
 
 ## Intent
 
@@ -43,25 +45,19 @@ itself — and Act 4 shows the plan wall, which is what actually stops people.
 
 ## What to show
 
-1. `/signup` — the registration form, then the approval-pending state
-2. `/login` — company email, then the six-digit code
-3. `/onboarding` — the website scrape, Company Information, Company Identity,
-   and the questionnaire hand-off (`company-setup/setup-wizard.tsx`)
-4. `/dashboard` — the widget card **locked**, and the `UPGRADE` path out of it
-5. The widget card unlocked — mode dropdown, `Reveal`, `Copy`
-6. `/dashboard/settings/api-keys` — `Key Label`, `Generate`, the one-time reveal
-7. The snippet pasted into a real page before `</body>`, then the widget live
+1. `/dashboard` — the widget card **locked**, and the `UPGRADE` path out of it
+2. The widget card unlocked — mode dropdown, `Reveal`, `Copy`
+3. `/dashboard/settings/api-keys` — `Key Label`, `Generate`, the one-time reveal
+4. The snippet pasted into a real page before `</body>`, then the widget live
 
 ## Customizations
 
 - **Oversized cursor** — house style, carried from the two earlier tutorials. At
   drawer playback size a real-size pointer is invisible.
-- **Seven locked stages, not one.** The earlier videos tour a single form. This
-  one crosses the marketing site, the dashboard, settings and the customer's own
-  page, so each act gets its own stage and the cuts between them are the act
-  boundaries.
-- **A persistent step chip** rather than chapter cards. Seven full-screen breaks
-  would spend fifteen seconds saying nothing.
+- **Four locked stages, not one.** The earlier videos tour a single form. This
+  one crosses the dashboard, settings and the customer's own page, so each act
+  gets its own stage and the cuts between them are the act boundaries.
+- **A persistent step chip** rather than chapter cards.
 - **A shared stylesheet**, `assets/tutorial.css`, linked from every act. The
   compiler scopes each file's own `<style>` to that file's composition id, so a
   `<style>` block could not hold shared primitives; a `<link>` is hoisted and

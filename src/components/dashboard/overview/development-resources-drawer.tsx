@@ -30,17 +30,11 @@ interface TutorialVideo {
 
 type RecordedTutorial = TutorialVideo & { recording: TutorialRecording };
 
-/**
- * One id drives the clip, the still cut from it, and its caption track.
- *
- * @param posterOffset overrides where the still is taken from — see
- *   `videoPosterUrl`. Only needed when the default lands on a frame that
- *   misrepresents the clip.
- */
-function recordingFor(id: string, posterOffset?: string): TutorialRecording {
+/** One id drives the clip, the still cut from it, and its caption track. */
+function recordingFor(id: string): TutorialRecording {
   return {
     src: videoUrl(`tutorials/${id}`),
-    poster: videoPosterUrl(`tutorials/${id}`, posterOffset),
+    poster: videoPosterUrl(`tutorials/${id}`),
     captions: `/videos/tutorials/${id}.en.vtt`,
   };
 }
@@ -53,11 +47,12 @@ const VIDEOS: TutorialVideo[] = [
   },
   {
     title: "How to create widget",
-    // Runs registration → live, so the default 30% mark sits in the login
-    // chapter. 64% is the widget card itself, which is what the card promises.
-    recording: recordingFor("how-to-create-widget", "64p"),
+    recording: recordingFor("how-to-create-widget"),
   },
-  { title: "Set up your account" },
+  {
+    title: "Set up your account",
+    recording: recordingFor("setup-your-account"),
+  },
   { title: "Personalize settings" },
   { title: "Link a card" },
   { title: "Invite a teammate" },

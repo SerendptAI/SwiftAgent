@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="assets/tutorial.css" />
+      <style>
+        #root {
+          position: absolute;
+          inset: 0;
+        }
+        .web-centre {
+          position: absolute;
+          left: 0;
+          right: 0;
+          text-align: center;
+        }
+        #web-skip-ring {
+          position: absolute;
+          left: 50%;
+          margin-left: -230px;
+          width: 460px;
+          height: 64px;
+          border: 3px solid #f2b035;
+          border-radius: 999px;
+        }
+      </style>
+
+      <div
+        id="root"
+        data-composition-id="act-website"
+        data-width="1920"
+        data-height="1080"
+      >
+        <div class="hr-stage">
+          <div class="web-centre hr-display" style="top: 168px; font-size: 62px">
+            Let&rsquo;s set up your company
+          </div>
+          <div
+            class="web-centre hr-mono"
+            style="top: 260px; font-size: 25px; color: #6e6e6e"
+          >
+            Enter your website and we&rsquo;ll prefill your details for you
+          </div>
+
+          <div
+            id="web-url"
+            class="hr-field"
+            style="
+              position: absolute;
+              left: 50%;
+              top: 352px;
+              margin-left: -380px;
+              width: 760px;
+              height: 84px;
+            "
+          >
+            <span id="web-url-ph" class="hr-code" style="font-size: 26px"
+              >https://yourcompany.com</span
+            >
+            <span
+              id="web-url-val"
+              class="hr-code"
+              style="font-size: 26px; color: #0a0a0a"
+            ></span>
+          </div>
+
+          <div
+            id="web-analyze"
+            class="hr-btn"
+            style="
+              position: absolute;
+              left: 50%;
+              top: 468px;
+              margin-left: -380px;
+              width: 760px;
+              height: 84px;
+              font-size: 26px;
+            "
+          >
+            <span id="web-analyze-label">Analyze my site</span>
+          </div>
+
+          <div
+            class="web-centre hr-mono"
+            style="top: 596px; font-size: 22px; color: #6e6e6e"
+          >
+            <span style="text-decoration: underline"
+              >Skip, I&rsquo;ll fill it manually</span
+            >
+          </div>
+          <div id="web-skip-ring" style="top: 578px"></div>
+
+          <svg
+            id="web-cursor"
+            class="hr-cursor"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M5 2.5 L5 20 L9.4 16.2 L12.3 22.2 L15.2 20.8 L12.4 15 L18.2 15 Z"
+              fill="#0A0A0A"
+              stroke="#FFFFFF"
+              stroke-width="1.4"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+
+          const URL = "chowdeck.com";
+          const TIP = { x: 16, y: 8 };
+          const OFF = { x: 1640, y: 1180 };
+          const to = (x, y) => ({ x: x - TIP.x, y: y - TIP.y });
+
+          tl.set("#web-cursor", { x: OFF.x, y: OFF.y, opacity: 0, scale: 1 }, 0);
+          tl.set("#web-url-val", { innerHTML: "" }, 0);
+          tl.set("#web-url-ph", { opacity: 1 }, 0);
+          tl.set("#web-analyze-label", { innerHTML: "Analyze my site" }, 0);
+          tl.set("#web-analyze", { x: 0, y: 0 }, 0);
+          tl.fromTo(
+            "#web-skip-ring",
+            { autoAlpha: 0 },
+            { autoAlpha: 0, duration: 0.01 },
+            0,
+          );
+
+          tl.to(
+            "#web-cursor",
+            { ...to(700, 394), opacity: 1, duration: 0.8, ease: "power2.out" },
+            0.8,
+          );
+          tl.to("#web-cursor", { scale: 0.88, duration: 0.09 }, 1.7);
+          tl.to("#web-cursor", { scale: 1, duration: 0.09 }, 1.79);
+          tl.to("#web-url-ph", { opacity: 0, duration: 0.12 }, 1.95);
+          for (let i = 1; i <= URL.length; i++) {
+            tl.set("#web-url-val", { innerHTML: URL.slice(0, i) }, 2.05 + i * 0.06);
+          }
+          const urlEnd = 2.05 + URL.length * 0.06;
+
+          tl.to(
+            "#web-cursor",
+            { ...to(960, 510), duration: 0.6, ease: "power2.out" },
+            urlEnd + 0.3,
+          );
+          tl.to("#web-cursor", { scale: 0.88, duration: 0.09 }, urlEnd + 0.95);
+          tl.to("#web-cursor", { scale: 1, duration: 0.09 }, urlEnd + 1.04);
+          tl.to("#web-analyze", { x: -4, y: 4, duration: 0.1 }, urlEnd + 0.95);
+          tl.to("#web-analyze", { x: 0, y: 0, duration: 0.14 }, urlEnd + 1.06);
+          // The scrape is what fills the next screen in, so the wait is shown.
+          tl.set(
+            "#web-analyze-label",
+            { innerHTML: "Analyzing your website&hellip;" },
+            urlEnd + 1.2,
+          );
+          tl.to("#web-cursor", { opacity: 0, duration: 0.25 }, urlEnd + 1.6);
+
+          // The escape hatch, named before the act ends: a scrape that finds
+          // nothing is not a dead end, and people do not read the small print
+          // under a primary button.
+          tl.fromTo(
+            "#web-skip-ring",
+            { autoAlpha: 0, scale: 1.08 },
+            { autoAlpha: 1, scale: 1, duration: 0.45, ease: "power2.out" },
+            9.6,
+          );
+
+          window.__timelines["act-website"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

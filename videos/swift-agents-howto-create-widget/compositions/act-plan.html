@@ -11,12 +11,17 @@
           position: absolute;
           inset: 0;
         }
-        /* The card lands locked: blurred snippet, dimmed Copy. */
+        /* The card lands locked: blurred snippet, disabled Copy. */
         #plan-code {
           filter: blur(7px);
         }
+        /* The app disables Copy with opacity-50, which at video scale washes
+           its white label to 2.14:1. Rendered as a grey disabled fill instead
+           — legibility outranks an exact colour match, the same trade
+           frame.md documents for the app's placeholder gray. */
         #plan-copy {
-          opacity: 0.5;
+          background: #ededed;
+          color: #6e6e6e;
         }
       </style>
 
@@ -85,11 +90,14 @@
               background: #fbfbfb;
             "
           >
-            <div class="hr-panel-label">Widget snippet</div>
+            <div class="hr-panel-label" data-layout-allow-occlusion>
+              Widget snippet
+            </div>
             <div
               id="plan-code"
               class="hr-code"
               data-layout-allow-overlap
+              data-layout-allow-occlusion
               style="padding: 30px 28px; font-size: 26px; line-height: 1.75"
             >&lt;script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="4f9a2c71-3e88-4d10-b6c2-0e5b7a91d3f4" data-api-key="YOUR_API_KEY" defer&gt;&lt;/script&gt;</div>
 
@@ -229,8 +237,13 @@
           );
           tl.fromTo(
             "#plan-copy",
-            { opacity: 0.5 },
-            { opacity: 1, duration: 0.5, ease: "power2.out" },
+            { backgroundColor: "#ededed", color: "#6e6e6e" },
+            {
+              backgroundColor: "#006be5",
+              color: "#ffffff",
+              duration: 0.5,
+              ease: "power2.out",
+            },
             10.9,
           );
 
