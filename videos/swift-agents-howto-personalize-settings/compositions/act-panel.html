@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="assets/tutorial.css" />
+      <style>
+        #root {
+          position: absolute;
+          inset: 0;
+        }
+        /* The drawer is 448px in the app. Shown head-on and scaled up here:
+           its instruction lives entirely in text, and at drawer-playback size
+           the real proportion is unreadable. frame.md — legibility governs
+           framing. Act 1 has already established where the panel lives. */
+        /* The column is ~3000px of panel scrolled through an 812px stage, so
+           most of it is out of frame at any moment. Its own clipping parent,
+           so what is off-stage is bounded rather than measured against the
+           caption band it never actually reaches. */
+        #panel-clip {
+          position: absolute;
+          inset: 0;
+          /* Clear of the step chip, which sits at frame y 52-108. Whatever the
+             scroll position, nothing from the column can reach it. */
+          top: 48px;
+          overflow: hidden;
+        }
+        #panel-col {
+          position: absolute;
+          left: 360px;
+          top: 0;
+          width: 1200px;
+        }
+        .p-head {
+          text-transform: uppercase;
+          font-size: 38px;
+          color: #0a0a0a;
+        }
+        .p-desc {
+          text-transform: uppercase;
+          letter-spacing: 0.09em;
+          font-size: 22px;
+          line-height: 1.8;
+          color: #6e6e6e;
+        }
+        .p-agent-name {
+          text-transform: uppercase;
+          letter-spacing: 0.12em;
+          font-size: 24px;
+          font-weight: 500;
+          color: #0a0a0a;
+        }
+        .p-agent-desc {
+          text-transform: uppercase;
+          letter-spacing: 0.07em;
+          font-size: 20px;
+          line-height: 1.75;
+          color: #6e6e6e;
+        }
+        .p-box {
+          width: 34px;
+          height: 34px;
+          border: 3px solid #c8c8c8;
+          border-radius: 6px;
+        }
+        .p-row {
+          display: flex;
+          align-items: flex-start;
+          gap: 22px;
+        }
+        .p-badge {
+          display: inline-block;
+          margin-top: 14px;
+          padding: 10px 20px;
+          background: #006be5;
+          border-radius: 4px;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          font-size: 19px;
+          font-weight: 500;
+          color: #ffffff;
+        }
+        .p-label {
+          text-transform: uppercase;
+          letter-spacing: 0.12em;
+          font-size: 20px;
+          color: #6e6e6e;
+        }
+        .p-input {
+          position: relative;
+          display: flex;
+          align-items: center;
+          height: 64px;
+          margin-top: 10px;
+          padding: 0 22px;
+          background: #f3f4f6;
+          border-radius: 8px;
+          font-size: 22px;
+          color: #0a0a0a;
+        }
+        .p-toggle {
+          width: 76px;
+          height: 42px;
+          background: #ededed;
+          border-radius: 999px;
+        }
+        .p-toggle.is-on {
+          background: #006be5;
+        }
+        .p-toggle.is-on > i {
+          margin-left: 39px;
+        }
+        .p-toggle > i {
+          display: block;
+          width: 32px;
+          height: 32px;
+          margin: 5px;
+          background: #ffffff;
+          border-radius: 50%;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+        .p-collapsed {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding-bottom: 22px;
+          border-bottom: 2px solid #f3f4f6;
+        }
+      </style>
+
+      <div
+        id="root"
+        data-composition-id="act-panel"
+        data-width="1920"
+        data-height="1080"
+      >
+        <div class="hr-stage">
+          <div id="panel-clip">
+          <div id="panel-col">
+            <!-- Route to Human -->
+            <div class="hr-display p-head" data-layout-allow-overlap data-layout-allow-occlusion style="margin-top: 40px">Route to Human</div>
+            <div class="hr-mono p-desc" data-layout-allow-overlap data-layout-allow-occlusion style="margin-top: 16px">
+              Turn off the AI agent and send every widget chat straight to your
+              human support team. Customers are asked for their email and a
+              support ticket is opened automatically.
+            </div>
+            <div
+              style="
+                margin-top: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+              "
+            >
+              <span class="hr-mono p-desc" data-layout-allow-overlap data-layout-allow-occlusion>Route all chats to my support team</span>
+              <div class="p-toggle"><i></i></div>
+            </div>
+
+            <!-- Select Agents -->
+            <div class="hr-display p-head" data-layout-allow-overlap data-layout-allow-occlusion style="margin-top: 56px">Select Agents</div>
+            <div class="hr-mono p-desc" data-layout-allow-overlap data-layout-allow-occlusion style="margin-top: 16px">
+              Which agents are allowed to work in this chatbot
+            </div>
+
+            <div class="p-row" style="margin-top: 30px">
+              <div id="p-box-047" class="p-box" style="margin-top: 4px"></div>
+              <div style="flex: 1">
+                <div class="hr-mono p-agent-name">Agent 047</div>
+                <div class="hr-mono p-agent-desc" data-layout-allow-overlap data-layout-allow-occlusion style="margin-top: 8px">
+                  Agent 047 can locate any dashboard feature for users, no matter
+                  the complexity. It knows each feature&rsquo;s location and can
+                  provide directions and screenshots.
+                </div>
+                <div id="p-badge-047" class="hr-mono p-badge">
+                  Users must be logged in
+                </div>
+              </div>
+            </div>
+
+            <div class="p-row" style="margin-top: 28px">
+              <div id="p-box-007" class="p-box" style="margin-top: 4px"></div>
+              <div style="flex: 1">
+                <div class="hr-mono p-agent-name">Agent 007</div>
+                <div class="hr-mono p-agent-desc" data-layout-allow-overlap data-layout-allow-occlusion style="margin-top: 8px">
+                  Agent 007 can search a website&rsquo;s front-end content for
+                  custom info. If a website doesn&rsquo;t have the requested
+                  data, it responds gracefully.
+                </div>
+              </div>
+            </div>
+
+            <div class="p-row" style="margin-top: 28px">
+              <div id="p-box-626" class="p-box" style="margin-top: 4px"></div>
+              <div style="flex: 1">
+                <div class="hr-mono p-agent-name">Agent 626</div>
+                <div class="hr-mono p-agent-desc" data-layout-allow-overlap data-layout-allow-occlusion style="margin-top: 8px">
+                  Agent 626 can analyze cryptocurrency transactions and inform
+                  users of potential issues.
+                </div>
+              </div>
+            </div>
+
+            <div class="p-row" style="margin-top: 28px">
+              <div id="p-box-001" class="p-box" style="margin-top: 4px"></div>
+              <div style="flex: 1">
+                <div class="hr-mono p-agent-name">Agent 001</div>
+                <div class="hr-mono p-agent-desc" data-layout-allow-overlap data-layout-allow-occlusion style="margin-top: 8px">
+                  Agent 001 reviews bank records and updates customers on
+                  payments, including refunds and issues.
+                </div>
+              </div>
+            </div>
+
+            <!-- Sandbox -->
+            <div class="hr-display p-head" data-layout-allow-overlap data-layout-allow-occlusion style="margin-top: 58px">Sandbox</div>
+            <div class="hr-mono p-desc" data-layout-allow-overlap data-layout-allow-occlusion style="margin-top: 16px">
+              Please create a sandbox account and share the login details for
+              Agent 047
+            </div>
+
+            <div style="margin-top: 28px">
+              <div class="hr-mono p-label">Login URL</div>
+              <div class="hr-code p-input">https://app.chowdeck.com/login</div>
+            </div>
+            <div style="margin-top: 22px">
+              <div class="hr-mono p-label">Dashboard URL</div>
+              <div class="hr-code p-input">https://app.chowdeck.com/dashboard</div>
+            </div>
+            <div style="margin-top: 22px">
+              <div class="hr-mono p-label">Email/Username</div>
+              <div class="hr-code p-input">sandbox@chowdeck.com</div>
+            </div>
+            <div style="margin-top: 22px">
+              <div class="hr-mono p-label">Password</div>
+              <div class="hr-code p-input">••••••••</div>
+            </div>
+
+            <!-- The two sections this video does not open -->
+            <div class="p-collapsed" style="margin-top: 50px">
+              <span class="hr-display p-head" data-layout-allow-overlap data-layout-allow-occlusion>Payment Sandbox</span>
+              <span class="hr-mono p-label">+</span>
+            </div>
+            <div class="p-collapsed" style="margin-top: 26px">
+              <span class="hr-display p-head" data-layout-allow-overlap data-layout-allow-occlusion>API Integration</span>
+              <span class="hr-mono p-label">+</span>
+            </div>
+
+            <!-- Suggested Questions -->
+            <div class="hr-display p-head" data-layout-allow-overlap data-layout-allow-occlusion style="margin-top: 50px">Suggested Questions</div>
+            <div class="hr-mono p-desc" data-layout-allow-overlap data-layout-allow-occlusion style="margin-top: 16px">
+              Here you can set the most frequently asked questions from your
+              customers that the bot will recommend.
+            </div>
+            <div
+              style="
+                margin-top: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+              "
+            >
+              <span class="hr-mono p-desc" data-layout-allow-overlap data-layout-allow-occlusion>Show suggestions in the widget</span>
+              <div id="p-sugg-toggle" class="p-toggle is-on"><i></i></div>
+            </div>
+
+            <div style="margin-top: 26px">
+              <div class="hr-mono p-label">Suggestion 1</div>
+              <div id="p-sugg-1" class="hr-code p-input">
+                <span id="p-sugg-1-ph" class="hr-ph">Whats the pricing like?</span
+                ><span id="p-sugg-1-val"></span>
+              </div>
+            </div>
+            <div style="margin-top: 22px">
+              <div class="hr-mono p-label">Suggestion 2</div>
+              <div class="hr-code p-input">
+                <span class="hr-ph">Whats the pricing like?</span>
+              </div>
+            </div>
+
+            <div
+              id="p-save"
+              class="hr-btn"
+              style="margin-top: 54px; width: 1200px; height: 88px; font-size: 26px"
+            >
+              Save &amp; Close
+            </div>
+          </div>
+          </div>
+
+          <!-- The toast the save raises -->
+          <div
+            id="p-toast"
+            style="
+              position: absolute;
+              right: 60px;
+              bottom: 60px;
+              display: flex;
+              align-items: center;
+              gap: 18px;
+              padding: 24px 32px;
+              background: #f0fdf4;
+              border: 2px solid #bbf7d0;
+              border-radius: 12px;
+              box-shadow: 0 12px 34px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <svg viewBox="0 0 24 24" style="width: 30px; height: 30px; color: #00875c">
+              <circle
+                cx="12"
+                cy="12"
+                r="9.5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <path
+                d="M7.8 12.3l2.9 2.9 5.5-5.5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <span
+              class="hr-mono"
+              style="font-size: 24px; color: #00684a; text-transform: none"
+              >Settings saved.</span
+            >
+          </div>
+
+          <svg
+            id="p-cursor"
+            class="hr-cursor"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M5 2.5 L5 20 L9.4 16.2 L12.3 22.2 L15.2 20.8 L12.4 15 L18.2 15 Z"
+              fill="#0A0A0A"
+              stroke="#FFFFFF"
+              stroke-width="1.4"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+
+          const SUGGESTION = "Where is my order?";
+          const TIP = { x: 16, y: 8 };
+          const OFF = { x: 1640, y: 1180 };
+
+          // The panel scrolls rather than scales: it is one long column, so a
+          // beat is a scroll position, and a cursor target is a column
+          // coordinate plus whatever the column is offset by at that moment.
+          const AGENTS = -300;
+          const SANDBOX = -1210;
+          const SUGGEST = -1950;
+          const at = (x, y, off) => ({ x: x - TIP.x, y: y + off - TIP.y });
+
+          tl.set("#p-cursor", { x: OFF.x, y: OFF.y, opacity: 0, scale: 1 }, 0);
+          tl.set("#p-sugg-1-val", { innerHTML: "" }, 0);
+          tl.set("#p-sugg-1-ph", { opacity: 1 }, 0);
+          tl.set("#p-save", { x: 0, y: 0 }, 0);
+          tl.fromTo("#p-toast", { autoAlpha: 0 }, { autoAlpha: 0, duration: 0.01 }, 0);
+          tl.fromTo(
+            ["#p-box-047", "#p-box-007"],
+            { backgroundColor: "#006BE5", borderColor: "#006BE5" },
+            { backgroundColor: "#006BE5", borderColor: "#006BE5", duration: 0.01 },
+            0,
+          );
+          tl.fromTo("#p-badge-047", { autoAlpha: 1 }, { autoAlpha: 1, duration: 0.01 }, 0);
+
+          // ── Beat 1 · the agents (0-24s) ─────────────────────────
+          // 047 and 007 arrive ticked; that is the app's own default.
+          tl.fromTo(
+            "#panel-col",
+            { y: AGENTS + 40 },
+            { y: AGENTS, duration: 0.8, ease: "power2.out" },
+            0.1,
+          );
+
+          // 626 is the one to add on camera — crypto is the branch most
+          // companies leave off, so ticking it shows the checkbox responding.
+          const p626 = at(392, 1090, AGENTS);
+          tl.to(
+            "#p-cursor",
+            { x: p626.x, y: p626.y, opacity: 1, duration: 0.9, ease: "power2.out" },
+            13.4,
+          );
+          tl.to("#p-cursor", { scale: 0.88, duration: 0.09 }, 14.6);
+          tl.to("#p-cursor", { scale: 1, duration: 0.09 }, 14.69);
+          tl.fromTo(
+            "#p-box-626",
+            { backgroundColor: "rgba(0,107,229,0)", borderColor: "#C8C8C8" },
+            {
+              backgroundColor: "#006BE5",
+              borderColor: "#006BE5",
+              duration: 0.25,
+              ease: "power2.out",
+            },
+            14.75,
+          );
+          tl.to("#p-cursor", { opacity: 0, duration: 0.3 }, 15.6);
+
+          // ── Beat 2 · the sandbox (24-42s) ───────────────────────
+          tl.to(
+            "#panel-col",
+            { y: SANDBOX, duration: 1.0, ease: "power2.inOut" },
+            24.2,
+          );
+
+          // ── Beat 3 · suggestions, then save (42-68s) ────────────
+          tl.to(
+            "#panel-col",
+            { y: SUGGEST, duration: 1.1, ease: "power2.inOut" },
+            42.2,
+          );
+
+          const pSugg = at(700, 2712, SUGGEST);
+          tl.to(
+            "#p-cursor",
+            { x: pSugg.x, y: pSugg.y, opacity: 1, duration: 0.9, ease: "power2.out" },
+            45.0,
+          );
+          tl.to("#p-cursor", { scale: 0.88, duration: 0.09 }, 46.2);
+          tl.to("#p-cursor", { scale: 1, duration: 0.09 }, 46.29);
+          tl.to("#p-sugg-1-ph", { opacity: 0, duration: 0.12 }, 46.45);
+          for (let i = 1; i <= SUGGESTION.length; i++) {
+            tl.set(
+              "#p-sugg-1-val",
+              { innerHTML: SUGGESTION.slice(0, i) },
+              46.55 + i * 0.055,
+            );
+          }
+
+          const pSave = at(960, 2960, SUGGEST);
+          tl.to(
+            "#p-cursor",
+            { x: pSave.x, y: pSave.y, duration: 0.9, ease: "power2.out" },
+            50.4,
+          );
+          tl.to("#p-cursor", { scale: 0.88, duration: 0.09 }, 51.6);
+          tl.to("#p-cursor", { scale: 1, duration: 0.09 }, 51.69);
+          tl.to("#p-save", { x: -4, y: 4, duration: 0.1 }, 51.6);
+          tl.to("#p-save", { x: 0, y: 0, duration: 0.14 }, 51.71);
+          tl.to("#p-cursor", { opacity: 0, duration: 0.3 }, 52.2);
+
+          tl.fromTo(
+            "#p-toast",
+            { autoAlpha: 0, y: -18 },
+            { autoAlpha: 1, y: 0, duration: 0.45, ease: "power2.out" },
+            52.6,
+          );
+
+          window.__timelines["act-panel"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

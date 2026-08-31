@@ -53,7 +53,10 @@ const VIDEOS: TutorialVideo[] = [
     title: "Set up your account",
     recording: recordingFor("setup-your-account"),
   },
-  { title: "Personalize settings" },
+  {
+    title: "Personalize settings",
+    recording: recordingFor("personalize-settings"),
+  },
   { title: "Link a card" },
   { title: "Invite a teammate" },
   { title: "Read visitor activity" },
