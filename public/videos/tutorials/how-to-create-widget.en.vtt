@@ -1,0 +1,93 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:04.000
+How to create your Swift Agents widget — from registration to live
+
+2
+00:00:04.000 --> 00:00:11.000
+Step 1 of 7 — Register your company at swiftagents.org
+
+3
+00:00:11.000 --> 00:00:20.000
+Enter your company name and company email
+
+4
+00:00:20.000 --> 00:00:26.000
+Describe what you do, and pick your customer volume
+
+5
+00:00:26.000 --> 00:00:32.000
+Registration is an application — we review every one and reach out
+
+6
+00:00:32.000 --> 00:00:39.000
+Step 2 of 7 — Once approved, sign in with your company email
+
+7
+00:00:39.000 --> 00:00:46.000
+We email you a six-digit code. If you can't see it, check spam or junk
+
+8
+00:00:46.000 --> 00:00:52.000
+Type the code — it submits on the sixth digit
+
+9
+00:00:52.000 --> 00:00:59.000
+Step 3 of 7 — Set up your company. Give us your website and we'll prefill the rest
+
+10
+00:00:59.000 --> 00:01:10.000
+Check the company information — name, industry, size, country and timezone
+
+11
+00:01:10.000 --> 00:01:20.000
+Then your company identity — what you solve, and how you sound
+
+12
+00:01:20.000 --> 00:01:28.000
+The agents then ask a few questions. It takes about five minutes
+
+13
+00:01:28.000 --> 00:01:36.000
+Step 4 of 7 — Your widget code stays locked until you're on a plan
+
+14
+00:01:36.000 --> 00:01:44.000
+Press Upgrade and subscribe. The code unlocks straight after
+
+15
+00:01:44.000 --> 00:01:51.000
+Step 5 of 7 — Your widget is already here. The snippet is the widget
+
+16
+00:01:51.000 --> 00:02:00.000
+Choose Widget or Button. Button mode opens the chat from your own button
+
+17
+00:02:00.000 --> 00:02:07.000
+Press Reveal to unmask your company ID
+
+18
+00:02:07.000 --> 00:02:14.000
+Copy the snippet
+
+19
+00:02:14.000 --> 00:02:21.000
+Step 6 of 7 — In Settings, API Keys, press Generate
+
+20
+00:02:21.000 --> 00:02:28.000
+Copy the key now — it is shown only once
+
+21
+00:02:28.000 --> 00:02:37.000
+Step 7 of 7 — Paste the snippet into your page, just before the closing body tag
+
+22
+00:02:37.000 --> 00:02:43.000
+Swap YOUR_API_KEY for the key you generated
+
+23
+00:02:43.000 --> 00:02:50.000
+That's it — your agent is live on your site

@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="assets/tutorial.css" />
+      <style>
+        #root {
+          position: absolute;
+          inset: 0;
+        }
+        #login-code-scene,
+        #login-done-scene {
+          opacity: 0;
+          visibility: hidden;
+        }
+        .login-centre {
+          position: absolute;
+          left: 0;
+          right: 0;
+          text-align: center;
+        }
+        .login-signin {
+          position: absolute;
+          right: 12px;
+          top: 12px;
+          display: flex;
+          align-items: center;
+          height: 72px;
+          padding: 0 38px;
+          background: #0a0a0a;
+          border-radius: 10px;
+          color: #ffffff;
+        }
+        .login-box {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 110px;
+          height: 132px;
+          background: #f3f4f6;
+          border-radius: 12px;
+          font-size: 52px;
+          color: #0a0a0a;
+        }
+      </style>
+
+      <div
+        id="root"
+        data-composition-id="act-login"
+        data-width="1920"
+        data-height="1080"
+      >
+        <div class="hr-stage">
+          <!-- Beat 1 · the login screen -->
+          <div id="login-email-scene" style="position: absolute; inset: 0">
+            <svg
+              viewBox="0 0 72 71"
+              style="
+                position: absolute;
+                left: 50%;
+                top: 206px;
+                margin-left: -44px;
+                width: 88px;
+                height: 88px;
+              "
+            >
+              <path d="M72 0H0V70.23H72V0Z" fill="#F2B035" />
+              <path
+                d="M34.9276 15.8941C34.9285 17.1858 35.4142 19.8319 36.1075 23.0929C36.6746 25.7614 37.395 28.9013 38.1431 32.1609C38.3188 32.9228 38.4944 33.6908 38.6709 34.4614C39.6024 38.5334 40.5315 42.6656 41.228 46.2197C41.9292 49.7929 42.3814 52.7233 42.383 54.4196C42.3853 57.1438 41.5894 59.0924 40.3227 60.3604C39.0546 61.6295 37.237 62.2941 35.0407 62.2978C33.23 62.3013 31.409 61.9127 29.7883 61.2801L31.1906 56.3124C32.0804 56.8583 32.9958 57.1079 33.799 57.1068C34.6141 57.1055 35.3889 56.8098 35.9596 56.2307C36.532 55.6493 36.8549 54.8281 36.8541 53.8521C36.8533 52.1369 36.3864 49.23 35.71 45.8011C35.0296 42.3519 34.1236 38.3104 33.22 34.2944L33.1121 33.8161C32.244 29.9583 31.3863 26.1479 30.7363 22.9141C30.0558 19.5246 29.6185 16.8384 29.617 15.3984C29.6151 13.1224 30.347 11.3287 31.5615 10.1056C32.7746 8.88268 34.5255 8.17404 36.6692 8.17023C38.7225 8.16658 40.4583 8.68812 41.7843 9.321L39.741 13.8356C38.9991 13.4231 38.1123 13.1445 37.3279 13.1459C36.6083 13.1472 35.9781 13.4175 35.5401 13.9452C35.1148 14.457 34.9266 15.1437 34.9276 15.8941Z"
+                fill="#0A0A0A"
+              />
+            </svg>
+            <div
+              class="login-centre hr-mono"
+              style="top: 336px; font-size: 26px; color: #6e6e6e"
+            >
+              Welcome back
+            </div>
+            <div class="login-centre hr-h" style="top: 384px; font-size: 58px">
+              Log in to your account
+            </div>
+
+            <div
+              id="login-field"
+              style="
+                position: absolute;
+                left: 50%;
+                top: 510px;
+                margin-left: -470px;
+                width: 940px;
+                height: 96px;
+                background: #ffffff;
+                border: 2px solid #e5e5e5;
+                border-radius: 14px;
+              "
+            >
+              <span
+                id="login-email-ph"
+                class="hr-code"
+                style="position: absolute; left: 34px; top: 32px; font-size: 28px"
+                >company@email.com</span
+              >
+              <span
+                id="login-email-val"
+                class="hr-code"
+                style="
+                  position: absolute;
+                  left: 34px;
+                  top: 32px;
+                  font-size: 28px;
+                  color: #0a0a0a;
+                "
+              ></span>
+              <div id="login-signin" class="login-signin hr-mono" style="font-size: 24px">
+                Sign in
+              </div>
+            </div>
+          </div>
+
+          <!-- Beat 2 · the six-digit code -->
+          <div id="login-code-scene" style="position: absolute; inset: 0">
+            <div class="login-centre hr-h" style="top: 208px; font-size: 54px">
+              Check your email
+            </div>
+            <div
+              class="login-centre hr-mono"
+              style="top: 292px; font-size: 26px; color: #6e6e6e"
+            >
+              We sent a 6-digit code to ops@chowdeck.com
+            </div>
+            <div
+              style="
+                position: absolute;
+                left: 50%;
+                top: 392px;
+                margin-left: -380px;
+                display: flex;
+                gap: 20px;
+              "
+            >
+              <div id="login-d1" class="login-box hr-code"></div>
+              <div id="login-d2" class="login-box hr-code"></div>
+              <div id="login-d3" class="login-box hr-code"></div>
+              <div id="login-d4" class="login-box hr-code"></div>
+              <div id="login-d5" class="login-box hr-code"></div>
+              <div id="login-d6" class="login-box hr-code"></div>
+            </div>
+            <div
+              class="login-centre hr-mono"
+              style="top: 578px; font-size: 24px; color: #6e6e6e"
+            >
+              No code? Check your spam or junk folder
+            </div>
+          </div>
+
+          <!-- Beat 3 · through to the dashboard -->
+          <div id="login-done-scene" style="position: absolute; inset: 0">
+            <div
+              id="login-shell"
+              class="hr-window"
+              style="left: 320px; top: 154px; width: 1280px; height: 500px"
+            >
+              <div class="hr-window-bar">
+                <span class="hr-dot"></span>
+                <span class="hr-dot"></span>
+                <span class="hr-dot"></span>
+                <span
+                  style="
+                    margin-left: 14px;
+                    padding: 6px 22px;
+                    background: #ffffff;
+                    border-radius: 999px;
+                  "
+                  >swiftagents.org/dashboard</span
+                >
+              </div>
+              <div style="position: relative; height: 432px">
+                <div
+                  style="
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    bottom: 0;
+                    width: 96px;
+                    background: #f6f6f6;
+                  "
+                ></div>
+                <div class="hr-line" style="left: 30px; top: 34px; width: 36px; height: 36px; background: #f2b035"></div>
+                <div class="hr-line" style="left: 30px; top: 100px; width: 36px; height: 20px"></div>
+                <div class="hr-line" style="left: 30px; top: 140px; width: 36px; height: 20px"></div>
+                <div class="hr-line" style="left: 30px; top: 180px; width: 36px; height: 20px"></div>
+                <div class="hr-line" style="left: 148px; top: 44px; width: 260px; height: 30px"></div>
+                <div class="hr-line" style="left: 148px; top: 120px; width: 480px; height: 128px; background: #f6f6f6"></div>
+                <div class="hr-line" style="left: 660px; top: 120px; width: 480px; height: 128px; background: #f6f6f6"></div>
+                <div class="hr-line" style="left: 148px; top: 288px; width: 992px; height: 100px; background: #f6f6f6"></div>
+              </div>
+            </div>
+            <div
+              class="login-centre hr-display"
+              style="top: 700px; font-size: 62px"
+            >
+              You&rsquo;re in
+            </div>
+          </div>
+
+          <svg
+            id="login-cursor"
+            class="hr-cursor"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M5 2.5 L5 20 L9.4 16.2 L12.3 22.2 L15.2 20.8 L12.4 15 L18.2 15 Z"
+              fill="#0A0A0A"
+              stroke="#FFFFFF"
+              stroke-width="1.4"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+
+      </div>
+
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+
+          const EMAIL = "ops@chowdeck.com";
+          const CODE = "418305";
+          const TIP = { x: 16, y: 8 };
+          const OFF = { x: 1640, y: 1180 };
+          // No surface transform on this act — the screens are already framed
+          // at a readable size, so cursor targets are plain stage coordinates.
+          const to = (x, y) => ({ x: x - TIP.x, y: y - TIP.y });
+
+          // ── Beat 1 · email + sign in (0-7s) ──────────────────────
+          tl.set("#login-cursor", { x: OFF.x, y: OFF.y, opacity: 0, scale: 1 }, 0);
+          tl.set("#login-email-val", { innerHTML: "" }, 0);
+          tl.set("#login-email-ph", { opacity: 1 }, 0);
+          tl.set("#login-signin", { x: 0, y: 0 }, 0);
+          for (let i = 1; i <= 6; i++) {
+            tl.set("#login-d" + i, { innerHTML: "" }, 0);
+          }
+          tl.fromTo(
+            "#login-email-scene",
+            { opacity: 0, y: 16 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
+            0.1,
+          );
+
+          const pField = to(700, 558);
+          tl.to(
+            "#login-cursor",
+            { ...pField, opacity: 1, duration: 0.8, ease: "power2.out" },
+            0.9,
+          );
+          tl.to("#login-cursor", { scale: 0.88, duration: 0.09 }, 1.8);
+          tl.to("#login-cursor", { scale: 1, duration: 0.09 }, 1.89);
+          tl.to("#login-email-ph", { opacity: 0, duration: 0.12 }, 2.05);
+          for (let i = 1; i <= EMAIL.length; i++) {
+            tl.set("#login-email-val", { innerHTML: EMAIL.slice(0, i) }, 2.15 + i * 0.055);
+          }
+          const typed = 2.15 + EMAIL.length * 0.055;
+
+          const pSignIn = to(1355, 558);
+          tl.to(
+            "#login-cursor",
+            { ...pSignIn, duration: 0.6, ease: "power2.out" },
+            typed + 0.35,
+          );
+          tl.to("#login-cursor", { scale: 0.88, duration: 0.09 }, typed + 1.05);
+          tl.to("#login-cursor", { scale: 1, duration: 0.09 }, typed + 1.14);
+          tl.to("#login-signin", { scale: 0.97, duration: 0.1 }, typed + 1.05);
+          tl.to("#login-signin", { scale: 1, duration: 0.14 }, typed + 1.15);
+          tl.to("#login-cursor", { opacity: 0, duration: 0.25 }, typed + 1.5);
+          tl.to("#login-email-scene", { autoAlpha: 0, duration: 0.4 }, 6.5);
+
+          // ── Beat 2 · the six-digit code (7-14s) ──────────────────
+          tl.fromTo(
+            "#login-code-scene",
+            { autoAlpha: 0, y: 16 },
+            { autoAlpha: 1, y: 0, duration: 0.45, ease: "power2.out" },
+            7.0,
+          );
+          // Typed one box at a time; the last digit is what submits the form.
+          for (let i = 1; i <= 6; i++) {
+            tl.set("#login-d" + i, { innerHTML: CODE[i - 1] }, 8.6 + (i - 1) * 0.45);
+            tl.fromTo(
+              "#login-d" + i,
+              { scale: 0.88 },
+              { scale: 1, duration: 0.22, ease: "back.out(2)" },
+              8.6 + (i - 1) * 0.45,
+            );
+          }
+          tl.to("#login-code-scene", { autoAlpha: 0, duration: 0.4 }, 13.5);
+
+          // ── Beat 3 · you're in (14-20s) ──────────────────────────
+          tl.fromTo(
+            "#login-done-scene",
+            { autoAlpha: 0 },
+            { autoAlpha: 1, duration: 0.4 },
+            14.0,
+          );
+          tl.fromTo(
+            "#login-shell",
+            { y: 20, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.55, ease: "power2.out" },
+            14.1,
+          );
+
+          window.__timelines["act-login"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

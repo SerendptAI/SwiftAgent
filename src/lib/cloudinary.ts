@@ -15,10 +15,34 @@ const CLOUD_NAME = "dmzoyse0g";
  */
 const VIDEO_DELIVERY = "f_auto:video,q_auto";
 
+/**
+ * A poster is a still cut from the clip itself, so it can never drift from the
+ * video it fronts. `w_960` is wide enough for a full-bleed player without
+ * shipping the source frame.
+ */
+const POSTER_DELIVERY = "f_auto,q_auto,w_960";
+
+/** Far enough in to clear the title card a tutorial opens on. */
+const DEFAULT_POSTER_OFFSET = "30p";
+
 /** Ids mirror what used to be public/videos, so `path` reads like the file did. */
 const VIDEO_FOLDER = "swift-agents";
 
 /** @param path e.g. "hero-section", "platforms/website". No extension. */
 export function videoUrl(path: string): string {
   return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/${VIDEO_DELIVERY}/${VIDEO_FOLDER}/${path}`;
+}
+
+/**
+ * A still frame from the clip at `path`, for a thumbnail or a video poster.
+ *
+ * @param offset Cloudinary start-offset — a percentage (`"64p"`) or seconds
+ *   (`"12"`). Override the default when it lands somewhere that misrepresents
+ *   the clip: a long walkthrough's 30% mark can sit in an unrelated chapter.
+ */
+export function videoPosterUrl(
+  path: string,
+  offset: string = DEFAULT_POSTER_OFFSET,
+): string {
+  return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/so_${offset},${POSTER_DELIVERY}/${VIDEO_FOLDER}/${path}.jpg`;
 }
