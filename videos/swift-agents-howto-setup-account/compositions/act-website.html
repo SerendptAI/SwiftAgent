@@ -17,6 +17,20 @@
           right: 0;
           text-align: center;
         }
+        /* FormInput is a grey filled box that uppercases what you type, and it
+           inherits text-center from the step's container — so .hr-input, not
+           .hr-field, and centred rather than left-aligned. */
+        #web-url {
+          justify-content: center;
+        }
+        /* Out of flow, or its 23 characters push the typed value right of
+           centre even while it is faded out. */
+        #web-url-ph {
+          position: absolute;
+          left: 0;
+          right: 0;
+          text-align: center;
+        }
         #web-skip-ring {
           position: absolute;
           left: 50%;
@@ -47,7 +61,7 @@
 
           <div
             id="web-url"
-            class="hr-field"
+            class="hr-input"
             style="
               position: absolute;
               left: 50%;
@@ -57,14 +71,10 @@
               height: 84px;
             "
           >
-            <span id="web-url-ph" class="hr-code" style="font-size: 26px"
+            <span id="web-url-ph" style="font-size: 26px; color: #6e6e6e"
               >https://yourcompany.com</span
             >
-            <span
-              id="web-url-val"
-              class="hr-code"
-              style="font-size: 26px; color: #0a0a0a"
-            ></span>
+            <span id="web-url-val" style="font-size: 26px"></span>
           </div>
 
           <div
