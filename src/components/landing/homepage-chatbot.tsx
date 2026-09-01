@@ -2,16 +2,16 @@
 
 import { useEffect } from "react";
 
+import { WIDGET_ORIGIN, WIDGET_SCRIPT_URL } from "@/lib/widget-embed";
+
 const CHATBOT_SCRIPT_ID = "swift-agents-homepage-chatbot";
-const CHATBOT_SCRIPT_SRC = "https://widget.swiftagents.org/dist/widget-ui.js";
 const CHATBOT_COMPANY_ID = "1e1bccc0-40a5-4700-a5e2-0dd55cddb75c";
 const CHATBOT_API_KEY =
   "swa_live_fdd8fe9d203494f23a19481403550ca5ded6a099b45a01a63a5b4867febf38cd";
-const CHATBOT_BASE_URL = "https://widget.swiftagents.org";
 
 const CHATBOT_DOM_SELECTORS = [
-  `script[src="${CHATBOT_SCRIPT_SRC}"]`,
-  'iframe[src*="widget.swiftagents.org"]',
+  `script[src="${WIDGET_SCRIPT_URL}"]`,
+  `iframe[src^="${WIDGET_ORIGIN}"]`,
   '[id*="swift-agent" i]',
   '[class*="swift-agent" i]',
   '[id*="swiftagents" i]',
@@ -33,12 +33,12 @@ export function HomepageChatbot() {
 
     const script = document.createElement("script");
     script.id = CHATBOT_SCRIPT_ID;
-    script.src = CHATBOT_SCRIPT_SRC;
+    script.src = WIDGET_SCRIPT_URL;
     script.defer = true;
     script.crossOrigin = "anonymous";
     script.dataset.companyId = CHATBOT_COMPANY_ID;
     script.dataset.apiKey = CHATBOT_API_KEY;
-    script.dataset.baseUrl = CHATBOT_BASE_URL;
+    script.dataset.baseUrl = WIDGET_ORIGIN;
 
     document.body.appendChild(script);
 

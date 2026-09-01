@@ -32,6 +32,7 @@ import {
 import { useStrollConfig, useUpdateStrollConfig } from "@/hooks/use-stroll";
 import { Link } from "@/i18n/navigation";
 import { getApiErrorMessage } from "@/lib/api-error";
+import { WIDGET_SCRIPT_URL } from "@/lib/widget-embed";
 import type {
   IntegrationCreatePayload,
   IntegrationUpdatePayload,
@@ -117,9 +118,9 @@ export function WidgetCard() {
   const codeSnippet = useMemo(() => {
     if (!companyId) return "";
     if (mode === "button") {
-      return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" data-api-key="YOUR_API_KEY" data-mode="button" data-trigger="[data-swift-agent-open]" defer></script>\n<button data-swift-agent-open>Chat with us</button>`;
+      return `<script src="${WIDGET_SCRIPT_URL}" data-company-id="${companyId}" data-api-key="YOUR_API_KEY" data-mode="button" data-trigger="[data-swift-agent-open]" defer></script>\n<button data-swift-agent-open>Chat with us</button>`;
     }
-    return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" data-api-key="YOUR_API_KEY" defer></script>`;
+    return `<script src="${WIDGET_SCRIPT_URL}" data-company-id="${companyId}" data-api-key="YOUR_API_KEY" defer></script>`;
   }, [companyId, mode]);
 
   /**
