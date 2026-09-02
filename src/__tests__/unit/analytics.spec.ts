@@ -9,7 +9,6 @@ describe("shouldRecordSession", () => {
     expect(shouldRecordSession("/en/landing")).toBe(true);
     expect(shouldRecordSession("/en/products")).toBe(true);
     expect(shouldRecordSession("/en/case-studies/chowdeck")).toBe(true);
-    expect(shouldRecordSession("/en/signup")).toBe(true);
   });
 
   it("never records authenticated surfaces or credential entry", () => {
@@ -18,7 +17,8 @@ describe("shouldRecordSession", () => {
     expect(shouldRecordSession("/en/onboarding")).toBe(false);
     expect(shouldRecordSession("/en/admin/analytics")).toBe(false);
     expect(shouldRecordSession("/en/login")).toBe(false);
-    expect(shouldRecordSession("/en/invite")).toBe(false);
+    // Public, but it ends in one-time-code entry.
+    expect(shouldRecordSession("/en/signup")).toBe(false);
     expect(shouldRecordSession("/en/auth/callback")).toBe(false);
   });
 

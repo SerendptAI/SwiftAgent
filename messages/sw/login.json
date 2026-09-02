@@ -16,5 +16,7 @@
   "backToEmail": "Badilisha barua pepe",
   "checkSpam": "Tumekutumia msimbo kwa barua pepe. Huoni? Angalia kwenye folda ya taka au barua zisizohitajika.",
   "resendCode": "Tuma msimbo tena",
-  "codeResent": "Msimbo mpya umetumwa."
+  "codeResent": "Msimbo mpya umetumwa.",
+  "accountNotFound": "Hatukupata akaunti kwa barua pepe hiyo",
+  "createAccount": "Fungua akaunti"
 }
