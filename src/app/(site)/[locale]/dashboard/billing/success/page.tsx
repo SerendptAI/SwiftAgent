@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { Icons } from "@/components/icons";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { useBillingDetails, useBillingPlans } from "@/hooks/use-billing";
+import { isFreeTier } from "@/services/billing";
 
 // How long to keep polling the backend for the webhook-driven activation
 // before showing a "still processing" state.
@@ -41,14 +42,14 @@ export default function BillingSuccessPage() {
       if (gaveUp) return false;
       const d = query.state.data;
       const st = d?.subscription_status ?? d?.status;
-      const active = d?.tier != null && d.tier !== "none" && st === "active";
+      const active = !!d && !isFreeTier(d.tier) && st === "active";
       return active ? false : POLL_INTERVAL_MS;
     },
   });
 
   const status = details?.subscription_status ?? details?.status;
   const confirmed =
-    details?.tier != null && details.tier !== "none" && status === "active";
+    !!details && !isFreeTier(details.tier) && status === "active";
 
   // Force a fresh read on arrival (the cached value may pre-date the payment),
   // and stop polling after a grace period if the webhook never confirms.
@@ -66,8 +67,7 @@ export default function BillingSuccessPage() {
   // Once confirmed, stop the give-up timer from mattering.
   const confirming = !confirmed && !gaveUp;
 
-  const tierKey =
-    details?.tier && details.tier !== "none" ? details.tier : null;
+  const tierKey = details && !isFreeTier(details.tier) ? details.tier : null;
   const plan = tierKey && plans ? plans[tierKey] : undefined;
   const planName =
     details?.display_name || plan?.display_name || tierKey || "—";

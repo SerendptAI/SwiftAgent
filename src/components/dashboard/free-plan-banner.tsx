@@ -1,0 +1,58 @@
+"use client";
+
+import { useActiveCompanyId } from "@/hooks/use-active-company";
+import { useCompanyPlan } from "@/hooks/use-billing";
+import type { UsageMetric } from "@/services/billing";
+import { useUpgradeModalStore } from "@/store/upgrade-modal-store";
+
+interface FreePlanBannerProps {
+  /**
+   * What the reader was reaching for, as a noun phrase the upgrade modal can
+   * name ("more strolls").
+   */
+  feature: string;
+}
+
+function formatUsage(label: string, metric: UsageMetric | undefined) {
+  if (!metric) return null;
+  return `${metric.used}/${metric.limit} ${label} used`;
+}
+
+/**
+ * Renders only for a company on the free plan, where the allowance is small
+ * enough that seeing what is left changes what the reader does next. Paid
+ * companies get nothing.
+ */
+export function FreePlanBanner({ feature }: FreePlanBannerProps) {
+  const companyId = useActiveCompanyId();
+  const plan = useCompanyPlan(companyId);
+  const showUpgrade = useUpgradeModalStore((s) => s.show);
+
+  if (!plan.isFree) return null;
+
+  const counters = [
+    formatUsage("agent", plan.usage?.agents),
+    formatUsage("strolls this month", plan.usage?.strolls),
+  ].filter(Boolean);
+
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-[#006BE5]/5 px-4 py-3">
+      <div className="min-w-0">
+        <p className="font-dm-mono text-xs font-bold tracking-wider text-[#0055B8] uppercase">
+          Free plan
+        </p>
+        <p className="font-dm-mono mt-1 text-[11px] leading-[1.6] text-gray-500">
+          One agent and one automated stroll a month.
+          {counters.length > 0 && ` ${counters.join(" · ")}.`}
+        </p>
+      </div>
+      <button
+        type="button"
+        onClick={() => showUpgrade(feature)}
+        className="font-dm-mono shrink-0 cursor-pointer rounded-md bg-[#006BE5] px-4 py-2 text-[11px] font-semibold tracking-wider text-white uppercase transition-colors hover:bg-[#0055B8]"
+      >
+        Upgrade
+      </button>
+    </div>
+  );
+}

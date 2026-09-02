@@ -12,6 +12,7 @@ import {
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { FreePlanBanner } from "@/components/dashboard/free-plan-banner";
 import {
   emptyStrollForm,
   StrollConfigFields,
@@ -22,7 +23,6 @@ import {
 } from "@/components/dashboard/stroll-config-fields";
 import { Icons } from "@/components/icons";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
-import { useHasActivePlan } from "@/hooks/use-billing";
 import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
 import {
   useCreateIntegration,
@@ -37,7 +37,6 @@ import type {
   IntegrationCreatePayload,
   IntegrationUpdatePayload,
 } from "@/services/integrations";
-import { useUpgradeModalStore } from "@/store/upgrade-modal-store";
 
 import {
   API_INTEGRATION_NAME,
@@ -64,9 +63,6 @@ export function WidgetCard() {
     message: string;
   } | null>(null);
   const activeCompanyId = useActiveCompanyId();
-  const hasActivePlan = useHasActivePlan(activeCompanyId);
-  const locked = hasActivePlan === false;
-  const showUpgrade = useUpgradeModalStore((s) => s.show);
 
   useEffect(() => {
     if (!toast) return;
@@ -74,15 +70,12 @@ export function WidgetCard() {
     return () => clearTimeout(id);
   }, [toast]);
 
-  // Auto-open settings when arriving from onboarding (/dashboard?settings=1),
-  // but only for users on an active plan — otherwise prompt them to upgrade.
+  // Auto-open settings when arriving from onboarding (/dashboard?settings=1).
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
   useEffect(() => {
     if (searchParams.get("settings") !== "1") return;
-    // Wait until the plan status is known before deciding what to open.
-    if (hasActivePlan === undefined) return;
 
     const next = new URLSearchParams(searchParams.toString());
     next.delete("settings");
@@ -91,12 +84,8 @@ export function WidgetCard() {
       scroll: false,
     });
 
-    if (hasActivePlan) {
-      setIsSettingsOpen(true);
-    } else {
-      showUpgrade("the widget settings");
-    }
-  }, [searchParams, pathname, router, hasActivePlan, showUpgrade]);
+    setIsSettingsOpen(true);
+  }, [searchParams, pathname, router]);
 
   const modeDropdownRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -140,12 +129,12 @@ export function WidgetCard() {
   );
 
   const handleCopy = useCallback(() => {
-    if (!codeSnippet || locked) return;
+    if (!codeSnippet) return;
     navigator.clipboard.writeText(codeSnippet);
     setCopied(true);
     setIsSettingsOpen(true);
     setTimeout(() => setCopied(false), 2000);
-  }, [codeSnippet, locked]);
+  }, [codeSnippet]);
 
   return (
     <div className="rounded-xl">
@@ -202,13 +191,7 @@ export function WidgetCard() {
 
               <div className="flex items-center pt-[6px] sm:pr-6">
                 <button
-                  onClick={() => {
-                    if (locked) {
-                      showUpgrade("the widget settings");
-                      return;
-                    }
-                    setIsSettingsOpen(true);
-                  }}
+                  onClick={() => setIsSettingsOpen(true)}
                   className="font-greed-narrow flex h-[42px] cursor-pointer items-center gap-2 rounded-[7px] bg-[#EDEDED] px-3 text-[13px] font-bold tracking-wider text-gray-600 uppercase transition-colors hover:bg-gray-100 sm:px-4 sm:text-sm"
                 >
                   <Icons.Settings className="h-5 w-5" />
@@ -223,7 +206,7 @@ export function WidgetCard() {
                   <span className="font-dm-mono text-[10px] font-bold tracking-[0.12em] text-gray-400 uppercase">
                     {mode === "button" ? "Button snippet" : "Widget snippet"}
                   </span>
-                  {codeSnippet && !locked && (
+                  {codeSnippet && (
                     <button
                       onClick={() => setRevealed((v) => !v)}
                       aria-pressed={revealed}
@@ -238,26 +221,9 @@ export function WidgetCard() {
                     </button>
                   )}
                 </div>
-                <pre
-                  className={`font-dm-mono max-h-[132px] overflow-y-auto px-3.5 py-3 text-[12px] leading-[1.75] [overflow-wrap:anywhere] whitespace-pre-wrap text-[#6E6E6E] sm:text-[13px] ${
-                    locked ? "pointer-events-none blur-sm select-none" : ""
-                  }`}
-                >
+                <pre className="font-dm-mono max-h-[132px] overflow-y-auto px-3.5 py-3 text-[12px] leading-[1.75] [overflow-wrap:anywhere] whitespace-pre-wrap text-[#6E6E6E] sm:text-[13px]">
                   {displayedSnippet || "No widget code found."}
                 </pre>
-                {locked && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white/60">
-                    <p className="font-dm-mono max-w-[260px] text-center text-xs font-bold tracking-wider text-gray-700 uppercase">
-                      Subscribe to a plan to unlock your widget code
-                    </p>
-                    <button
-                      onClick={() => showUpgrade("your widget code")}
-                      className="font-dm-mono cursor-pointer rounded-md bg-[#006BE5] px-5 py-2 text-xs font-semibold tracking-wider text-white uppercase transition-colors hover:bg-[#0055B8]"
-                    >
-                      Upgrade
-                    </button>
-                  </div>
-                )}
               </div>
               <p className="font-dm-mono mt-3 text-[11px] leading-[1.6] text-gray-400">
                 Replace{" "}
@@ -285,7 +251,7 @@ export function WidgetCard() {
 
               <button
                 onClick={handleCopy}
-                disabled={!codeSnippet || locked}
+                disabled={!codeSnippet}
                 className="font-dm-mono mt-5 flex h-[46px] w-full cursor-pointer items-center justify-center gap-2.5 rounded-[8px] bg-[#006BE5] text-[16px] font-normal text-white shadow-[-3px_4px_0px_0px_#000000] transition-all hover:bg-[#1E88E5] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-1px_2px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Copy className="h-5 w-5" />
@@ -613,6 +579,7 @@ function ChatbotSettingsSidebar({
             <ChevronLeft className="h-4 w-4" />
             Back
           </button>
+          <FreePlanBanner feature="more agents and strolls" />
           <RouteToHumanSection
             value={routeToHuman}
             onChange={setRouteToHuman}

@@ -10,9 +10,13 @@ import { AddCardModal } from "@/components/dashboard/settings/add-card-modal";
 import { CanceledSubscriptionBanner } from "@/components/dashboard/settings/canceled-subscription-banner";
 import { CardBrandIcon } from "@/components/dashboard/settings/card-brand-icon";
 import { type Plan, PlanCard } from "@/components/pricing/plan-card";
-import { plansFromBackend } from "@/components/pricing/plans";
+import { freePlan, plansFromBackend } from "@/components/pricing/plans";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
-import { useBillingDetails, useBillingPlans } from "@/hooks/use-billing";
+import {
+  useBillingDetails,
+  useBillingPlans,
+  useCompanyPlan,
+} from "@/hooks/use-billing";
 import { cn } from "@/lib/utils";
 import type { SavedCard } from "@/services/billing";
 import { useCardStore } from "@/store/card-store";
@@ -32,7 +36,9 @@ export default function BillingPage() {
   const { savedCards: localCards, addCard } = useCardStore();
   const t = useTranslations("pricing");
   const locale = useLocale();
-  const plans: Plan[] = plansFromBackend(backendPlans, t, locale);
+  const companyPlan = useCompanyPlan(companyId);
+  const paidPlans: Plan[] = plansFromBackend(backendPlans, t, locale);
+  const free: Plan = freePlan(backendPlans, t, locale);
 
   const backendCards: SavedCard[] = details?.saved_cards ?? [];
   const localAsSaved: SavedCard[] = localCards.map((c) => ({
@@ -40,7 +46,6 @@ export default function BillingPage() {
     last4: c.last4,
   }));
   const savedCards: SavedCard[] = [...backendCards, ...localAsSaved];
-  const activeTier = details?.tier ?? null;
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -132,21 +137,26 @@ export default function BillingPage() {
         <div className="mb-4">
           <CanceledSubscriptionBanner details={details} />
         </div>
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10">
-          {plans.map((plan) => {
-            const isActive =
-              !!plan.tier && !!activeTier && plan.tier === activeTier;
-            return (
-              <PlanCard
-                key={plan.name}
-                plan={plan}
-                showSubscribe
-                onSubscribe={handleSubscribe}
-                subscribeDisabled={!companyId}
-                isCurrentPlan={isActive}
-              />
-            );
-          })}
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:gap-10 xl:grid-cols-4">
+          {/* The free plan is granted, never bought: it offers no CTA beyond
+              marking itself as the plan in force. */}
+          <PlanCard
+            plan={free}
+            showSubscribe={companyPlan.isFree}
+            isCurrentPlan={companyPlan.isFree}
+          />
+          {paidPlans.map((paidPlan) => (
+            <PlanCard
+              key={paidPlan.name}
+              plan={paidPlan}
+              showSubscribe
+              onSubscribe={handleSubscribe}
+              subscribeDisabled={!companyId}
+              isCurrentPlan={
+                companyPlan.isPaid && paidPlan.tier === companyPlan.tier
+              }
+            />
+          ))}
         </div>
       </div>
 

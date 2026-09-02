@@ -6,6 +6,16 @@
   "contactSales": "Contáctanos",
   "currentPlan": "Plan actual",
   "plans": {
+    "free": {
+      "name": "Plan Gratis",
+      "description": "Todo lo necesario para poner\nun agente en tu sitio y\nverlo funcionar.",
+      "features": [
+        "1 agente de IA desplegado",
+        "1 stroll automatizado al mes",
+        "Widget integrado y fragmento de código",
+        "1 empresa por cuenta principal"
+      ]
+    },
     "basic": {
       "name": "Plan Basic",
       "description": "Pensado para startups\nincipientes y proyectos pequeños\nque están tanteando el terreno.",

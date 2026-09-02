@@ -8,7 +8,11 @@ import { CanceledSubscriptionBanner } from "@/components/dashboard/settings/canc
 import { CardBrandIcon } from "@/components/dashboard/settings/card-brand-icon";
 import { HelpBanner } from "@/components/dashboard/settings/help-banner";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
-import { useBillingDetails, useOpenBillingPortal } from "@/hooks/use-billing";
+import {
+  useBillingDetails,
+  useCompanyPlan,
+  useOpenBillingPortal,
+} from "@/hooks/use-billing";
 import type { SavedCard } from "@/services/billing";
 import { useCardStore } from "@/store/card-store";
 
@@ -16,6 +20,7 @@ export default function BillingPage() {
   const [showAddCard, setShowAddCard] = useState(false);
   const companyId = useActiveCompanyId();
   const { data: details } = useBillingDetails(companyId);
+  const companyPlan = useCompanyPlan(companyId);
   const portal = useOpenBillingPortal(companyId);
   const { savedCards: localCards, addCard } = useCardStore();
 
@@ -26,14 +31,17 @@ export default function BillingPage() {
   }));
   const savedCards: SavedCard[] = [...backendCards, ...localAsSaved];
 
-  const presentPlanName =
-    details?.display_name?.toUpperCase() ||
-    (details?.tier ? String(details.tier).toUpperCase() : "FREE");
+  // A company with no paid subscription is on the free plan, whichever of the
+  // backend's unpaid tiers it reports.
+  const presentPlanName = companyPlan.isPaid
+    ? (details?.display_name?.toUpperCase() ??
+      String(companyPlan.tier).toUpperCase())
+    : "FREE";
 
   const subscriptionStatus =
     details?.subscription_status ?? details?.status ?? null;
   const canManageSubscription =
-    !!companyId &&
+    companyPlan.isPaid &&
     (subscriptionStatus === "active" || subscriptionStatus === "canceled");
 
   return (

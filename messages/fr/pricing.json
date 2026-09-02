@@ -6,6 +6,16 @@
   "contactSales": "Nous contacter",
   "currentPlan": "Formule actuelle",
   "plans": {
+    "free": {
+      "name": "Formule Gratuite",
+      "description": "Tout le nécessaire pour mettre\nun agent en ligne sur votre site\net le voir à l’œuvre.",
+      "features": [
+        "1 agent IA déployé",
+        "1 stroll automatisé par mois",
+        "Widget intégré et extrait de code",
+        "1 entreprise par compte principal"
+      ]
+    },
     "basic": {
       "name": "Formule Basic",
       "description": "Pensée pour les jeunes\nstartups et les petits projets\nqui tâtent le terrain.",

@@ -3,6 +3,7 @@
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { FreePlanBanner } from "@/components/dashboard/free-plan-banner";
 import { HelpBanner } from "@/components/dashboard/settings/help-banner";
 import {
   emptyStrollForm,
@@ -91,6 +92,8 @@ export default function StrollSettingsPage() {
   return (
     <div className={CARD_CLASS}>
       <HelpBanner bgColor="bg-[#006BE5]" />
+
+      <FreePlanBanner feature="more strolls" />
 
       <div>
         <h3 className="font-stolzl text-base font-bold text-gray-900 sm:text-lg">
