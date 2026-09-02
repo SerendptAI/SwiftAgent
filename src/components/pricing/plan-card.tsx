@@ -33,6 +33,8 @@ interface PlanCardProps {
   onSubscribe?: (plan: Plan) => void;
   /** Disables the Subscribe button (e.g. while a checkout request is pending) */
   subscribeDisabled?: boolean;
+  /** Overrides the CTA wording for a plan that isn't subscribed to, like the free one. */
+  subscribeLabel?: string;
   /** The company already subscribes to this tier — takes precedence over any other CTA. */
   isCurrentPlan?: boolean;
 }
@@ -43,6 +45,7 @@ export function PlanCard({
   className = "",
   onSubscribe,
   subscribeDisabled = false,
+  subscribeLabel,
   isCurrentPlan = false,
 }: PlanCardProps) {
   const t = useTranslations("pricing");
@@ -122,7 +125,7 @@ export function PlanCard({
               disabled={subscribeDisabled}
               className={CTA_CLASS}
             >
-              {t("subscribe")}
+              {subscribeLabel ?? t("subscribe")}
             </button>
           )}
         </div>

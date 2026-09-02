@@ -13,9 +13,10 @@ interface FreePlanBannerProps {
   feature: string;
 }
 
-function formatUsage(label: string, metric: UsageMetric | undefined) {
+/** "0/1 agents" — the fraction already says these were used, so nothing adds it. */
+function formatUsage(metric: UsageMetric | undefined, noun: string) {
   if (!metric) return null;
-  return `${metric.used}/${metric.limit} ${label} used`;
+  return `${metric.used}/${metric.limit} ${noun}`;
 }
 
 /**
@@ -31,8 +32,8 @@ export function FreePlanBanner({ feature }: FreePlanBannerProps) {
   if (!plan.isFree) return null;
 
   const counters = [
-    formatUsage("agent", plan.usage?.agents),
-    formatUsage("strolls this month", plan.usage?.strolls),
+    formatUsage(plan.usage?.agents, "agents"),
+    formatUsage(plan.usage?.strolls, "strolls this month"),
   ].filter(Boolean);
 
   return (
