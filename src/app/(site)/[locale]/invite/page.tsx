@@ -26,7 +26,6 @@ export default function InvitePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Already verified → skip straight to login
   useEffect(() => {
     if (hasReferralCookie()) {
       router.replace("/login");

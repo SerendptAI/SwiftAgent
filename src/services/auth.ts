@@ -7,8 +7,6 @@ import {
 } from "@/lib/api-client";
 import type { ScrapedCompanyData } from "@/services/company";
 
-// ── Types ──────────────────────────────────────────────────────────────────────
-
 export interface User {
   id: string;
   email: string;
@@ -27,8 +25,6 @@ export interface User {
   updated_at?: string;
 }
 
-// ── Google Login ───────────────────────────────────────────────────────────────
-
 export function loginWithGoogle(locale: string = "en"): Promise<void> {
   const redirectUrl = `${window.location.origin}/${locale}/auth/callback`;
 
@@ -40,8 +36,6 @@ export function loginWithGoogle(locale: string = "en"): Promise<void> {
   // Never resolves — keeps the mutation pending while the browser navigates
   return new Promise(() => {});
 }
-
-// ── User API ───────────────────────────────────────────────────────────────────
 
 export async function getCurrentUser(): Promise<User> {
   const { data } = await apiClient.get<User>("/api/v1/auth/me");
@@ -100,8 +94,6 @@ export async function updateUserSecurity(payload: {
   );
   return data;
 }
-
-// ── OTP Authentication ────────────────────────────────────────────────────────
 
 export interface OtpSendResponse {
   message: string;
@@ -162,14 +154,10 @@ export async function verifyOtp(
   return data;
 }
 
-// ── Logout ─────────────────────────────────────────────────────────────────────
-
 export function logout(locale: string = "en") {
   clearAuthTokens();
   window.location.href = `/${locale}/login`;
 }
-
-// ── Referral ───────────────────────────────────────────────────────────────────
 
 export async function verifyReferral(code: string): Promise<string> {
   const { data } = await apiClient.post<string>(
@@ -178,8 +166,6 @@ export async function verifyReferral(code: string): Promise<string> {
   );
   return data;
 }
-
-// ── Registration / Approval ───────────────────────────────────────────────────
 
 export interface RegisterInterestPayload {
   company_name: string;
@@ -227,8 +213,6 @@ export async function getRegistrationDetails(): Promise<RegistrationDetails> {
   );
   return data;
 }
-
-// ── Helpers ────────────────────────────────────────────────────────────────────
 
 export function processAuthCallback(searchParams: URLSearchParams): boolean {
   const accessToken = searchParams.get("access_token");

@@ -25,8 +25,6 @@ import {
 } from "@/services/auth";
 import { clearActiveCompany } from "@/store/active-company-store";
 
-// ── Fetch & cache the current user ─────────────────────────────────────────────
-
 export function useCurrentUser() {
   return useQuery<User>({
     queryKey: ["currentUser"],
@@ -41,19 +39,15 @@ export function useCurrentUser() {
       if (status === 401 || status === 403) return false;
       return failureCount < 2;
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
   });
 }
-
-// ── Trigger Google OAuth login ─────────────────────────────────────────────────
 
 export function useGoogleLogin() {
   return useMutation({
     mutationFn: (locale?: string) => loginWithGoogle(locale),
   });
 }
-
-// ── Update User Profile ────────────────────────────────────────────────────────
 
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
@@ -65,8 +59,6 @@ export function useUpdateProfile() {
     },
   });
 }
-
-// ── Update display name (PATCH /me/name) ─────────────────────────────────────
 
 export function useUpdateUserName() {
   const queryClient = useQueryClient();
@@ -87,8 +79,6 @@ export function useUpdateUserName() {
   });
 }
 
-// ── Upload profile picture (PATCH /me/pfp) ───────────────────────────────────
-
 export function useUploadUserPfp() {
   const queryClient = useQueryClient();
 
@@ -108,8 +98,6 @@ export function useUploadUserPfp() {
   });
 }
 
-// ── Update User Security (backup email + access code) ─────────────────────────
-
 export function useUpdateUserSecurity() {
   const queryClient = useQueryClient();
 
@@ -120,8 +108,6 @@ export function useUpdateUserSecurity() {
     },
   });
 }
-
-// ── Send OTP ──────────────────────────────────────────────────────────────────
 
 export function useSendOtp() {
   const queryClient = useQueryClient();
@@ -141,8 +127,6 @@ export function useSendOtp() {
   });
 }
 
-// ── Verify OTP ────────────────────────────────────────────────────────────────
-
 export function useVerifyOtp() {
   const queryClient = useQueryClient();
   return useMutation<
@@ -158,15 +142,11 @@ export function useVerifyOtp() {
   });
 }
 
-// ── Register Interest ─────────────────────────────────────────────────────────
-
 export function useRegisterInterest() {
   return useMutation<RegisterInterestResponse, Error, RegisterInterestPayload>({
     mutationFn: registerInterest,
   });
 }
-
-// ── Registration Details (post-approval prefill) ──────────────────────────────
 
 export function useRegistrationDetails(enabled: boolean = true) {
   return useQuery<RegistrationDetails>({
@@ -177,8 +157,6 @@ export function useRegistrationDetails(enabled: boolean = true) {
     staleTime: 5 * 60 * 1000,
   });
 }
-
-// ── Logout and clear cache ─────────────────────────────────────────────────────
 
 export function useLogout() {
   const queryClient = useQueryClient();

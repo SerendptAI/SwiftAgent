@@ -28,7 +28,6 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // Stream the SSE response through to the client
   return new Response(upstream.body, {
     headers: {
       "Content-Type": "text/event-stream",

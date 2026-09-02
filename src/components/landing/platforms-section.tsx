@@ -75,7 +75,6 @@ export function PlatformsSection() {
                 {t(`platforms.${p.id}.label`)}
               </button>
 
-              {/* Expanded content — accordion with smooth height animation */}
               <div
                 className={cn(
                   "grid transition-all duration-300 ease-in-out",

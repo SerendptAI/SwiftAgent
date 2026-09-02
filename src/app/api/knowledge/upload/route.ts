@@ -21,7 +21,6 @@ export async function POST(req: NextRequest) {
     const body = await req.arrayBuffer();
 
     const backendUrl = `${API_BASE_URL}/api/v1/knowledge/upload`;
-    console.log("[knowledge/upload proxy] Forwarding to:", backendUrl);
 
     const backendRes = await fetch(backendUrl, {
       method: "POST",

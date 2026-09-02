@@ -4,7 +4,6 @@ import { Link } from "@/i18n/navigation";
 
 import { COPYRIGHT_TEXT } from "./constants";
 
-/** Copyright footer centered at the bottom of the contact image */
 export function ContactCopyright() {
   const t = useTranslations("common.contact");
 

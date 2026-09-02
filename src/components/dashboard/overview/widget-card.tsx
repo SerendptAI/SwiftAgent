@@ -331,8 +331,6 @@ export function WidgetCard() {
   );
 }
 
-// ── Chatbot settings sidebar ─────────────────────────────────────────────────
-
 type AgentId = "047" | "007" | "626" | "001";
 
 interface AgentOption {

@@ -22,7 +22,6 @@ export function IndustriesSection() {
   return (
     <section className="w-full bg-white px-6 py-16 md:px-10 md:py-20 lg:px-16 lg:py-26">
       <div className="mx-auto max-w-360">
-        {/* Header */}
         <div className="mb-10 text-center md:mb-14 md:text-left">
           <p className="font-dm-mono mb-4 text-xs tracking-[0.2em] text-gray-500 uppercase md:text-sm">
             {t("eyebrow")}
@@ -34,7 +33,6 @@ export function IndustriesSection() {
           </h2>
         </div>
 
-        {/* Industry cards */}
         <div
           ref={cardsRef}
           className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-12 lg:grid-cols-4 xl:gap-15"

@@ -149,7 +149,6 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
 
                 return (
                   <div key={link.href} className="m-4">
-                    {/* Accordion trigger */}
                     <button
                       onClick={() => setOpenDropdown(isOpen ? null : link.id)}
                       className={cn(
@@ -169,7 +168,6 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                       </span>
                     </button>
 
-                    {/* Accordion content */}
                     <div
                       className={cn(
                         "grid transition-all duration-300 ease-in-out",
@@ -241,7 +239,6 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
               <LocaleSwitcher variant="row" onSwitch={onClose} />
             </div>
 
-            {/* Login / profile button inside menu */}
             <div className="p-4">
               {isLoggedIn ? (
                 <Link

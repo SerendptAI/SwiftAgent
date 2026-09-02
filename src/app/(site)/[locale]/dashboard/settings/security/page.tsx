@@ -112,7 +112,6 @@ export default function SecurityPage() {
     <div className="flex min-h-[360px] flex-col gap-5 rounded-[20px] bg-white p-3 shadow-sm sm:min-h-[450px] sm:gap-6 sm:rounded-xl sm:p-4">
       <HelpBanner bgColor="bg-[#7F9FFF]" />
 
-      {/* Set a Back-up email */}
       <div className="space-y-4">
         <h3 className="font-stolzl text-base font-bold text-gray-900 sm:text-lg">
           Set a Back-up email
@@ -201,7 +200,6 @@ export default function SecurityPage() {
         </div>
       </div>
 
-      {/* Add a new member */}
       <div className="space-y-4">
         <h3 className="font-stolzl text-base font-bold text-gray-900 sm:text-lg">
           Add a new member
@@ -251,7 +249,6 @@ export default function SecurityPage() {
           )}
         </div>
 
-        {/* Members list */}
         <div className="rounded-xl border border-gray-100">
           {isLoadingMembers ? (
             <div className="flex items-center justify-center py-8">

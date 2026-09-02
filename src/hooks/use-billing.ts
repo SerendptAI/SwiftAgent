@@ -22,8 +22,6 @@ import {
   getUserTimezone,
 } from "@/services/billing";
 
-// ── Billing Plans ─────────────────────────────────────────────────────────────
-
 /** Region-aware plan list. Pass an explicit timezone to override the browser's. */
 export function useBillingPlans(timezone?: string) {
   const tz = timezone ?? getUserTimezone();
@@ -33,8 +31,6 @@ export function useBillingPlans(timezone?: string) {
     staleTime: 10 * 60 * 1000,
   });
 }
-
-// ── Billing Details (per company) ─────────────────────────────────────────────
 
 export function useBillingDetails(
   companyId: string | null | undefined,
@@ -68,15 +64,11 @@ export function useHasActivePlan(
   );
 }
 
-// ── Create Checkout Session ───────────────────────────────────────────────────
-
 export function useCreateCheckout() {
   return useMutation<CheckoutResponse, Error, CheckoutPayload>({
     mutationFn: createCheckoutSession,
   });
 }
-
-// ── Customer Portal ───────────────────────────────────────────────────────────
 
 function useCreatePortalSession() {
   return useMutation<PortalSessionResponse, Error, string>({

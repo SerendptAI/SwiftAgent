@@ -106,7 +106,6 @@ export function ReferralPathSection() {
         </div>
 
         <div ref={flowRef} className="relative mt-14 px-4 md:mt-16 md:px-10">
-          {/* Dashed track */}
           <div className="absolute top-4 right-0 left-0 border-t border-dashed border-[#BDBDBD]" />
           {/* Drawing progress line — referral (purple) flowing to payout (gold) */}
           <div

@@ -105,7 +105,6 @@ export default function BillingSuccessPage() {
       </Link>
 
       <div className="mt-4 flex w-full items-stretch overflow-hidden rounded-[22px] bg-[#7F9FFF] py-[47px] pr-[50px] pl-[79px]">
-        {/* Hero image */}
         <Image
           src="/images/billing/success-hero.png"
           alt=""
@@ -115,7 +114,6 @@ export default function BillingSuccessPage() {
           priority
         />
 
-        {/* Right column */}
         <div className="flex min-w-0 flex-1 flex-col items-start pt-[17px] pl-[53px]">
           <h1
             className="font-instrument text-[40px] leading-[0.95] font-bold tracking-[-0.02em] text-[#F6F4EF]"

@@ -128,7 +128,6 @@ export default function BillingPage() {
         </div>
       </div>
 
-      {/* Plan Cards */}
       <div className="w-full max-w-[1536px]">
         <div className="mb-4">
           <CanceledSubscriptionBanner details={details} />

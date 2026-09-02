@@ -1,6 +1,5 @@
 import { useTranslations } from "next-intl";
 
-/** Top text area with subtitle, headline, and description */
 export function ContactHeader() {
   const t = useTranslations("common.contact");
 

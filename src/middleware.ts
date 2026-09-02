@@ -76,7 +76,6 @@ export default function middleware(req: NextRequest) {
     }
   }
 
-  // Handle CORS for widget assets and API routes
   if (WIDGET_CORS_PATTERN.test(pathname)) {
     if (req.method === "OPTIONS") {
       return new NextResponse(null, { status: 204, headers: corsHeaders });
@@ -109,7 +108,6 @@ export default function middleware(req: NextRequest) {
     return NextResponse.redirect(url, 308);
   }
 
-  // Everything else — intl routing
   return intlMiddleware(req);
 }
 

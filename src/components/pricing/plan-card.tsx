@@ -15,7 +15,7 @@ export interface Plan {
   features: string[];
   /** Backend tier slug used by the billing checkout endpoint */
   tier?: string;
-  /** Number of free trial months — when present, renders an "X Months Free!" badge. */
+  /** Free trial months from the billing API. Carried but not rendered today. */
   trialMonths?: number;
   /** Sold by conversation — hides the price and swaps Subscribe for a booking link. */
   contactSales?: boolean;
@@ -30,7 +30,6 @@ interface PlanCardProps {
   showSubscribe?: boolean;
   /** Extra class applied to the root element (e.g. "pricing-card" for GSAP selectors) */
   className?: string;
-  /** Called when the Subscribe button is clicked */
   onSubscribe?: (plan: Plan) => void;
   /** Disables the Subscribe button (e.g. while a checkout request is pending) */
   subscribeDisabled?: boolean;
@@ -52,7 +51,6 @@ export function PlanCard({
     <div
       className={`flex min-w-0 flex-col border border-gray-200 bg-white ${className}`}
     >
-      {/* Header Image */}
       <Image
         src={plan.image}
         alt={plan.name}
@@ -61,7 +59,6 @@ export function PlanCard({
         className="block h-auto w-full"
       />
 
-      {/* Card Body */}
       <div className="font-dm-mono flex min-w-0 flex-1 flex-col px-4 pt-4 md:px-6 md:pt-6">
         <div className="mb-3 flex min-w-0 flex-wrap items-center gap-2 md:mb-3.5">
           <h3
@@ -69,11 +66,6 @@ export function PlanCard({
           >
             {plan.name}
           </h3>
-          {/* {plan.trialMonths ? (
-            <span className="rounded-full bg-[#F2B035] px-2 py-0.5 text-[10px] leading-none font-bold tracking-wider text-black uppercase">
-              {plan.trialMonths} Months Free!
-            </span>
-          ) : null} */}
         </div>
 
         <p className="mb-3 flex items-baseline gap-2 text-sm leading-none text-gray-900 md:mb-3.5 md:text-base">

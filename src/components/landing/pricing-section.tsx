@@ -75,7 +75,6 @@ export function PricingSection() {
       id="pricing"
     >
       <div className="mx-auto max-w-6xl">
-        {/* Title */}
         <div ref={titleRef} className="mb-6 md:mb-12">
           <span className="mb-8 inline-block font-mono text-sm tracking-widest text-gray-500 uppercase">
             {t("eyebrow")}
@@ -85,7 +84,6 @@ export function PricingSection() {
           </h2>
         </div>
 
-        {/* Pricing Cards */}
         <div
           ref={cardsRef}
           className="grid items-start gap-4 md:grid-cols-3 md:gap-6"

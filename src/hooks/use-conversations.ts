@@ -10,7 +10,6 @@ import { useMemo } from "react";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
 import { chatsApi } from "@/services/conversations";
 
-/** Fetch the list of chat sessions for the current company. */
 export function useChats() {
   const companyId = useActiveCompanyId();
 
@@ -61,7 +60,6 @@ export function useAllChatDetails() {
   });
 }
 
-/** Mark a chat as seen and invalidate caches. */
 export function useMarkChatSeen() {
   const queryClient = useQueryClient();
 
@@ -76,7 +74,6 @@ export function useMarkChatSeen() {
     onSuccess: (_, { companyId, chatId }) => {
       // Invalidate the main list so it moves from Pending -> Resolved
       queryClient.invalidateQueries({ queryKey: ["chats", companyId] });
-      // Also invalidate the specific chat if it was open
       queryClient.invalidateQueries({ queryKey: ["chats", companyId, chatId] });
     },
   });

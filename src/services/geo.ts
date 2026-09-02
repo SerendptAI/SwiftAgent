@@ -1,11 +1,9 @@
-// ── IP Geolocation Service ──────────────────────────────────────────────────
-//
 // Resolves IP addresses to ISO 3166-1 alpha-2 country codes.
 // Uses ip-api.com (free, no key, 45 req/min) with an in-memory cache
 // so repeated lookups for the same IP don't hit the external API.
 
 const cache = new Map<string, { code: string; expiresAt: number }>();
-const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+const CACHE_TTL_MS = 60 * 60 * 1000;
 
 /**
  * Batch-resolve country codes for multiple IPs.
@@ -17,7 +15,6 @@ export async function getCountriesByIps(
   const result = new Map<string, string>();
   const uncached: string[] = [];
 
-  // Resolve from cache first
   for (const ip of ips) {
     const cached = cache.get(ip);
     if (cached && cached.expiresAt > Date.now()) {

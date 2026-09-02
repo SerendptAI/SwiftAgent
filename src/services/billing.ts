@@ -2,8 +2,6 @@ import axios from "axios";
 
 import { apiClient } from "@/lib/api-client";
 
-// ── Types ──────────────────────────────────────────────────────────────────────
-
 // "none" is the post-onboarding / expired-subscription tier: a paywalled state
 // with zero allowance for paid features. The backend never returns it from
 // /plans, so it only ever appears on a company's own billing details.
@@ -97,8 +95,6 @@ export interface PortalSessionResponse {
   portal_url: string;
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
 /** Browser timezone via Intl; safe for SSR (returns undefined server-side). */
 export function getUserTimezone(): string | undefined {
   if (typeof window === "undefined") return undefined;
@@ -128,8 +124,6 @@ export function isCrossProviderConflict(error: unknown): boolean {
     typeof detail === "string" && CROSS_PROVIDER_CONFLICT_PATTERN.test(detail)
   );
 }
-
-// ── Endpoints ─────────────────────────────────────────────────────────────────
 
 export async function getBillingPlans(
   timezone?: string,

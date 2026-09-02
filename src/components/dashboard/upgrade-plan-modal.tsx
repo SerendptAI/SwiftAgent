@@ -235,12 +235,10 @@ function UpgradePlanCard({
 
   return (
     <div className="relative h-[150px] w-[685px] max-w-full overflow-hidden border border-black bg-white">
-      {/* Plan image — left rail, full height, right border separates from content */}
       <div className="absolute top-0 left-0 h-[150px] w-[136px] border-r border-black">
         <PlanIcon tier={plan.tier} />
       </div>
 
-      {/* Plan name — Figma: left:154 top:12 */}
       <p
         className={`font-dm-mono absolute top-[12px] left-[154px] leading-[1.2] uppercase ${plan.textColor} ${
           isLargeTitle
@@ -251,14 +249,12 @@ function UpgradePlanCard({
         {plan.name}
       </p>
 
-      {/* Price — Figma: left:154 top:43 */}
       <p className="font-dm-mono absolute top-[43px] left-[154px] text-[18px] leading-[1.2] tracking-[1.8px] text-black uppercase">
         {plan.contactSales
           ? t("contactSales")
           : `${plan.price} ${plan.billing}`}
       </p>
 
-      {/* Features — Figma: left:154 top:90 w:269 */}
       <div className="font-dm-mono absolute top-[90px] left-[154px] max-h-[51px] w-[269px] overflow-hidden text-[14px] leading-[1.86] tracking-[1.4px] text-black/70 uppercase">
         {plan.features.map((feature, i) => (
           <p key={i} className="whitespace-pre-line">
@@ -267,7 +263,6 @@ function UpgradePlanCard({
         ))}
       </div>
 
-      {/* Subscribed indicator — Figma: text right edge ~27px from card right, top:44 */}
       {isActive && (
         <span className="font-dm-mono absolute top-[44px] right-[27px] flex items-center gap-[7px] text-[16px] leading-[1.2] tracking-[1.6px] text-black/60 uppercase">
           <Icons.CheckCircle className="h-[24px] w-[24px]" />
@@ -275,7 +270,6 @@ function UpgradePlanCard({
         </span>
       )}
 
-      {/* Action button — PRESENTLY ON 160x38 right:27, VIEW MORE 143x38 right:14 */}
       {isActive ? (
         <span className="font-dm-mono absolute top-[97px] right-[27px] inline-flex h-[38px] w-[160px] items-center justify-center rounded-[13px] border border-[#EDEDED] bg-[#EDEDED] text-[14px] leading-[1.2] tracking-[1.4px] text-black uppercase">
           Presently On

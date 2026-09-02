@@ -2,8 +2,6 @@ import axios from "axios";
 
 import { apiClient } from "@/lib/api-client";
 
-// ── Types ─────────────────────────────────────────────────────────────────────
-
 export interface StrollCredentials {
   login_url?: string;
   username: string;
@@ -21,8 +19,6 @@ export interface StrollConfigPayload {
   sandbox_mode?: boolean;
   max_pages?: number;
 }
-
-// ── API ───────────────────────────────────────────────────────────────────────
 
 export const strollApi = {
   /**

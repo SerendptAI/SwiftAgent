@@ -42,13 +42,11 @@ export default function BillingPage() {
 
       <CanceledSubscriptionBanner details={details} />
 
-      {/* Billing Details */}
       <div className="space-y-4">
         <h3 className="font-stolzl text-base font-bold text-gray-900 sm:text-lg">
           Billing details
         </h3>
 
-        {/* Saved Cards */}
         <div className="flex flex-col gap-3 rounded-xl border border-gray-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <span className="font-dm-mono text-xs font-semibold tracking-[0.15em] text-gray-500 uppercase sm:text-sm">
             SAVED CARDS
@@ -74,7 +72,6 @@ export default function BillingPage() {
           )}
         </div>
 
-        {/* Present Plan */}
         <div className="flex flex-col gap-3 rounded-xl border border-gray-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <span className="font-dm-mono text-xs font-semibold tracking-[0.15em] text-gray-500 uppercase sm:text-sm">
             PRESENT PLAN

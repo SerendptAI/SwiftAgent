@@ -133,7 +133,6 @@ export default function LoginPage() {
       inputRefs.current[index + 1]?.focus();
     }
 
-    // Auto-submit when all digits are filled
     const fullCode = newOtp.join("");
     if (fullCode.length === OTP_LENGTH && newOtp.every((d) => d !== "")) {
       handleVerifyOtp(fullCode);

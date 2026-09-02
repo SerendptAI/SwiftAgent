@@ -114,12 +114,9 @@ export function HeroSection() {
 
   return (
     <section ref={sectionRef} className="relative overflow-hidden bg-white">
-      {/* Navigation */}
       <Navbar ref={navRef} />
 
-      {/* Hero Content */}
       <div className="relative z-10 mx-auto flex w-full max-w-350 flex-col-reverse px-6 pt-26 md:items-start md:gap-y-12 md:pt-32 lg:flex-row lg:pt-48 lg:pr-0">
-        {/* Left Column — hero image, no border radius */}
         <div
           ref={imageRef}
           className="aspect-508/664 w-full overflow-hidden lg:max-w-127"
@@ -135,7 +132,6 @@ export function HeroSection() {
           />
         </div>
 
-        {/* Right Column — Headline + subtitle + CTAs */}
         <div className="flex w-full flex-col justify-center py-12 md:w-[78%] md:px-10 md:py-0 lg:w-[55%] lg:px-16">
           {/*
             The headline is seven separately-styled word badges. Each badge is
@@ -212,7 +208,6 @@ export function HeroSection() {
             </div>
           </div>
 
-          {/* Subtitle */}
           <p
             ref={subtitleRef}
             className="font-stolzl mt-8 max-w-xl text-base leading-relaxed text-black md:mt-10 md:text-lg"
@@ -220,7 +215,6 @@ export function HeroSection() {
             {t("subtitle")}
           </p>
 
-          {/* Timeline callouts */}
           <div ref={calloutsRef} className="mt-6 flex flex-col gap-2.5 md:mt-8">
             {TIMELINE_CALLOUTS.map((callout) => (
               <div key={callout.id} className="flex items-start gap-3">
@@ -239,7 +233,6 @@ export function HeroSection() {
             ))}
           </div>
 
-          {/* CTAs */}
           <div
             ref={ctaRef}
             className="mt-8 grid w-full max-w-140 grid-cols-1 gap-4 md:mt-10 md:grid-cols-2 lg:gap-6 xl:gap-8"
