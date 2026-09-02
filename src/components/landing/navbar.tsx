@@ -61,7 +61,6 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
               className,
             )}
           >
-            {/* Logo */}
             <Link href="/" className="flex shrink-0 items-center">
               <div className="relative h-14 w-14">
                 <Image
@@ -74,7 +73,6 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
               </div>
             </Link>
 
-            {/* Right Section — Nav Links + Login */}
             {/*
               The full link row only appears from xl up. English is the only
               language whose seven labels fit in less: "Parrainage" and
@@ -86,7 +84,6 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
               2xl spacing the row overflows its own border in fr/sw.
             */}
             <div className="flex h-full items-center justify-end gap-6 2xl:gap-14">
-              {/* Desktop nav links */}
               <div className="hidden items-center gap-5 xl:flex 2xl:gap-10">
                 {LANDING_NAV_LINKS.map((link) => {
                   const isActive = isLandingNavLinkActive(
@@ -128,7 +125,6 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                           <Icons.NavChevronDown />
                         </Link>
 
-                        {/* Dropdown panel */}
                         <div
                           className={cn(
                             "absolute top-13.5 -left-6.5 z-50 w-78.5 border border-black bg-white px-6 pt-2 pb-9 transition-all duration-200",
@@ -137,7 +133,6 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                               : "pointer-events-none -translate-y-1 opacity-0",
                           )}
                         >
-                          {/* Panel header */}
                           <div className="mb-4 flex items-center justify-between">
                             <span className="font-greed-narrow text-[30px] leading-[1.34] font-medium tracking-[-2%] uppercase">
                               {t(`dropdowns.${link.id}.title`)}
@@ -145,7 +140,6 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                             <Icons.NavChevronDown className="size-5.5" />
                           </div>
 
-                          {/* Preview image */}
                           {link.dropdown.previewImage && (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img
@@ -156,7 +150,6 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                             />
                           )}
 
-                          {/* Links */}
                           <div className="flex flex-col gap-4">
                             {link.dropdown.links.map((item) => {
                               const isExternal = isExternalHref(item.href);
@@ -201,13 +194,11 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                 })}
               </div>
 
-              {/* Mobile hamburger / close toggle */}
               <button
                 onClick={() => setIsMenuOpen((prev) => !prev)}
                 className="font-dm-mono relative flex h-[22px] w-[22px] cursor-pointer items-center justify-center text-gray-900 transition-opacity hover:opacity-70 xl:hidden"
                 aria-label={isMenuOpen ? t("closeMenu") : t("openMenu")}
               >
-                {/* Hamburger lines — visible when closed */}
                 <div
                   className="absolute flex flex-col gap-[5px] transition-all duration-300"
                   style={{
@@ -219,7 +210,6 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                 >
                   <Icons.MenuOpen />
                 </div>
-                {/* Plus/X icon — visible when open */}
                 <span
                   className="font-dm-mono absolute text-2xl leading-none font-light transition-all duration-300"
                   style={{

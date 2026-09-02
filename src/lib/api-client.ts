@@ -11,8 +11,6 @@ const AUTH_TOKEN_KEY = "access_token";
 const REFRESH_TOKEN_KEY = "refresh_token";
 const AUTH_PROVIDER_KEY = "auth_provider";
 
-// ── Token helpers ──────────────────────────────────────────────────────────────
-
 export function getAccessToken(): string | null {
   if (typeof window === "undefined") return null;
   return localStorage.getItem(AUTH_TOKEN_KEY);
@@ -49,15 +47,11 @@ export function setAuthProvider(provider: "google" | "email") {
   localStorage.setItem(AUTH_PROVIDER_KEY, provider);
 }
 
-// ── Axios instance ─────────────────────────────────────────────────────────────
-
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: { "Content-Type": "application/json" },
   timeout: 15_000,
 });
-
-// ── Request interceptor — auto-attach Bearer token ────────────────────────────
 
 apiClient.interceptors.request.use((config) => {
   const token = getAccessToken();
@@ -66,8 +60,6 @@ apiClient.interceptors.request.use((config) => {
   }
   return config;
 });
-
-// ── Response interceptor — silent token refresh on 401 ────────────────────────
 
 const REFRESH_URL = "/api/v1/auth/refresh";
 

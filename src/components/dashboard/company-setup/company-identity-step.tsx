@@ -142,7 +142,6 @@ export function CompanyIdentityStep({
   return (
     <div className="w-full max-w-4xl pb-4">
       <div className="flex flex-col gap-6 sm:gap-8">
-        {/* Left Column: Form */}
         <div className="flex-1">
           <div className="grid gap-6">
             <div className="grid gap-6 md:grid-cols-2">

@@ -104,7 +104,6 @@ export function ProductsSection() {
             {t("sdk.heading")}
           </h2>
 
-          {/* Copy top-aligned left, image right — on mobile: image first, then copy */}
           <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16">
             <AutoPlayVideo
               src={videoUrl("products/swift-agents-sdk")}

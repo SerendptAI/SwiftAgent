@@ -9,8 +9,7 @@ import { DemoBookingLink } from "@/components/landing/demo-booking-link";
 import type { Plan } from "@/components/pricing/plan-card";
 import { plansFromBackend } from "@/components/pricing/plans";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
-import { useBillingDetails, useBillingPlans } from "@/hooks/use-billing";
-import type { SubscriptionTier } from "@/services/billing";
+import { useBillingPlans, useCompanyPlan } from "@/hooks/use-billing";
 
 import { Icons } from "../icons";
 
@@ -91,8 +90,6 @@ interface UpgradePlanModalProps {
   onClose: () => void;
   /** When false the modal can't be dismissed — no close button, backdrop click, or escape. */
   dismissible?: boolean;
-  /** Shows the "choose a plan to get started" activation copy instead of the upgrade copy. */
-  getStarted?: boolean;
   /**
    * What the visitor was trying to reach, named as a noun phrase ("the widget
    * settings"). Falls back to generic copy — the sentence previously carried an
@@ -105,23 +102,16 @@ export function UpgradePlanModal({
   open,
   onClose,
   dismissible = true,
-  getStarted = false,
   feature,
 }: UpgradePlanModalProps) {
   const companyId = useActiveCompanyId();
-  const { data: details } = useBillingDetails(companyId);
+  const companyPlan = useCompanyPlan(companyId);
   const { data: backendPlans } = useBillingPlans();
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("pricing");
 
   const [visible, setVisible] = useState(open);
-  // Only an actually-active subscription counts as the current plan. The backend
-  // still reports a `tier` for inactive/canceled/"none" states, so keying off
-  // `tier` alone would wrongly light a card up as "Presently On".
-  const subscriptionStatus = details?.subscription_status ?? details?.status;
-  const activeTier: SubscriptionTier =
-    subscriptionStatus === "active" ? (details?.tier ?? null) : null;
   const plans = plansFromBackend(backendPlans, t, locale);
 
   useEffect(() => {
@@ -190,21 +180,20 @@ export function UpgradePlanModal({
           id="upgrade-plan-title"
           className="font-greed-narrow mx-auto mt-[46px] w-[447px] max-w-full text-center text-[40px] leading-[1.1] font-semibold tracking-[-0.8px] text-black"
         >
-          {getStarted
-            ? "Choose a plan to get started"
-            : "Upgrade your plan to have access to that"}
+          Upgrade your plan to have access to that
         </h2>
         <p className="font-dm-mono mx-auto mt-[22px] w-[492px] max-w-full text-center text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase">
-          {getStarted
-            ? "Select a plan to activate your account and start using SwiftAgent"
-            : feature
-              ? `Your current plan doesn't include ${feature}. Upgrade to unlock it.`
-              : "Your current plan doesn't include this feature. Upgrade to unlock it."}
+          {feature
+            ? `Your current plan doesn't include ${feature}. Upgrade to unlock it.`
+            : "Your current plan doesn't include this feature. Upgrade to unlock it."}
         </p>
 
         <ul className="mx-auto mt-[47px] mb-[40px] flex w-[685px] max-w-full flex-col gap-[29px]">
           {plans.map((plan) => {
-            const isActive = !!plan.tier && plan.tier === activeTier;
+            // Only a paid subscription lights a card up as "Presently On" — the
+            // backend still reports a tier for every unpaid state.
+            const isActive =
+              companyPlan.isPaid && plan.tier === companyPlan.tier;
             return (
               <li key={plan.name}>
                 <UpgradePlanCard
@@ -235,12 +224,10 @@ function UpgradePlanCard({
 
   return (
     <div className="relative h-[150px] w-[685px] max-w-full overflow-hidden border border-black bg-white">
-      {/* Plan image — left rail, full height, right border separates from content */}
       <div className="absolute top-0 left-0 h-[150px] w-[136px] border-r border-black">
         <PlanIcon tier={plan.tier} />
       </div>
 
-      {/* Plan name — Figma: left:154 top:12 */}
       <p
         className={`font-dm-mono absolute top-[12px] left-[154px] leading-[1.2] uppercase ${plan.textColor} ${
           isLargeTitle
@@ -251,14 +238,12 @@ function UpgradePlanCard({
         {plan.name}
       </p>
 
-      {/* Price — Figma: left:154 top:43 */}
       <p className="font-dm-mono absolute top-[43px] left-[154px] text-[18px] leading-[1.2] tracking-[1.8px] text-black uppercase">
         {plan.contactSales
           ? t("contactSales")
           : `${plan.price} ${plan.billing}`}
       </p>
 
-      {/* Features — Figma: left:154 top:90 w:269 */}
       <div className="font-dm-mono absolute top-[90px] left-[154px] max-h-[51px] w-[269px] overflow-hidden text-[14px] leading-[1.86] tracking-[1.4px] text-black/70 uppercase">
         {plan.features.map((feature, i) => (
           <p key={i} className="whitespace-pre-line">
@@ -267,7 +252,6 @@ function UpgradePlanCard({
         ))}
       </div>
 
-      {/* Subscribed indicator — Figma: text right edge ~27px from card right, top:44 */}
       {isActive && (
         <span className="font-dm-mono absolute top-[44px] right-[27px] flex items-center gap-[7px] text-[16px] leading-[1.2] tracking-[1.6px] text-black/60 uppercase">
           <Icons.CheckCircle className="h-[24px] w-[24px]" />
@@ -275,7 +259,6 @@ function UpgradePlanCard({
         </span>
       )}
 
-      {/* Action button — PRESENTLY ON 160x38 right:27, VIEW MORE 143x38 right:14 */}
       {isActive ? (
         <span className="font-dm-mono absolute top-[97px] right-[27px] inline-flex h-[38px] w-[160px] items-center justify-center rounded-[13px] border border-[#EDEDED] bg-[#EDEDED] text-[14px] leading-[1.2] tracking-[1.4px] text-black uppercase">
           Presently On

@@ -2,12 +2,12 @@ import axios from "axios";
 
 import { apiClient } from "@/lib/api-client";
 
-// ── Types ──────────────────────────────────────────────────────────────────────
-
-// "none" is the post-onboarding / expired-subscription tier: a paywalled state
-// with zero allowance for paid features. The backend never returns it from
-// /plans, so it only ever appears on a company's own billing details.
+// "free" and "none" both mean "no paid subscription". "none" is what the
+// backend has always reported for a company that never subscribed or whose
+// subscription expired; "free" is the named tier that replaces it. Neither is
+// returned from /plans, so they only appear on a company's own billing details.
 export type SubscriptionTier =
+  | "free"
   | "none"
   | "basic"
   | "pro"
@@ -79,6 +79,33 @@ export interface BillingDetails {
   saved_cards?: SavedCard[];
 }
 
+/** The tier every unsubscribed company sits on; it is granted, never bought. */
+export const FREE_TIER = "free";
+
+const UNPAID_TIERS: ReadonlySet<string> = new Set([FREE_TIER, "none"]);
+
+/** True when the tier carries no paid subscription, whatever the backend calls it. */
+export function isFreeTier(tier: SubscriptionTier): boolean {
+  return tier == null || UNPAID_TIERS.has(tier);
+}
+
+/**
+ * True while a paid subscription is in force — including one that has been
+ * canceled but still has paid time left on it.
+ */
+export function hasPaidSubscription(details: BillingDetails): boolean {
+  if (isFreeTier(details.tier)) return false;
+
+  const status = details.subscription_status ?? details.status;
+  if (status === "active") return true;
+
+  return (
+    status === "canceled" &&
+    !!details.subscription_expires_at &&
+    new Date(details.subscription_expires_at).getTime() > Date.now()
+  );
+}
+
 export interface CheckoutPayload {
   company_id: string;
   tier: string;
@@ -96,8 +123,6 @@ export interface CheckoutResponse {
 export interface PortalSessionResponse {
   portal_url: string;
 }
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
 
 /** Browser timezone via Intl; safe for SSR (returns undefined server-side). */
 export function getUserTimezone(): string | undefined {
@@ -128,8 +153,6 @@ export function isCrossProviderConflict(error: unknown): boolean {
     typeof detail === "string" && CROSS_PROVIDER_CONFLICT_PATTERN.test(detail)
   );
 }
-
-// ── Endpoints ─────────────────────────────────────────────────────────────────
 
 export async function getBillingPlans(
   timezone?: string,

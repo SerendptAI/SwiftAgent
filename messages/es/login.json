@@ -16,5 +16,7 @@
   "backToEmail": "Cambiar de correo",
   "checkSpam": "Te hemos enviado un código por correo. ¿No lo encuentras? Revisa tu carpeta de spam o correo no deseado.",
   "resendCode": "Reenviar código",
-  "codeResent": "Se ha enviado un código nuevo."
+  "codeResent": "Se ha enviado un código nuevo.",
+  "accountNotFound": "No encontramos una cuenta con ese correo",
+  "createAccount": "Crear una cuenta"
 }

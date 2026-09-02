@@ -52,7 +52,6 @@ export function HowItWorksSection() {
   return (
     <section className="w-full bg-white px-6 py-16 md:px-10 md:py-20 lg:px-16 lg:py-26">
       <div className="mx-auto max-w-360">
-        {/* Header */}
         <div className="mb-8">
           <p className="font-dm-mono mb-4 text-base leading-[1.2] tracking-[10%] text-gray-400 uppercase md:text-lg">
             {t("eyebrow")}
@@ -63,9 +62,7 @@ export function HowItWorksSection() {
           </h2>
         </div>
 
-        {/* Two-column layout */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_1fr] md:items-stretch md:gap-4 lg:grid-cols-[460px_1fr] lg:gap-6">
-          {/* Left — step cards */}
           <div className="flex flex-col gap-3">
             {STEPS.map((step, i) => (
               <div
@@ -100,7 +97,6 @@ export function HowItWorksSection() {
                   {t(`steps.${step.id}.description`)}
                 </p>
 
-                {/* Mobile-only video — shown below description */}
                 <div className="mt-6 w-full md:hidden">
                   <StepVideo src={step.video} />
                 </div>
@@ -108,7 +104,6 @@ export function HowItWorksSection() {
             ))}
           </div>
 
-          {/* Right — video panel (desktop only) */}
           <div
             className="relative hidden h-full min-h-0 overflow-hidden transition-colors duration-200 md:block"
             style={{ backgroundColor: STEPS[activeStep].accent }}

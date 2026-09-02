@@ -118,7 +118,6 @@ export function CaseStudyDetail({
   const [progress, setProgress] = useState(0);
   const [miniDismissed, setMiniDismissed] = useState(false);
 
-  /** Whether the in-page clip has been scrolled past. */
   const [scrolledPast, setScrolledPast] = useState(false);
 
   /**

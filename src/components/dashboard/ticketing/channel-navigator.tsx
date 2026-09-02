@@ -33,15 +33,6 @@ const CHANNELS: Channel[] = [
     activeIcon: "text-white",
     badgeBg: "bg-[#6433CC]",
   },
-  // Business Emails is hidden for now — keep for later.
-  // {
-  //   key: "mail",
-  //   label: "Business Emails",
-  //   icon: Icons.ticketEmail,
-  //   activeBg: "bg-[#F25430]",
-  //   activeIcon: "text-white",
-  //   badgeBg: "bg-[#6433CC]",
-  // },
 ];
 
 interface ChannelNavigatorProps {

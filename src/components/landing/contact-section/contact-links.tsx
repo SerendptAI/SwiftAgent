@@ -7,7 +7,6 @@ import { NAV_LINKS } from "./constants";
 const LINK_CLS =
   "font-mono text-sm font-semibold tracking-widest text-white uppercase transition-colors hover:text-gray-300";
 
-/** Navigation links overlaid on the bottom-left of the contact image */
 export function ContactLinks() {
   const t = useTranslations("common.contact");
 

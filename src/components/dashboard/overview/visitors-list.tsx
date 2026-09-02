@@ -44,8 +44,6 @@ export function VisitorRow({
   );
 }
 
-// ── Main Component ──────────────────────────────────────────────────────────
-
 export function VisitorsList({
   initialData,
 }: {

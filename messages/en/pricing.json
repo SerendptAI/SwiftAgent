@@ -1,11 +1,21 @@
 {
   "eyebrow": "Billing",
-  "heading": "We have three plans for Swift Agents",
+  "heading": "We have a plan for every stage",
   "billingPeriod": "per month",
   "subscribe": "Subscribe",
   "contactSales": "Contact us",
   "currentPlan": "Current plan",
   "plans": {
+    "free": {
+      "name": "Free plan",
+      "description": "Everything you need to put\none agent on your site and\nwatch it work.",
+      "features": [
+        "1 deployed AI agent",
+        "1 automated stroll per month",
+        "Widget embed and code snippet",
+        "1 company per core user account"
+      ]
+    },
     "basic": {
       "name": "Basic plan",
       "description": "Designed for early startups\nand small projects\ntesting the waters.",

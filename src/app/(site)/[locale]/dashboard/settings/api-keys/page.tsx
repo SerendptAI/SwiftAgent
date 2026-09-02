@@ -86,7 +86,6 @@ export default function ApiKeysPage() {
           </p>
         </div>
 
-        {/* One-time reveal of the freshly generated key */}
         {revealKey && (
           <div className="rounded-xl border border-[#00B37E]/30 bg-[#00B37E]/5 px-4 py-4 sm:px-6">
             <div className="mb-3 flex items-start gap-2">
@@ -122,7 +121,6 @@ export default function ApiKeysPage() {
           </div>
         )}
 
-        {/* Generate a new key */}
         <div className="flex flex-col gap-3 rounded-xl border border-gray-100 px-4 py-4 sm:flex-row sm:items-end sm:px-6">
           <div className="min-w-0 flex-1">
             <label
@@ -157,7 +155,6 @@ export default function ApiKeysPage() {
         {error && <p className="font-dm-mono text-xs text-red-600">{error}</p>}
       </div>
 
-      {/* Existing keys */}
       <div className="space-y-4">
         <h3 className="font-stolzl text-base font-bold text-gray-900 sm:text-lg">
           Your Keys

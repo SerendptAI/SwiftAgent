@@ -164,7 +164,6 @@ export default function SettingsPage() {
     <div className="flex min-h-[360px] flex-col gap-5 rounded-[20px] bg-white p-3 shadow-sm sm:min-h-[450px] sm:gap-6 sm:rounded-xl sm:p-4">
       <HelpBanner bgColor="bg-[#F25430]" textColor="text-black" />
 
-      {/* Profile picture */}
       <div className="flex items-center gap-4 p-2">
         <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border-2 border-gray-100">
           <Image
@@ -213,7 +212,6 @@ export default function SettingsPage() {
         />
       </div>
 
-      {/* Editable Fields */}
       <div className="flex flex-col gap-4 rounded-2xl">
         {fields.map((field) => {
           const fieldIsPending =

@@ -1,11 +1,21 @@
 {
   "eyebrow": "Malipo",
-  "heading": "Tuna mipango mitatu ya Swift Agents",
+  "heading": "Tuna mpango kwa kila hatua",
   "billingPeriod": "kwa mwezi",
   "subscribe": "Jiunge",
   "contactSales": "Wasiliana nasi",
   "currentPlan": "Mpango wa sasa",
   "plans": {
+    "free": {
+      "name": "Mpango wa Bure",
+      "description": "Kila kitu unachohitaji kuweka\nwakala mmoja kwenye tovuti yako\nna kumwona akifanya kazi.",
+      "features": [
+        "Wakala 1 wa AI aliyewekwa",
+        "Stroll 1 ya kiotomatiki kwa mwezi",
+        "Widget na msimbo wa kuiweka",
+        "Kampuni 1 kwa akaunti kuu"
+      ]
+    },
     "basic": {
       "name": "Mpango wa Basic",
       "description": "Kwa kampuni changa\nna miradi midogo\ninayoanza kujaribu.",

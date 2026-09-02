@@ -1,7 +1,5 @@
 import { apiClient } from "@/lib/api-client";
 
-// ── Types ─────────────────────────────────────────────────────────────────────
-
 export interface KnowledgeDocument {
   id: string;
   company_id: string;
@@ -33,8 +31,6 @@ export interface IngestKnowledgePayload {
 // Uploads can be much larger than JSON calls; give them a generous ceiling.
 const UPLOAD_TIMEOUT_MS = 120_000;
 
-// ── API ───────────────────────────────────────────────────────────────────────
-
 export const knowledgeApi = {
   /**
    * Uploads a file (PDF/DOC/TXT/...) to be parsed and ingested as knowledge.
@@ -61,9 +57,6 @@ export const knowledgeApi = {
     return data;
   },
 
-  /**
-   * Lists all uploaded knowledge documents for a company.
-   */
   listDocuments: async (companyId: string): Promise<KnowledgeDocument[]> => {
     const { data } = await apiClient.get<
       | KnowledgeDocument[]

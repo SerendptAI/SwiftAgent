@@ -157,7 +157,6 @@ export function AffiliateHeroSection() {
       <Navbar ref={navRef} />
 
       <div className="relative mx-auto max-w-360 px-6 md:px-10 lg:px-20 xl:min-h-[900px]">
-        {/* Copy + CTAs */}
         <div className="pt-32 pb-16 md:pt-40 lg:pt-48 lg:pb-20 xl:max-w-[58%] xl:pt-56 xl:pb-24">
           <h1
             ref={headlineRef}
@@ -212,7 +211,6 @@ export function AffiliateHeroSection() {
         </div>
       </div>
 
-      {/* Avatar row (mobile / tablet / smaller desktop, below xl) */}
       <div className="mx-auto flex max-w-360 flex-wrap justify-center gap-8 px-6 pb-16 md:px-10 xl:hidden">
         {REFERRERS.map((r) => (
           <div key={r.name} className="flex w-28 flex-col items-center gap-3">

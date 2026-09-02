@@ -15,14 +15,16 @@ import {
 import { useBillingDetails, useBillingPlans } from "@/hooks/use-billing";
 import { useCompaniesQuery } from "@/hooks/use-company";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
+import { FREE_TIER } from "@/services/billing";
 
 import { UpgradePlanModal } from "./upgrade-plan-modal";
 
 /**
  * Safety net only — used when the backend's plans payload doesn't yet expose
- * `companies_limit`. Numbers mirror the bullets in pricing/plans.ts.
+ * `companies_limit`. Numbers mirror the bullets in messages/<locale>/pricing.json.
  */
 const FALLBACK_COMPANY_LIMITS: Record<string, number> = {
+  [FREE_TIER]: 1,
   basic: 1,
   pro: 3,
   enterprise: Infinity,
@@ -67,7 +69,7 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
   const { data: backendPlans } = useBillingPlans();
 
   function getCompanyLimit(): number {
-    const tier = billingDetails?.tier ?? "basic";
+    const tier = billingDetails?.tier ?? FREE_TIER;
     const backendLimit = backendPlans?.[tier]?.companies_limit;
     // Backend `null` = unlimited; a number = explicit cap; missing = fallback.
     if (backendLimit === null) return Infinity;

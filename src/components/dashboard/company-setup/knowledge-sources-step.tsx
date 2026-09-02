@@ -107,7 +107,6 @@ export function KnowledgeSourcesStep({
 
   return (
     <div className="mx-auto w-full max-w-4xl pb-4">
-      {/* Company Type Selector */}
       <div className="mb-8 flex justify-center sm:mb-12">
         <div className="relative grid w-full grid-cols-1 gap-2 rounded-2xl bg-gray-100 p-3 shadow-sm sm:grid-cols-2 sm:gap-3 sm:p-4 lg:grid-cols-4">
           {BUSINESS_CATEGORY_OPTIONS.map((option) => {

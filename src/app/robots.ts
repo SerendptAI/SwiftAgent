@@ -6,13 +6,7 @@ import { siteConfig } from "@/lib/site-config";
 const BASE_URL = siteConfig.url;
 
 /** Locale-prefixed sections that sit behind auth and hold nothing to index. */
-const PRIVATE_PATHS = [
-  "/dashboard",
-  "/login",
-  "/onboarding",
-  "/invite",
-  "/auth",
-];
+const PRIVATE_PATHS = ["/dashboard", "/login", "/onboarding", "/auth"];
 
 export default function robots(): MetadataRoute.Robots {
   return {

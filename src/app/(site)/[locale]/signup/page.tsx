@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { OtpVerification } from "@/components/auth/otp-verification";
 import {
   FormInput,
   FormLabel,
@@ -11,10 +12,12 @@ import {
 } from "@/components/dashboard/company-setup/ui-elements";
 import { Navbar } from "@/components/landing/navbar";
 import { useRegisterInterest } from "@/hooks/use-auth";
+import { useRouter } from "@/i18n/navigation";
 import { trackEvent } from "@/lib/analytics";
 import { isValidWebsiteUrl, normalizeWebsiteUrl } from "@/lib/website-url";
 
 export default function RegisterCompanyPage() {
+  const router = useRouter();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -22,7 +25,9 @@ export default function RegisterCompanyPage() {
     size: "",
     website: "",
   });
-  const [submitted, setSubmitted] = useState(false);
+  // Registration creates the account and emails the code in one call, so the
+  // form hands straight over to code entry — there is no approval to wait on.
+  const [step, setStep] = useState<"form" | "otp">("form");
   const [submitError, setSubmitError] = useState("");
   const [websiteError, setWebsiteError] = useState("");
   const registerInterest = useRegisterInterest();
@@ -56,7 +61,7 @@ export default function RegisterCompanyPage() {
           trackEvent("signup_interest_submitted", {
             customer_size: form.size,
           });
-          setSubmitted(true);
+          setStep("otp");
         },
         onError: (error: unknown) => {
           const response =
@@ -94,15 +99,13 @@ export default function RegisterCompanyPage() {
     <div className="min-h-screen bg-[#fffff] p-4 md:p-8">
       <div className="mx-auto w-full max-w-[1280px] overflow-hidden">
         <Navbar />
-        {/* Content: two columns */}
         <div className="grid grid-cols-1 gap-6 p-6 pt-[140px] md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:gap-10 md:p-10 md:pt-[180px] lg:gap-14">
-          {/* Left: decorative SVG */}
           <div className="relative order-2 md:order-1">
             <div className="relative aspect-528/724 w-full overflow-hidden rounded-sm">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={
-                  submitted
+                  step === "otp"
                     ? "/images/completeregisteration.svg"
                     : "/images/registercompany.svg"
                 }
@@ -112,27 +115,28 @@ export default function RegisterCompanyPage() {
             </div>
           </div>
 
-          {/* Right: form */}
           <div className="order-1 md:order-2">
-            {submitted ? (
-              <div className="flex flex-col items-center gap-8">
+            {step === "otp" ? (
+              <div className="flex flex-col items-center gap-10">
                 <aside className="text-center">
                   <h1 className="font-greed-narrow text-4xl leading-[1.05] tracking-tight text-gray-900 uppercase md:text-5xl lg:text-6xl">
-                    Thank you for
+                    Verify your
                     <br />
-                    registering!
+                    email
                   </h1>
                   <p className="font-stolzl mt-4 text-xs tracking-[0.2em] text-gray-900 uppercase">
-                    we’ll reach out soon!
+                    we sent a code to {form.email.trim()}
                   </p>
                 </aside>
-                <aside>
-                  <img
-                    src="/images/Thankyou.svg"
-                    alt=""
-                    className="h-auto w-[140px] md:w-[180px]"
-                  />
-                </aside>
+
+                <OtpVerification
+                  email={form.email.trim()}
+                  onVerified={() => {
+                    trackEvent("login_completed", { method: "email" });
+                    router.push("/onboarding");
+                  }}
+                  onChangeEmail={() => setStep("form")}
+                />
               </div>
             ) : (
               <>

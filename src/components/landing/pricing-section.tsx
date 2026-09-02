@@ -6,19 +6,26 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 
 import { PlanCard } from "@/components/pricing/plan-card";
-import { plansFromBackend } from "@/components/pricing/plans";
+import { freePlan, plansFromBackend } from "@/components/pricing/plans";
 import { useBillingPlans } from "@/hooks/use-billing";
 import { useRouter } from "@/i18n/navigation";
 import { getAccessToken } from "@/lib/api-client";
+import { FREE_TIER } from "@/services/billing";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export function PricingSection() {
   const router = useRouter();
   const t = useTranslations("pricing");
+  const tc = useTranslations("common.cta");
   const locale = useLocale();
   const { data: backendPlans } = useBillingPlans();
-  const plans = plansFromBackend(backendPlans, t, locale);
+  // The free plan leads: it is what a visitor gets by signing up, with no
+  // checkout in between.
+  const plans = [
+    freePlan(backendPlans, t, locale),
+    ...plansFromBackend(backendPlans, t, locale),
+  ];
 
   // Read the token on click rather than on render: this is a public page, so
   // anonymous visitors should not pay for a session lookup, and localStorage is
@@ -74,8 +81,7 @@ export function PricingSection() {
       className="relative overflow-hidden bg-[#F6F4EF] px-4 py-8 md:px-12 md:py-24 lg:px-16"
       id="pricing"
     >
-      <div className="mx-auto max-w-6xl">
-        {/* Title */}
+      <div className="mx-auto max-w-7xl">
         <div ref={titleRef} className="mb-6 md:mb-12">
           <span className="mb-8 inline-block font-mono text-sm tracking-widest text-gray-500 uppercase">
             {t("eyebrow")}
@@ -85,10 +91,9 @@ export function PricingSection() {
           </h2>
         </div>
 
-        {/* Pricing Cards */}
         <div
           ref={cardsRef}
-          className="grid items-start gap-4 md:grid-cols-3 md:gap-6"
+          className="grid items-start gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4"
         >
           {plans.map((plan) => (
             <PlanCard
@@ -97,6 +102,9 @@ export function PricingSection() {
               className="pricing-card h-full"
               showSubscribe
               onSubscribe={handleSubscribe}
+              subscribeLabel={
+                plan.tier === FREE_TIER ? tc("getStarted") : undefined
+              }
             />
           ))}
         </div>

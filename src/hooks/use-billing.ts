@@ -13,16 +13,19 @@ import type {
   CheckoutPayload,
   CheckoutResponse,
   PortalSessionResponse,
+  SubscriptionTier,
+  UsageBreakdown,
 } from "@/services/billing";
 import {
   createCheckoutSession,
   createPortalSession,
+  FREE_TIER,
   getBillingDetails,
   getBillingPlans,
   getUserTimezone,
+  hasPaidSubscription,
+  isFreeTier,
 } from "@/services/billing";
-
-// ── Billing Plans ─────────────────────────────────────────────────────────────
 
 /** Region-aware plan list. Pass an explicit timezone to override the browser's. */
 export function useBillingPlans(timezone?: string) {
@@ -33,8 +36,6 @@ export function useBillingPlans(timezone?: string) {
     staleTime: 10 * 60 * 1000,
   });
 }
-
-// ── Billing Details (per company) ─────────────────────────────────────────────
 
 export function useBillingDetails(
   companyId: string | null | undefined,
@@ -52,31 +53,40 @@ export function useBillingDetails(
   });
 }
 
-export function useHasActivePlan(
-  companyId: string | null | undefined,
-): boolean | undefined {
-  const { data } = useBillingDetails(companyId);
-  if (!data) return undefined;
-  if (data.tier == null || data.tier === "none") return false;
-  const status = data.subscription_status ?? data.status;
-  if (status === "active") return true;
-  // Canceled subscriptions retain their plan until the paid period ends.
-  return (
-    status === "canceled" &&
-    !!data.subscription_expires_at &&
-    new Date(data.subscription_expires_at).getTime() > Date.now()
-  );
+export interface CompanyPlan {
+  /** The tier the backend reports, normalized so every unpaid state reads as `free`. */
+  tier: SubscriptionTier;
+  /** A paid subscription is in force, including a canceled one inside its paid period. */
+  isPaid: boolean;
+  /** No paid subscription — the free plan's allowances apply. */
+  isFree: boolean;
+  /** Billing details have not resolved yet, so neither flag is settled. */
+  isLoading: boolean;
+  /** Per-feature counters, used to show a free company what it has left. */
+  usage: UsageBreakdown | undefined;
 }
 
-// ── Create Checkout Session ───────────────────────────────────────────────────
+/** The plan in force for a company, and what it is allowed to do. */
+export function useCompanyPlan(
+  companyId: string | null | undefined,
+): CompanyPlan {
+  const { data, isLoading } = useBillingDetails(companyId);
+  const isPaid = !!data && hasPaidSubscription(data);
+
+  return {
+    tier: data && !isFreeTier(data.tier) ? data.tier : FREE_TIER,
+    isPaid,
+    isFree: !isLoading && !isPaid,
+    isLoading,
+    usage: data?.usage,
+  };
+}
 
 export function useCreateCheckout() {
   return useMutation<CheckoutResponse, Error, CheckoutPayload>({
     mutationFn: createCheckoutSession,
   });
 }
-
-// ── Customer Portal ───────────────────────────────────────────────────────────
 
 function useCreatePortalSession() {
   return useMutation<PortalSessionResponse, Error, string>({

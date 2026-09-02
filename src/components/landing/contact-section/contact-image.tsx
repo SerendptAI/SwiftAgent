@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
-/** Responsive hero image — shows a different asset on mobile vs desktop */
 export function ContactImage() {
   const t = useTranslations("common.contact");
 

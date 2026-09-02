@@ -34,7 +34,6 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-full w-full">
       <div className="flex flex-col gap-4 lg:flex-row lg:gap-6">
-        {/* Left Column - Stats Grid */}
         <div className="min-w-0 flex-1">
           <CompanyToolbar />
           <OfflineScreen>
@@ -45,7 +44,6 @@ export default async function DashboardPage() {
           </OfflineScreen>
         </div>
 
-        {/* Right Column - Widget & Visitors */}
         <div className="w-full min-w-0 space-y-4 lg:w-[350px] lg:space-y-6">
           <WidgetCard />
           <VisitorsList initialData={initialVisitors} />

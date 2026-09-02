@@ -12,7 +12,6 @@ import { videoUrl } from "@/lib/cloudinary";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// ─── Agent data ───────────────────────────────────────────────
 /** Names and descriptions live in the `agents.list` catalogue, keyed by id. */
 interface Agent {
   id: string;
@@ -27,7 +26,6 @@ const AGENTS: Agent[] = [
 
 const AGENT_001: Agent = { id: "001", video: videoUrl("agent-001") };
 
-// ─── Agent Video — loads only when scrolled into view ─────────
 function AgentVideo({ src }: { src: string }) {
   const videoRef = useInViewAutoplay();
 
@@ -44,7 +42,6 @@ function AgentVideo({ src }: { src: string }) {
   );
 }
 
-// ─── Reusable Agent Card ──────────────────────────────────────
 function AgentCard({ agent }: { agent: Agent }) {
   const t = useTranslations("agents.list");
 
@@ -65,7 +62,6 @@ function AgentCard({ agent }: { agent: Agent }) {
   );
 }
 
-// ─── Main Section ─────────────────────────────────────────────
 export function FeaturesSection() {
   const t = useTranslations("agents");
   const sectionRef = useRef<HTMLElement>(null);
@@ -128,7 +124,6 @@ export function FeaturesSection() {
       className="relative flex overflow-hidden bg-white px-6 pt-44 pb-12 md:px-10 md:pt-50 lg:px-16 lg:pt-56"
     >
       <div className="relative mx-auto max-w-360">
-        {/* ── Section header ── */}
         <div
           ref={headerRef}
           className="mb-10 flex flex-col gap-4 md:mb-14 lg:mb-18"
@@ -151,9 +146,7 @@ export function FeaturesSection() {
           ))}
         </div>
 
-        {/* ── Decorative dashed lines (1-3) between agent cards and bottom row ── */}
         <div className="relative hidden h-[182px] lg:block">
-          {/* Segment 1 — line1 (\): descending from upper-left */}
           <div className="absolute" style={{ left: "25%", top: 0 }}>
             <Image
               src="/images/lines/line1.png"
@@ -164,7 +157,6 @@ export function FeaturesSection() {
             />
           </div>
 
-          {/* Segment 2 — line3 (/): ascending from lower-left to upper-right */}
           <div className="absolute" style={{ left: "48%", top: "8px" }}>
             <Image
               src="/images/lines/line2.png"
@@ -175,7 +167,6 @@ export function FeaturesSection() {
             />
           </div>
 
-          {/* Segment 3 — line2 (\): steep descent from upper area */}
           <div className="absolute" style={{ left: "76%", top: 20 }}>
             <Image
               src="/images/lines/line3.png"
@@ -187,17 +178,14 @@ export function FeaturesSection() {
           </div>
         </div>
 
-        {/* ── Bottom row: Agent 001 + Quote ── */}
         <div
           ref={bottomRef}
           className="mt-16 flex flex-col justify-between gap-8 lg:flex-row lg:gap-12"
         >
-          {/* Agent 001 card */}
           <div className="w-full lg:-mt-18 lg:w-[35%]">
             <AgentCard agent={AGENT_001} />
           </div>
 
-          {/* Quote block — icon floats inline within the text */}
           <div className="w-full max-md:hidden lg:w-[50%]">
             <h3 className="font-greed-narrow text-3xl leading-[1.15] font-black tracking-tight whitespace-pre-line text-black uppercase md:text-5xl lg:text-6xl">
               {t("quote")}

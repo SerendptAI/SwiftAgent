@@ -16,5 +16,7 @@
   "backToEmail": "Change email",
   "checkSpam": "We've emailed you a code. Can't find it? Check your spam or junk folder.",
   "resendCode": "Resend code",
-  "codeResent": "A new code has been sent."
+  "codeResent": "A new code has been sent.",
+  "accountNotFound": "We couldn't find an account for that email",
+  "createAccount": "Create an account"
 }

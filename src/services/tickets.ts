@@ -3,8 +3,6 @@ import { unwrapList } from "@/lib/unwrap-list";
 
 import type { ChatSessionDetail } from "./conversations";
 
-// ── Types ──────────────────────────────────────────────────────────────────────
-
 export type TicketStatus = "pending" | "resolved" | string;
 
 /** Metadata for a file attached to a ticket message. */
@@ -70,12 +68,9 @@ export interface ReplyPayload {
   attachments?: File[];
 }
 
-/** Max number of attachments accepted per reply. */
 export const MAX_REPLY_ATTACHMENTS = 5;
 /** Max size (bytes) per attachment. */
 export const MAX_REPLY_ATTACHMENT_BYTES = 10 * 1024 * 1024;
-
-// ── API Service ────────────────────────────────────────────────────────────────
 
 export const ticketsApi = {
   list: async (
@@ -110,7 +105,6 @@ export const ticketsApi = {
       return;
     }
 
-    // Files present → switch to multipart/form-data.
     const formData = new FormData();
     formData.append("body_text", fields.body_text);
     if (fields.body_html) formData.append("body_html", fields.body_html);
