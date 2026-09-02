@@ -14,7 +14,7 @@ interface PlanMeta {
  * the same tier slug the backend returns.
  */
 const PLAN_META = {
-  free: { textColor: "text-[#6E6E6E]", image: "/images/pricing/icon1.svg" },
+  free: { textColor: "text-[#03A84E]", image: "/images/pricing/icon4.svg" },
   basic: { textColor: "text-[#F2B035]", image: "/images/pricing/icon1.svg" },
   pro: { textColor: "text-[#6433CC]", image: "/images/pricing/icon2.svg" },
   enterprise: {
