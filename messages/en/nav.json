@@ -39,6 +39,8 @@
     }
   },
   "login": "Login",
+  "loginSignUp": "Login/Sign Up",
+  "signup": "Sign Up",
   "dashboard": "Dashboard",
   "goToDashboard": "Go to dashboard",
   "openMenu": "Open menu",

@@ -39,6 +39,8 @@
     }
   },
   "login": "Ingia",
+  "loginSignUp": "Ingia/Jisajili",
+  "signup": "Jisajili",
   "dashboard": "Dashibodi",
   "goToDashboard": "Nenda kwenye dashibodi",
   "openMenu": "Fungua menyu",
