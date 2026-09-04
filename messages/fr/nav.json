@@ -39,7 +39,7 @@
     }
   },
   "login": "Connexion",
-  "loginSignUp": "Connexion/Inscription",
+  "loginSignUp": "Connexion",
   "signup": "Inscription",
   "dashboard": "Tableau de bord",
   "goToDashboard": "Accéder au tableau de bord",

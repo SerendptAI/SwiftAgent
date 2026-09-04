@@ -53,7 +53,9 @@ export function AuthMenu({ className }: AuthMenuProps) {
         onClick={() => setIsOpen((prev) => !prev)}
         aria-expanded={isOpen}
         aria-haspopup="menu"
-        className="font-dm-mono flex h-12 w-full cursor-pointer items-center justify-center gap-2.5 rounded-lg bg-[#F2B035] px-5 text-base font-medium tracking-[0.15em] text-[#1f1f1f] uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:brightness-95"
+        // 236px is the design width, which fits the English label. Longer
+        // translations grow the button rather than spilling out of it.
+        className="font-dm-mono flex h-12 min-w-59 cursor-pointer items-center justify-center gap-2.5 rounded-lg bg-[#F2B035] px-5 text-base font-medium tracking-[0.15em] whitespace-nowrap text-[#1f1f1f] uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:brightness-95"
       >
         {t("loginSignUp")}
         <Icons.NavChevronDown

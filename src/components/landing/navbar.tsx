@@ -247,7 +247,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                   </span>
                 </Link>
               ) : (
-                <AuthMenu className="hidden w-59 shrink-0 xl:block" />
+                <AuthMenu className="hidden w-fit shrink-0 xl:block" />
               )}
             </div>
           </nav>
