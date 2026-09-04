@@ -259,13 +259,26 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                   </span>
                 </Link>
               ) : (
-                <Link
-                  href="/login"
-                  onClick={onClose}
-                  className="font-dm-mono flex w-full items-center justify-center rounded-lg border bg-[#F2B035] px-8 py-3 text-base font-normal tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-800"
-                >
-                  {t("login")}
-                </Link>
+                // The desktop navbar offers login and sign-up from one menu,
+                // so the mobile sheet has to reach both destinations too.
+                <div className="flex flex-col gap-3">
+                  <Link
+                    href="/login"
+                    onClick={onClose}
+                    className="font-dm-mono flex w-full items-center justify-center gap-3 rounded-lg border bg-[#F2B035] px-8 py-3 text-base font-normal tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:brightness-95"
+                  >
+                    <Icons.AuthLogin className="size-5 shrink-0" />
+                    {t("login")}
+                  </Link>
+                  <Link
+                    href="/signup"
+                    onClick={onClose}
+                    className="font-dm-mono flex w-full items-center justify-center gap-3 rounded-lg border border-black bg-white px-8 py-3 text-base font-normal tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-50"
+                  >
+                    <Icons.AuthSignUp className="size-5 shrink-0" />
+                    {t("signup")}
+                  </Link>
+                </div>
               )}
             </div>
           </div>

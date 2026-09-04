@@ -39,6 +39,8 @@
     }
   },
   "login": "Iniciar sesión",
+  "loginSignUp": "Iniciar sesión",
+  "signup": "Registrarse",
   "dashboard": "Panel",
   "goToDashboard": "Ir al panel",
   "openMenu": "Abrir menú",

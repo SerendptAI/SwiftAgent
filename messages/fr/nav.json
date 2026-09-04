@@ -39,6 +39,8 @@
     }
   },
   "login": "Connexion",
+  "loginSignUp": "Connexion",
+  "signup": "Inscription",
   "dashboard": "Tableau de bord",
   "goToDashboard": "Accéder au tableau de bord",
   "openMenu": "Ouvrir le menu",

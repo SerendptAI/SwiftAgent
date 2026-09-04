@@ -13,7 +13,7 @@ import { Link } from "@/i18n/navigation";
 import { cn, getProfileImage } from "@/lib/utils";
 
 import { Icons } from "../icons";
-import { Button } from "../ui/button";
+import { AuthMenu } from "./auth-menu";
 import {
   isExternalHref,
   isLandingNavLinkActive,
@@ -247,14 +247,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                   </span>
                 </Link>
               ) : (
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="hidden max-w-[220px] shrink-0 px-4 xl:flex"
-                  asChild
-                >
-                  <Link href="/login">{t("login")}</Link>
-                </Button>
+                <AuthMenu className="hidden w-fit shrink-0 xl:block" />
               )}
             </div>
           </nav>
