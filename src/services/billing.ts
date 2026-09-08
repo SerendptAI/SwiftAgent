@@ -106,6 +106,14 @@ export function hasPaidSubscription(details: BillingDetails): boolean {
   );
 }
 
+/**
+ * True when the company has a tier on record, so there is a customer at the
+ * provider to manage — inactive, in dunning and lapsed included.
+ */
+export function canManageBilling(details: BillingDetails | undefined): boolean {
+  return !!details && !isFreeTier(details.tier);
+}
+
 export interface CheckoutPayload {
   company_id: string;
   tier: string;

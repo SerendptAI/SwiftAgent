@@ -14,7 +14,7 @@ import {
   useOpenBillingPortal,
 } from "@/hooks/use-billing";
 import { cn } from "@/lib/utils";
-import type { SavedCard } from "@/services/billing";
+import { canManageBilling, type SavedCard } from "@/services/billing";
 import { useCardStore } from "@/store/card-store";
 
 export default function BillingPage() {
@@ -44,9 +44,7 @@ export default function BillingPage() {
 
   const subscriptionStatus =
     details?.subscription_status ?? details?.status ?? null;
-  const canManageSubscription =
-    companyPlan.isPaid &&
-    (subscriptionStatus === "active" || subscriptionStatus === "canceled");
+  const canManageSubscription = canManageBilling(details);
 
   return (
     <div className="flex min-h-[360px] flex-col gap-5 rounded-[20px] bg-white p-3 shadow-sm sm:min-h-[450px] sm:gap-6 sm:rounded-xl sm:p-4">
@@ -130,10 +128,10 @@ export default function BillingPage() {
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Opening…
                   </>
-                ) : subscriptionStatus === "canceled" ? (
-                  "Reactivate or Manage"
-                ) : (
+                ) : subscriptionStatus === "active" ? (
                   "Manage Subscription"
+                ) : (
+                  "Reactivate or Manage"
                 )}
               </button>
             </div>
