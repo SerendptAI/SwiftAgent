@@ -58,28 +58,45 @@ export interface CompanyPlan {
   tier: SubscriptionTier;
   /** A paid subscription is in force, including a canceled one inside its paid period. */
   isPaid: boolean;
-  /** No paid subscription — the free plan's allowances apply. */
+  /** The backend answered, and it reports no paid subscription. */
   isFree: boolean;
-  /** Billing details have not resolved yet, so neither flag is settled. */
+  /** Billing details have not answered yet, so neither flag is settled. */
   isLoading: boolean;
+  /** The lookup failed, so the plan in force is unknown rather than free. */
+  isError: boolean;
   /** Per-feature counters, used to show a free company what it has left. */
   usage: UsageBreakdown | undefined;
+}
+
+export interface BillingQueryState {
+  data: BillingDetails | undefined;
+  isSuccess: boolean;
+  isError: boolean;
+}
+
+export function toCompanyPlan({
+  data,
+  isSuccess,
+  isError,
+}: BillingQueryState): CompanyPlan {
+  const isPaid = isSuccess && !!data && hasPaidSubscription(data);
+
+  return {
+    tier: data && !isFreeTier(data.tier) ? data.tier : FREE_TIER,
+    isPaid,
+    isFree: isSuccess && !isPaid,
+    isLoading: !isSuccess && !isError,
+    isError,
+    usage: data?.usage,
+  };
 }
 
 /** The plan in force for a company, and what it is allowed to do. */
 export function useCompanyPlan(
   companyId: string | null | undefined,
 ): CompanyPlan {
-  const { data, isLoading } = useBillingDetails(companyId);
-  const isPaid = !!data && hasPaidSubscription(data);
-
-  return {
-    tier: data && !isFreeTier(data.tier) ? data.tier : FREE_TIER,
-    isPaid,
-    isFree: !isLoading && !isPaid,
-    isLoading,
-    usage: data?.usage,
-  };
+  const { data, isSuccess, isError } = useBillingDetails(companyId);
+  return toCompanyPlan({ data, isSuccess, isError });
 }
 
 export function useCreateCheckout() {

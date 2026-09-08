@@ -1,5 +1,6 @@
 import axios from "axios";
 
+import { routing } from "@/i18n/routing";
 import { resetAnalytics } from "@/lib/analytics";
 import { clearActiveCompany } from "@/store/active-company-store";
 
@@ -71,16 +72,42 @@ const refreshClient = axios.create({
 });
 
 function getLocaleFromPath(): string {
-  if (typeof window === "undefined") return "en";
+  if (typeof window === "undefined") return routing.defaultLocale;
   const segment = window.location.pathname.split("/")[1];
-  return segment === "pl" || segment === "en" ? segment : "en";
+  return (routing.locales as readonly string[]).includes(segment)
+    ? segment
+    : routing.defaultLocale;
 }
 
 function forceLogout() {
   clearAuthTokens();
-  if (typeof window !== "undefined") {
-    window.location.href = `/${getLocaleFromPath()}/login`;
+  if (typeof window === "undefined") return;
+
+  const loginPath = `/${getLocaleFromPath()}/login`;
+  if (window.location.pathname.replace(/\/+$/, "") === loginPath) return;
+
+  window.location.href = loginPath;
+}
+
+const TRANSIENT_REFRESH_STATUSES: ReadonlySet<number> = new Set([408, 429]);
+
+class RefreshRejectedError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "RefreshRejectedError";
   }
+}
+
+export function isRefreshRejection(error: unknown): boolean {
+  if (error instanceof RefreshRejectedError) return true;
+  if (!axios.isAxiosError(error)) return false;
+
+  const status = error.response?.status;
+  if (status === undefined) return false;
+
+  return (
+    status >= 400 && status < 500 && !TRANSIENT_REFRESH_STATUSES.has(status)
+  );
 }
 
 let isRefreshing = false;
@@ -100,7 +127,6 @@ function processQueue(error: unknown, token: string | null = null) {
   failedQueue = [];
 }
 
-// Retries once on transient failures; a 401/403 means the token is rejected.
 async function requestNewTokens(
   refreshToken: string,
 ): Promise<{ access_token: string; refresh_token?: string }> {
@@ -110,11 +136,15 @@ async function requestNewTokens(
       const { data } = await refreshClient.post(REFRESH_URL, {
         refresh_token: refreshToken,
       });
+      if (!data?.access_token) {
+        throw new RefreshRejectedError(
+          "The refresh response carried no access token.",
+        );
+      }
       return data;
     } catch (err) {
       lastError = err;
-      const status = axios.isAxiosError(err) ? err.response?.status : undefined;
-      if (status === 401 || status === 403) throw err;
+      if (isRefreshRejection(err)) throw err;
     }
   }
   throw lastError;
@@ -173,12 +203,7 @@ apiClient.interceptors.response.use(
     } catch (refreshError) {
       processQueue(refreshError, null);
 
-      // Log out only when the refresh token is explicitly rejected; transient
-      // failures keep the session so a later request can recover.
-      const refreshStatus = axios.isAxiosError(refreshError)
-        ? refreshError.response?.status
-        : undefined;
-      if (refreshStatus === 401 || refreshStatus === 403) {
+      if (isRefreshRejection(refreshError)) {
         forceLogout();
       }
 
