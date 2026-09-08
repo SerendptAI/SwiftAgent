@@ -13,13 +13,15 @@ import {
   useCompanyPlan,
   useOpenBillingPortal,
 } from "@/hooks/use-billing";
+import { cn } from "@/lib/utils";
 import type { SavedCard } from "@/services/billing";
 import { useCardStore } from "@/store/card-store";
 
 export default function BillingPage() {
   const [showAddCard, setShowAddCard] = useState(false);
   const companyId = useActiveCompanyId();
-  const { data: details } = useBillingDetails(companyId);
+  const { data: details, refetch: refetchDetails } =
+    useBillingDetails(companyId);
   const companyPlan = useCompanyPlan(companyId);
   const portal = useOpenBillingPortal(companyId);
   const { savedCards: localCards, addCard } = useCardStore();
@@ -31,12 +33,14 @@ export default function BillingPage() {
   }));
   const savedCards: SavedCard[] = [...backendCards, ...localAsSaved];
 
-  // A company with no paid subscription is on the free plan, whichever of the
-  // backend's unpaid tiers it reports.
   const presentPlanName = companyPlan.isPaid
     ? (details?.display_name?.toUpperCase() ??
       String(companyPlan.tier).toUpperCase())
-    : "FREE";
+    : companyPlan.isFree
+      ? "FREE"
+      : companyPlan.isLoading
+        ? "LOADING…"
+        : "UNAVAILABLE";
 
   const subscriptionStatus =
     details?.subscription_status ?? details?.status ?? null;
@@ -84,13 +88,30 @@ export default function BillingPage() {
           <span className="font-dm-mono text-xs font-semibold tracking-[0.15em] text-gray-500 uppercase sm:text-sm">
             PRESENT PLAN
           </span>
-          <button className="flex min-w-0 items-center justify-between gap-2 rounded-2xl border border-gray-100 px-4 py-2.5 sm:justify-start">
-            <div className="h-4 w-4 rounded-full bg-[#F2B035]" />
-            <span className="font-dm-mono min-w-0 truncate text-sm font-medium tracking-wide text-gray-700 uppercase">
-              {presentPlanName}
-            </span>
-            <ChevronDown className="h-4 w-4 shrink-0 text-gray-400" />
-          </button>
+          <div className="flex flex-col items-start gap-1 sm:items-end">
+            <button className="flex min-w-0 items-center justify-between gap-2 rounded-2xl border border-gray-100 px-4 py-2.5 sm:justify-start">
+              <div
+                className={cn(
+                  "h-4 w-4 rounded-full",
+                  companyPlan.isPaid || companyPlan.isFree
+                    ? "bg-[#F2B035]"
+                    : "bg-gray-300",
+                )}
+              />
+              <span className="font-dm-mono min-w-0 truncate text-sm font-medium tracking-wide text-gray-700 uppercase">
+                {presentPlanName}
+              </span>
+              <ChevronDown className="h-4 w-4 shrink-0 text-gray-400" />
+            </button>
+            {companyPlan.isError && (
+              <button
+                onClick={() => refetchDetails()}
+                className="font-stolzl cursor-pointer text-xs text-red-500 underline underline-offset-2"
+              >
+                Couldn&apos;t load your subscription. Try again.
+              </button>
+            )}
+          </div>
         </div>
 
         {canManageSubscription && (
