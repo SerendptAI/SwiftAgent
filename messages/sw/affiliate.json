@@ -1,0 +1,83 @@
+{
+  "hero": {
+    "headline": "Tayari unazijua\nbiashara tunazo\nzitafuta",
+    "body": "SwiftAgents huipa tovuti wasaidizi wa AI wanaoshughulikia mazungumzo ya moja kwa moja, tiketi, na taratibu za huduma bila vikwazo. Tutambulishe kwa biashara zinazohangaika na huduma za mikono, na ulipwe pale zinapoanza kutumia. Ni rahisi hivyo.",
+    "submitReferral": "Tuma pendekezo",
+    "viewPlanMetrics": "Angalia bei",
+    "proReferrer": "Mpendekezaji mahiri"
+  },
+  "path": {
+    "eyebrow": "Njia ya upendekezaji",
+    "heading": "Njia ya kupata malipo ya kudumu",
+    "steps": {
+      "you": {
+        "label": "Wewe",
+        "caption": "mpendekezaji"
+      },
+      "intro": {
+        "label": "Utambulisho",
+        "caption": "kuunganisha"
+      },
+      "business": {
+        "label": "Biashara",
+        "caption": "inaona onyesho"
+      },
+      "live": {
+        "label": "Imeanza",
+        "caption": "unalipwa"
+      }
+    }
+  },
+  "audience": {
+    "forWho": {
+      "title": "Hii ni kwa ajili ya nani",
+      "bullets": {
+        "developers": "Watengenezaji na wabunifu wa tovuti wanaojenga au kutunza tovuti za biashara",
+        "agencies": "Wamiliki wa mashirika na wafanyakazi huru wenye wateja wa biashara",
+        "anyone": "Mtu yeyote mwenye rafiki, ndugu, au mtu anayemjua anayeendesha biashara yenye tovuti"
+      }
+    },
+    "whyYes": {
+      "title": "Kwa nini wamiliki wanakubali",
+      "bullets": {
+        "answers": "Tovuti yao huanza kujibu maswali ya wateja yenyewe, mchana na usiku",
+        "noDevTime": "Hakuna muda wa mtengenezaji unaohitajika, SwiftAgents hujifunza moja kwa moja kutoka kwenye tovuti",
+        "liveFast": "Inaanza kutumika ndani ya siku chache, kwenye gumzo la tovuti, WhatsApp, na mitandao ya kijamii"
+      }
+    }
+  },
+  "protocol": {
+    "eyebrow": "Jinsi inavyofanya kazi",
+    "heading": "Utaratibu rahisi wa upendekezaji",
+    "steps": {
+      "refer": {
+        "title": "Pendekeza",
+        "body": "Tutumie jina la biashara na tovuti yake, au tutambulishe moja kwa moja."
+      },
+      "demo": {
+        "title": "Onyesho",
+        "body": "Tunamwonyesha mmiliki wakala wa AI anayefanya kazi, aliyejengwa kwenye tovuti na huduma yake mwenyewe."
+      },
+      "signUp": {
+        "title": "Kujisajili",
+        "body": "Wakijiunga, wewe unarekodiwa kama chanzo cha pendekezo."
+      },
+      "getPaid": {
+        "title": "Lipwa",
+        "body": "Malipo yako hutumwa mara biashara inapoanza kutumika."
+      }
+    }
+  },
+  "payout": {
+    "rewardLabel": "Zawadi ya ushirika",
+    "rewardCaption": "Ya mpango wowote watakaolipia",
+    "heading": "Tuma miamala mingi",
+    "body": "Unapata asilimia 20 ya mpango wowote atakaolipia mtu uliyempendekeza. Kadri unavyopendekeza zaidi, ndivyo unavyopata zaidi — ni rahisi hivyo."
+  },
+  "submit": {
+    "heading": "Uko tayari kutuma pendekezo lako la kwanza?",
+    "body": "Jibu kwa jina la biashara, au watume moja kwa moja kwetu.",
+    "channelLabel": "Njia ya kutuma",
+    "emailNow": "Tuma barua pepe"
+  }
+}

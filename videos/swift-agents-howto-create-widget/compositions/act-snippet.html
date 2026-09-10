@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="assets/tutorial.css" />
+      <style>
+        #root {
+          position: absolute;
+          inset: 0;
+        }
+        #snip-menu {
+          opacity: 0;
+          visibility: hidden;
+        }
+        .snip-head {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          height: 76px;
+          padding: 0 26px;
+          background: #ffffff;
+          border-bottom: 2px solid #e5e7eb;
+        }
+        .snip-swatch {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 40px;
+          height: 40px;
+          border-radius: 8px;
+        }
+      </style>
+
+      <div
+        id="root"
+        data-composition-id="act-snippet"
+        data-width="1920"
+        data-height="1080"
+      >
+        <div class="hr-stage">
+          <div
+            id="snip-surface"
+            style="position: absolute; left: 0; top: 0; width: 1920px; height: 1080px"
+          >
+            <div
+              class="hr-card"
+              style="position: absolute; left: 370px; top: 180px; width: 1180px; height: 672px"
+            ></div>
+
+            <div id="snip-topbar">
+              <div
+                style="
+                  position: absolute;
+                  left: 370px;
+                  top: 180px;
+                  width: 277px;
+                  height: 108px;
+                  background: #f6f6f6;
+                  border-bottom-right-radius: 20px;
+                "
+              ></div>
+              <div class="hr-pill" style="left: 380px; top: 188px; height: 92px">
+                <svg
+                  id="snip-chevron"
+                  viewBox="0 0 24 24"
+                  style="width: 36px; height: 36px; color: #ffffff"
+                >
+                  <path
+                    d="M6 9l6 6 6-6"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                Widget
+              </div>
+              <div class="hr-ghost" style="left: 679px; top: 192px; height: 84px">
+                <svg viewBox="0 0 24 24" style="width: 30px; height: 30px; color: #4b5563">
+                  <path
+                    d="M3 8h18M3 16h18"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                  />
+                  <circle cx="9" cy="8" r="3" fill="currentColor" />
+                  <circle cx="15" cy="16" r="3" fill="currentColor" />
+                </svg>
+                Settings
+              </div>
+            </div>
+
+            <div
+              style="
+                position: absolute;
+                left: 418px;
+                top: 348px;
+                width: 1084px;
+                border: 2px solid #e5e7eb;
+                border-radius: 14px;
+                overflow: hidden;
+                background: #fbfbfb;
+              "
+            >
+              <div class="snip-head">
+                <span class="hr-panel-label">Widget snippet</span>
+                <span class="hr-panel-label">
+                  <svg viewBox="0 0 24 24" style="width: 28px; height: 28px">
+                    <path
+                      d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linejoin="round"
+                    />
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="3.2"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                  </svg>
+                  <span id="snip-reveal-label">Reveal</span>
+                </span>
+              </div>
+              <div
+                class="hr-code"
+                style="padding: 30px 28px; font-size: 26px; line-height: 1.75"
+              >&lt;script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="<span id="snip-cid">••••••••••••••••••••••••••••••••••••</span>" data-api-key="YOUR_API_KEY" defer&gt;&lt;/script&gt;</div>
+            </div>
+
+            <div
+              id="snip-note"
+              class="hr-note"
+              style="position: absolute; left: 418px; top: 645px; width: 1084px"
+            >
+              Replace <span class="hr-chip">YOUR_API_KEY</span> with a key from
+              <span style="color: #0a0a0a; text-decoration: underline"
+                >Settings &rarr; API Keys</span
+              >.
+            </div>
+
+            <div
+              id="snip-copy"
+              class="hr-btn"
+              style="
+                position: absolute;
+                left: 418px;
+                top: 712px;
+                width: 1084px;
+                height: 92px;
+                font-size: 32px;
+                box-shadow: -6px 8px 0px 0px #000000;
+              "
+            >
+              <svg viewBox="0 0 24 24" style="width: 32px; height: 32px; color: #ffffff">
+                <rect
+                  x="9"
+                  y="9"
+                  width="13"
+                  height="13"
+                  rx="2.5"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <path
+                  d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <span id="snip-copy-label">Copy</span>
+            </div>
+
+            <div id="snip-menu" class="hr-menu" style="position: absolute; left: 380px; top: 296px; width: 380px">
+              <div class="hr-menu-item" style="color: #006be5">
+                <span
+                  class="snip-swatch"
+                  style="background: rgba(0, 107, 229, 0.1); color: #006be5"
+                >
+                  <svg viewBox="0 0 24 24" style="width: 22px; height: 22px; transform: rotate(180deg)">
+                    <path
+                      d="M6 9l6 6 6-6"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </span>
+                Widget Mode
+              </div>
+              <div style="height: 2px; margin: 0 24px; background: #f3f4f6"></div>
+              <div class="hr-menu-item" style="color: #374151">
+                <span class="snip-swatch" style="background: #f3f4f6; color: #6b7280">
+                  <svg viewBox="0 0 24 24" style="width: 22px; height: 22px; transform: rotate(-90deg)">
+                    <path
+                      d="M6 9l6 6 6-6"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </span>
+                Button Mode
+              </div>
+            </div>
+          </div>
+
+          <svg
+            id="snip-cursor"
+            class="hr-cursor"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M5 2.5 L5 20 L9.4 16.2 L12.3 22.2 L15.2 20.8 L12.4 15 L18.2 15 Z"
+              fill="#0A0A0A"
+              stroke="#FFFFFF"
+              stroke-width="1.4"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+
+      </div>
+
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+
+          /**
+           * Synthetic. The company id is the only real secret in the snippet,
+           * and this act's own reveal beat unmasks it on screen — see BRIEF.md.
+           */
+          const CID = "4f9a2c71-3e88-4d10-b6c2-0e5b7a91d3f4";
+          const MASK = "•".repeat(CID.length);
+
+          const TIP = { x: 16, y: 8 };
+          // Focus sits above the stage's optical centre so panned content
+          // clears the caption band on the two-line captions.
+          const FOCUS_Y = 396;
+          const panTo = (y, s) => FOCUS_Y - 540 - (y - 540) * s;
+          const at = (x, y, s, ty) => ({
+            x: 960 + (x - 960) * s - TIP.x,
+            y: 540 + (y - 540) * s + ty - TIP.y,
+          });
+
+          const S_WIDE = 0.95;
+          const S_MENU = 1.28;
+          const S_PANEL = 1.28;
+          const S_COPY = 1.12;
+          const TY_WIDE = panTo(516, S_WIDE);
+          const TY_MENU = panTo(320, S_MENU);
+          const TY_PANEL = panTo(484, S_PANEL);
+          const TY_COPY = panTo(640, S_COPY);
+          const OFF = { x: 1640, y: 1180 };
+
+          // ── Beat 1 · the card, whole (0-7s) ──────────────────────
+          tl.set("#snip-cursor", { x: OFF.x, y: OFF.y, opacity: 0, scale: 1 }, 0);
+          tl.set("#snip-cid", { innerHTML: MASK }, 0);
+          tl.set("#snip-reveal-label", { innerHTML: "Reveal" }, 0);
+          tl.set("#snip-copy-label", { innerHTML: "Copy" }, 0);
+          tl.set("#snip-copy", { x: 0, y: 0 }, 0);
+          tl.set("#snip-chevron", { rotate: 0 }, 0);
+          tl.set(["#snip-topbar", "#snip-note", "#snip-copy"], { autoAlpha: 1 }, 0);
+          tl.fromTo(
+            "#snip-surface",
+            { scale: S_WIDE * 0.98, y: TY_WIDE, opacity: 0 },
+            { scale: S_WIDE, y: TY_WIDE, opacity: 1, duration: 0.6, ease: "power2.out" },
+            0.1,
+          );
+
+          // ── Beat 2 · widget or button (7-16s) ────────────────────
+          // One action per beat: the card's lower half is dropped for steps
+          // that don't use it, which also keeps panned content off the captions.
+          tl.to(["#snip-note", "#snip-copy"], { autoAlpha: 0, duration: 0.3 }, 7.0);
+          tl.to(
+            "#snip-surface",
+            { scale: S_MENU, y: TY_MENU, duration: 0.7, ease: "power2.out" },
+            7.0,
+          );
+          const pPill = at(502, 234, S_MENU, TY_MENU);
+          tl.to(
+            "#snip-cursor",
+            { x: pPill.x, y: pPill.y, opacity: 1, duration: 0.8, ease: "power2.out" },
+            7.4,
+          );
+          tl.to("#snip-cursor", { scale: 0.88, duration: 0.09 }, 8.4);
+          tl.to("#snip-cursor", { scale: 1, duration: 0.09 }, 8.49);
+          tl.to("#snip-chevron", { rotate: 180, duration: 0.25 }, 8.5);
+          tl.fromTo(
+            "#snip-menu",
+            { autoAlpha: 0, y: -10 },
+            { autoAlpha: 1, y: 0, duration: 0.3, ease: "power2.out" },
+            8.6,
+          );
+          // Both options are readable before the cursor commits to one.
+          const pOpt = at(560, 337, S_MENU, TY_MENU);
+          tl.to(
+            "#snip-cursor",
+            { x: pOpt.x, y: pOpt.y, duration: 0.7, ease: "power2.out" },
+            11.4,
+          );
+          tl.to("#snip-cursor", { scale: 0.88, duration: 0.09 }, 12.3);
+          tl.to("#snip-cursor", { scale: 1, duration: 0.09 }, 12.39);
+          tl.to("#snip-menu", { autoAlpha: 0, duration: 0.25 }, 12.6);
+          tl.to("#snip-chevron", { rotate: 0, duration: 0.25 }, 12.6);
+
+          // ── Beat 3 · reveal the company id (16-23s) ──────────────
+          tl.to(
+            "#snip-surface",
+            { scale: S_PANEL, y: TY_PANEL, duration: 0.7, ease: "power2.out" },
+            16.0,
+          );
+          const pReveal = at(1400, 386, S_PANEL, TY_PANEL);
+          tl.to(
+            "#snip-cursor",
+            { x: pReveal.x, y: pReveal.y, duration: 0.8, ease: "power2.out" },
+            16.3,
+          );
+          tl.to("#snip-cursor", { scale: 0.88, duration: 0.09 }, 17.4);
+          tl.to("#snip-cursor", { scale: 1, duration: 0.09 }, 17.49);
+          // The id resolves out of the mask a character at a time, so the eye
+          // can follow what changed rather than being handed a new string.
+          for (let i = 1; i <= CID.length; i++) {
+            tl.set(
+              "#snip-cid",
+              { innerHTML: CID.slice(0, i) + MASK.slice(i) },
+              17.7 + i * 0.026,
+            );
+          }
+          tl.set(
+            "#snip-reveal-label",
+            { innerHTML: "Hide" },
+            17.7 + CID.length * 0.026,
+          );
+
+          // ── Beat 4 · copy (23-30s) ───────────────────────────────
+          // The top bar would ride off the top of the canvas at this pan, so it
+          // leaves rather than being sliced by the stage clip.
+          tl.to("#snip-topbar", { autoAlpha: 0, duration: 0.3 }, 23.0);
+          tl.to(["#snip-note", "#snip-copy"], { autoAlpha: 1, duration: 0.3 }, 23.0);
+          tl.to(
+            "#snip-surface",
+            { scale: S_COPY, y: TY_COPY, duration: 0.7, ease: "power2.out" },
+            23.0,
+          );
+          const pCopy = at(960, 758, S_COPY, TY_COPY);
+          tl.to(
+            "#snip-cursor",
+            { x: pCopy.x, y: pCopy.y, duration: 0.8, ease: "power2.out" },
+            23.4,
+          );
+          // The real button's offset shadow compresses under the press.
+          tl.to("#snip-cursor", { scale: 0.88, duration: 0.09 }, 24.6);
+          tl.to("#snip-cursor", { scale: 1, duration: 0.09 }, 24.69);
+          tl.to("#snip-copy", { x: -4, y: 4, duration: 0.1 }, 24.6);
+          tl.to("#snip-copy", { x: 0, y: 0, duration: 0.14 }, 24.71);
+          tl.set("#snip-copy-label", { innerHTML: "Copied!" }, 24.78);
+          tl.to("#snip-cursor", { opacity: 0, duration: 0.3 }, 27.4);
+
+          window.__timelines["act-snippet"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

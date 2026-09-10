@@ -1,13 +1,15 @@
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
-/** Responsive hero image — shows a different asset on mobile vs desktop */
 export function ContactImage() {
+  const t = useTranslations("common.contact");
+
   return (
     <>
       {/* Mobile only — priority load for LCP */}
       <Image
         src="/images/footer.png"
-        alt="Street view"
+        alt={t("imageAlt")}
         width={500}
         height={600}
         priority
@@ -17,7 +19,7 @@ export function ContactImage() {
       {/* Desktop only — lazy-loaded so mobile won't fetch it */}
       <Image
         src="/images/contact_img.svg"
-        alt="Street view"
+        alt={t("imageAlt")}
         width={500}
         height={500}
         loading="lazy"

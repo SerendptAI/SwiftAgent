@@ -2090,6 +2090,36 @@ export const Icons = {
       />
     </svg>
   ),
+  AuthLogin: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M8 20H16V18H18V20H20V22H4V20H6V18H8V20ZM4 20H2V4H4V20ZM22 20H20V4H22V20ZM16 18H8V16H16V18ZM14 14H10V12H14V14ZM10 12H8V8H10V12ZM16 12H14V8H16V12ZM14 8H10V6H14V8ZM20 4H4V2H20V4Z"
+        fill="currentColor"
+      />
+    </svg>
+  ),
+  AuthSignUp: (props: React.SVGProps<SVGSVGElement>) => (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M18 22H6V20H18V22ZM6 20H4V15H6V20ZM20 20H18V4H20V20ZM12 9H14V11H16V13H14V15H12V17H10V13H2V11H10V7H12V9ZM6 9H4V4H6V9ZM18 4H6V2H18V4Z"
+        fill="currentColor"
+      />
+    </svg>
+  ),
   ArrowUpRight: (props: React.SVGProps<SVGSVGElement>) => (
     <svg
       width="24"

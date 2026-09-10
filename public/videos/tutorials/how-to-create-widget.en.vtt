@@ -1,0 +1,49 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:04.000
+How to create your Swift Agents widget — from your dashboard to live
+
+2
+00:00:04.000 --> 00:00:12.000
+Step 1 of 4 — Your widget code stays locked until you're on a plan
+
+3
+00:00:12.000 --> 00:00:20.000
+Press Upgrade and subscribe. The code unlocks straight after
+
+4
+00:00:20.000 --> 00:00:27.000
+Step 2 of 4 — Your widget is already here. The snippet is the widget
+
+5
+00:00:27.000 --> 00:00:36.000
+Choose Widget or Button. Button mode opens the chat from your own button
+
+6
+00:00:36.000 --> 00:00:43.000
+Press Reveal to unmask your company ID
+
+7
+00:00:43.000 --> 00:00:50.000
+Copy the snippet
+
+8
+00:00:50.000 --> 00:00:57.000
+Step 3 of 4 — In Settings, API Keys, press Generate
+
+9
+00:00:57.000 --> 00:01:04.000
+Copy the key now — it is shown only once
+
+10
+00:01:04.000 --> 00:01:13.000
+Step 4 of 4 — Paste the snippet into your page, just before the closing body tag
+
+11
+00:01:13.000 --> 00:01:19.000
+Swap YOUR_API_KEY for the key you generated
+
+12
+00:01:19.000 --> 00:01:26.000
+That's it — your agent is live on your site

@@ -1,20 +1,27 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import { ContactSection } from "@/components/landing/contact-section";
 import { CtaSection } from "@/components/landing/cta-section";
 import { FeaturesSection } from "@/components/landing/features-section";
 import { Navbar } from "@/components/landing/navbar";
 import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provider";
-import { siteConfig } from "@/lib/site-config";
+import { localeAlternates } from "@/lib/locale-metadata";
 
-export const metadata: Metadata = {
-  title: "Agents — Swift Agents",
-  description:
-    "AI agents that handle customer support, sales, and voice conversations for your business — 24/7.",
-  alternates: {
-    canonical: `${siteConfig.url}/en/agents`,
-  },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta.agents" });
+
+  return {
+    title: t("title"),
+    description: t("description"),
+    alternates: localeAlternates(locale, "/agents"),
+  };
+}
 
 export default function AgentsPage() {
   return (

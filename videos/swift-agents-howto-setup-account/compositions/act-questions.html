@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="assets/tutorial.css" />
+      <style>
+        #root {
+          position: absolute;
+          inset: 0;
+        }
+        .q-bubble {
+          left: 300px;
+          max-width: 900px;
+        }
+        .q-reply {
+          right: 300px;
+          max-width: 760px;
+        }
+        #q-chat-scene,
+        #q-bubble-2,
+        #q-choices,
+        #q-bubble-3,
+        #q-answer {
+          opacity: 0;
+          visibility: hidden;
+        }
+        .q-modal {
+          position: absolute;
+          left: 50%;
+          margin-left: -450px;
+          width: 900px;
+          padding: 56px 76px 60px;
+          background: #ffffff;
+          border: 2px solid #f3f4f6;
+          box-shadow: 0 24px 64px rgba(0, 0, 0, 0.12);
+          text-align: center;
+        }
+      </style>
+
+      <div
+        id="root"
+        data-composition-id="act-questions"
+        data-width="1920"
+        data-height="1080"
+      >
+        <div class="hr-stage">
+          <!-- Beat 1 · the hand-off modal -->
+          <div id="q-modal-scene" style="position: absolute; inset: 0">
+            <div id="q-modal" class="q-modal" style="top: 96px">
+              <div class="hr-display" style="font-size: 48px; line-height: 1.16">
+                We&rsquo;d love to get to know your organization better.
+              </div>
+              <div
+                class="hr-mono"
+                style="
+                  margin-top: 28px;
+                  font-size: 23px;
+                  line-height: 1.8;
+                  color: #6e6e6e;
+                "
+              >
+                Our AI agents have a few questions for you so we can understand
+                your organization better
+              </div>
+              <div
+                class="hr-mono"
+                style="margin-top: 30px; font-size: 22px; color: #6e6e6e"
+              >
+                Usually takes 5 minutes
+              </div>
+              <div
+                id="q-start"
+                class="hr-btn"
+                style="margin-top: 36px; width: 100%; height: 80px; font-size: 26px"
+              >
+                Start questioner
+              </div>
+            </div>
+          </div>
+
+          <!-- Beat 2 · the questionnaire itself -->
+          <div id="q-chat-scene" style="position: absolute; inset: 0">
+            <div id="q-bubble-1" class="hr-bubble q-bubble" style="top: 60px">
+              What kind of company are you?
+            </div>
+
+            <div
+              id="q-choices"
+              style="
+                position: absolute;
+                left: 300px;
+                top: 156px;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 16px;
+                width: 1100px;
+              "
+            >
+              <div class="hr-choice">SaaS / Software</div>
+              <div id="q-pick" class="hr-choice">E-commerce / Retail</div>
+              <div class="hr-choice">Crypto / Web3</div>
+              <div class="hr-choice">Healthcare</div>
+            </div>
+
+            <div id="q-bubble-2" class="hr-reply q-reply" style="top: 254px">
+              E-commerce / Retail
+            </div>
+
+            <div id="q-bubble-3" class="hr-bubble q-bubble" style="top: 360px">
+              Do you have FAQs? Upload the document or type a few common
+              questions and answers.
+            </div>
+
+            <div
+              id="q-answer"
+              style="
+                position: absolute;
+                left: 300px;
+                right: 300px;
+                top: 528px;
+                display: flex;
+                align-items: center;
+                gap: 20px;
+              "
+            >
+              <div
+                class="hr-field"
+                style="flex: 1; height: 84px; border-radius: 16px"
+              >
+                <span class="hr-note" style="font-size: 24px"
+                  >Type your answer&hellip;</span
+                >
+              </div>
+              <div
+                class="hr-btn"
+                style="
+                  width: 260px;
+                  height: 84px;
+                  font-size: 22px;
+                  background: #ededed;
+                  color: #0a0a0a;
+                  box-shadow: none;
+                "
+              >
+                Upload a file
+              </div>
+            </div>
+          </div>
+
+          <svg
+            id="q-cursor"
+            class="hr-cursor"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M5 2.5 L5 20 L9.4 16.2 L12.3 22.2 L15.2 20.8 L12.4 15 L18.2 15 Z"
+              fill="#0A0A0A"
+              stroke="#FFFFFF"
+              stroke-width="1.4"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+
+          const TIP = { x: 16, y: 8 };
+          const OFF = { x: 1640, y: 1180 };
+          const to = (x, y) => ({ x: x - TIP.x, y: y - TIP.y });
+
+          tl.set("#q-cursor", { x: OFF.x, y: OFF.y, opacity: 0, scale: 1 }, 0);
+          tl.set("#q-start", { x: 0, y: 0 }, 0);
+
+          // ── Beat 1 · the hand-off (0-7s) ────────────────────────
+          tl.fromTo(
+            "#q-modal",
+            { y: 22, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.55, ease: "power2.out" },
+            0.15,
+          );
+          tl.to(
+            "#q-cursor",
+            { ...to(960, 512), opacity: 1, duration: 0.9, ease: "power2.out" },
+            2.6,
+          );
+          tl.to("#q-cursor", { scale: 0.88, duration: 0.09 }, 3.8);
+          tl.to("#q-cursor", { scale: 1, duration: 0.09 }, 3.89);
+          tl.to("#q-start", { x: -4, y: 4, duration: 0.1 }, 3.8);
+          tl.to("#q-start", { x: 0, y: 0, duration: 0.14 }, 3.91);
+          tl.to("#q-cursor", { opacity: 0, duration: 0.25 }, 4.4);
+          tl.to("#q-modal-scene", { autoAlpha: 0, duration: 0.45 }, 6.3);
+
+          // ── Beat 2 · the questionnaire (7-22s) ──────────────────
+          tl.fromTo(
+            "#q-chat-scene",
+            { autoAlpha: 0 },
+            { autoAlpha: 1, duration: 0.4 },
+            7.0,
+          );
+          tl.fromTo(
+            "#q-bubble-1",
+            { x: -18, opacity: 0 },
+            { x: 0, opacity: 1, duration: 0.45, ease: "power2.out" },
+            7.1,
+          );
+          tl.fromTo(
+            "#q-choices",
+            { autoAlpha: 0, y: 12 },
+            { autoAlpha: 1, y: 0, duration: 0.4, ease: "power2.out" },
+            7.8,
+          );
+
+          // The answer branches the rest of the questionnaire: crypto gets the
+          // whitepaper and tokenomics set, everything else the generic one.
+          tl.to(
+            "#q-cursor",
+            { ...to(680, 283), opacity: 1, duration: 0.8, ease: "power2.out" },
+            8.8,
+          );
+          tl.to("#q-pick", { backgroundColor: "#F3F4F6", duration: 0.15 }, 9.6);
+          tl.to("#q-cursor", { scale: 0.88, duration: 0.09 }, 9.8);
+          tl.to("#q-cursor", { scale: 1, duration: 0.09 }, 9.89);
+          tl.to("#q-choices", { autoAlpha: 0, duration: 0.3 }, 10.2);
+          tl.fromTo(
+            "#q-bubble-2",
+            { autoAlpha: 0, x: 18 },
+            { autoAlpha: 1, x: 0, duration: 0.4, ease: "power2.out" },
+            10.4,
+          );
+          tl.to("#q-cursor", { opacity: 0, duration: 0.25 }, 10.9);
+
+          tl.fromTo(
+            "#q-bubble-3",
+            { autoAlpha: 0, x: -18 },
+            { autoAlpha: 1, x: 0, duration: 0.45, ease: "power2.out" },
+            12.0,
+          );
+          // Either input satisfies the question — the document is the faster
+          // path and the one people miss.
+          tl.fromTo(
+            "#q-answer",
+            { autoAlpha: 0, y: 14 },
+            { autoAlpha: 1, y: 0, duration: 0.45, ease: "power2.out" },
+            13.2,
+          );
+
+          window.__timelines["act-questions"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

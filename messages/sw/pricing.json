@@ -1,0 +1,110 @@
+{
+  "eyebrow": "Malipo",
+  "heading": "Tuna mpango kwa kila hatua",
+  "billingPeriod": "kwa mwezi",
+  "subscribe": "Jiunge",
+  "contactSales": "Wasiliana nasi",
+  "currentPlan": "Mpango wa sasa",
+  "plans": {
+    "free": {
+      "name": "Mpango wa Bure",
+      "description": "Kila kitu unachohitaji kuweka\nwakala mmoja kwenye tovuti yako\nna kumwona akifanya kazi.",
+      "features": [
+        "Wakala 1 wa AI aliyewekwa",
+        "Stroll 1 ya kiotomatiki kwa mwezi",
+        "Widget na msimbo wa kuiweka",
+        "Kampuni 1 kwa akaunti kuu"
+      ]
+    },
+    "basic": {
+      "name": "Mpango wa Basic",
+      "description": "Kwa kampuni changa\nna miradi midogo\ninayoanza kujaribu.",
+      "features": [
+        "Wakala 1 wa AI aliyewekwa",
+        "Hadi nyaraka 10 zilizopakiwa",
+        "Lugha 1 inayotumika",
+        "Mipaka ya msingi ya majibu",
+        "Ripoti za msingi za takwimu",
+        "Hadi dakika 800 za sauti\nkwa mwezi",
+        "Kiwango cha kawaida cha kompyuta",
+        "Kampuni 1 pekee kwa\nakaunti kuu",
+        "Hadi wanachama 3 walioalikwa\nkwa kampuni"
+      ]
+    },
+    "pro": {
+      "name": "Mpango wa Pro",
+      "description": "Kwa shughuli zinazokua\nzinazohitaji ukuaji\nna mzigo mkubwa zaidi.",
+      "features": [
+        "Hadi mawakala 3 wa AI waliowekwa",
+        "Hadi nyaraka 50 zilizopakiwa",
+        "Hadi lugha 3 zinazotumika",
+        "Mipaka ya hali ya juu ya majibu\nkwa majibu yenye undani",
+        "Ripoti za hali ya juu za takwimu",
+        "Hadi dakika 3,000 za sauti\nkwa mwezi",
+        "Kompyuta ya kipaumbele\n(hupunguza ucheleweshaji)",
+        "Hadi kampuni 3 kwa\nakaunti kuu",
+        "Hadi wanachama 10 walioalikwa\nkwa kampuni"
+      ]
+    },
+    "enterprise": {
+      "name": "Mpango wa Enterprise",
+      "description": "Ukuaji usio na kikomo\nkwa shughuli zilizoimarika\nzenye mahitaji makubwa.",
+      "features": [
+        "Mawakala wa AI wasio na kikomo",
+        "Nyaraka zisizo na kikomo",
+        "Lugha zote zinazotumika\n(bila kikomo)",
+        "Udhibiti maalum wa\nmipaka ya majibu",
+        "Takwimu zinazoweza kubadilishwa kikamilifu",
+        "Dakika za sauti zisizo na kikomo\nkwa mwezi",
+        "Kompyuta maalum kwa\nmajibu ya haraka zaidi",
+        "Kampuni zisizo na kikomo",
+        "Wanachama walioalikwa wasio na kikomo\nkwa kampuni"
+      ]
+    },
+    "business": {
+      "name": "Mpango wa Business",
+      "description": "Kwa mipangilio midogo\ninayoanza na huduma ya AI\nkwa gharama ya chini.",
+      "features": [
+        "Wakala 1 wa AI aliyewekwa",
+        "Hadi nyaraka 5 zilizopakiwa",
+        "Lugha 1 inayotumika",
+        "Mipaka ya msingi ya majibu",
+        "Ripoti za msingi za takwimu",
+        "Mazungumzo ya wakala bila kikomo\nkwa mwezi",
+        "Hadi strolls 2 kwa mwezi",
+        "Kiwango cha kawaida cha kompyuta",
+        "Hadi wanachama 2 walioalikwa\nkwa kampuni"
+      ]
+    },
+    "startup": {
+      "name": "Mpango wa Startup",
+      "description": "Umeundwa kwa timu\nzinazokua zikipanua\nshughuli zao za AI.",
+      "features": [
+        "Wakala 1 wa AI aliyewekwa",
+        "Hadi nyaraka 20 zilizopakiwa",
+        "Hadi lugha 2 zinazotumika",
+        "Mipaka ya hali ya juu ya majibu\nkwa majibu yenye undani",
+        "Ripoti za hali ya juu za takwimu",
+        "Mazungumzo ya wakala bila kikomo\nkwa mwezi",
+        "Hadi strolls 5 kwa mwezi",
+        "Kompyuta ya kipaumbele\n(hupunguza ucheleweshaji)",
+        "Hadi wanachama 5 walioalikwa\nkwa kampuni"
+      ]
+    },
+    "enterprise_payg": {
+      "name": "Mpango wa Enterprise",
+      "description": "Kwa mashirika makubwa\nyanayotumia huduma ya AI\nkatika shughuli zao zote.",
+      "features": [
+        "Mawakala wa AI wasio na kikomo",
+        "Hadi nyaraka 50 zilizopakiwa",
+        "Lugha zote zinazotumika\n(bila kikomo)",
+        "Udhibiti maalum wa\nmipaka ya majibu",
+        "Takwimu zinazoweza kubadilishwa kikamilifu",
+        "Mazungumzo ya wakala bila kikomo\nkwa mwezi",
+        "Hadi strolls 25 kwa mwezi",
+        "Kompyuta maalum kwa\nmajibu ya haraka zaidi",
+        "Hadi wanachama 5 walioalikwa\nkwa kampuni"
+      ]
+    }
+  }
+}

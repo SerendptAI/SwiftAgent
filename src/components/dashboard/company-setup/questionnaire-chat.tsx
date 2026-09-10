@@ -25,8 +25,6 @@ const BriggsAnimation = dynamic(
   { ssr: false },
 );
 
-// ── Types ────────────────────────────────────────────────────────────────────
-
 type UploadKind = "text" | "pdf" | "word" | "file";
 
 interface ChatUpload {
@@ -193,8 +191,6 @@ function buildQuestions(type: CompanyType | null): QuestionDef[] {
   if (type === "saas") return [INITIAL_QUESTION, ...SAAS_QUESTIONS];
   return [INITIAL_QUESTION];
 }
-
-// ── Component ────────────────────────────────────────────────────────────────
 
 export function QuestionnaireChat({
   companyId,
@@ -518,7 +514,6 @@ export function QuestionnaireChat({
     <div className="fixed inset-0 z-50 bg-black/60">
       <div className="absolute inset-y-0 right-[350px] left-0 flex items-center justify-center p-6 lg:left-[105px]">
         <div className="relative flex h-[80%] w-full max-w-md flex-col bg-white shadow-xl">
-          {/* Header */}
           <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
             <div className="flex items-center gap-3">
               <Image
@@ -534,18 +529,15 @@ export function QuestionnaireChat({
             <ChevronDown className="size-8.5 stroke-1 text-black" />
           </div>
 
-          {/* Chat body */}
           <div className="flex-1 overflow-y-auto px-5 py-6">
             {entries.map((entry, entryIdx) => (
               <div key={entryIdx} className="mb-6">
-                {/* Bot question */}
                 <div className="mb-4 w-fit max-w-[274px] rounded-3xl bg-blue-50 px-4 py-2.5">
                   <p className="font-stolzl text-sm leading-6 text-[#006BE5]">
                     {entry.question}
                   </p>
                 </div>
 
-                {/* Options */}
                 {entry.options && (
                   <div className="flex flex-wrap gap-2">
                     {entry.options.map((option) => {
@@ -575,7 +567,6 @@ export function QuestionnaireChat({
                   </div>
                 )}
 
-                {/* Uploaded files/text */}
                 {entry.uploads?.map((item, idx) => {
                   const thumbnail = FILE_THUMBNAILS[item.kind];
 
@@ -652,7 +643,6 @@ export function QuestionnaireChat({
             <div ref={chatEndRef} />
           </div>
 
-          {/* Input bar for upload/text questions */}
           {showInputBar && (
             <div className="space-y-3 border-t border-gray-100 px-4 py-3">
               <div className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2">
@@ -690,7 +680,6 @@ export function QuestionnaireChat({
             </div>
           )}
 
-          {/* Rive animation */}
           <div className="absolute right-0 -bottom-20 -translate-x-1/2">
             <BriggsAnimation className="h-16 w-16" />
           </div>
@@ -699,8 +688,6 @@ export function QuestionnaireChat({
     </div>
   );
 }
-
-// ── Completion screens ────────────────────────────────────────────────────────
 
 function OverlayShell({ children }: { children: React.ReactNode }) {
   return (
@@ -760,7 +747,6 @@ function EmailPickerScreen({
   const handle = value.trim().toLowerCase();
   const isValidFormat = EMAIL_HANDLE_PATTERN.test(handle);
 
-  // Debounce the slug we actually send to the API
   const [debouncedHandle, setDebouncedHandle] = useState(handle);
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedHandle(handle), 400);

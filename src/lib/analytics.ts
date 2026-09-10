@@ -16,7 +16,8 @@ const PROJECT_KEY = process.env.NEXT_PUBLIC_POSTHOG_KEY;
 /**
  * Session replay runs on the public marketing site only — every other surface
  * renders our customers' end-user PII or collects credentials. Anything absent
- * here is treated as private.
+ * here is treated as private. `/signup` is public but ends in one-time-code
+ * entry, so it is excluded on the credentials rule.
  */
 const REPLAY_ROUTES = [
   "/",
@@ -28,7 +29,6 @@ const REPLAY_ROUTES = [
   "/affiliate",
   "/refer",
   "/privacy-policy",
-  "/signup",
 ];
 
 export type DemoCtaLocation =
@@ -36,7 +36,8 @@ export type DemoCtaLocation =
   | "landing-platforms"
   | "landing-cta"
   | "roi-simulator"
-  | "scale-support-hero";
+  | "scale-support-hero"
+  | "pricing-enterprise";
 
 /** Every product event and its properties — the single source of truth for both. */
 type AnalyticsEventMap = {

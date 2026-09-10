@@ -1,0 +1,110 @@
+{
+  "eyebrow": "Facturation",
+  "heading": "Nous avons une formule pour chaque étape",
+  "billingPeriod": "par mois",
+  "subscribe": "S’abonner",
+  "contactSales": "Nous contacter",
+  "currentPlan": "Formule actuelle",
+  "plans": {
+    "free": {
+      "name": "Formule Gratuite",
+      "description": "Tout le nécessaire pour mettre\nun agent en ligne sur votre site\net le voir à l’œuvre.",
+      "features": [
+        "1 agent IA déployé",
+        "1 stroll automatisé par mois",
+        "Widget intégré et extrait de code",
+        "1 entreprise par compte principal"
+      ]
+    },
+    "basic": {
+      "name": "Formule Basic",
+      "description": "Pensée pour les jeunes\nstartups et les petits projets\nqui tâtent le terrain.",
+      "features": [
+        "1 agent IA déployé",
+        "Jusqu’à 10 documents importés",
+        "1 langue prise en charge",
+        "Limites de réponse basiques",
+        "Rapports d’analyse basiques",
+        "Jusqu’à 800 minutes vocales\npar mois",
+        "Puissance de calcul partagée",
+        "1 entreprise maximum par\ncompte principal",
+        "Jusqu’à 3 membres invités\npar entreprise"
+      ]
+    },
+    "pro": {
+      "name": "Formule Pro",
+      "description": "Pour les activités en\ncroissance qui montent en charge\net traitent de gros volumes.",
+      "features": [
+        "Jusqu’à 3 agents IA déployés",
+        "Jusqu’à 50 documents importés",
+        "Jusqu’à 3 langues prises en charge",
+        "Limites de réponse avancées\npour des réponses nuancées",
+        "Rapports d’analyse avancés",
+        "Jusqu’à 3 000 minutes vocales\npar mois",
+        "Calcul prioritaire\n(réduit la latence de génération)",
+        "Jusqu’à 3 entreprises par\ncompte principal",
+        "Jusqu’à 10 membres invités\npar entreprise"
+      ]
+    },
+    "enterprise": {
+      "name": "Formule Enterprise",
+      "description": "Montée en charge sans limite\npour les activités établies\naux besoins intensifs.",
+      "features": [
+        "Agents IA déployés illimités",
+        "Documents importés illimités",
+        "Toutes les langues prises en charge\n(illimité)",
+        "Contrôle sur mesure des\nlimites de réponse",
+        "Analyses entièrement personnalisables",
+        "Minutes vocales illimitées\npar mois",
+        "Calcul dédié pour les\ntemps de réponse les plus courts",
+        "Entreprises illimitées",
+        "Membres invités illimités\npar entreprise"
+      ]
+    },
+    "business": {
+      "name": "Formule Business",
+      "description": "Pour les petites structures\nqui débutent avec le support IA\nà un tarif d’entrée.",
+      "features": [
+        "1 agent IA déployé",
+        "Jusqu’à 5 documents importés",
+        "1 langue prise en charge",
+        "Limites de réponse basiques",
+        "Rapports d’analyse basiques",
+        "Conversations d’agent illimitées\npar mois",
+        "Jusqu’à 2 strolls par mois",
+        "Puissance de calcul partagée",
+        "Jusqu’à 2 membres invités\npar entreprise"
+      ]
+    },
+    "startup": {
+      "name": "Formule Startup",
+      "description": "Conçue pour les équipes\nen croissance qui développent\nleurs opérations IA.",
+      "features": [
+        "1 agent IA déployé",
+        "Jusqu’à 20 documents importés",
+        "Jusqu’à 2 langues prises en charge",
+        "Limites de réponse avancées\npour des réponses nuancées",
+        "Rapports d’analyse avancés",
+        "Conversations d’agent illimitées\npar mois",
+        "Jusqu’à 5 strolls par mois",
+        "Calcul prioritaire\n(réduit la latence de génération)",
+        "Jusqu’à 5 membres invités\npar entreprise"
+      ]
+    },
+    "enterprise_payg": {
+      "name": "Formule Enterprise",
+      "description": "Pour les grandes organisations\nqui déploient le support IA\nsur toute leur activité.",
+      "features": [
+        "Agents IA déployés illimités",
+        "Jusqu’à 50 documents importés",
+        "Toutes les langues prises en charge\n(illimité)",
+        "Contrôle sur mesure des\nlimites de réponse",
+        "Analyses entièrement personnalisables",
+        "Conversations d’agent illimitées\npar mois",
+        "Jusqu’à 25 strolls par mois",
+        "Calcul dédié pour les\ntemps de réponse les plus courts",
+        "Jusqu’à 5 membres invités\npar entreprise"
+      ]
+    }
+  }
+}

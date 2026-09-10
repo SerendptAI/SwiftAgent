@@ -141,7 +141,6 @@ export function AnswerBoundariesStep({
 
   return (
     <div className="mx-auto w-full max-w-4xl pb-4 text-center">
-      {/* Top Section */}
       <h2 className="mb-2 text-sm font-bold tracking-wide text-gray-900 uppercase">
         What uploaded information should the AI ignore?
       </h2>
@@ -164,7 +163,6 @@ export function AnswerBoundariesStep({
         ))}
       </div>
 
-      {/* Bottom Section */}
       <h2 className="mb-2 text-sm font-bold tracking-wide text-gray-900 uppercase">
         Ignored Information
       </h2>

@@ -1,0 +1,141 @@
+{
+  "hero": {
+    "headline": {
+      "scale": "Scale",
+      "customer": "Customer",
+      "supportWithout": "Support without",
+      "scalingYour": "Scaling your",
+      "team": "Team"
+    },
+    "subtitle": "SwiftAgents helps businesses automate customer conversations, reduce support workload, and deliver faster customer experiences across every channel.",
+    "bookDemo": "Book a demo",
+    "getStarted": "Get started"
+  },
+  "checklist": {
+    "eyebrow": "Built for growth",
+    "heading": "Built for businesses growing faster than their support teams",
+    "items": {
+      "repetitive": "Reduce repetitive support requests",
+      "responseTimes": "Improve response times",
+      "experiences": "Deliver better customer experiences",
+      "scale": "Scale customer support more efficiently"
+    }
+  },
+  "steps": {
+    "eyebrow": "How it works",
+    "heading": "From customer inquiry to resolution in seconds",
+    "items": {
+      "connect": {
+        "title": "Connect your knowledge",
+        "description": "Upload your documentation, website content, FAQs, and support resources."
+      },
+      "train": {
+        "title": "Train SwiftAgents on your business",
+        "description": "SwiftAgents learns your products, workflows, policies, and customer processes."
+      },
+      "goLive": {
+        "title": "Go live",
+        "description": "Start resolving customer inquiries across your support channels in hours, not weeks."
+      }
+    }
+  },
+  "capabilities": {
+    "eyebrow": "Capabilities",
+    "heading": "Everything your team needs to support customers at scale",
+    "items": {
+      "instantSupport": {
+        "title": "Instant customer support",
+        "description": "Answer customer questions 24/7 across support, onboarding, billing, and product inquiries."
+      },
+      "productGuidance": {
+        "title": "Product guidance",
+        "description": "Help users navigate your platform, find features, and complete actions without waiting for support."
+      },
+      "paymentSupport": {
+        "title": "Payment & transaction support",
+        "description": "Assist customers with payment verification, refunds, transaction status, and account-related questions."
+      },
+      "knowledgeSearch": {
+        "title": "Intelligent knowledge search",
+        "description": "Retrieve answers instantly from your website, documentation, and support resources."
+      }
+    }
+  },
+  "outcomes": {
+    "eyebrow": "Outcomes, not tickets",
+    "heading": "Traditional support platforms help teams manage support. SwiftAgents helps teams reduce it.",
+    "body": "Most customer support platforms were built around tickets, dashboards, and workflows. SwiftAgents was built around outcomes.",
+    "items": {
+      "fasterResponses": "Faster responses",
+      "lessManualWork": "Less manual work",
+      "experiences": "Better customer experiences",
+      "lowerCosts": "Lower support costs"
+    }
+  },
+  "whyTeams": {
+    "eyebrow": "Why teams switch",
+    "heading": "Why teams move beyond traditional support platforms",
+    "body": "Whether you’re using Zendesk, Intercom, Freshworks, Tidio, or managing support manually, the challenge is the same: more customers create more conversations, and more conversations create more support work. SwiftAgents helps you reduce that workload before it reaches your team.",
+    "items": {
+      "fasterSetup": {
+        "title": "Faster setup",
+        "description": "Go live in hours, not weeks."
+      },
+      "smarterAutomation": {
+        "title": "Smarter automation",
+        "description": "Reduce repetitive support requests automatically."
+      },
+      "simplerOperations": {
+        "title": "Simpler operations",
+        "description": "No bloated workflows or unnecessary complexity."
+      },
+      "predictableGrowth": {
+        "title": "Predictable growth",
+        "description": "Scale customer support without scaling operational costs."
+      }
+    }
+  },
+  "deploy": {
+    "eyebrow": "Deployment",
+    "heading": "Deploy in hours, not weeks",
+    "body": "Most support systems require lengthy onboarding, configuration, and setup. SwiftAgents is designed to get your team live quickly so you can start seeing value immediately.",
+    "points": {
+      "noProjects": "No complex implementation projects",
+      "noEnterpriseSetup": "No enterprise-level setup requirements",
+      "noWaiting": "No waiting weeks to get started"
+    }
+  },
+  "pricingTeaser": {
+    "eyebrow": "Pricing",
+    "heading": "Simple pricing for every stage of growth",
+    "tiers": {
+      "starter": {
+        "name": "Starter",
+        "description": "For early-stage teams automating support for the first time."
+      },
+      "growth": {
+        "name": "Growth",
+        "description": "For growing businesses handling increasing support volume."
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "description": "For organizations requiring advanced customization and scale."
+      }
+    },
+    "viewPricing": "View pricing"
+  },
+  "roiBanner": {
+    "first": {
+      "eyebrow": "ROI calculator",
+      "heading": "See how much support cost you’re currently overpaying",
+      "description": "Calculate how many support agents you could avoid hiring with SwiftAgents.",
+      "cta": "Calculate my savings"
+    },
+    "second": {
+      "eyebrow": "Still scaling support with headcount?",
+      "heading": "Most teams only realize their support inefficiency after they calculate it",
+      "description": "Run the numbers and see what SwiftAgents could save you.",
+      "cta": "Run ROI calculation"
+    }
+  }
+}

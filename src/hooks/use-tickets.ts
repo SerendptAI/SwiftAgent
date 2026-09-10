@@ -73,7 +73,6 @@ export function useResolveTicket() {
   });
 }
 
-/** Send a reply on a ticket thread. */
 export function useReplyToTicket() {
   const queryClient = useQueryClient();
 

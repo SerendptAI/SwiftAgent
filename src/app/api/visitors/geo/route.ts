@@ -22,7 +22,6 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  // Fetch visitors from the backend
   const upstream = await fetch(
     `${API_BASE_URL}/api/v1/dashboard/${companyId}/visitors?limit=${limit}`,
     {

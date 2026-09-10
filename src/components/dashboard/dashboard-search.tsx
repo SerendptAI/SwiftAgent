@@ -22,7 +22,6 @@ interface SectionResult {
   results: SearchResult[];
 }
 
-// Static searchable content per section (labels, plan names, field names, etc.)
 const STATIC_CONTENT: Record<string, string[]> = {
   Home: [
     "Visitors",
@@ -255,7 +254,6 @@ export function DashboardSearch() {
 
   return (
     <div ref={containerRef} className="relative w-full">
-      {/* Search input */}
       <div
         className="font-dm-mono relative w-full"
         style={isOpen && query.trim() ? { zIndex: 9999 } : undefined}
@@ -300,7 +298,6 @@ export function DashboardSearch() {
         )}
       </div>
 
-      {/* Backdrop + Search results dropdown (portalled to body) */}
       {isOpen &&
         query.trim() &&
         typeof document !== "undefined" &&
@@ -348,7 +345,6 @@ export function DashboardSearch() {
                       key={`${section.name}-${isFocused}`}
                       className="search-section my-2 rounded-md border-b border-gray-100 bg-[#F3F3F3] p-4 first:pt-0 last:border-b-0 last:pb-0"
                     >
-                      {/* Section header */}
                       <div className="mb-3 flex flex-wrap items-baseline gap-2 sm:gap-3">
                         <h3 className="font-greed-narrow text-xl font-bold text-black sm:text-2xl">
                           {section.name}
@@ -378,7 +374,6 @@ export function DashboardSearch() {
                         )}
                       </div>
 
-                      {/* Results or empty state */}
                       {section.results.length === 0 ? (
                         <div className="flex items-center gap-3 py-2 text-sm text-gray-400">
                           <Icons.notfoundsearch className="h-8 w-8 shrink-0" />

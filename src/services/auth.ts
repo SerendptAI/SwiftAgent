@@ -1,3 +1,5 @@
+import axios from "axios";
+
 import {
   API_BASE_URL,
   apiClient,
@@ -6,8 +8,6 @@ import {
   setAuthTokens,
 } from "@/lib/api-client";
 import type { ScrapedCompanyData } from "@/services/company";
-
-// ── Types ──────────────────────────────────────────────────────────────────────
 
 export interface User {
   id: string;
@@ -27,8 +27,6 @@ export interface User {
   updated_at?: string;
 }
 
-// ── Google Login ───────────────────────────────────────────────────────────────
-
 export function loginWithGoogle(locale: string = "en"): Promise<void> {
   const redirectUrl = `${window.location.origin}/${locale}/auth/callback`;
 
@@ -40,8 +38,6 @@ export function loginWithGoogle(locale: string = "en"): Promise<void> {
   // Never resolves — keeps the mutation pending while the browser navigates
   return new Promise(() => {});
 }
-
-// ── User API ───────────────────────────────────────────────────────────────────
 
 export async function getCurrentUser(): Promise<User> {
   const { data } = await apiClient.get<User>("/api/v1/auth/me");
@@ -101,8 +97,6 @@ export async function updateUserSecurity(payload: {
   return data;
 }
 
-// ── OTP Authentication ────────────────────────────────────────────────────────
-
 export interface OtpSendResponse {
   message: string;
   email: string;
@@ -120,6 +114,26 @@ export interface OtpVerifyResponse {
   access_token: string;
   refresh_token: string;
   token_type: string;
+}
+
+/**
+ * Signing in refuses an address that has no account. A 404 says so on its own;
+ * a 400 is also used for ordinary validation failures, so its message has to be
+ * read before the refusal is attributed to a missing account.
+ */
+const ACCOUNT_NOT_FOUND_PATTERN =
+  /(no account|account (?:does not|doesn't) exist|not registered|user not found)/i;
+
+/** True when signing in failed only because the address has no account yet. */
+export function isAccountNotFoundError(error: unknown): boolean {
+  if (!axios.isAxiosError(error)) return false;
+
+  const status = error.response?.status;
+  if (status === 404) return true;
+  if (status !== 400) return false;
+
+  const detail = error.response?.data?.detail;
+  return typeof detail === "string" && ACCOUNT_NOT_FOUND_PATTERN.test(detail);
 }
 
 export async function sendOtp(
@@ -162,24 +176,10 @@ export async function verifyOtp(
   return data;
 }
 
-// ── Logout ─────────────────────────────────────────────────────────────────────
-
 export function logout(locale: string = "en") {
   clearAuthTokens();
   window.location.href = `/${locale}/login`;
 }
-
-// ── Referral ───────────────────────────────────────────────────────────────────
-
-export async function verifyReferral(code: string): Promise<string> {
-  const { data } = await apiClient.post<string>(
-    "/api/v1/auth/verify-referral",
-    { code },
-  );
-  return data;
-}
-
-// ── Registration / Approval ───────────────────────────────────────────────────
 
 export interface RegisterInterestPayload {
   company_name: string;
@@ -187,7 +187,7 @@ export interface RegisterInterestPayload {
   company_description: string;
   customer_size: string;
   /**
-   * Optional to the backend, but the approval-time scrape that prefills
+   * Optional to the backend, but the registration-time scrape that prefills
    * onboarding depends on it, so the form collects it for every registration.
    */
   company_website: string;
@@ -198,6 +198,10 @@ export interface RegisterInterestResponse {
   message: string;
 }
 
+/**
+ * Creates the account and dispatches the sign-in code to `company_email`, so
+ * the caller goes straight to code entry rather than waiting for an approval.
+ */
 export async function registerInterest(
   payload: RegisterInterestPayload,
 ): Promise<RegisterInterestResponse> {
@@ -214,9 +218,9 @@ export interface RegistrationDetails {
   customer_size: string;
   company_website: string | null;
   /**
-   * Extracted from the company's website when an admin approved the
-   * registration, so onboarding opens prefilled with no live scrape. Null when
-   * no website was given or the extraction found nothing.
+   * Extracted from the company's website at registration, so onboarding opens
+   * prefilled with no live scrape. Null when no website was given or the
+   * extraction found nothing.
    */
   scraped_data: ScrapedCompanyData | null;
 }
@@ -227,8 +231,6 @@ export async function getRegistrationDetails(): Promise<RegistrationDetails> {
   );
   return data;
 }
-
-// ── Helpers ────────────────────────────────────────────────────────────────────
 
 export function processAuthCallback(searchParams: URLSearchParams): boolean {
   const accessToken = searchParams.get("access_token");

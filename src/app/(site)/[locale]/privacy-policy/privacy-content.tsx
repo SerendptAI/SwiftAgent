@@ -547,7 +547,6 @@ export function PrivacyContent() {
 
   return (
     <div className="mx-auto max-w-[1280px] px-6 pt-32 pb-24 md:pt-40">
-      {/* Header section */}
       <div className="mb-16 max-w-3xl text-left">
         <span className="mb-4 inline-block rounded border border-[#7CA2FE]/20 bg-[#7CA2FE]/10 px-3 py-1 font-mono text-[10px] font-bold tracking-widest text-[#7CA2FE] uppercase">
           Legal Portal
@@ -561,7 +560,6 @@ export function PrivacyContent() {
       </div>
 
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-[280px_1fr]">
-        {/* Table of contents - Sticky sidebar */}
         <aside className="hidden lg:block">
           <div className="sticky top-28 flex flex-col gap-2 rounded-2xl border border-black/10 bg-white p-6 shadow-sm">
             <h3 className="mb-4 font-mono text-[11px] font-bold tracking-wider text-gray-400 uppercase">
@@ -588,7 +586,6 @@ export function PrivacyContent() {
           </div>
         </aside>
 
-        {/* Content body */}
         <div className="flex max-w-4xl flex-col gap-16">
           {sections.map((section) => (
             <section

@@ -13,7 +13,6 @@ export function StepIndicator({ currentStep, steps }: StepIndicatorProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll the active tab into view
   useEffect(() => {
     if (activeRef.current && scrollRef.current) {
       activeRef.current.scrollIntoView({
@@ -25,16 +24,15 @@ export function StepIndicator({ currentStep, steps }: StepIndicatorProps) {
   }, [currentStep]);
 
   const stepColors = [
-    "bg-[#6433CC]", // Purple
-    "bg-orange-300", // Orange
-    "bg-pink-300", // Pink
-    "bg-violet-300", // Lavender
-    "bg-yellow-100", // Yellow
+    "bg-[#6433CC]",
+    "bg-orange-300",
+    "bg-pink-300",
+    "bg-violet-300",
+    "bg-yellow-100",
   ];
 
   return (
     <div className="font-dm-mono relative mb-8">
-      {/* Scrollable tab container */}
       <div
         ref={scrollRef}
         className="scrollbar-none flex snap-x snap-mandatory overflow-x-auto border-b border-gray-100"
@@ -65,7 +63,6 @@ export function StepIndicator({ currentStep, steps }: StepIndicatorProps) {
         })}
       </div>
 
-      {/* Dot indicators for small screens */}
       <div className="mt-3 flex justify-center gap-1.5 md:hidden">
         {steps.map((step, index) => (
           <div

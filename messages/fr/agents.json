@@ -1,0 +1,23 @@
+{
+  "eyebrow": "Nos agents IA",
+  "heading": "Nos agents remplissent des fonctions différentes",
+  "quote": "Tous ces agents jouent un\nrôle essentiel dans\nl’amélioration de\nl’expérience client pendant les conversations en direct.",
+  "list": {
+    "047": {
+      "name": "Agent 047",
+      "description": "L’agent 047 sait localiser n’importe quelle fonctionnalité d’un tableau de bord pour vos utilisateurs, quelle que soit sa complexité. Il connaît l’emplacement exact de chaque fonctionnalité et peut fournir des indications détaillées accompagnées de captures d’écran sur demande."
+    },
+    "007": {
+      "name": "Agent 007",
+      "description": "L’agent 007 est capable de parcourir l’intégralité d’un site web pour trouver une information lorsque la réponse n’est pas disponible dans sa base de connaissances."
+    },
+    "626": {
+      "name": "Agent 626",
+      "description": "L’agent 626 sait analyser les transactions en cryptomonnaie à partir de leur hash et signaler aux utilisateurs tout problème susceptible de survenir pendant la transaction."
+    },
+    "001": {
+      "name": "Agent 001",
+      "description": "L’agent 001 consulte les relevés bancaires et tient les clients informés du statut de leurs paiements : remboursements, confirmations bancaires et incidents éventuels."
+    }
+  }
+}

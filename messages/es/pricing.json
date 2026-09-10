@@ -1,0 +1,110 @@
+{
+  "eyebrow": "Facturación",
+  "heading": "Tenemos un plan para cada etapa",
+  "billingPeriod": "al mes",
+  "subscribe": "Suscribirse",
+  "contactSales": "Contáctanos",
+  "currentPlan": "Plan actual",
+  "plans": {
+    "free": {
+      "name": "Plan Gratis",
+      "description": "Todo lo necesario para poner\nun agente en tu sitio y\nverlo funcionar.",
+      "features": [
+        "1 agente de IA desplegado",
+        "1 stroll automatizado al mes",
+        "Widget integrado y fragmento de código",
+        "1 empresa por cuenta principal"
+      ]
+    },
+    "basic": {
+      "name": "Plan Basic",
+      "description": "Pensado para startups\nincipientes y proyectos pequeños\nque están tanteando el terreno.",
+      "features": [
+        "1 agente de IA desplegado",
+        "Hasta 10 documentos subidos",
+        "1 idioma admitido",
+        "Límites de respuesta básicos",
+        "Informes de analítica básicos",
+        "Hasta 800 minutos de voz\nal mes",
+        "Capacidad de cómputo compartida",
+        "Máximo 1 empresa por\ncuenta principal",
+        "Hasta 3 miembros invitados\npor empresa"
+      ]
+    },
+    "pro": {
+      "name": "Plan Pro",
+      "description": "Orientado a operaciones\nen crecimiento que necesitan escala\ny mayor volumen de trabajo.",
+      "features": [
+        "Hasta 3 agentes de IA desplegados",
+        "Hasta 50 documentos subidos",
+        "Hasta 3 idiomas admitidos",
+        "Límites de respuesta avanzados\npara respuestas con matices",
+        "Informes de analítica avanzados",
+        "Hasta 3.000 minutos de voz\nal mes",
+        "Cómputo prioritario\n(reduce la latencia de generación)",
+        "Hasta 3 empresas por\ncuenta principal",
+        "Hasta 10 miembros invitados\npor empresa"
+      ]
+    },
+    "enterprise": {
+      "name": "Plan Enterprise",
+      "description": "Escalado sin límite para\noperaciones consolidadas\ncon necesidades intensivas.",
+      "features": [
+        "Agentes de IA desplegados ilimitados",
+        "Documentos subidos ilimitados",
+        "Todos los idiomas admitidos\n(ilimitado)",
+        "Control personalizado de los\nlímites de respuesta",
+        "Analítica totalmente personalizable",
+        "Minutos de voz ilimitados\nal mes",
+        "Cómputo dedicado para los\ntiempos de respuesta más rápidos",
+        "Empresas ilimitadas",
+        "Miembros invitados ilimitados\npor empresa"
+      ]
+    },
+    "business": {
+      "name": "Plan Business",
+      "description": "Para equipos pequeños que\nempiezan con soporte de IA\ncon una entrada asequible.",
+      "features": [
+        "1 agente de IA desplegado",
+        "Hasta 5 documentos subidos",
+        "1 idioma admitido",
+        "Límites de respuesta básicos",
+        "Informes de analítica básicos",
+        "Chats de agente ilimitados\nal mes",
+        "Hasta 2 strolls al mes",
+        "Capacidad de cómputo compartida",
+        "Hasta 2 miembros invitados\npor empresa"
+      ]
+    },
+    "startup": {
+      "name": "Plan Startup",
+      "description": "Creado para equipos en\ncrecimiento que amplían sus\noperaciones de IA.",
+      "features": [
+        "1 agente de IA desplegado",
+        "Hasta 20 documentos subidos",
+        "Hasta 2 idiomas admitidos",
+        "Límites de respuesta avanzados\npara respuestas con matices",
+        "Informes de analítica avanzados",
+        "Chats de agente ilimitados\nal mes",
+        "Hasta 5 strolls al mes",
+        "Cómputo prioritario\n(reduce la latencia de generación)",
+        "Hasta 5 miembros invitados\npor empresa"
+      ]
+    },
+    "enterprise_payg": {
+      "name": "Plan Enterprise",
+      "description": "Para grandes organizaciones\nque usan soporte de IA en\ntoda su operación.",
+      "features": [
+        "Agentes de IA desplegados ilimitados",
+        "Hasta 50 documentos subidos",
+        "Todos los idiomas admitidos\n(ilimitado)",
+        "Control personalizado de los\nlímites de respuesta",
+        "Analítica totalmente personalizable",
+        "Chats de agente ilimitados\nal mes",
+        "Hasta 25 strolls al mes",
+        "Cómputo dedicado para los\ntiempos de respuesta más rápidos",
+        "Hasta 5 miembros invitados\npor empresa"
+      ]
+    }
+  }
+}

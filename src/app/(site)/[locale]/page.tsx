@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import { ComparisonSection } from "@/components/landing/comparison-section";
 import { ContactSection } from "@/components/landing/contact-section";
@@ -16,20 +17,25 @@ import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provide
 import { TrustedBySection } from "@/components/landing/trusted-by-section";
 import { ValuePropsSection } from "@/components/landing/value-props-section";
 import { WhySwitchSection } from "@/components/landing/why-switch-section";
+import { localeAlternates } from "@/lib/locale-metadata";
 import { siteConfig } from "@/lib/site-config";
 
-export const metadata: Metadata = {
-  title: "Swift Agents - AI-Powered Customer Engagement Platform",
-  description:
-    "Embed an intelligent AI agent on your website in minutes. Swift Agents handles customer support, sales, and voice conversations — 24/7, without lifting a finger.",
-  alternates: {
-    canonical: siteConfig.url,
-    languages: {
-      en: `${siteConfig.url}/en`,
-      pl: `${siteConfig.url}/pl`,
-    },
-  },
-};
+interface HomePageProps {
+  params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({
+  params,
+}: HomePageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta.home" });
+
+  return {
+    title: t("title"),
+    description: t("description"),
+    alternates: localeAlternates(locale, ""),
+  };
+}
 
 const organizationJsonLd = {
   "@context": "https://schema.org",
@@ -41,7 +47,9 @@ const organizationJsonLd = {
   sameAs: [],
 };
 
-const websiteJsonLd = {
+// The entry points below are real, locale-prefixed URLs, so they follow the
+// locale being rendered rather than pinning search engines to English.
+const websiteJsonLd = (locale: string) => ({
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: siteConfig.name,
@@ -51,13 +59,13 @@ const websiteJsonLd = {
     "@type": "SearchAction",
     target: {
       "@type": "EntryPoint",
-      urlTemplate: `${siteConfig.url}/en?q={search_term_string}`,
+      urlTemplate: `${siteConfig.url}/${locale}?q={search_term_string}`,
     },
     "query-input": "required name=search_term_string",
   },
-};
+});
 
-const softwareApplicationJsonLd = {
+const softwareApplicationJsonLd = (locale: string) => ({
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   name: siteConfig.name,
@@ -66,11 +74,13 @@ const softwareApplicationJsonLd = {
   description: siteConfig.description,
   offers: {
     "@type": "Offer",
-    url: `${siteConfig.url}/en#pricing`,
+    url: `${siteConfig.url}/${locale}#pricing`,
   },
-};
+});
 
-export default function HomePage() {
+export default async function HomePage({ params }: HomePageProps) {
+  const { locale } = await params;
+
   return (
     <SmoothScrollProvider>
       <script
@@ -79,12 +89,14 @@ export default function HomePage() {
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(websiteJsonLd(locale)),
+        }}
       />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(softwareApplicationJsonLd),
+          __html: JSON.stringify(softwareApplicationJsonLd(locale)),
         }}
       />
       <main>

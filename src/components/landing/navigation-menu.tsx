@@ -2,11 +2,13 @@
 
 import gsap from "gsap";
 import Image from "next/image";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
+import { LocaleSwitcher } from "@/components/locale-switcher";
 import { useCurrentUser } from "@/hooks/use-auth";
+import { Link } from "@/i18n/navigation";
 import { cn, getProfileImage } from "@/lib/utils";
 
 import { Icons } from "../icons";
@@ -30,6 +32,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const pathname = usePathname();
   const { data: user } = useCurrentUser();
+  const t = useTranslations("nav");
 
   const isLoggedIn = isMounted && !!user;
 
@@ -45,6 +48,15 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
   useEffect(() => {
     if (!overlayRef.current || !containerRef.current || !linksRef.current)
       return;
+
+    // A close tween still running from an earlier toggle would otherwise fire
+    // its `display: none` onComplete after this open animation, leaving the
+    // panel invisible while the button already shows its close icon.
+    gsap.killTweensOf([
+      overlayRef.current,
+      containerRef.current,
+      ...linksRef.current.children,
+    ]);
 
     if (isOpen) {
       gsap.set(overlayRef.current, { display: "block" });
@@ -108,12 +120,22 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <div
         ref={containerRef}
-        className="absolute top-22.5 right-0 left-0 overflow-hidden px-6"
+        // The panel tucks 6px under the navbar so the bar's bottom border
+        // reads as the panel's top border. The bar is h-18 below md and h-20
+        // from md up, hence the two offsets.
+        className="absolute top-22.5 right-0 left-0 overflow-hidden px-6 md:top-24.5"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
         role="document"
       >
-        <div className="mx-auto w-full max-w-360 border-r border-b border-l border-black bg-white pt-8">
+        {/*
+          The panel is taller than a short viewport once every link, the
+          locale row and the login button are stacked, and the container
+          above it is overflow-hidden — so without a bound the login button
+          is simply unreachable. The subtracted height is the panel's own top
+          offset plus 24px of breathing room at the bottom.
+        */}
+        <div className="mx-auto max-h-[calc(100dvh-7.125rem)] w-full max-w-360 overflow-y-auto border-r border-b border-l border-black bg-white pt-8 md:max-h-[calc(100dvh-7.625rem)]">
           <div ref={linksRef} className="flex flex-col">
             {LANDING_NAV_LINKS.map((link) => {
               const isActive = isLandingNavLinkActive(
@@ -123,22 +145,19 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
               );
 
               if (link.dropdown) {
-                const isOpen = openDropdown === link.label;
+                const isOpen = openDropdown === link.id;
 
                 return (
                   <div key={link.href} className="m-4">
-                    {/* Accordion trigger */}
                     <button
-                      onClick={() =>
-                        setOpenDropdown(isOpen ? null : link.label)
-                      }
+                      onClick={() => setOpenDropdown(isOpen ? null : link.id)}
                       className={cn(
                         "font-dm-mono flex w-full items-center justify-between px-6 py-3 text-base font-normal tracking-[0.2em] text-gray-900 uppercase transition-colors hover:bg-gray-50",
                         isActive &&
                           "border border-black bg-gray-50 font-medium",
                       )}
                     >
-                      {link.label}
+                      {t(`links.${link.id}`)}
                       <span
                         className={cn(
                           "transition-transform duration-200",
@@ -149,7 +168,6 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                       </span>
                     </button>
 
-                    {/* Accordion content */}
                     <div
                       className={cn(
                         "grid transition-all duration-300 ease-in-out",
@@ -162,7 +180,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                             // eslint-disable-next-line @next/next/no-img-element
                             <img
                               src={link.dropdown.previewImage}
-                              alt="Swift Agents product preview"
+                              alt={t("productPreviewAlt")}
                               className="w-full object-cover"
                               style={{ aspectRatio: "265 / 100" }}
                             />
@@ -172,7 +190,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                               const isExternal = isExternalHref(item.href);
                               return (
                                 <Link
-                                  key={item.href + item.label}
+                                  key={item.href + item.id}
                                   href={item.href}
                                   onClick={onClose}
                                   target={isExternal ? "_blank" : undefined}
@@ -183,7 +201,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                                   }
                                   className="font-dm-mono flex items-center gap-2 text-sm tracking-[0.12em] text-black uppercase hover:opacity-60"
                                 >
-                                  {item.label}
+                                  {t(`dropdowns.${link.id}.links.${item.id}`)}
                                   {item.arrow && (
                                     <Icons.ArrowUpRight
                                       width={16}
@@ -212,39 +230,55 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                     isActive && "border border-black bg-gray-50 font-medium",
                   )}
                 >
-                  {link.label}
+                  {t(`links.${link.id}`)}
                 </Link>
               );
             })}
 
-            {/* Login / profile button inside menu */}
+            <div className="px-4 pt-4">
+              <LocaleSwitcher variant="row" onSwitch={onClose} />
+            </div>
+
             <div className="p-4">
               {isLoggedIn ? (
                 <Link
-                  href="/en/dashboard"
+                  href="/dashboard"
                   onClick={onClose}
                   className="font-dm-mono flex w-full items-center justify-center gap-3 rounded-lg border bg-[#F2B035] px-8 py-3 text-base font-normal tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-800"
                 >
                   <span className="relative h-7 w-7 shrink-0 overflow-hidden rounded-full border border-black/10">
                     <Image
                       src={user?.picture || getProfileImage(user?.id)}
-                      alt={user?.name || "Profile"}
+                      alt={user?.name || t("profileAlt")}
                       fill
                       className="object-cover"
                     />
                   </span>
                   <span className="max-w-[160px] truncate">
-                    {user?.name || "Dashboard"}
+                    {user?.name || t("dashboard")}
                   </span>
                 </Link>
               ) : (
-                <Link
-                  href="/en/login"
-                  onClick={onClose}
-                  className="font-dm-mono flex w-full items-center justify-center rounded-lg border bg-[#F2B035] px-8 py-3 text-base font-normal tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-800"
-                >
-                  LOGIN
-                </Link>
+                // The desktop navbar offers login and sign-up from one menu,
+                // so the mobile sheet has to reach both destinations too.
+                <div className="flex flex-col gap-3">
+                  <Link
+                    href="/login"
+                    onClick={onClose}
+                    className="font-dm-mono flex w-full items-center justify-center gap-3 rounded-lg border bg-[#F2B035] px-8 py-3 text-base font-normal tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:brightness-95"
+                  >
+                    <Icons.AuthLogin className="size-5 shrink-0" />
+                    {t("login")}
+                  </Link>
+                  <Link
+                    href="/signup"
+                    onClick={onClose}
+                    className="font-dm-mono flex w-full items-center justify-center gap-3 rounded-lg border border-black bg-white px-8 py-3 text-base font-normal tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-50"
+                  >
+                    <Icons.AuthSignUp className="size-5 shrink-0" />
+                    {t("signup")}
+                  </Link>
+                </div>
               )}
             </div>
           </div>

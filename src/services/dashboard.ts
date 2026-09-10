@@ -1,7 +1,5 @@
 import { apiClient } from "@/lib/api-client";
 
-// ── Types ──────────────────────────────────────────────────────────────────────
-
 export interface DashboardStatItem {
   today: number;
   percent_change: number;
@@ -32,8 +30,6 @@ export interface DashboardVisitor {
   duration_seconds: number;
   timestamp: string;
 }
-
-// ── API Service ────────────────────────────────────────────────────────────────
 
 export const dashboardApi = {
   getStats: async (companyId: string): Promise<DashboardStats> => {

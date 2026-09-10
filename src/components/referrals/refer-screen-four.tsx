@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 
@@ -12,6 +13,7 @@ const amountColorByValue = {
 const amountColor = amountColorByValue[expectedAmount];
 
 export function ReferScreenFour() {
+  const t = useTranslations("refer.done");
   return (
     <>
       <Image
@@ -34,12 +36,11 @@ export function ReferScreenFour() {
       <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1180px] flex-col items-center px-4 pt-[128px] pb-16 text-center sm:px-5 md:pt-[160px] md:pb-24">
         <div className="mt-[42px] w-full max-w-[842px] rounded-[28px] border border-black/25 bg-white px-4 pt-18 pb-12 text-center sm:mt-[50px] sm:px-6 md:mt-[230px] md:rounded-[49px] md:px-8 md:pt-24 md:pb-20">
           <h1 className="font-greed-narrow w-full text-center text-[42px] leading-[1.08] font-medium tracking-[-0.02em] text-black uppercase sm:text-[52px] md:text-[60px] md:leading-[1.34]">
-            Thank you!
+            {t("heading")}
           </h1>
 
           <p className="font-dm-mono mx-auto mt-[30px] max-w-[663px] text-center text-base leading-[1.45] tracking-[0.08em] text-black/60 uppercase sm:text-lg sm:leading-[1.39] sm:tracking-widest">
-            Thanks for the recommendation. We&apos;ll confirm identity and send
-            funds, if correct.
+            {t("body")}
           </p>
 
           <div
@@ -54,7 +55,7 @@ export function ReferScreenFour() {
                 expectedAmount === "5,000" ? "bg-[#D49A2D]" : "bg-[#804AF3]",
               )}
             >
-              Expected amount
+              {t("expectedLabel")}
             </span>
             <span className="font-dm-mono shrink-0 text-sm leading-none tracking-[0.12em] uppercase sm:text-base lg:text-lg">
               {expectedAmount} NGN
@@ -71,8 +72,7 @@ export function ReferScreenFour() {
           />
 
           <p className="font-dm-mono mx-auto mt-16 max-w-[540px] text-center text-sm leading-[1.45] tracking-[0.08em] text-black/60 uppercase sm:text-base sm:leading-[1.39] sm:tracking-widest">
-            We love folks that don&apos;t leave money on the table ~ Swift
-            Agents Team
+            {t("signoff")}
           </p>
         </div>
       </section>

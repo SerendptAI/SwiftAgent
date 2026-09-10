@@ -8,14 +8,21 @@ import { CanceledSubscriptionBanner } from "@/components/dashboard/settings/canc
 import { CardBrandIcon } from "@/components/dashboard/settings/card-brand-icon";
 import { HelpBanner } from "@/components/dashboard/settings/help-banner";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
-import { useBillingDetails, useOpenBillingPortal } from "@/hooks/use-billing";
+import {
+  useBillingDetails,
+  useCompanyPlan,
+  useOpenBillingPortal,
+} from "@/hooks/use-billing";
+import { cn } from "@/lib/utils";
 import type { SavedCard } from "@/services/billing";
 import { useCardStore } from "@/store/card-store";
 
 export default function BillingPage() {
   const [showAddCard, setShowAddCard] = useState(false);
   const companyId = useActiveCompanyId();
-  const { data: details } = useBillingDetails(companyId);
+  const { data: details, refetch: refetchDetails } =
+    useBillingDetails(companyId);
+  const companyPlan = useCompanyPlan(companyId);
   const portal = useOpenBillingPortal(companyId);
   const { savedCards: localCards, addCard } = useCardStore();
 
@@ -26,14 +33,19 @@ export default function BillingPage() {
   }));
   const savedCards: SavedCard[] = [...backendCards, ...localAsSaved];
 
-  const presentPlanName =
-    details?.display_name?.toUpperCase() ||
-    (details?.tier ? String(details.tier).toUpperCase() : "FREE");
+  const presentPlanName = companyPlan.isPaid
+    ? (details?.display_name?.toUpperCase() ??
+      String(companyPlan.tier).toUpperCase())
+    : companyPlan.isFree
+      ? "FREE"
+      : companyPlan.isLoading
+        ? "LOADING…"
+        : "UNAVAILABLE";
 
   const subscriptionStatus =
     details?.subscription_status ?? details?.status ?? null;
   const canManageSubscription =
-    !!companyId &&
+    companyPlan.isPaid &&
     (subscriptionStatus === "active" || subscriptionStatus === "canceled");
 
   return (
@@ -42,13 +54,11 @@ export default function BillingPage() {
 
       <CanceledSubscriptionBanner details={details} />
 
-      {/* Billing Details */}
       <div className="space-y-4">
         <h3 className="font-stolzl text-base font-bold text-gray-900 sm:text-lg">
           Billing details
         </h3>
 
-        {/* Saved Cards */}
         <div className="flex flex-col gap-3 rounded-xl border border-gray-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <span className="font-dm-mono text-xs font-semibold tracking-[0.15em] text-gray-500 uppercase sm:text-sm">
             SAVED CARDS
@@ -74,18 +84,34 @@ export default function BillingPage() {
           )}
         </div>
 
-        {/* Present Plan */}
         <div className="flex flex-col gap-3 rounded-xl border border-gray-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <span className="font-dm-mono text-xs font-semibold tracking-[0.15em] text-gray-500 uppercase sm:text-sm">
             PRESENT PLAN
           </span>
-          <button className="flex min-w-0 items-center justify-between gap-2 rounded-2xl border border-gray-100 px-4 py-2.5 sm:justify-start">
-            <div className="h-4 w-4 rounded-full bg-[#F2B035]" />
-            <span className="font-dm-mono min-w-0 truncate text-sm font-medium tracking-wide text-gray-700 uppercase">
-              {presentPlanName}
-            </span>
-            <ChevronDown className="h-4 w-4 shrink-0 text-gray-400" />
-          </button>
+          <div className="flex flex-col items-start gap-1 sm:items-end">
+            <button className="flex min-w-0 items-center justify-between gap-2 rounded-2xl border border-gray-100 px-4 py-2.5 sm:justify-start">
+              <div
+                className={cn(
+                  "h-4 w-4 rounded-full",
+                  companyPlan.isPaid || companyPlan.isFree
+                    ? "bg-[#F2B035]"
+                    : "bg-gray-300",
+                )}
+              />
+              <span className="font-dm-mono min-w-0 truncate text-sm font-medium tracking-wide text-gray-700 uppercase">
+                {presentPlanName}
+              </span>
+              <ChevronDown className="h-4 w-4 shrink-0 text-gray-400" />
+            </button>
+            {companyPlan.isError && (
+              <button
+                onClick={() => refetchDetails()}
+                className="font-stolzl cursor-pointer text-xs text-red-500 underline underline-offset-2"
+              >
+                Couldn&apos;t load your subscription. Try again.
+              </button>
+            )}
+          </div>
         </div>
 
         {canManageSubscription && (

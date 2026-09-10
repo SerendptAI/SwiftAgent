@@ -293,7 +293,6 @@ export function CompanyInfoStep({
               />
             </button>
 
-            {/* Dropdown Menu */}
             {isDropdownOpen && (
               <div className="animate-in fade-in slide-in-from-top-2 font-dm-mono absolute left-0 z-50 mt-2 w-full min-w-0 overflow-hidden rounded-2xl border border-gray-100 bg-white py-1 shadow-xl duration-200 sm:w-64">
                 <div className="px-3 py-2 text-xs font-semibold tracking-wider text-gray-400 uppercase">
@@ -325,7 +324,6 @@ export function CompanyInfoStep({
         </div>
       )}
 
-      {/* Hidden file input */}
       <input
         type="file"
         ref={fileInputRef}

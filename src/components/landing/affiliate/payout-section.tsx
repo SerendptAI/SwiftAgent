@@ -2,11 +2,13 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export function PayoutSection() {
+  const t = useTranslations("affiliate.payout");
   const sectionRef = useRef<HTMLElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -37,13 +39,13 @@ export function PayoutSection() {
       >
         <div className="flex flex-1 flex-col gap-2">
           <p className="font-dm-mono text-sm tracking-[0.15em] text-[#7e7e7e] uppercase">
-            Affiliate reward
+            {t("rewardLabel")}
           </p>
           <p className="font-greed-narrow text-[64px] font-medium text-[#f2b035]">
             20%
           </p>
           <p className="font-dm-mono text-[18px] text-[#1f1f1f] uppercase">
-            Of whichever plan they pay for
+            {t("rewardCaption")}
           </p>
         </div>
 
@@ -51,11 +53,10 @@ export function PayoutSection() {
 
         <div className="flex flex-1 flex-col gap-3">
           <h2 className="font-greed-narrow text-[28px] font-medium text-[#1f1f1f] uppercase">
-            Submit multiple deals
+            {t("heading")}
           </h2>
           <p className="font-stolzl text-base leading-[1.6] text-[#7e7e7e]">
-            You earn 20% of whichever plan the person you refer pays for. The
-            more referrals, the more you earn — it&apos;s that simple.
+            {t("body")}
           </p>
         </div>
       </div>

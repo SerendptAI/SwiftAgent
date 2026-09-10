@@ -18,10 +18,10 @@ const TABS = [
 ];
 
 const TAB_COLORS = [
-  "bg-[#6433CC]", // Purple
-  "bg-orange-300", // Orange
-  "bg-pink-300", // Pink
-  "bg-violet-300", // Lavender
+  "bg-[#6433CC]",
+  "bg-orange-300",
+  "bg-pink-300",
+  "bg-violet-300",
 ];
 
 export default function CompanyPage() {
@@ -63,7 +63,6 @@ export default function CompanyPage() {
         </div>
       </div>
 
-      {/* Tab Content */}
       <div className="scrollbar-none min-w-0 overflow-x-hidden overflow-y-auto p-0 sm:p-4">
         {activeTab === 0 && (
           <CompanyInfoStep

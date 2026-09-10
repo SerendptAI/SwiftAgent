@@ -1,7 +1,5 @@
 import { apiClient } from "@/lib/api-client";
 
-// ── Types ─────────────────────────────────────────────────────────────────────
-
 export interface APIEndpoint {
   name: string;
   path: string;
@@ -39,8 +37,6 @@ export type IntegrationCreatePayload = {
 export type IntegrationUpdatePayload = Partial<IntegrationCreatePayload>;
 
 export type IntegrationTestResult = unknown;
-
-// ── API ───────────────────────────────────────────────────────────────────────
 
 const base = (companyId: string) =>
   `/api/v1/companies/${companyId}/integrations`;

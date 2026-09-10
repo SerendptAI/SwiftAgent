@@ -202,7 +202,6 @@ export function TicketList({
         isSelectionLoading && "travel-border-loading",
       )}
     >
-      {/* Pending / Resolved Tabs */}
       <div className="mb-4 flex items-center gap-2 rounded-full p-1 sm:gap-4">
         <button
           onClick={() => setActiveTab("pending")}
@@ -276,7 +275,6 @@ export function TicketList({
         </button>
       </div>
 
-      {/* Items */}
       <div className="scrollbar-none flex-1 space-y-1 overflow-y-auto pt-3 lg:pt-0">
         {isLoading ? (
           <div className="flex h-full items-center justify-center">

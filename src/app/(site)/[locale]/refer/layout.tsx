@@ -1,10 +1,19 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "Refer a Founder",
-  description:
-    "Refer a founder to Swift Agents and win rewards. Share your referral link and earn when the businesses you know start automating their customer support.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta.refer" });
+
+  return {
+    title: t("title"),
+    description: t("description"),
+  };
+}
 
 export default function ReferLayout({
   children,

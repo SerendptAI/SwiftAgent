@@ -1,6 +1,8 @@
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import type { CSSProperties } from "react";
 
+// Logo alt text is the brand's own name, so it is not translated.
 const LOGOS = [
   {
     src: "/images/logos/serendpt.png",
@@ -22,10 +24,12 @@ const LOGOS = [
 const MARQUEE_LOGOS = [...LOGOS, ...LOGOS];
 
 export function TrustedBySection() {
+  const t = useTranslations("home.trustedBy");
+
   return (
     <section className="w-full bg-white py-10 md:py-14">
       <p className="font-dm-mono text-muted-foreground mb-10 text-center text-sm leading-[1.6] font-medium tracking-[10%] uppercase md:mb-14 md:text-base">
-        Trusted by startups, SaaS companies, fintechs, and e-commerce brands.
+        {t("heading")}
       </p>
 
       <div

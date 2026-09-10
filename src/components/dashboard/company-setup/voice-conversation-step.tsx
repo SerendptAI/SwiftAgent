@@ -95,7 +95,6 @@ export function VoiceConversationStep({
       </h2>
 
       <div className="mb-10 grid grid-cols-1 gap-4 sm:mb-16 sm:gap-6 md:grid-cols-3">
-        {/* Professional */}
         <VoiceCard
           value="professional"
           label="Professional"
@@ -106,7 +105,6 @@ export function VoiceConversationStep({
           onSelect={(val) => setValue("voiceStyle", val)}
         />
 
-        {/* Friendly */}
         <VoiceCard
           value="friendly"
           label="Friendly"
@@ -117,7 +115,6 @@ export function VoiceConversationStep({
           onSelect={(val) => setValue("voiceStyle", val)}
         />
 
-        {/* Concise */}
         <VoiceCard
           value="concise"
           label="Concise"

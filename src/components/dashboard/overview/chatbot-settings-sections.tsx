@@ -16,8 +16,6 @@ const FIELD_LABEL = "font-stolzl text-[16px] text-black";
 const FIELD_INPUT =
   "font-dm-mono w-full rounded-[5px] bg-[#EDEDED] pl-[10px] pr-[37px] py-[10px] text-[14px] text-black outline-none placeholder:text-black/50";
 
-// ── COLLAPSIBLE SECTION ──────────────────────────────────────────────────────
-
 export function CollapsibleSection({
   title,
   children,
@@ -48,8 +46,6 @@ export function CollapsibleSection({
     </section>
   );
 }
-
-// ── PAYMENT SANDBOX ────────────────────────────────────────────────────────
 
 export function PaymentSandboxSection() {
   const [link, setLink] = useState("");
@@ -93,7 +89,6 @@ export function PaymentSandboxSection() {
   );
 }
 
-// ── API INTEGRATION ──────────────────────────────────────────────────────────
 // One integration = one product API (shared base URL + key). Agents learn the
 // callable endpoints from the documentation you provide.
 
@@ -475,8 +470,6 @@ function SuggestionField({
     </div>
   );
 }
-
-// ── Shared field ───────────────────────────────────────────────────────────
 
 function SettingsField({
   id,

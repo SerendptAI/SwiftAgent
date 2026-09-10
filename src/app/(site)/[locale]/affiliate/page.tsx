@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import { AudienceSection } from "@/components/landing/affiliate/audience-section";
 import { AffiliateHeroSection } from "@/components/landing/affiliate/hero-section";
@@ -8,16 +9,22 @@ import { ReferralPathSection } from "@/components/landing/affiliate/referral-pat
 import { SubmitCtaSection } from "@/components/landing/affiliate/submit-cta-section";
 import { ContactSection } from "@/components/landing/contact-section";
 import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provider";
-import { siteConfig } from "@/lib/site-config";
+import { localeAlternates } from "@/lib/locale-metadata";
 
-export const metadata: Metadata = {
-  title: "Affiliate Program — Swift Agents",
-  description:
-    "Refer businesses to Swift Agents and earn 20% of whichever plan they pay for. Introduce us, we build them a working AI agent, and you get paid once they go live.",
-  alternates: {
-    canonical: `${siteConfig.url}/en/affiliate`,
-  },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta.affiliate" });
+
+  return {
+    title: t("title"),
+    description: t("description"),
+    alternates: localeAlternates(locale, "/affiliate"),
+  };
+}
 
 export default function AffiliatePage() {
   return (

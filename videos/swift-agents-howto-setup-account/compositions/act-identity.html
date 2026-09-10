@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="assets/tutorial.css" />
+      <style>
+        #root {
+          position: absolute;
+          inset: 0;
+        }
+        #ident-menu {
+          opacity: 0;
+          visibility: hidden;
+        }
+        .ident-rail {
+          position: absolute;
+          left: 150px;
+          right: 150px;
+          top: 34px;
+          display: flex;
+          gap: 44px;
+          padding-bottom: 20px;
+          border-bottom: 2px solid #f3f4f6;
+          color: #6e6e6e;
+        }
+        .ident-bar {
+          position: absolute;
+          left: 150px;
+          top: 86px;
+          width: 700px;
+          height: 8px;
+          background: #f3f4f6;
+          border-radius: 999px;
+          overflow: hidden;
+        }
+        .ident-bar > i {
+          position: absolute;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          display: block;
+          background: #006be5;
+          border-radius: 999px;
+        }
+        /* The wizard renders these in sentence case; the uppercase on
+           .hr-textarea belongs to the registration form only. */
+        .ident-text {
+          text-transform: none;
+          letter-spacing: 0;
+        }
+        .ident-select {
+          justify-content: space-between;
+        }
+
+      </style>
+
+      <div
+        id="root"
+        data-composition-id="act-identity"
+        data-width="1920"
+        data-height="1080"
+      >
+        <div class="hr-stage">
+          <div class="ident-rail hr-mono" style="font-size: 20px">
+            <span>Company Information</span>
+            <span style="color: #0a0a0a">Company Identity</span>
+            <span>Knowledge Sources</span>
+            <span>Answer Boundaries</span>
+            <span>Voice &amp; Conversation</span>
+          </div>
+          <div class="ident-bar"><i style="width: 40%"></i></div>
+
+          <div style="position: absolute; left: 150px; right: 150px; top: 138px">
+            <div class="hr-microlabel">What your company does</div>
+            <div
+              class="hr-textarea ident-text"
+              style="margin-top: 10px; height: 118px; font-size: 23px"
+            >
+              We deliver food, groceries and pharmacy orders across Nigeria, and
+              answer order, rider and refund questions at high volume.
+            </div>
+
+            <div style="margin-top: 24px" class="hr-microlabel">
+              Main problem you solve for customers
+            </div>
+            <div
+              class="hr-textarea ident-text"
+              style="margin-top: 10px; height: 88px; font-size: 23px"
+            >
+              Getting a straight answer about an order without waiting in a
+              support queue.
+            </div>
+
+            <div
+              style="
+                margin-top: 24px;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 48px;
+              "
+            >
+              <div>
+                <div class="hr-microlabel">Brand tone</div>
+                <div id="ident-tone" class="hr-value ident-select">
+                  <span id="ident-tone-val">Professional</span>
+                  <span class="hr-mono" style="color: #6e6e6e">v</span>
+                </div>
+              </div>
+              <div>
+                <div class="hr-microlabel">Primary language</div>
+                <div class="hr-value ident-select">
+                  <span>English</span>
+                  <span class="hr-mono" style="color: #6e6e6e">v</span>
+                </div>
+              </div>
+            </div>
+
+            <div id="ident-emails-label" style="margin-top: 24px" class="hr-microlabel">Support Emails</div>
+            <div id="ident-emails" class="hr-value" style="margin-top: 10px">
+              <span id="ident-emails-ph" class="hr-ph">noreply@email.com , soreply@email.com</span
+              ><span id="ident-emails-val"></span>
+            </div>
+          </div>
+
+          <!-- Brand tone, opened on its four real options -->
+          <div
+            id="ident-menu"
+            class="hr-menu"
+            style="position: absolute; left: 150px; top: 566px; width: 762px"
+          >
+            <div class="hr-option" style="height: 60px">Professional</div>
+            <div id="ident-pick" class="hr-option" style="height: 60px">Friendly</div>
+            <div class="hr-option" style="height: 60px">Playful</div>
+            <div class="hr-option" style="height: 60px">Authoritative</div>
+          </div>
+
+          <svg
+            id="ident-cursor"
+            class="hr-cursor"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M5 2.5 L5 20 L9.4 16.2 L12.3 22.2 L15.2 20.8 L12.4 15 L18.2 15 Z"
+              fill="#0A0A0A"
+              stroke="#FFFFFF"
+              stroke-width="1.4"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+
+          const EMAILS = "help@chowdeck.com";
+          const TIP = { x: 16, y: 8 };
+          const OFF = { x: 1640, y: 1180 };
+          const to = (x, y) => ({ x: x - TIP.x, y: y - TIP.y });
+
+          tl.set("#ident-cursor", { x: OFF.x, y: OFF.y, opacity: 0, scale: 1 }, 0);
+          tl.set("#ident-tone-val", { innerHTML: "Professional" }, 0);
+          tl.set("#ident-emails-val", { innerHTML: "" }, 0);
+          tl.set("#ident-emails-ph", { opacity: 1 }, 0);
+          tl.fromTo(
+            ".hr-textarea",
+            { y: 16, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.5, ease: "power2.out", stagger: 0.1 },
+            0.15,
+          );
+
+          // ── Brand tone (8-16s) ──────────────────────────────────
+          // The one field here the scrape cannot know: how the agents should
+          // sound is a decision, not a fact about the company.
+          tl.to(
+            "#ident-cursor",
+            { ...to(830, 525), opacity: 1, duration: 0.9, ease: "power2.out" },
+            8.2,
+          );
+          tl.to("#ident-cursor", { scale: 0.88, duration: 0.09 }, 9.4);
+          tl.to("#ident-cursor", { scale: 1, duration: 0.09 }, 9.49);
+          tl.to(
+            ["#ident-emails-label", "#ident-emails"],
+            { autoAlpha: 0, duration: 0.25 },
+            9.45,
+          );
+          tl.fromTo(
+            "#ident-menu",
+            { autoAlpha: 0, y: -10 },
+            { autoAlpha: 1, y: 0, duration: 0.3, ease: "power2.out" },
+            9.6,
+          );
+          tl.to(
+            "#ident-cursor",
+            { ...to(560, 656), duration: 0.6, ease: "power2.out" },
+            11.0,
+          );
+          tl.to("#ident-pick", { backgroundColor: "#F3F4F6", duration: 0.15 }, 11.6);
+          tl.to("#ident-cursor", { scale: 0.88, duration: 0.09 }, 11.8);
+          tl.to("#ident-cursor", { scale: 1, duration: 0.09 }, 11.89);
+          tl.to("#ident-menu", { autoAlpha: 0, duration: 0.25 }, 12.2);
+          tl.to(
+            ["#ident-emails-label", "#ident-emails"],
+            { autoAlpha: 1, duration: 0.3 },
+            12.4,
+          );
+          tl.set("#ident-tone-val", { innerHTML: "Friendly" }, 12.3);
+
+          // ── Support emails (16-22s) ─────────────────────────────
+          tl.to(
+            "#ident-cursor",
+            { ...to(500, 645), duration: 0.7, ease: "power2.out" },
+            16.2,
+          );
+          tl.to("#ident-cursor", { scale: 0.88, duration: 0.09 }, 17.0);
+          tl.to("#ident-cursor", { scale: 1, duration: 0.09 }, 17.09);
+          tl.to("#ident-emails-ph", { opacity: 0, duration: 0.12 }, 17.25);
+          for (let i = 1; i <= EMAILS.length; i++) {
+            tl.set(
+              "#ident-emails-val",
+              { innerHTML: EMAILS.slice(0, i) },
+              17.35 + i * 0.05,
+            );
+          }
+          tl.to("#ident-cursor", { opacity: 0, duration: 0.3 }, 20.4);
+
+          window.__timelines["act-identity"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -151,7 +151,6 @@ export function SetupWizard() {
     });
 
     if (currentStep === 1) {
-      // After Company Identity, show completion screen
       setShowCompletion(true);
       return;
     }

@@ -2,50 +2,35 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
+/** Copy lives in the `affiliate.audience` catalogue, keyed by id. */
 const COLUMNS = [
   {
-    title: "Who this is for",
+    id: "forWho",
     titleColor: "#6433cc",
     bullets: [
-      {
-        color: "#6433cc",
-        text: "Web developers and designers who build or maintain business websites",
-      },
-      {
-        color: "#7f9fff",
-        text: "Agency owners and freelancers with active business clients",
-      },
-      {
-        color: "#f25430",
-        text: "Anyone with a friend, family member, or contact who runs a business with a website",
-      },
+      { id: "developers", color: "#6433cc" },
+      { id: "agencies", color: "#7f9fff" },
+      { id: "anyone", color: "#f25430" },
     ],
   },
   {
-    title: "Why owners say yes",
+    id: "whyYes",
     titleColor: "#f2b035",
     bullets: [
-      {
-        color: "#f2b035",
-        text: "Their website starts answering customer questions on its own, day and night",
-      },
-      {
-        color: "#7f9fff",
-        text: "No developer time needed to set it up, SwiftAgents learns the site directly",
-      },
-      {
-        color: "#f25430",
-        text: "Live within days, across web chat, WhatsApp, and social messages",
-      },
+      { id: "answers", color: "#f2b035" },
+      { id: "noDevTime", color: "#7f9fff" },
+      { id: "liveFast", color: "#f25430" },
     ],
   },
 ];
 
 export function AudienceSection() {
+  const t = useTranslations("affiliate.audience");
   const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -79,7 +64,7 @@ export function AudienceSection() {
         className="mx-auto grid max-w-360 gap-12 md:grid-cols-[1fr_auto_1fr] md:gap-20"
       >
         {COLUMNS.map((column, index) => (
-          <div key={column.title} className="contents">
+          <div key={column.id} className="contents">
             {index === 1 && (
               <div className="hidden w-px self-stretch bg-black/15 md:block" />
             )}
@@ -89,12 +74,12 @@ export function AudienceSection() {
                 className="font-greed-narrow text-3xl leading-[1.1] font-medium tracking-[-0.02em] uppercase md:text-4xl"
                 style={{ color: column.titleColor }}
               >
-                {column.title}
+                {t(`${column.id}.title`)}
               </h2>
               <ul className="flex flex-col gap-6">
                 {column.bullets.map((bullet) => (
                   <li
-                    key={bullet.text}
+                    key={bullet.id}
                     data-reveal
                     className="flex items-start gap-4"
                   >
@@ -103,7 +88,7 @@ export function AudienceSection() {
                       style={{ backgroundColor: bullet.color }}
                     />
                     <span className="font-stolzl text-base leading-[1.5] text-[#1f1f1f]">
-                      {bullet.text}
+                      {t(`${column.id}.bullets.${bullet.id}`)}
                     </span>
                   </li>
                 ))}

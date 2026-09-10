@@ -38,7 +38,6 @@ import {
 import { MessageMarkdown } from "./message-markdown";
 import { MessagesEmptyState } from "./messages-empty-state";
 
-/** Format a byte count as a human-readable size (e.g. "1.0 MB"). */
 function formatBytes(bytes?: number | null): string {
   if (bytes == null || bytes <= 0) return "";
   const units = ["B", "KB", "MB", "GB"];
@@ -114,11 +113,6 @@ function BubbleTail({ side }: { side: "customer" | "agent" }) {
   );
 }
 
-/**
- * A file attachment shown in a message bubble. Uses a proper PDF/Word
- * thumbnail when available, and opens a preview in a new tab when the file
- * is viewable (composer selection, or a file sent earlier this session).
- */
 function AttachmentCard({
   filename,
   size,
@@ -230,7 +224,6 @@ interface AttachmentPreview {
   kind: FileKind;
 }
 
-/** Full-screen lightbox that previews an attachment inline over the chat. */
 function AttachmentPreviewModal({
   preview,
   onClose,
@@ -391,7 +384,7 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
     try {
       headerTime = format(new Date(messages[0].timestamp), "EEE h:mm a");
     } catch {
-      // ignore
+      // Unparseable timestamp — leave the header blank.
     }
   }
 
@@ -521,7 +514,6 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
         </button>
       </div>
 
-      {/* Originating chat (collapsible) */}
       {ticket?.attributed_chat && (
         <div className="border-b border-gray-100 px-4 py-3 sm:px-6">
           <button

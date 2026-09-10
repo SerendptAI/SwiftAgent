@@ -1,0 +1,141 @@
+{
+  "hero": {
+    "headline": {
+      "scale": "Développez",
+      "customer": "Le support",
+      "supportWithout": "Client sans",
+      "scalingYour": "Agrandir votre",
+      "team": "Équipe"
+    },
+    "subtitle": "SwiftAgents aide les entreprises à automatiser leurs conversations clients, à alléger la charge du support et à offrir une expérience plus rapide sur tous les canaux.",
+    "bookDemo": "Réserver une démo",
+    "getStarted": "Commencer"
+  },
+  "checklist": {
+    "eyebrow": "Conçu pour la croissance",
+    "heading": "Conçu pour les entreprises qui grandissent plus vite que leur équipe support",
+    "items": {
+      "repetitive": "Réduire les demandes répétitives",
+      "responseTimes": "Améliorer les temps de réponse",
+      "experiences": "Offrir de meilleures expériences client",
+      "scale": "Développer le support plus efficacement"
+    }
+  },
+  "steps": {
+    "eyebrow": "Comment ça marche",
+    "heading": "De la question du client à sa résolution en quelques secondes",
+    "items": {
+      "connect": {
+        "title": "Connectez vos connaissances",
+        "description": "Importez votre documentation, le contenu de votre site, vos FAQ et vos ressources de support."
+      },
+      "train": {
+        "title": "Formez SwiftAgents à votre entreprise",
+        "description": "SwiftAgents apprend vos produits, vos processus, vos politiques et vos parcours clients."
+      },
+      "goLive": {
+        "title": "Passez en ligne",
+        "description": "Commencez à résoudre les demandes clients sur vos canaux de support en quelques heures, pas en semaines."
+      }
+    }
+  },
+  "capabilities": {
+    "eyebrow": "Fonctionnalités",
+    "heading": "Tout ce qu’il faut à votre équipe pour accompagner vos clients à grande échelle",
+    "items": {
+      "instantSupport": {
+        "title": "Support client instantané",
+        "description": "Répondez aux questions de vos clients 24h/24 : support, prise en main, facturation et informations produit."
+      },
+      "productGuidance": {
+        "title": "Accompagnement produit",
+        "description": "Aidez vos utilisateurs à naviguer dans votre plateforme, à trouver les fonctionnalités et à aller au bout de leurs actions sans attendre le support."
+      },
+      "paymentSupport": {
+        "title": "Support paiements et transactions",
+        "description": "Accompagnez vos clients sur la vérification des paiements, les remboursements, le statut des transactions et les questions liées à leur compte."
+      },
+      "knowledgeSearch": {
+        "title": "Recherche intelligente",
+        "description": "Retrouvez instantanément les réponses dans votre site, votre documentation et vos ressources de support."
+      }
+    }
+  },
+  "outcomes": {
+    "eyebrow": "Des résultats, pas des tickets",
+    "heading": "Les plateformes de support traditionnelles aident les équipes à gérer le support. SwiftAgents les aide à le réduire.",
+    "body": "La plupart des plateformes de support ont été conçues autour des tickets, des tableaux de bord et des processus. SwiftAgents a été conçu autour des résultats.",
+    "items": {
+      "fasterResponses": "Réponses plus rapides",
+      "lessManualWork": "Moins de travail manuel",
+      "experiences": "Meilleures expériences client",
+      "lowerCosts": "Coûts de support réduits"
+    }
+  },
+  "whyTeams": {
+    "eyebrow": "Pourquoi les équipes changent",
+    "heading": "Pourquoi les équipes dépassent les plateformes de support traditionnelles",
+    "body": "Que vous utilisiez Zendesk, Intercom, Freshworks, Tidio ou que vous gériez le support à la main, le problème est le même : plus de clients, c’est plus de conversations, et plus de conversations, c’est plus de travail de support. SwiftAgents vous aide à alléger cette charge avant qu’elle n’atteigne votre équipe.",
+    "items": {
+      "fasterSetup": {
+        "title": "Mise en place plus rapide",
+        "description": "En ligne en quelques heures, pas en semaines."
+      },
+      "smarterAutomation": {
+        "title": "Automatisation plus fine",
+        "description": "Réduisez automatiquement les demandes répétitives."
+      },
+      "simplerOperations": {
+        "title": "Opérations simplifiées",
+        "description": "Pas de processus surchargés ni de complexité inutile."
+      },
+      "predictableGrowth": {
+        "title": "Croissance maîtrisée",
+        "description": "Développez votre support sans faire grimper vos coûts d’exploitation."
+      }
+    }
+  },
+  "deploy": {
+    "eyebrow": "Déploiement",
+    "heading": "Déployez en quelques heures, pas en semaines",
+    "body": "La plupart des systèmes de support imposent une longue prise en main, une configuration et un paramétrage fastidieux. SwiftAgents est conçu pour mettre votre équipe en ligne rapidement, afin d’en tirer de la valeur immédiatement.",
+    "points": {
+      "noProjects": "Aucun projet d’intégration complexe",
+      "noEnterpriseSetup": "Aucune configuration de niveau entreprise",
+      "noWaiting": "Aucune semaine d’attente avant de démarrer"
+    }
+  },
+  "pricingTeaser": {
+    "eyebrow": "Tarifs",
+    "heading": "Des tarifs simples pour chaque étape de votre croissance",
+    "tiers": {
+      "starter": {
+        "name": "Starter",
+        "description": "Pour les jeunes équipes qui automatisent leur support pour la première fois."
+      },
+      "growth": {
+        "name": "Growth",
+        "description": "Pour les entreprises en croissance dont le volume de support augmente."
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "description": "Pour les organisations qui ont besoin de personnalisation avancée et de montée en charge."
+      }
+    },
+    "viewPricing": "Voir les tarifs"
+  },
+  "roiBanner": {
+    "first": {
+      "eyebrow": "Calculateur de ROI",
+      "heading": "Voyez combien vous payez en trop pour votre support",
+      "description": "Calculez le nombre d’agents de support que vous pourriez éviter de recruter avec SwiftAgents.",
+      "cta": "Calculer mes économies"
+    },
+    "second": {
+      "eyebrow": "Vous faites encore croître le support par le recrutement ?",
+      "heading": "La plupart des équipes ne mesurent leur inefficacité de support qu’une fois le calcul fait",
+      "description": "Faites le calcul et voyez ce que SwiftAgents pourrait vous faire économiser.",
+      "cta": "Lancer le calcul de ROI"
+    }
+  }
+}

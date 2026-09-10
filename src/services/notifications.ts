@@ -1,7 +1,5 @@
 import { apiClient } from "@/lib/api-client";
 
-// ── Types ──────────────────────────────────────────────────────────────────────
-
 /** Known notification `type` values. The backend may add more over time. */
 export type NotificationType =
   | "ticket_open"
@@ -41,8 +39,6 @@ export interface NotificationsResponse {
   unread_count: number;
 }
 
-// ── API Service ────────────────────────────────────────────────────────────────
-
 export const notificationsApi = {
   /** Paginated notification history for the authenticated user (newest first). */
   list: async (
@@ -56,7 +52,6 @@ export const notificationsApi = {
     return data;
   },
 
-  /** Mark a single notification as read. */
   markRead: async (notificationId: string): Promise<void> => {
     await apiClient.put(`/api/v1/notifications/${notificationId}/read`);
   },
@@ -75,8 +70,6 @@ export const notificationsApi = {
     await apiClient.delete(`/api/v1/notifications/${notificationId}`);
   },
 };
-
-// ── Deep-linking ─────────────────────────────────────────────────────────────
 
 /**
  * Resolve the in-app route a notification should open on click, or `null` when

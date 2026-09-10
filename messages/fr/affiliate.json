@@ -1,0 +1,83 @@
+{
+  "hero": {
+    "headline": "Vous connaissez déjà les\nentreprises que nous\nrecherchons",
+    "body": "SwiftAgents dote les sites web d’assistants IA capables de gérer les conversations en direct, les tickets et les parcours de support sans friction. Présentez-nous des entreprises qui peinent avec un support manuel, et soyez payé dès qu’elles sont en ligne. C’est aussi simple que ça.",
+    "submitReferral": "Envoyer un contact",
+    "viewPlanMetrics": "Voir les tarifs",
+    "proReferrer": "Apporteur d’affaires"
+  },
+  "path": {
+    "eyebrow": "Parcours de parrainage",
+    "heading": "Le chemin vers une commission permanente",
+    "steps": {
+      "you": {
+        "label": "Vous",
+        "caption": "l’apporteur"
+      },
+      "intro": {
+        "label": "Intro",
+        "caption": "mise en relation"
+      },
+      "business": {
+        "label": "Entreprise",
+        "caption": "voit une démo"
+      },
+      "live": {
+        "label": "En ligne",
+        "caption": "vous êtes payé"
+      }
+    }
+  },
+  "audience": {
+    "forWho": {
+      "title": "À qui cela s’adresse",
+      "bullets": {
+        "developers": "Aux développeurs et designers web qui créent ou maintiennent des sites d’entreprise",
+        "agencies": "Aux agences et indépendants qui ont des clients professionnels actifs",
+        "anyone": "À toute personne dont un proche ou un contact dirige une entreprise avec un site web"
+      }
+    },
+    "whyYes": {
+      "title": "Pourquoi les dirigeants disent oui",
+      "bullets": {
+        "answers": "Leur site se met à répondre tout seul aux questions des clients, jour et nuit",
+        "noDevTime": "Aucun temps de développement nécessaire : SwiftAgents apprend directement du site",
+        "liveFast": "En ligne en quelques jours, sur le chat web, WhatsApp et les messageries sociales"
+      }
+    }
+  },
+  "protocol": {
+    "eyebrow": "Comment ça marche",
+    "heading": "Un parcours de parrainage simplifié",
+    "steps": {
+      "refer": {
+        "title": "Recommandez",
+        "body": "Envoyez-nous le nom de l’entreprise et son site, ou présentez-nous directement."
+      },
+      "demo": {
+        "title": "Démo",
+        "body": "Nous montrons au dirigeant un agent IA fonctionnel, construit sur son propre site et son propre support."
+      },
+      "signUp": {
+        "title": "Inscription",
+        "body": "S’ils nous rejoignent, vous êtes enregistré comme source du parrainage."
+      },
+      "getPaid": {
+        "title": "Soyez payé",
+        "body": "Votre commission part dès que l’entreprise est active."
+      }
+    }
+  },
+  "payout": {
+    "rewardLabel": "Récompense d’affiliation",
+    "rewardCaption": "De la formule qu’ils choisissent",
+    "heading": "Envoyez plusieurs dossiers",
+    "body": "Vous touchez 20 % de la formule payée par la personne que vous recommandez. Plus vous recommandez, plus vous gagnez — c’est aussi simple que ça."
+  },
+  "submit": {
+    "heading": "Prêt à envoyer votre premier contact ?",
+    "body": "Répondez avec le nom de l’entreprise, ou envoyez-la-nous directement.",
+    "channelLabel": "Canal d’envoi",
+    "emailNow": "Envoyer un e-mail"
+  }
+}

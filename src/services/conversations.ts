@@ -1,8 +1,6 @@
 import { apiClient } from "@/lib/api-client";
 import { unwrapList } from "@/lib/unwrap-list";
 
-// ── Types ──────────────────────────────────────────────────────────────────────
-
 export interface ChatMessage {
   role: "system" | "user" | "agent" | string;
   content: string;
@@ -33,8 +31,6 @@ export interface ChatSessionDetail extends ChatSession {
   messages: ChatMessage[];
 }
 
-// ── API Service ────────────────────────────────────────────────────────────────
-
 export const chatsApi = {
   /** Get a list of chat sessions (without messages) for a company. */
   list: async (
@@ -48,7 +44,6 @@ export const chatsApi = {
     return unwrapList(data);
   },
 
-  /** Get the full history of a specific chat session. */
   getById: async (
     companyId: string,
     chatId: string,
@@ -59,7 +54,6 @@ export const chatsApi = {
     return data;
   },
 
-  /** Mark a chat session as seen. */
   markSeen: async (companyId: string, chatId: string): Promise<void> => {
     await apiClient.patch(
       `/api/v1/dashboard/${companyId}/chats/${chatId}/seen`,

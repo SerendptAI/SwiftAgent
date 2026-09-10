@@ -1,0 +1,22 @@
+{
+  "welcomeBack": "Karibu tena",
+  "logInToYourAccount": "Ingia kwenye akaunti yako",
+  "googleLogin": "Ingia kwa kutumia",
+  "serendptLogin": "Ingia kwa kutumia",
+  "or": "AU",
+  "companyEmailPlaceholder": "Barua pepe ya kampuni",
+  "signIn": "Ingia",
+  "invalidEmail": "Tafadhali weka anwani sahihi ya barua pepe",
+  "signingIn": "Inaingia...",
+  "incorrectOtp": "Msimbo si sahihi",
+  "otpExpired": "Msimbo umeisha muda. Tafadhali omba mwingine.",
+  "otpSendFailed": "Imeshindwa kutuma msimbo. Tafadhali jaribu tena.",
+  "enterEmail": "Weka barua pepe yako ili upokee msimbo",
+  "sendCode": "Tuma msimbo",
+  "backToEmail": "Badilisha barua pepe",
+  "checkSpam": "Tumekutumia msimbo kwa barua pepe. Huoni? Angalia kwenye folda ya taka au barua zisizohitajika.",
+  "resendCode": "Tuma msimbo tena",
+  "codeResent": "Msimbo mpya umetumwa.",
+  "accountNotFound": "Hatukupata akaunti kwa barua pepe hiyo",
+  "createAccount": "Fungua akaunti"
+}

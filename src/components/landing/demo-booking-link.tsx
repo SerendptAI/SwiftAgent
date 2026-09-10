@@ -4,7 +4,7 @@ import { type DemoCtaLocation, trackEvent } from "@/lib/analytics";
 import { siteConfig } from "@/lib/site-config";
 
 /**
- * Booking happens on Calendly, so the click is the last thing we see of the
+ * Booking happens on Cal.com, so the click is the last thing we see of the
  * visitor — no landing pageview counts it, hence the explicit event.
  */
 export function DemoBookingLink({

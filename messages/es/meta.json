@@ -1,0 +1,42 @@
+{
+  "home": {
+    "title": "Swift Agents: plataforma de interacción con clientes con IA",
+    "description": "Integra un agente de IA inteligente en tu web en minutos. Swift Agents se encarga de la atención al cliente, las ventas y las conversaciones de voz, 24/7, sin que muevas un dedo."
+  },
+  "agents": {
+    "title": "Agentes",
+    "description": "Agentes de IA que gestionan la atención al cliente, las ventas y las conversaciones de voz de tu negocio, 24/7."
+  },
+  "products": {
+    "title": "Productos",
+    "description": "Descubre los productos de Swift Agents: chat, voz y automatización del soporte con IA, pensados para empresas en crecimiento."
+  },
+  "demo": {
+    "title": "Demo",
+    "description": "Mira cómo queda tu soporte antes y después de Swift Agents. Ajusta tus cifras y comprueba cuántos agentes puedes evitar contratar a medida que creces."
+  },
+  "landing": {
+    "title": "Escala la atención al cliente sin ampliar tu equipo",
+    "description": "SwiftAgents ayuda a las empresas a automatizar las conversaciones con sus clientes, reducir la carga de soporte y ofrecer experiencias más rápidas en todos los canales. En marcha en horas, no en semanas."
+  },
+  "affiliate": {
+    "title": "Programa de afiliados",
+    "description": "Recomienda empresas a Swift Agents y gana el 20 % del plan que contraten. Preséntanos, les montamos un agente de IA funcionando y cobras en cuanto se pongan en marcha."
+  },
+  "refer": {
+    "title": "Recomienda a un fundador",
+    "description": "Recomienda a un fundador a Swift Agents y gana recompensas. Comparte tu enlace de recomendación y cobra cuando las empresas que conoces empiecen a automatizar su soporte."
+  },
+  "caseStudies": {
+    "title": "Casos de éxito",
+    "description": "Descubre cómo las empresas usan Swift Agents para automatizar el soporte, resolver más rápido y crecer sin contratar más agentes."
+  },
+  "blog": {
+    "title": "Blog",
+    "description": "Notas de campo sobre automatización del soporte: qué funciona, qué se rompe y qué dicen realmente los números."
+  },
+  "privacy": {
+    "title": "Política de privacidad",
+    "description": "Consulta la política de privacidad de Swift Agents by Serendpt AI. Descubre cómo tratamos los datos de empresa, los registros y las consultas de los usuarios."
+  }
+}

@@ -89,7 +89,6 @@ export function TicketingClient() {
 
   return (
     <div className="flex min-h-full w-full flex-col gap-4 lg:h-full lg:min-h-0 lg:gap-8">
-      {/* Desktop toolbar with expandable search bar */}
       <div className="relative hidden items-center gap-8 lg:flex">
         <div
           aria-hidden={isSearchOpen}
@@ -167,7 +166,6 @@ export function TicketingClient() {
         </div>
       </div>
 
-      {/* Mobile/tablet toolbar — simple button (no expandable search) */}
       <div className="flex items-stretch gap-3 sm:items-center sm:gap-4 lg:hidden">
         <div className="min-w-0 flex-1">
           <CompanyToolbar />

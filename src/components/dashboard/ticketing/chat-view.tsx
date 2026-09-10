@@ -66,7 +66,7 @@ export function ChatView({ ticketId, className, onClose }: ChatViewProps) {
     try {
       headerTime = format(new Date(messages[0].timestamp), "EEE h:mm a");
     } catch {
-      // ignore
+      // Unparseable timestamp — leave the header blank.
     }
   }
 

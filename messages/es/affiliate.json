@@ -1,0 +1,83 @@
+{
+  "hero": {
+    "headline": "Ya conoces a las\nempresas que estamos\nbuscando",
+    "body": "SwiftAgents dota a las webs de asistentes de IA capaces de gestionar chats en directo, tickets y flujos de soporte sin fricciones. Preséntanos empresas que se pelean con un soporte manual y cobra cuando se pongan en marcha. Así de sencillo.",
+    "submitReferral": "Enviar recomendación",
+    "viewPlanMetrics": "Ver precios",
+    "proReferrer": "Recomendador pro"
+  },
+  "path": {
+    "eyebrow": "Ruta de recomendación",
+    "heading": "El camino hacia una comisión permanente",
+    "steps": {
+      "you": {
+        "label": "Tú",
+        "caption": "quien recomienda"
+      },
+      "intro": {
+        "label": "Presentación",
+        "caption": "contacto directo"
+      },
+      "business": {
+        "label": "Empresa",
+        "caption": "ve una demo"
+      },
+      "live": {
+        "label": "En marcha",
+        "caption": "tú cobras"
+      }
+    }
+  },
+  "audience": {
+    "forWho": {
+      "title": "Para quién es esto",
+      "bullets": {
+        "developers": "Para desarrolladores y diseñadores web que crean o mantienen webs de empresa",
+        "agencies": "Para agencias y autónomos con clientes empresariales activos",
+        "anyone": "Para cualquiera que tenga un amigo, familiar o contacto con una empresa con web"
+      }
+    },
+    "whyYes": {
+      "title": "Por qué los dueños dicen que sí",
+      "bullets": {
+        "answers": "Su web empieza a responder sola a las preguntas de los clientes, de día y de noche",
+        "noDevTime": "No hace falta tiempo de desarrollo: SwiftAgents aprende directamente del sitio",
+        "liveFast": "En marcha en días, en chat web, WhatsApp y mensajes de redes sociales"
+      }
+    }
+  },
+  "protocol": {
+    "eyebrow": "Cómo funciona",
+    "heading": "Un proceso de recomendación simplificado",
+    "steps": {
+      "refer": {
+        "title": "Recomienda",
+        "body": "Mándanos el nombre de la empresa y su web, o preséntanos directamente."
+      },
+      "demo": {
+        "title": "Demo",
+        "body": "Le enseñamos al responsable un agente de IA funcionando, montado sobre su propia web y su soporte."
+      },
+      "signUp": {
+        "title": "Alta",
+        "body": "Si se suman, quedas registrado como origen de la recomendación."
+      },
+      "getPaid": {
+        "title": "Cobra",
+        "body": "Tu pago sale en cuanto la empresa está activa."
+      }
+    }
+  },
+  "payout": {
+    "rewardLabel": "Recompensa de afiliado",
+    "rewardCaption": "Del plan que contraten",
+    "heading": "Envía varias oportunidades",
+    "body": "Te llevas el 20 % del plan que pague la persona a la que recomiendes. Cuantas más recomendaciones, más ganas. Así de sencillo."
+  },
+  "submit": {
+    "heading": "¿Listo para enviar tu primera recomendación?",
+    "body": "Responde con el nombre de la empresa, o mándanosla directamente.",
+    "channelLabel": "Canal de envío",
+    "emailNow": "Enviar correo"
+  }
+}

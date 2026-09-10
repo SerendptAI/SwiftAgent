@@ -1,42 +1,62 @@
 "use client";
 
 import { ChevronDown, Play } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Icons } from "@/components/icons";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
+import { videoPosterUrl, videoUrl } from "@/lib/cloudinary";
 
 const DRAWER_TRANSITION_MS = 520;
 
 /**
- * A tutorial with no `recording` has not been made yet and shows the
- * placeholder. Pairing the file with its caption track in one object keeps an
- * uncaptioned video unrepresentable — the clips are silent, so the track is
- * the only way the content reaches a screen reader.
+ * Grouping the file with its poster and caption track keeps a recording whose
+ * pieces have drifted apart unrepresentable — the clips are silent, so the
+ * track is the only way the content reaches a screen reader, and the poster is
+ * the only thing on the card that says what the clip shows.
  */
+interface TutorialRecording {
+  src: string;
+  poster: string;
+  captions: string;
+}
+
+/** A tutorial with no `recording` has not been shot yet: it reads "coming soon". */
 interface TutorialVideo {
   title: string;
-  recording?: { src: string; captions: string };
+  recording?: TutorialRecording;
+}
+
+type RecordedTutorial = TutorialVideo & { recording: TutorialRecording };
+
+/** One id drives the clip, the still cut from it, and its caption track. */
+function recordingFor(id: string): TutorialRecording {
+  return {
+    src: videoUrl(`tutorials/${id}`),
+    poster: videoPosterUrl(`tutorials/${id}`),
+    captions: `/videos/tutorials/${id}.en.vtt`,
+  };
 }
 
 const VIDEOS: TutorialVideo[] = [
-  {
-    title: "How to login",
-    recording: {
-      src: "/videos/tutorials/how-to-login.mp4",
-      captions: "/videos/tutorials/how-to-login.en.vtt",
-    },
-  },
+  { title: "How to login", recording: recordingFor("how-to-login") },
   {
     title: "How to register account",
-    recording: {
-      src: "/videos/tutorials/how-to-register.mp4",
-      captions: "/videos/tutorials/how-to-register.en.vtt",
-    },
+    recording: recordingFor("how-to-register"),
   },
-  { title: "How to create widget" },
-  { title: "Set up your account" },
-  { title: "Personalize settings" },
+  {
+    title: "How to create widget",
+    recording: recordingFor("how-to-create-widget"),
+  },
+  {
+    title: "Set up your account",
+    recording: recordingFor("setup-your-account"),
+  },
+  {
+    title: "Personalize settings",
+    recording: recordingFor("personalize-settings"),
+  },
   { title: "Link a card" },
   { title: "Invite a teammate" },
   { title: "Read visitor activity" },
@@ -54,7 +74,7 @@ export function DevelopmentResourcesDrawer({
   const [isClosing, setIsClosing] = useState(false);
   const [isTutorialVideosExpanded, setIsTutorialVideosExpanded] =
     useState(true);
-  const [selectedVideo, setSelectedVideo] = useState<TutorialVideo | null>(
+  const [selectedVideo, setSelectedVideo] = useState<RecordedTutorial | null>(
     null,
   );
   const closeTimeoutRef = useRef<number | null>(null);
@@ -194,51 +214,23 @@ export function DevelopmentResourcesDrawer({
 
             {selectedVideo ? (
               <div className="mt-8 md:mt-[70px]">
-                {selectedVideo.recording ? (
-                  <video
-                    key={selectedVideo.recording.src}
-                    src={selectedVideo.recording.src}
-                    controls
-                    autoPlay
-                    playsInline
-                    className="aspect-video w-full bg-black md:h-[656px]"
-                  >
-                    <track
-                      kind="captions"
-                      srcLang="en"
-                      label="English"
-                      src={selectedVideo.recording.captions}
-                      default
-                    />
-                  </video>
-                ) : (
-                  <button
-                    type="button"
-                    aria-label={`Play ${selectedVideo.title}`}
-                    className="group relative aspect-video w-full overflow-hidden bg-[#373737] text-left focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-black md:h-[656px]"
-                  >
-                    <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.18)_0%,rgba(0,0,0,0.18)_34%,rgba(210,210,210,0.72)_34%,rgba(210,210,210,0.72)_66%,rgba(0,0,0,0.18)_66%,rgba(0,0,0,0.18)_100%)]" />
-                    <div className="absolute inset-0 bg-black/28" />
-                    <div className="absolute top-0 left-[37%] h-full w-[26%] bg-[#C9C9C9]" />
-                    <div className="absolute top-0 left-[37%] h-[5.5%] w-[26%] bg-[#BDBDBD]" />
-                    <div className="absolute top-[1%] left-[38.8%] h-[3.6%] w-[2.3%] bg-[#B58A24]" />
-                    <div className="absolute top-[2%] left-[41.7%] h-[1.8%] w-[9%] bg-black/50" />
-                    <div className="absolute top-[2%] right-[39.2%] h-[1.6%] w-[1.2%] rotate-45 border-r-2 border-b-2 border-black/60" />
-                    <div className="absolute top-[12.6%] left-[38.8%] h-[6.8%] w-[17.5%] rounded-[26px] bg-[#B9C8D8]" />
-                    <div className="absolute top-[13.8%] left-[39.9%] h-[1.2%] w-[12%] rounded-full bg-[#0058BA]/60" />
-                    <div className="absolute top-[16.5%] left-[39.9%] h-[1.2%] w-[13%] rounded-full bg-[#0058BA]/60" />
-                    <div className="absolute top-[22.6%] left-[38.9%] h-[5%] w-[15.5%] border border-black/10 bg-white/12" />
-                    <div className="absolute top-[30.5%] left-[38.9%] h-[5%] w-[15.5%] border border-black/10 bg-white/12" />
-                    <div className="absolute top-[14%] left-[22%] h-[71%] w-[18%] rounded-[18px] border border-black/10 bg-white/8" />
-                    <div className="absolute top-[14%] right-[16%] h-[12%] w-[17%] rounded-[16px] bg-white/6" />
-                    <div className="absolute right-[12%] bottom-[15%] h-[14%] w-[23%] rounded-[18px] bg-white/6" />
-                    <span className="absolute inset-0 flex items-center justify-center">
-                      <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white transition-transform duration-300 group-hover:scale-105 md:h-25 md:w-25">
-                        <Play className="h-7 w-7 fill-black text-black md:h-9 md:w-9" />
-                      </span>
-                    </span>
-                  </button>
-                )}
+                <video
+                  key={selectedVideo.recording.src}
+                  src={selectedVideo.recording.src}
+                  poster={selectedVideo.recording.poster}
+                  controls
+                  autoPlay
+                  playsInline
+                  className="aspect-video w-full bg-black md:h-[656px]"
+                >
+                  <track
+                    kind="captions"
+                    srcLang="en"
+                    label="English"
+                    src={selectedVideo.recording.captions}
+                    default
+                  />
+                </video>
               </div>
             ) : (
               <>
@@ -269,34 +261,45 @@ export function DevelopmentResourcesDrawer({
                     id="development-resources-tutorial-videos"
                     className="mt-7 grid grid-cols-1 gap-7 sm:grid-cols-2 md:mt-[42px] md:gap-x-[72px] md:gap-y-[54px] xl:grid-cols-3"
                   >
-                    {VIDEOS.map((video, index) => (
-                      <button
-                        key={video.title}
-                        type="button"
-                        onClick={() => setSelectedVideo(video)}
-                        className="group text-left focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-black"
-                      >
-                        <div className="relative aspect-365/195 w-full overflow-hidden bg-[#343434]">
-                          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.44)_0%,rgba(0,0,0,0.32)_34%,rgba(225,225,225,0.28)_34%,rgba(225,225,225,0.28)_62%,rgba(0,0,0,0.38)_62%,rgba(0,0,0,0.48)_100%)]" />
-                          <div className="absolute top-0 left-[2.2%] h-0.5 w-8 bg-[#B58A24]" />
-                          <div className="absolute top-[5%] left-[40%] h-[88%] w-[20%] bg-[#C8C8C8]/85" />
-                          <div className="absolute top-[13%] left-[43%] h-5 w-[14%] rounded bg-[#BFD6F0]/55" />
-                          <div className="absolute bottom-[9%] left-[34%] h-2 w-[40%] rounded bg-[#0058BA]/70" />
-                          <div
-                            className="absolute inset-0 bg-black/30"
-                            style={{ opacity: index % 3 === 1 ? 0.18 : 0.26 }}
-                          />
-                          <span className="absolute inset-0 flex items-center justify-center">
-                            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white transition-transform duration-300 group-hover:scale-105 md:h-16 md:w-16">
-                              <Play className="h-5 w-5 fill-black text-black md:h-7 md:w-7" />
+                    {VIDEOS.map(({ title, recording }) =>
+                      recording ? (
+                        <button
+                          key={title}
+                          type="button"
+                          onClick={() => setSelectedVideo({ title, recording })}
+                          className="group text-left focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-black"
+                        >
+                          <div className="relative aspect-365/195 w-full overflow-hidden bg-[#F4F4F4]">
+                            <Image
+                              src={recording.poster}
+                              alt=""
+                              fill
+                              sizes="(min-width: 1280px) 365px, (min-width: 640px) 45vw, 92vw"
+                              className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                            />
+                            <span className="absolute inset-0 flex items-center justify-center bg-black/10 transition-colors duration-300 group-hover:bg-black/20">
+                              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-[0_6px_20px_rgba(0,0,0,0.18)] transition-transform duration-300 group-hover:scale-105 md:h-16 md:w-16">
+                                <Play className="h-5 w-5 fill-black text-black md:h-7 md:w-7" />
+                              </span>
                             </span>
-                          </span>
+                          </div>
+                          <h3 className="font-dm-mono mt-3 text-base leading-tight font-medium text-black uppercase md:mt-[22px] md:text-xl md:leading-none">
+                            {title}
+                          </h3>
+                        </button>
+                      ) : (
+                        <div key={title} className="text-left">
+                          <div className="flex aspect-365/195 w-full items-center justify-center border border-black/8 bg-[#F4F4F4]">
+                            <span className="font-dm-mono text-xs leading-none tracking-[0.08em] text-black/40 uppercase md:text-sm">
+                              Coming soon
+                            </span>
+                          </div>
+                          <h3 className="font-dm-mono mt-3 text-base leading-tight font-medium text-black/40 uppercase md:mt-[22px] md:text-xl md:leading-none">
+                            {title}
+                          </h3>
                         </div>
-                        <h3 className="font-dm-mono mt-3 text-base leading-tight font-medium text-black uppercase md:mt-[22px] md:text-xl md:leading-none">
-                          {video.title}
-                        </h3>
-                      </button>
-                    ))}
+                      ),
+                    )}
                   </div>
                 )}
               </>

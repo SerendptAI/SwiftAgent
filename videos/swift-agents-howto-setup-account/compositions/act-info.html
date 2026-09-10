@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="assets/tutorial.css" />
+      <style>
+        #root {
+          position: absolute;
+          inset: 0;
+        }
+        #info-menu {
+          opacity: 0;
+          visibility: hidden;
+        }
+        /* The wizard's own step rail, carried across both form acts. */
+        .info-rail {
+          position: absolute;
+          left: 150px;
+          right: 150px;
+          top: 34px;
+          display: flex;
+          gap: 44px;
+          padding-bottom: 20px;
+          border-bottom: 2px solid #f3f4f6;
+          color: #6e6e6e;
+        }
+        .info-bar {
+          position: absolute;
+          left: 150px;
+          top: 86px;
+          width: 700px;
+          height: 8px;
+          background: #f3f4f6;
+          border-radius: 999px;
+          overflow: hidden;
+        }
+        .info-bar > i {
+          position: absolute;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          display: block;
+          background: #006be5;
+          border-radius: 999px;
+        }
+        .info-grid {
+          position: absolute;
+          left: 150px;
+          right: 150px;
+          top: 236px;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 24px 48px;
+        }
+        .info-select {
+          justify-content: space-between;
+        }
+      </style>
+
+      <div
+        id="root"
+        data-composition-id="act-info"
+        data-width="1920"
+        data-height="1080"
+      >
+        <div class="hr-stage">
+          <div class="info-rail hr-mono" style="font-size: 20px">
+            <span style="color: #0a0a0a">Company Information</span>
+            <span>Company Identity</span>
+            <span>Knowledge Sources</span>
+            <span>Answer Boundaries</span>
+            <span>Voice &amp; Conversation</span>
+          </div>
+          <div class="info-bar"><i style="width: 20%"></i></div>
+
+          <!-- The logo the scrape pulled off the site -->
+          <div style="position: absolute; left: 150px; top: 124px">
+            <div class="hr-microlabel">Company Logo</div>
+            <div
+              style="
+                margin-top: 10px;
+                display: flex;
+                align-items: center;
+                gap: 18px;
+              "
+            >
+              <div class="hr-logotile">C</div>
+              <span class="hr-note">Pulled from chowdeck.com</span>
+            </div>
+          </div>
+
+          <div class="info-grid">
+            <div>
+              <div class="hr-microlabel">Company Name</div>
+              <div class="hr-value">Chowdeck</div>
+            </div>
+            <div>
+              <div class="hr-microlabel">Company Website</div>
+              <div class="hr-value">https://chowdeck.com</div>
+            </div>
+            <div>
+              <div class="hr-microlabel">Industry</div>
+              <div id="info-industry" class="hr-value info-select">
+                <span id="info-industry-val">Retail &amp; E-commerce</span>
+                <span class="hr-mono" style="color: #6e6e6e">v</span>
+              </div>
+            </div>
+            <div>
+              <div class="hr-microlabel">Company Size</div>
+              <div class="hr-value info-select">
+                <span>201 &ndash; 500</span>
+                <span class="hr-mono" style="color: #6e6e6e">v</span>
+              </div>
+            </div>
+            <div id="info-c-country">
+              <div class="hr-microlabel">Country of Operation</div>
+              <div class="hr-value info-select">
+                <span>Nigeria</span>
+                <span class="hr-mono" style="color: #6e6e6e">v</span>
+              </div>
+            </div>
+            <div>
+              <div class="hr-microlabel">Timezone</div>
+              <div class="hr-value info-select">
+                <span>WAT</span>
+                <span class="hr-mono" style="color: #6e6e6e">v</span>
+              </div>
+            </div>
+            <div id="info-c-email">
+              <div class="hr-microlabel">Primary business Email</div>
+              <div class="hr-value">ops@chowdeck.com</div>
+            </div>
+            <div>
+              <div class="hr-microlabel">Primary business number</div>
+              <div class="hr-value">+234 905 700 4914</div>
+            </div>
+          </div>
+
+          <!-- The Industry select, opened on its real options -->
+          <div
+            id="info-menu"
+            class="hr-menu"
+            style="position: absolute; left: 150px; top: 460px; width: 762px"
+          >
+            <div class="hr-option" style="height: 60px">Technology / SaaS</div>
+            <div class="hr-option" style="height: 60px">Finance &amp; Banking</div>
+            <div class="hr-option" style="height: 60px">Retail &amp; E-commerce</div>
+            <div
+              id="info-pick"
+              class="hr-option"
+              style="height: 60px"
+            >
+              Logistics &amp; Transportation
+            </div>
+            <div class="hr-option" style="height: 60px">Professional Services</div>
+          </div>
+
+          <div
+            id="info-next"
+            class="hr-btn"
+            style="
+              position: absolute;
+              left: 150px;
+              top: 712px;
+              width: 400px;
+              height: 76px;
+              font-size: 26px;
+            "
+          >
+            Next
+          </div>
+
+          <svg
+            id="info-cursor"
+            class="hr-cursor"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M5 2.5 L5 20 L9.4 16.2 L12.3 22.2 L15.2 20.8 L12.4 15 L18.2 15 Z"
+              fill="#0A0A0A"
+              stroke="#FFFFFF"
+              stroke-width="1.4"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+
+          const TIP = { x: 16, y: 8 };
+          const OFF = { x: 1640, y: 1180 };
+          const to = (x, y) => ({ x: x - TIP.x, y: y - TIP.y });
+
+          tl.set("#info-cursor", { x: OFF.x, y: OFF.y, opacity: 0, scale: 1 }, 0);
+          tl.set("#info-industry-val", { innerHTML: "Retail &amp; E-commerce" }, 0);
+          tl.set("#info-next", { x: 0, y: 0 }, 0);
+          tl.fromTo(
+            ".info-grid",
+            { y: 18, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" },
+            0.15,
+          );
+
+          // ── Fix what the scrape guessed wrong (8-16s) ────────────
+          // A scraped industry is a guess, and the questionnaire branches on
+          // it, so this is the field worth correcting on camera.
+          tl.to(
+            "#info-cursor",
+            { ...to(830, 421), opacity: 1, duration: 0.9, ease: "power2.out" },
+            8.2,
+          );
+          tl.to("#info-cursor", { scale: 0.88, duration: 0.09 }, 9.4);
+          tl.to("#info-cursor", { scale: 1, duration: 0.09 }, 9.49);
+          tl.to(
+            ["#info-c-country", "#info-c-email", "#info-next"],
+            { autoAlpha: 0, duration: 0.25 },
+            9.45,
+          );
+          tl.fromTo(
+            "#info-menu",
+            { autoAlpha: 0, y: -10 },
+            { autoAlpha: 1, y: 0, duration: 0.3, ease: "power2.out" },
+            9.6,
+          );
+          tl.to(
+            "#info-cursor",
+            { ...to(560, 670), duration: 0.7, ease: "power2.out" },
+            11.0,
+          );
+          tl.to("#info-pick", { backgroundColor: "#F3F4F6", duration: 0.15 }, 11.7);
+          tl.to("#info-cursor", { scale: 0.88, duration: 0.09 }, 11.9);
+          tl.to("#info-cursor", { scale: 1, duration: 0.09 }, 11.99);
+          tl.to("#info-menu", { autoAlpha: 0, duration: 0.25 }, 12.3);
+          tl.to(
+            ["#info-c-country", "#info-c-email", "#info-next"],
+            { autoAlpha: 1, duration: 0.3 },
+            12.5,
+          );
+          tl.set(
+            "#info-industry-val",
+            { innerHTML: "Logistics &amp; Transportation" },
+            12.4,
+          );
+
+          // ── Next (16-22s) ───────────────────────────────────────
+          tl.to(
+            "#info-cursor",
+            { ...to(350, 750), duration: 0.8, ease: "power2.out" },
+            16.2,
+          );
+          tl.to("#info-cursor", { scale: 0.88, duration: 0.09 }, 17.3);
+          tl.to("#info-cursor", { scale: 1, duration: 0.09 }, 17.39);
+          tl.to("#info-next", { x: -4, y: 4, duration: 0.1 }, 17.3);
+          tl.to("#info-next", { x: 0, y: 0, duration: 0.14 }, 17.41);
+          tl.to("#info-cursor", { opacity: 0, duration: 0.3 }, 18.2);
+
+          window.__timelines["act-info"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

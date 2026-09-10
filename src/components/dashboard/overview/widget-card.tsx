@@ -5,15 +5,24 @@ import {
   ChevronDown,
   ChevronLeft,
   Copy,
+  Eye,
+  EyeOff,
   XCircle,
 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { FreePlanBanner } from "@/components/dashboard/free-plan-banner";
+import {
+  emptyStrollForm,
+  StrollConfigFields,
+  strollFormChanged,
+  strollFormFromConfig,
+  strollFormToPayload,
+  type StrollFormValue,
+} from "@/components/dashboard/stroll-config-fields";
 import { Icons } from "@/components/icons";
-import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
-import { useHasActivePlan } from "@/hooks/use-billing";
 import { useCompanyMutations, useCompanyQuery } from "@/hooks/use-company";
 import {
   useCreateIntegration,
@@ -22,12 +31,12 @@ import {
 } from "@/hooks/use-integrations";
 import { useStrollConfig, useUpdateStrollConfig } from "@/hooks/use-stroll";
 import { Link } from "@/i18n/navigation";
+import { getApiErrorMessage } from "@/lib/api-error";
+import { WIDGET_SCRIPT_URL } from "@/lib/widget-embed";
 import type {
   IntegrationCreatePayload,
   IntegrationUpdatePayload,
 } from "@/services/integrations";
-import type { StrollConfigPayload } from "@/services/stroll";
-import { useUpgradeModalStore } from "@/store/upgrade-modal-store";
 
 import {
   API_INTEGRATION_NAME,
@@ -48,14 +57,12 @@ export function WidgetCard() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [modeDropdownOpen, setModeDropdownOpen] = useState(false);
   const [mode, setMode] = useState<WidgetMode>("widget");
+  const [revealed, setRevealed] = useState(false);
   const [toast, setToast] = useState<{
     kind: "success" | "error";
     message: string;
   } | null>(null);
   const activeCompanyId = useActiveCompanyId();
-  const hasActivePlan = useHasActivePlan(activeCompanyId);
-  const locked = hasActivePlan === false;
-  const showUpgrade = useUpgradeModalStore((s) => s.show);
 
   useEffect(() => {
     if (!toast) return;
@@ -63,15 +70,12 @@ export function WidgetCard() {
     return () => clearTimeout(id);
   }, [toast]);
 
-  // Auto-open settings when arriving from onboarding (/dashboard?settings=1),
-  // but only for users on an active plan — otherwise prompt them to upgrade.
+  // Auto-open settings when arriving from onboarding (/dashboard?settings=1).
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
   useEffect(() => {
     if (searchParams.get("settings") !== "1") return;
-    // Wait until the plan status is known before deciding what to open.
-    if (hasActivePlan === undefined) return;
 
     const next = new URLSearchParams(searchParams.toString());
     next.delete("settings");
@@ -80,12 +84,8 @@ export function WidgetCard() {
       scroll: false,
     });
 
-    if (hasActivePlan) {
-      setIsSettingsOpen(true);
-    } else {
-      showUpgrade();
-    }
-  }, [searchParams, pathname, router, hasActivePlan, showUpgrade]);
+    setIsSettingsOpen(true);
+  }, [searchParams, pathname, router]);
 
   const modeDropdownRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -107,41 +107,57 @@ export function WidgetCard() {
   const codeSnippet = useMemo(() => {
     if (!companyId) return "";
     if (mode === "button") {
-      return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" data-api-key="YOUR_API_KEY" data-mode="button" data-trigger="[data-swift-agent-open]" defer></script>\n<button data-swift-agent-open>Chat with us</button>`;
+      return `<script src="${WIDGET_SCRIPT_URL}" data-company-id="${companyId}" data-api-key="YOUR_API_KEY" data-mode="button" data-trigger="[data-swift-agent-open]" defer></script>\n<button data-swift-agent-open>Chat with us</button>`;
     }
-    return `<script src="https://widget.swiftagents.org/dist/widget-ui.js" data-company-id="${companyId}" data-api-key="YOUR_API_KEY" defer></script>`;
+    return `<script src="${WIDGET_SCRIPT_URL}" data-company-id="${companyId}" data-api-key="YOUR_API_KEY" defer></script>`;
   }, [companyId, mode]);
 
+  /**
+   * Dashboards get screenshotted and screen-shared, so the company id is masked
+   * until asked for. It is the only real secret in the snippet — the api key is
+   * the literal placeholder `YOUR_API_KEY` until the reader swaps it out.
+   *
+   * Deliberately not persisted: reveal lasts for the view and resets on the next
+   * mount, since a remembered "revealed" is the same as never masking at all.
+   */
+  const displayedSnippet = useMemo(
+    () =>
+      revealed || !companyId
+        ? codeSnippet
+        : codeSnippet.replaceAll(companyId, "•".repeat(companyId.length)),
+    [codeSnippet, companyId, revealed],
+  );
+
   const handleCopy = useCallback(() => {
-    if (!codeSnippet || locked) return;
+    if (!codeSnippet) return;
     navigator.clipboard.writeText(codeSnippet);
     setCopied(true);
     setIsSettingsOpen(true);
     setTimeout(() => setCopied(false), 2000);
-  }, [codeSnippet, locked]);
+  }, [codeSnippet]);
 
   return (
     <div className="rounded-xl">
       {isOpen ? (
         <div className="relative">
           <div className="relative">
-            <div className="absolute top-0 right-0 left-0 z-10 flex h-[48px] items-center gap-2 pr-3 sm:gap-4 sm:pr-0">
+            <div className="absolute top-0 right-0 left-0 z-10 flex h-[54px] items-start gap-2 pr-3 sm:gap-4 sm:pr-0">
               <div
-                className="bg-muted h-full rounded-br-md pr-4"
+                className="h-full rounded-br-[10px] bg-[#F6F6F6] pr-[11px] pl-[5px]"
                 ref={modeDropdownRef}
               >
                 <button
                   onClick={() => setModeDropdownOpen((v) => !v)}
-                  className="font-dm-mono flex min-h-11 items-center gap-2 rounded-md bg-[#006BE5] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1E88E5] sm:px-5"
+                  className="font-dm-mono mt-[-2px] flex h-[46px] items-center gap-[9px] rounded-[14px] bg-[#006BE5] px-4 text-[16px] font-semibold text-white transition-colors hover:bg-[#1E88E5]"
                 >
                   <ChevronDown
-                    className={`h-4 w-4 transition-transform ${modeDropdownOpen ? "rotate-180" : ""}`}
+                    className={`h-5 w-5 transition-transform ${modeDropdownOpen ? "rotate-180" : ""}`}
                   />
                   {mode === "button" ? "Button" : "Widget"}
                 </button>
 
                 {modeDropdownOpen && (
-                  <div className="animate-in fade-in slide-in-from-top-1 absolute top-[48px] left-0 z-20 min-w-[180px] overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg">
+                  <div className="animate-in fade-in slide-in-from-top-1 absolute top-[54px] left-0 z-20 min-w-[180px] overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg">
                     <button
                       onClick={() => {
                         setMode("widget");
@@ -173,16 +189,10 @@ export function WidgetCard() {
                 )}
               </div>
 
-              <div className="flex items-center sm:pr-6">
+              <div className="flex items-center pt-[6px] sm:pr-6">
                 <button
-                  onClick={() => {
-                    if (locked) {
-                      showUpgrade();
-                      return;
-                    }
-                    setIsSettingsOpen(true);
-                  }}
-                  className="font-greed-narrow flex min-h-10 cursor-pointer items-center gap-2 rounded-md bg-[#EDEDED] px-3 py-2 text-xs font-bold tracking-wider text-gray-600 uppercase transition-colors hover:bg-gray-100 sm:px-4"
+                  onClick={() => setIsSettingsOpen(true)}
+                  className="font-greed-narrow flex h-[42px] cursor-pointer items-center gap-2 rounded-[7px] bg-[#EDEDED] px-3 text-[13px] font-bold tracking-wider text-gray-600 uppercase transition-colors hover:bg-gray-100 sm:px-4 sm:text-sm"
                 >
                   <Icons.Settings className="h-5 w-5" />
                   <span className="hidden min-[360px]:inline">SETTINGS</span>
@@ -190,30 +200,32 @@ export function WidgetCard() {
               </div>
             </div>
 
-            <div className="rounded-[20px] border border-gray-100 bg-white px-4 pt-16 pb-5 shadow-sm md:rounded-md md:px-5">
-              <div className="relative">
-                <pre
-                  className={`font-stolzl max-h-48 overflow-auto rounded-lg bg-[#F6F6F6] p-3 text-[11px] leading-relaxed break-all whitespace-pre-wrap text-gray-700 sm:p-4 sm:text-[13px] ${
-                    locked ? "pointer-events-none blur-sm select-none" : ""
-                  }`}
-                >
-                  {codeSnippet || "No widget code found."}
-                </pre>
-                {locked && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-lg bg-white/50">
-                    <p className="font-dm-mono max-w-[260px] text-center text-xs font-bold tracking-wider text-gray-700 uppercase">
-                      Subscribe to a plan to unlock your widget code
-                    </p>
+            <div className="rounded-[21px] border border-gray-100 bg-white px-6 pt-[84px] pb-6 shadow-sm">
+              <div className="relative overflow-hidden rounded-[12px] border border-gray-200/80 bg-[#FBFBFB]">
+                <div className="flex h-[38px] items-center justify-between gap-3 border-b border-gray-200/80 bg-white px-3">
+                  <span className="font-dm-mono text-[10px] font-bold tracking-[0.12em] text-gray-400 uppercase">
+                    {mode === "button" ? "Button snippet" : "Widget snippet"}
+                  </span>
+                  {codeSnippet && (
                     <button
-                      onClick={showUpgrade}
-                      className="font-dm-mono rounded-md bg-[#006BE5] px-5 py-2 text-xs font-semibold tracking-wider text-white uppercase transition-colors hover:bg-[#0055B8]"
+                      onClick={() => setRevealed((v) => !v)}
+                      aria-pressed={revealed}
+                      className="font-dm-mono -mr-1 flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[6px] px-2 py-1 text-[10px] font-bold tracking-[0.12em] text-gray-500 uppercase transition-colors hover:bg-gray-100 hover:text-gray-700"
                     >
-                      Upgrade
+                      {revealed ? (
+                        <EyeOff className="h-3.5 w-3.5" />
+                      ) : (
+                        <Eye className="h-3.5 w-3.5" />
+                      )}
+                      {revealed ? "Hide" : "Reveal"}
                     </button>
-                  </div>
-                )}
+                  )}
+                </div>
+                <pre className="font-dm-mono max-h-[132px] overflow-y-auto px-3.5 py-3 text-[12px] leading-[1.75] [overflow-wrap:anywhere] whitespace-pre-wrap text-[#6E6E6E] sm:text-[13px]">
+                  {displayedSnippet || "No widget code found."}
+                </pre>
               </div>
-              <p className="font-dm-mono mt-2 text-[11px] text-gray-400">
+              <p className="font-dm-mono mt-3 text-[11px] leading-[1.6] text-gray-400">
                 Replace{" "}
                 <code className="rounded bg-gray-100 px-1 py-0.5 text-gray-600">
                   YOUR_API_KEY
@@ -228,7 +240,7 @@ export function WidgetCard() {
                 .
               </p>
               {mode === "button" && (
-                <p className="font-dm-mono mt-2 text-[11px] text-gray-400">
+                <p className="font-dm-mono mt-2 text-[11px] leading-[1.6] text-gray-400">
                   Add the{" "}
                   <code className="rounded bg-gray-100 px-1 py-0.5 text-gray-600">
                     data-swift-agent-open
@@ -239,8 +251,8 @@ export function WidgetCard() {
 
               <button
                 onClick={handleCopy}
-                disabled={!codeSnippet || locked}
-                className="font-dm-mono mt-6 flex min-h-11 w-full items-center justify-center gap-2.5 rounded-md bg-[#006BE5] py-2 text-base font-normal text-white shadow-[-4px_4px_0px_0px_#000000] transition-all hover:bg-[#1E88E5] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-2px_2px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={!codeSnippet}
+                className="font-dm-mono mt-5 flex h-[46px] w-full cursor-pointer items-center justify-center gap-2.5 rounded-[8px] bg-[#006BE5] text-[16px] font-normal text-white shadow-[-3px_4px_0px_0px_#000000] transition-all hover:bg-[#1E88E5] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-1px_2px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Copy className="h-5 w-5" />
                 {copied ? "Copied!" : "Copy"}
@@ -284,8 +296,6 @@ export function WidgetCard() {
     </div>
   );
 }
-
-// ── Chatbot settings sidebar ─────────────────────────────────────────────────
 
 type AgentId = "047" | "007" | "626" | "001";
 
@@ -333,7 +343,9 @@ function ChatbotSettingsSidebar({
   onSaved?: (opts?: { indexing?: boolean }) => void;
   onError?: (message: string) => void;
 }) {
-  const { data: config } = useStrollConfig(companyId || null);
+  const { data: config, isSuccess: strollLoaded } = useStrollConfig(
+    companyId || null,
+  );
   const updateConfig = useUpdateStrollConfig();
   const { data: company } = useCompanyQuery(companyId || null);
   const { updateCompany } = useCompanyMutations();
@@ -344,15 +356,8 @@ function ChatbotSettingsSidebar({
   const [selected, setSelected] = useState<Set<AgentId>>(
     () => new Set(["047", "007"]),
   );
-  const [dashboardUrl, setDashboardUrl] = useState("");
-  const [loginUrl, setLoginUrl] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [preAuthUrl, setPreAuthUrl] = useState("");
-  const [schedule, setSchedule] = useState("0 2 * * *");
-  const [maxPages, setMaxPages] = useState<number>(50);
-  const [sandboxMode, setSandboxMode] = useState(true);
-  const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [strollForm, setStrollForm] =
+    useState<StrollFormValue>(emptyStrollForm);
   const [isShown, setIsShown] = useState(false);
   const [suggestedPrompts, setSuggestedPrompts] = useState<string[]>([]);
   const [enableSuggestedPrompts, setEnableSuggestedPrompts] = useState(true);
@@ -361,19 +366,19 @@ function ChatbotSettingsSidebar({
     () => emptyApiIntegration(),
   );
 
+  // `config` is null for a company with no stroll config yet and undefined
+  // while another company's config loads, and both have to clear the form —
+  // otherwise the previous company's credentials stay on screen and the next
+  // save writes them onto the wrong company.
+  const loadedStrollForm = useMemo(
+    () =>
+      strollLoaded && config ? strollFormFromConfig(config) : emptyStrollForm(),
+    [config, strollLoaded],
+  );
+
   useEffect(() => {
-    if (!config) return;
-    setDashboardUrl(config.dashboard_url || "");
-    setSchedule(config.schedule || "0 2 * * *");
-    setSandboxMode(config.sandbox_mode ?? true);
-    setMaxPages(config.max_pages ?? 50);
-    if (config.credentials) {
-      setLoginUrl(config.credentials.login_url || "");
-      setUsername(config.credentials.username || "");
-      setPassword(config.credentials.password || "");
-      setPreAuthUrl(config.credentials.pre_auth_url || "");
-    }
-  }, [config]);
+    setStrollForm(loadedStrollForm);
+  }, [loadedStrollForm]);
 
   useEffect(() => {
     if (!company) return;
@@ -431,13 +436,6 @@ function ChatbotSettingsSidebar({
       closeWithAnimation();
       return;
     }
-    const credentials: StrollConfigPayload["credentials"] = {
-      username: username.trim(),
-      password,
-    };
-    if (loginUrl.trim()) credentials.login_url = loginUrl.trim();
-    if (preAuthUrl.trim()) credentials.pre_auth_url = preAuthUrl.trim();
-
     const cleanedPrompts = suggestedPrompts
       .map((p) => p.trim())
       .filter(Boolean);
@@ -513,18 +511,23 @@ function ChatbotSettingsSidebar({
       }
     }
 
+    const strollChanged = strollFormChanged(strollForm, loadedStrollForm);
+
+    if (strollChanged && !strollForm.dashboardUrl.trim()) {
+      onError?.("Add a Dashboard URL — that's the page Agent 047 strolls.");
+      return;
+    }
+
     try {
       await Promise.all([
-        updateConfig.mutateAsync({
-          companyId,
-          payload: {
-            dashboard_url: dashboardUrl.trim(),
-            schedule: schedule.trim() || "0 2 * * *",
-            credentials,
-            sandbox_mode: sandboxMode,
-            max_pages: maxPages,
-          },
-        }),
+        ...(strollChanged
+          ? [
+              updateConfig.mutateAsync({
+                companyId,
+                payload: strollFormToPayload(strollForm),
+              }),
+            ]
+          : []),
         updateCompany.mutateAsync({
           companyId,
           section: "info",
@@ -539,9 +542,7 @@ function ChatbotSettingsSidebar({
     } catch (err) {
       console.error("Failed to save sandbox credentials:", err);
       onError?.(
-        err instanceof Error
-          ? err.message
-          : "Could not save settings. Please try again.",
+        getApiErrorMessage(err, "Could not save settings. Please try again."),
       );
       return;
     }
@@ -578,6 +579,7 @@ function ChatbotSettingsSidebar({
             <ChevronLeft className="h-4 w-4" />
             Back
           </button>
+          <FreePlanBanner feature="more agents and strolls" />
           <RouteToHumanSection
             value={routeToHuman}
             onChange={setRouteToHuman}
@@ -623,83 +625,7 @@ function ChatbotSettingsSidebar({
               Please create a sandbox account and share the login details for
               Agent 047
             </p>
-            <div className="space-y-4">
-              <FieldInput
-                id="sandbox-login-url"
-                label="Login URL"
-                value={loginUrl}
-                onChange={setLoginUrl}
-                placeholder="https://app.example.com/login"
-              />
-              <FieldInput
-                id="sandbox-dashboard-url"
-                label="Dashboard URL"
-                value={dashboardUrl}
-                onChange={setDashboardUrl}
-                placeholder="https://app.example.com/dashboard"
-              />
-              <FieldInput
-                id="sandbox-username"
-                label="Email/Username"
-                value={username}
-                onChange={setUsername}
-                placeholder="Email/Username"
-              />
-              <FieldInput
-                id="sandbox-password"
-                label="Password"
-                type="password"
-                value={password}
-                onChange={setPassword}
-                placeholder="••••••••"
-              />
-
-              <label className="flex cursor-pointer items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={sandboxMode}
-                  onChange={(e) => setSandboxMode(e.target.checked)}
-                  className="h-4 w-4 accent-[#006BE5]"
-                />
-                <span className="font-dm-mono text-xs text-gray-700">
-                  Sandbox mode
-                </span>
-              </label>
-
-              <button
-                type="button"
-                onClick={() => setAdvancedOpen((v) => !v)}
-                className="font-dm-mono flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700"
-              >
-                <ChevronDown
-                  className={`h-3.5 w-3.5 transition-transform ${
-                    advancedOpen ? "rotate-180" : ""
-                  }`}
-                />
-                Advanced options
-              </button>
-
-              {advancedOpen && (
-                <div className="space-y-4 border-l-2 border-gray-100 pl-3">
-                  <ScheduleSelect value={schedule} onChange={setSchedule} />
-                  <FieldInput
-                    id="sandbox-max-pages"
-                    label="Max pages"
-                    type="number"
-                    value={String(maxPages)}
-                    onChange={(v) => setMaxPages(Number(v) || 0)}
-                    placeholder="50"
-                  />
-                  <FieldInput
-                    id="sandbox-pre-auth"
-                    label="Pre-auth URL"
-                    value={preAuthUrl}
-                    onChange={setPreAuthUrl}
-                    placeholder="https://app.example.com/auto-login?token=abc"
-                  />
-                </div>
-              )}
-            </div>
+            <StrollConfigFields value={strollForm} onChange={setStrollForm} />
           </CollapsibleSection>
 
           <PaymentSandboxSection />
@@ -727,114 +653,6 @@ function ChatbotSettingsSidebar({
       </aside>
     </div>
   );
-}
-
-const SCHEDULE_PRESETS: { label: string; value: string }[] = [
-  { label: "Every hour", value: "0 * * * *" },
-  { label: "Every 6 hours", value: "0 */6 * * *" },
-  { label: "Every 12 hours", value: "0 */12 * * *" },
-  { label: "Daily at midnight", value: "0 0 * * *" },
-  { label: "Daily at 2 AM", value: "0 2 * * *" },
-  { label: "Daily at 9 AM", value: "0 9 * * *" },
-  { label: "Weekly (Sunday midnight)", value: "0 0 * * 0" },
-  { label: "Monthly (1st at midnight)", value: "0 0 1 * *" },
-];
-
-function ScheduleSelect({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  const isPreset = SCHEDULE_PRESETS.some((p) => p.value === value);
-  return (
-    <div>
-      <div className="mb-1.5 flex items-center justify-between">
-        <label
-          htmlFor="sandbox-schedule"
-          className="font-dm-mono text-xs text-gray-700"
-        >
-          How often should we scan?
-        </label>
-        <InfoTooltip
-          text="Choose how often Agent 047 should scan the sandbox account for updates."
-          className="h-3.5 w-3.5"
-        />
-      </div>
-      <select
-        id="sandbox-schedule"
-        value={isPreset ? value : "__custom"}
-        onChange={(e) => {
-          if (e.target.value !== "__custom") onChange(e.target.value);
-        }}
-        className="font-dm-mono w-full rounded-sm border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#006BE5]"
-      >
-        {SCHEDULE_PRESETS.map((p) => (
-          <option key={p.value} value={p.value}>
-            {p.label}
-          </option>
-        ))}
-        {!isPreset && <option value="__custom">Custom ({value})</option>}
-      </select>
-    </div>
-  );
-}
-
-function FieldInput({
-  id,
-  label,
-  value,
-  onChange,
-  placeholder,
-  type = "text",
-}: {
-  id: string;
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
-  type?: "text" | "password" | "number";
-}) {
-  const tooltipText = getSandboxFieldTooltip(label);
-
-  return (
-    <div>
-      <div className="mb-1.5 flex items-center justify-between">
-        <label htmlFor={id} className="font-dm-mono text-xs text-gray-700">
-          {label}
-        </label>
-        <InfoTooltip text={tooltipText} className="h-3.5 w-3.5" />
-      </div>
-      <input
-        id={id}
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className="font-dm-mono w-full rounded-sm border border-gray-200 px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#006BE5]"
-      />
-    </div>
-  );
-}
-
-function getSandboxFieldTooltip(label: string) {
-  switch (label) {
-    case "Dashboard URL":
-      return "The logged-in page Agent 047 should inspect after signing into the sandbox account.";
-    case "Login URL":
-      return "The page where Agent 047 should enter the sandbox account credentials.";
-    case "Username":
-      return "The sandbox account username Agent 047 should use to sign in.";
-    case "Password":
-      return "The sandbox account password Agent 047 should use to sign in.";
-    case "Max pages":
-      return "The maximum number of pages Agent 047 should scan in one run.";
-    case "Pre-auth URL":
-      return "An optional URL that prepares the sandbox session before the scan starts.";
-    default:
-      return `More information about ${label.toLowerCase()}.`;
-  }
 }
 
 function ToastNotification({

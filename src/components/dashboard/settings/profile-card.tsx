@@ -122,7 +122,6 @@ export function ProfileCard({
 
   return (
     <aside className="flex w-full shrink-0 flex-col items-center gap-4 rounded-[20px] bg-white p-4 shadow-sm lg:h-[450px] lg:w-[320px] lg:rounded-3xl lg:p-6">
-      {/* Avatar */}
       <div className="relative h-24 w-24 lg:h-30 lg:w-30">
         <div className="relative h-full w-full overflow-hidden rounded-full border-2 border-gray-100">
           <Image
@@ -154,7 +153,6 @@ export function ProfileCard({
         />
       </div>
 
-      {/* Name */}
       {isEditingName ? (
         <div className="flex w-full items-center justify-center gap-2">
           <input
@@ -206,7 +204,6 @@ export function ProfileCard({
         </div>
       )}
 
-      {/* Login Method */}
       <div className="font-dm-mono mt-2 flex w-full items-center justify-center gap-2 rounded-md border border-gray-100 px-3 py-2 text-xs font-medium text-gray-600 shadow-[-4px_4px_0px_0px_#000000] lg:mt-6 lg:text-sm lg:shadow-[-6px_6px_0px_0px_#000000]">
         <span>LOGGED IN VIA</span>
         {loginMethod === "Google" ? (
@@ -218,12 +215,10 @@ export function ProfileCard({
         )}
       </div>
 
-      {/* IP Address */}
       <div className="font-dm-mono flex w-full items-center justify-center rounded-md border border-gray-100 px-3 py-2 text-xs text-gray-500 shadow-[-4px_4px_0px_0px_#000000] lg:text-sm lg:shadow-[-6px_6px_0px_0px_#000000]">
         IP: {displayIp}
       </div>
 
-      {/* Log Out */}
       <button
         onClick={() => setShowLogoutModal(true)}
         disabled={logoutMutation.isPending}
@@ -232,7 +227,6 @@ export function ProfileCard({
         {logoutMutation.isPending ? "LOGGING OUT..." : "LOG OUT"}
       </button>
 
-      {/* Logout Confirmation Modal */}
       {showLogoutModal && (
         // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
         <div
@@ -245,19 +239,16 @@ export function ProfileCard({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex flex-col items-center">
-              {/* Icon */}
               <div className="relative mb-6">
                 <Image src="/logout.svg" alt="Logout" width={80} height={80} />
               </div>
 
-              {/* Text */}
               <h2 className="font-greed-narrow mb-8 line-clamp-6 text-center text-3xl font-bold tracking-tight text-black uppercase sm:text-4xl">
                 ARE YOU SURE YOU
                 <br />
                 WANT TO LOG OUT?
               </h2>
 
-              {/* Buttons */}
               <div className="flex w-full flex-col gap-3">
                 <button
                   onClick={handleLogout}

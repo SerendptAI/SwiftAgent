@@ -8,7 +8,6 @@ import {
 
 const NOTIFICATIONS_KEY = ["notifications"] as const;
 
-/** Fetch the notification history for the authenticated user. */
 export function useNotifications(limit: number = 20) {
   return useQuery({
     queryKey: [...NOTIFICATIONS_KEY, limit],
@@ -60,7 +59,6 @@ export function useMarkNotificationRead() {
   });
 }
 
-/** Mark all notifications as read. */
 export function useMarkAllNotificationsRead() {
   const queryClient = useQueryClient();
 
@@ -92,7 +90,6 @@ export function useMarkAllNotificationsRead() {
   });
 }
 
-/** Permanently delete a notification. */
 export function useDeleteNotification() {
   const queryClient = useQueryClient();
 

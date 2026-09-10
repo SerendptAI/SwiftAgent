@@ -1,0 +1,22 @@
+{
+  "welcomeBack": "Welcome back",
+  "logInToYourAccount": "Log in to your account",
+  "googleLogin": "Sign in with",
+  "serendptLogin": "Sign in with",
+  "or": "OR",
+  "companyEmailPlaceholder": "Company email",
+  "signIn": "Sign in",
+  "invalidEmail": "Please enter a valid email address",
+  "signingIn": "Signing in...",
+  "incorrectOtp": "Incorrect OTP",
+  "otpExpired": "Code expired. Please request a new one.",
+  "otpSendFailed": "Failed to send code. Please try again.",
+  "enterEmail": "Enter your email to receive a code",
+  "sendCode": "Send code",
+  "backToEmail": "Change email",
+  "checkSpam": "We've emailed you a code. Can't find it? Check your spam or junk folder.",
+  "resendCode": "Resend code",
+  "codeResent": "A new code has been sent.",
+  "accountNotFound": "We couldn't find an account for that email",
+  "createAccount": "Create an account"
+}

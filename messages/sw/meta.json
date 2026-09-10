@@ -1,0 +1,42 @@
+{
+  "home": {
+    "title": "Swift Agents — Mfumo wa kuwahudumia wateja kwa AI",
+    "description": "Weka wakala mahiri wa AI kwenye tovuti yako ndani ya dakika chache. Swift Agents hushughulikia huduma kwa wateja, mauzo, na mazungumzo ya sauti, saa 24 kwa siku, bila wewe kuhangaika."
+  },
+  "agents": {
+    "title": "Mawakala",
+    "description": "Mawakala wa AI wanaoshughulikia huduma kwa wateja, mauzo, na mazungumzo ya sauti kwa biashara yako, saa 24 kwa siku."
+  },
+  "products": {
+    "title": "Bidhaa",
+    "description": "Gundua bidhaa za Swift Agents: gumzo, sauti, na uendeshaji wa huduma kwa AI, vilivyoundwa kwa biashara zinazokua."
+  },
+  "demo": {
+    "title": "Onyesho",
+    "description": "Ona mfumo wako wa huduma kabla na baada ya Swift Agents. Rekebisha takwimu zako na uone ni wafanyakazi wangapi unaweza kuepuka kuajiri unapokua."
+  },
+  "landing": {
+    "title": "Kuza huduma kwa wateja bila kupanua timu yako",
+    "description": "SwiftAgents husaidia biashara kuendesha mazungumzo na wateja kiotomatiki, kupunguza mzigo wa huduma, na kutoa huduma ya haraka zaidi katika kila njia. Tayari kwa saa chache, si wiki."
+  },
+  "affiliate": {
+    "title": "Programu ya ushirika",
+    "description": "Pendekeza biashara kwa Swift Agents na upate asilimia 20 ya mpango wowote watakaolipia. Tutambulishe, tunawajengea wakala wa AI anayefanya kazi, nawe unalipwa mara wanapoanza kutumia."
+  },
+  "refer": {
+    "title": "Pendekeza mwanzilishi",
+    "description": "Pendekeza mwanzilishi kwa Swift Agents na upate zawadi. Shiriki kiungo chako cha upendekezaji na upate mapato pale biashara unazozijua zinapoanza kuendesha huduma zao kiotomatiki."
+  },
+  "caseStudies": {
+    "title": "Mifano ya matumizi",
+    "description": "Ona jinsi biashara zinavyotumia Swift Agents kuendesha huduma kiotomatiki, kutatua matatizo haraka, na kukua bila kuajiri wafanyakazi zaidi."
+  },
+  "blog": {
+    "title": "Blogu",
+    "description": "Maelezo ya uzoefu kuhusu kuendesha huduma kwa wateja kiotomatiki: kinachofanya kazi, kinachoharibika, na takwimu zinasemaje hasa."
+  },
+  "privacy": {
+    "title": "Sera ya faragha",
+    "description": "Soma sera ya faragha ya Swift Agents by Serendpt AI. Jifunze jinsi tunavyoshughulikia data za kampuni, kumbukumbu, na maswali ya watumiaji."
+  }
+}

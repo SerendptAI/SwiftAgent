@@ -4,16 +4,15 @@ import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 
 import { CaseStudyDetail } from "@/components/landing/case-study-detail";
-import { ContactSection } from "@/components/landing/contact-section";
 import { Navbar } from "@/components/landing/navbar";
 import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provider";
 import { routing } from "@/i18n/routing";
 import {
   CASE_STUDIES,
   getCaseStudy,
-  getCaseStudyPlainDescription,
+  getCaseStudyMetaDescription,
 } from "@/lib/case-studies";
-import { siteConfig } from "@/lib/site-config";
+import { localeAlternates } from "@/lib/locale-metadata";
 
 interface CaseStudyPageProps {
   params: Promise<{ locale: string; caseStudyId: string }>;
@@ -35,11 +34,9 @@ export async function generateMetadata({
   if (!caseStudy) return {};
 
   return {
-    title: `${caseStudy.name} Case Study — Swift Agents`,
-    description: getCaseStudyPlainDescription(caseStudy),
-    alternates: {
-      canonical: `${siteConfig.url}/${locale}/case-studies/${caseStudy.id}`,
-    },
+    title: `${caseStudy.name} Case Study`,
+    description: getCaseStudyMetaDescription(caseStudy),
+    alternates: localeAlternates(locale, `/case-studies/${caseStudy.id}`),
   };
 }
 
@@ -66,7 +63,6 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
             <CaseStudyDetail caseStudy={caseStudy} />
           </div>
         </div>
-        <ContactSection />
       </main>
     </SmoothScrollProvider>
   );

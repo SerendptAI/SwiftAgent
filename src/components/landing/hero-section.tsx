@@ -3,10 +3,12 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
+import { videoUrl } from "@/lib/cloudinary";
 
 import { DemoBookingLink } from "./demo-booking-link";
 import { Navbar } from "./navbar";
@@ -14,17 +16,12 @@ import { Navbar } from "./navbar";
 gsap.registerPlugin(ScrollTrigger);
 
 const TIMELINE_CALLOUTS = [
-  {
-    icon: "/images/home/timeline-hours.svg",
-    text: "Live in hours — not weeks.",
-  },
-  {
-    icon: "/images/home/timeline-setup.svg",
-    text: "No heavy setup. No long implementation cycles.",
-  },
+  { id: "hours", icon: "/images/home/timeline-hours.svg" },
+  { id: "setup", icon: "/images/home/timeline-setup.svg" },
 ];
 
 export function HeroSection() {
+  const t = useTranslations("home.hero");
   const sectionRef = useRef<HTMLElement>(null);
   const headlineRef = useRef<HTMLDivElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
@@ -117,19 +114,16 @@ export function HeroSection() {
 
   return (
     <section ref={sectionRef} className="relative overflow-hidden bg-white">
-      {/* Navigation */}
       <Navbar ref={navRef} />
 
-      {/* Hero Content */}
       <div className="relative z-10 mx-auto flex w-full max-w-350 flex-col-reverse px-6 pt-26 md:items-start md:gap-y-12 md:pt-32 lg:flex-row lg:pt-48 lg:pr-0">
-        {/* Left Column — hero image, no border radius */}
         <div
           ref={imageRef}
           className="aspect-508/664 w-full overflow-hidden lg:max-w-127"
         >
           <video
             ref={heroVideoRef}
-            src="/videos/hero-section.mp4"
+            src={videoUrl("hero-section")}
             autoPlay
             loop
             muted
@@ -138,80 +132,92 @@ export function HeroSection() {
           />
         </div>
 
-        {/* Right Column — Headline + subtitle + CTAs */}
         <div className="flex w-full flex-col justify-center py-12 md:w-[78%] md:px-10 md:py-0 lg:w-[55%] lg:px-16">
+          {/*
+            The headline is seven separately-styled word badges. Each badge is
+            one short word in English, but a translation can put a phrase in
+            one — Swahili's "customer" is "kwa wateja". So a badge never breaks
+            its own text (that would make a two-line pill and throw the row
+            heights out); instead the row wraps and the whole badge moves down
+            intact. Below `xs` the badges are full-width and already one per
+            line, so wrapping inside them is fine and avoids overflow.
+
+            The word order is still English's — a locale that orders them
+            differently needs a design pass here, not just a catalogue entry.
+          */}
           <div
             ref={headlineRef}
             className="font-greed-narrow flex flex-col gap-6 text-[50px] leading-normal font-medium tracking-[-2%] uppercase md:text-5xl lg:text-[56px] xl:text-[65px]"
           >
             {/* Row 1 desktop: CUSTOMER + SUPPORT. Mobile: stacked */}
-            <div className="xs:flex-row xs:items-center flex flex-col gap-6">
+            <div className="xs:flex-row xs:items-center flex flex-col flex-wrap gap-6">
               <span
-                className="hero-badge xs:w-auto xs:justify-start inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
+                className="hero-badge xs:w-auto xs:justify-start xs:whitespace-nowrap inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
                 style={{ backgroundColor: "#03A84E" }}
               >
-                CUSTOMER
+                {t("headline.customer")}
               </span>
               <span
-                className="hero-badge xs:w-auto xs:justify-start inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
+                className="hero-badge xs:w-auto xs:justify-start xs:whitespace-nowrap inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
                 style={{ backgroundColor: "#F25430" }}
               >
-                SUPPORT
+                {t("headline.support")}
               </span>
             </div>
 
             {/* Row 2 desktop: THAT DOESN'T + SCALE. Mobile: THAT DOESN'T alone */}
-            <div className="flex items-center gap-6">
-              <span className="hero-text flex gap-4 text-black">
-                <span>THAT</span> <span>DOESN&apos;T</span>
+            <div className="flex flex-wrap items-center gap-6">
+              <span className="hero-text flex flex-wrap gap-4 text-black">
+                <span className="whitespace-nowrap">{t("headline.that")}</span>{" "}
+                <span className="whitespace-nowrap">
+                  {t("headline.doesnt")}
+                </span>
               </span>
               <span
-                className="hero-badge xs:inline-flex hidden h-fit items-center rounded-4xl px-5 text-black"
+                className="hero-badge xs:inline-flex xs:whitespace-nowrap hidden h-fit items-center rounded-4xl px-5 text-black"
                 style={{ backgroundColor: "#F2B035" }}
               >
-                SCALE
+                {t("headline.scale")}
               </span>
             </div>
 
             {/* Mobile only: SCALE + YOUR share a row */}
-            <div className="xs:hidden flex items-center gap-6">
+            <div className="xs:hidden flex flex-wrap items-center gap-6">
               <span
                 className="hero-badge inline-flex h-fit items-center rounded-4xl px-5 text-black"
                 style={{ backgroundColor: "#F2B035" }}
               >
-                SCALE
+                {t("headline.scale")}
               </span>
-              <span className="hero-badge text-black">YOUR</span>
+              <span className="hero-badge text-black">
+                {t("headline.your")}
+              </span>
             </div>
 
             {/* Row 3 desktop: YOUR + HEADCOUNT. Mobile: HEADCOUNT alone */}
-            <div className="flex items-center gap-6">
-              <span className="hero-text xs:inline hidden text-black">
-                YOUR
+            <div className="flex flex-wrap items-center gap-6">
+              <span className="hero-text xs:inline xs:whitespace-nowrap hidden text-black">
+                {t("headline.your")}
               </span>
               <span
-                className="hero-badge xs:w-auto xs:justify-start inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
+                className="hero-badge xs:w-auto xs:justify-start xs:whitespace-nowrap inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
                 style={{ backgroundColor: "#7F9FFF" }}
               >
-                HEADCOUNT
+                {t("headline.headcount")}
               </span>
             </div>
           </div>
 
-          {/* Subtitle */}
           <p
             ref={subtitleRef}
             className="font-stolzl mt-8 max-w-xl text-base leading-relaxed text-black md:mt-10 md:text-lg"
           >
-            Swift Agents helps businesses automate customer conversations,
-            reduce support workload, and deliver faster customer experiences
-            across every support channel.
+            {t("subtitle")}
           </p>
 
-          {/* Timeline callouts */}
           <div ref={calloutsRef} className="mt-6 flex flex-col gap-2.5 md:mt-8">
             {TIMELINE_CALLOUTS.map((callout) => (
-              <div key={callout.text} className="flex items-start gap-3">
+              <div key={callout.id} className="flex items-start gap-3">
                 <span className="relative size-6 shrink-0">
                   <Image
                     src={callout.icon}
@@ -221,24 +227,32 @@ export function HeroSection() {
                   />
                 </span>
                 <span className="font-stolzl text-base text-[#1f1f1f]">
-                  {callout.text}
+                  {t(`callouts.${callout.id}`)}
                 </span>
               </div>
             ))}
           </div>
 
-          {/* CTAs */}
           <div
             ref={ctaRef}
             className="mt-8 grid w-full max-w-140 grid-cols-1 gap-4 md:mt-10 md:grid-cols-2 lg:gap-6 xl:gap-8"
           >
-            <Button variant="outline" size="lg" className="w-full" asChild>
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full px-4 text-center leading-tight whitespace-normal"
+              asChild
+            >
               <DemoBookingLink location="landing-hero">
-                BOOK A DEMO
+                {t("bookDemo")}
               </DemoBookingLink>
             </Button>
-            <Button size="lg" className="w-full" asChild>
-              <Link href="/signup">GET STARTED</Link>
+            <Button
+              size="lg"
+              className="w-full px-4 text-center leading-tight whitespace-normal"
+              asChild
+            >
+              <Link href="/signup">{t("getStarted")}</Link>
             </Button>
           </div>
         </div>

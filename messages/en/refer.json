@@ -1,0 +1,77 @@
+{
+  "intro": {
+    "heading": "Refer a founder and win challenge",
+    "subtitle": "We’re looking to connect with a few founders to use Swift Agents",
+    "rulesTitle": "Rules",
+    "rules": {
+      "foundersOnly": "Refer CEOs and founders only",
+      "mustHaveCustomers": "Referred businesses must have customers",
+      "listed": "Listed start-ups are worth 10,000 NGN.",
+      "unlisted": "Unlisted start-ups are worth 5,000 NGN.",
+      "afterConfirmation": "Funds are released after identity confirmation"
+    },
+    "continue": "Continue",
+    "terms": "Terms and conditions apply"
+  },
+  "companies": {
+    "heading": "List of companies we’d love to work with",
+    "subtitle": "Share the contact details of any founder from the listed companies, and you will receive 10,000 NGN once we verify their identity.",
+    "serviceTab": "Service companies",
+    "cryptoTab": "Crypto companies",
+    "referCta": "Refer a founder",
+    "back": "Back"
+  },
+  "form": {
+    "heading": "Fill the founders form",
+    "subtitle": "We’re looking to connect with a few founders to use Swift Agents",
+    "founderInfo": "Founder information",
+    "yourInfo": "Your information",
+    "next": "Next",
+    "submit": "Submit",
+    "back": "Back",
+    "fields": {
+      "founderName": {
+        "label": "Founders name",
+        "placeholder": "Founders fullname"
+      },
+      "companyName": {
+        "label": "Company name",
+        "placeholder": "Select company"
+      },
+      "position": {
+        "label": "Founders position in company",
+        "placeholder": "Select"
+      },
+      "phone": {
+        "label": "Founders phone number",
+        "placeholder": "+234"
+      },
+      "email": {
+        "label": "Founders email",
+        "placeholder": "founder@fg.com"
+      },
+      "bankName": {
+        "label": "Name of your bank",
+        "placeholder": "Bank name"
+      },
+      "accountNumber": {
+        "label": "Your account number",
+        "placeholder": "2245XXXXXXXX"
+      },
+      "accountName": {
+        "label": "Your account name",
+        "placeholder": "John Doe"
+      },
+      "yourEmail": {
+        "label": "Your email",
+        "placeholder": "johndoe@swftgo.com"
+      }
+    }
+  },
+  "done": {
+    "heading": "Thank you!",
+    "body": "Thanks for the recommendation. We’ll confirm identity and send funds, if correct.",
+    "expectedLabel": "Expected amount",
+    "signoff": "We love folks that don’t leave money on the table ~ Swift Agents Team"
+  }
+}

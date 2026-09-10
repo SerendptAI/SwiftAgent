@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="assets/tutorial.css" />
+      <style>
+        #root {
+          position: absolute;
+          inset: 0;
+        }
+        #key-reveal {
+          opacity: 0;
+          visibility: hidden;
+        }
+      </style>
+
+      <div
+        id="root"
+        data-composition-id="act-key"
+        data-width="1920"
+        data-height="1080"
+      >
+        <div class="hr-stage">
+          <div
+            id="key-head"
+            class="hr-h"
+            style="position: absolute; left: 370px; top: 148px; font-size: 46px"
+          >
+            Widget API Keys
+          </div>
+          <div
+            id="key-sub"
+            class="hr-note"
+            style="position: absolute; left: 370px; top: 214px; width: 1180px"
+          >
+            Generate a key and paste it into your embed snippet&rsquo;s
+            <span class="hr-chip">data-api-key</span> attribute.
+          </div>
+
+          <!-- The one-time reveal, after Generate -->
+          <div
+            id="key-reveal"
+            style="
+              position: absolute;
+              left: 370px;
+              top: 284px;
+              width: 1180px;
+              height: 200px;
+              border: 2px solid rgba(0, 179, 126, 0.3);
+              background: rgba(0, 179, 126, 0.05);
+              border-radius: 20px;
+            "
+          >
+            <div
+              style="
+                position: absolute;
+                left: 32px;
+                top: 30px;
+                display: flex;
+                align-items: center;
+                gap: 16px;
+              "
+            >
+              <svg viewBox="0 0 24 24" style="width: 30px; height: 30px; color: #00684a">
+                <path
+                  d="M12 3.2 21.4 19.6H2.6z"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M12 9.6v4.4"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <circle cx="12" cy="17" r="1.2" fill="currentColor" />
+              </svg>
+              <span class="hr-note" style="color: #00684a"
+                >Copy this key now &mdash; you won&rsquo;t be able to see it
+                again.</span
+              >
+            </div>
+            <div
+              class="hr-code"
+              style="
+                position: absolute;
+                left: 32px;
+                top: 88px;
+                width: 1024px;
+                height: 84px;
+                display: flex;
+                align-items: center;
+                padding: 0 24px;
+                background: #ffffff;
+                border-radius: 14px;
+                font-size: 26px;
+                line-height: 1.2;
+                color: #0a0a0a;
+              "
+            >
+              sa_live_••••••••••••••••••••••••••••
+            </div>
+            <div
+              style="
+                position: absolute;
+                left: 1072px;
+                top: 88px;
+                width: 84px;
+                height: 84px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #00b37e;
+                border-radius: 14px;
+                color: #ffffff;
+              "
+            >
+              <svg viewBox="0 0 24 24" style="width: 28px; height: 28px">
+                <rect
+                  x="9"
+                  y="9"
+                  width="13"
+                  height="13"
+                  rx="2.5"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <path
+                  d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <!-- The generate row, which the reveal pushes down -->
+          <div
+            id="key-row"
+            style="
+              position: absolute;
+              left: 370px;
+              top: 284px;
+              width: 1180px;
+              height: 132px;
+              border: 2px solid #f3f4f6;
+              border-radius: 20px;
+            "
+          >
+            <div class="hr-microlabel" style="position: absolute; left: 32px; top: 20px">
+              Key Label
+            </div>
+            <div
+              class="hr-field"
+              style="position: absolute; left: 32px; top: 52px; width: 900px"
+            >
+              Widget Key
+            </div>
+            <div
+              id="key-generate"
+              class="hr-btn"
+              style="
+                position: absolute;
+                left: 956px;
+                top: 52px;
+                width: 192px;
+                height: 72px;
+                background: #00966a;
+                border-radius: 16px;
+                font-size: 24px;
+                letter-spacing: 0.08em;
+                box-shadow: -6px 6px 0px 0px #000000;
+              "
+            >
+              Generate
+            </div>
+          </div>
+
+          <svg
+            id="key-cursor"
+            class="hr-cursor"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M5 2.5 L5 20 L9.4 16.2 L12.3 22.2 L15.2 20.8 L12.4 15 L18.2 15 Z"
+              fill="#0A0A0A"
+              stroke="#FFFFFF"
+              stroke-width="1.4"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+
+      </div>
+
+      <script>
+        (() => {
+          const tl = gsap.timeline({ paused: true });
+
+          const TIP = { x: 16, y: 8 };
+          const OFF = { x: 1640, y: 1180 };
+          const to = (x, y) => ({ x: x - TIP.x, y: y - TIP.y });
+
+          tl.set("#key-cursor", { x: OFF.x, y: OFF.y, opacity: 0, scale: 1 }, 0);
+          tl.set("#key-row", { y: 0 }, 0);
+          tl.set("#key-generate", { x: 0, y: 0 }, 0);
+          tl.fromTo(
+            ["#key-head", "#key-sub", "#key-row"],
+            { y: 20, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.5, ease: "power2.out", stagger: 0.08 },
+            0.1,
+          );
+
+          tl.to(
+            "#key-cursor",
+            { ...to(1422, 372), opacity: 1, duration: 0.9, ease: "power2.out" },
+            0.9,
+          );
+          tl.to("#key-cursor", { scale: 0.88, duration: 0.09 }, 2.1);
+          tl.to("#key-cursor", { scale: 1, duration: 0.09 }, 2.19);
+          tl.to("#key-generate", { x: -4, y: 4, duration: 0.1 }, 2.1);
+          tl.to("#key-generate", { x: 0, y: 0, duration: 0.14 }, 2.21);
+
+          // The key block lands above the row and pushes it down — the app's
+          // own reflow, since the reveal renders before the generate row.
+          tl.to("#key-row", { y: 248, duration: 0.45, ease: "power2.out" }, 2.45);
+          tl.fromTo(
+            "#key-reveal",
+            { autoAlpha: 0, y: -14 },
+            { autoAlpha: 1, y: 0, duration: 0.45, ease: "power2.out" },
+            2.45,
+          );
+          tl.to(
+            "#key-cursor",
+            { ...to(1422, 620), duration: 0.5, ease: "power2.out" },
+            2.45,
+          );
+          tl.to("#key-cursor", { opacity: 0, duration: 0.3 }, 12.4);
+
+          window.__timelines["act-key"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

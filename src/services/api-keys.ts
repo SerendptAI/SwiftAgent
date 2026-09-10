@@ -1,7 +1,5 @@
 import { apiClient } from "@/lib/api-client";
 
-// ── Types ─────────────────────────────────────────────────────────────────────
-
 /** An API key as returned by the list endpoint (never includes the raw secret). */
 export interface ApiKey {
   id: string;
@@ -28,8 +26,6 @@ export interface ApiKeyCreated {
 export type ApiKeyCreatePayload = {
   label: string;
 };
-
-// ── API ───────────────────────────────────────────────────────────────────────
 
 const base = (companyId: string) => `/api/v1/companies/${companyId}/api-keys`;
 

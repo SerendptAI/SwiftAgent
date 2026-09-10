@@ -1,0 +1,16 @@
+{
+  "eyebrow": "Nos produits",
+  "app": {
+    "heading": "Application Swift Agents",
+    "body1": "L’application Swift Agent permet aux entreprises d’échanger avec leurs clients directement depuis leur mobile.",
+    "body2": "Les utilisateurs peuvent communiquer sans friction, mettre à jour leur profil et solliciter les agents IA pour des tâches comme la récupération d’un code à usage unique sur les comptes qui leur sont associés.",
+    "playStore": "Télécharger sur Play Store",
+    "appleStore": "Télécharger sur l’App Store"
+  },
+  "sdk": {
+    "heading": "SDK Swift Agents",
+    "body1": "Le SDK Swift Agent est conçu pour s’intégrer sans friction aux applications mobiles et renforcer vos capacités de service client.",
+    "body2": "Vos clients peuvent ainsi échanger sans effort avec les agents directement depuis leur mobile, pour un support plus efficace et plus réactif.",
+    "cta": "Commencer"
+  }
+}

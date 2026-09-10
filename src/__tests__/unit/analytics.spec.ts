@@ -1,31 +1,14 @@
 import { shouldRecordSession } from "@/lib/analytics";
-import { stripLocalePrefix } from "@/lib/locale-path";
 
-describe("stripLocalePrefix", () => {
-  it("drops the locale segment", () => {
-    expect(stripLocalePrefix("/en/dashboard")).toBe("/dashboard");
-    expect(stripLocalePrefix("/pl/case-studies/chowdeck")).toBe(
-      "/case-studies/chowdeck",
-    );
-  });
-
-  it("maps a bare locale to the root", () => {
-    expect(stripLocalePrefix("/en")).toBe("/");
-  });
-
-  it("leaves paths without a locale prefix alone", () => {
-    expect(stripLocalePrefix("/api/visitors")).toBe("/api/visitors");
-    expect(stripLocalePrefix("/english-lessons")).toBe("/english-lessons");
-  });
-});
+// stripLocalePrefix, which this module routes through, is covered in
+// locale-routing.spec.ts alongside the rest of the locale path handling.
 
 describe("shouldRecordSession", () => {
   it("records the public marketing site", () => {
     expect(shouldRecordSession("/en")).toBe(true);
     expect(shouldRecordSession("/en/landing")).toBe(true);
-    expect(shouldRecordSession("/pl/products")).toBe(true);
+    expect(shouldRecordSession("/en/products")).toBe(true);
     expect(shouldRecordSession("/en/case-studies/chowdeck")).toBe(true);
-    expect(shouldRecordSession("/en/signup")).toBe(true);
   });
 
   it("never records authenticated surfaces or credential entry", () => {
@@ -34,7 +17,8 @@ describe("shouldRecordSession", () => {
     expect(shouldRecordSession("/en/onboarding")).toBe(false);
     expect(shouldRecordSession("/en/admin/analytics")).toBe(false);
     expect(shouldRecordSession("/en/login")).toBe(false);
-    expect(shouldRecordSession("/en/invite")).toBe(false);
+    // Public, but it ends in one-time-code entry.
+    expect(shouldRecordSession("/en/signup")).toBe(false);
     expect(shouldRecordSession("/en/auth/callback")).toBe(false);
   });
 

@@ -1,0 +1,53 @@
+{
+  "hero": {
+    "eyebrow": "Kiigizo cha mfumo wa huduma",
+    "heading": "Acha kuongeza wafanyakazi wa huduma kwa uwiano wa moja kwa moja.",
+    "body": "Ona mfumo wako wa huduma kabla na baada ya Swift Agents. Rekebisha takwimu zako na uone ni wafanyakazi wangapi unaweza kuepuka kuajiri unapokua."
+  },
+  "currency": {
+    "label": "Sarafu"
+  },
+  "yourNumbers": {
+    "title": "Takwimu zako",
+    "monthlyConversations": "Mazungumzo kwa mwezi",
+    "convosSuffix": "mazungumzo",
+    "currentTeamSize": "Ukubwa wa timu kwa sasa",
+    "humanAgentsSuffix": "wafanyakazi",
+    "monthlyCostPerAgent": "Gharama ya mwezi kwa mfanyakazi",
+    "perAgentSuffix": "/mfanyakazi",
+    "repetitiveQueries": "Maswali ya huduma yanayojirudia",
+    "benchmark": "Kwa kuzingatia kiwango cha sekta cha tiketi {count} zinazoshughulikiwa na mfanyakazi mmoja kwa mwezi."
+  },
+  "currentReality": {
+    "badge": "Bila Swift Agents",
+    "title": "Hali yako ya sasa ya huduma",
+    "monthlyConversations": "Mazungumzo kwa mwezi",
+    "monthlyTickets": "Tiketi za huduma kwa mwezi",
+    "agentsRequired": "Wafanyakazi wanaohitajika",
+    "monthlyTeamCost": "Gharama ya timu kwa mwezi",
+    "note": "Kila mteja mpya huongeza mzigo wa huduma. Ili kuendana nao, unaajiri wafanyakazi zaidi."
+  },
+  "automated": {
+    "badge": "Na Swift Agents",
+    "automatedPercent": "Asilimia {rate} kiotomatiki",
+    "title": "Mfumo wako wa huduma wa kiotomatiki",
+    "ticketsAutomated": "Tiketi zilizoshughulikiwa kiotomatiki / mwezi",
+    "ticketsRemoved": "Tiketi zilizoondolewa kwa wafanyakazi",
+    "agentsNoLongerNeeded": "Wafanyakazi usiowahitaji tena",
+    "newSupportLoad": "Mzigo mpya halisi wa huduma",
+    "costAfter": "Gharama ya mwezi baada ya uendeshaji kiotomatiki",
+    "monthlySavings": "Akiba ya kila mwezi"
+  },
+  "fte": {
+    "eyebrow": "Wafanyakazi wa huduma usiohitaji kuajiri",
+    "unit": "Wafanyakazi wa muda kamili walioepukwa / mwezi",
+    "needed": "wanahitajika"
+  },
+  "cta": {
+    "heading": "Swift Agents haipunguzi gharama tu — inaondoa haja ya kuongeza timu yako ya huduma.",
+    "bodyLead": "Bila uendeshaji wa kiotomatiki,",
+    "bodyRest": " huduma hukua sambamba na idadi ya wateja wako. Kila tiketi mpya 1,200 = mwajiriwa mmoja zaidi, maandalizi zaidi, na usumbufu zaidi kwa msimamizi.",
+    "strip": "Weka wakala wa AI wa SwiftAgents ndani ya siku moja.",
+    "bookDemo": "Panga onyesho"
+  }
+}

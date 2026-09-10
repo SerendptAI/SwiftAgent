@@ -1,0 +1,77 @@
+{
+  "intro": {
+    "heading": "Recomienda a un fundador y gana el reto",
+    "subtitle": "Queremos ponernos en contacto con algunos fundadores para que usen Swift Agents",
+    "rulesTitle": "Reglas",
+    "rules": {
+      "foundersOnly": "Recomienda solo a directivos y fundadores",
+      "mustHaveCustomers": "Las empresas recomendadas deben tener clientes",
+      "listed": "Las startups listadas valen 10.000 NGN.",
+      "unlisted": "Las startups no listadas valen 5.000 NGN.",
+      "afterConfirmation": "Los fondos se abonan tras confirmar la identidad"
+    },
+    "continue": "Continuar",
+    "terms": "Se aplican los términos y condiciones"
+  },
+  "companies": {
+    "heading": "Empresas con las que nos encantaría trabajar",
+    "subtitle": "Comparte los datos de contacto de cualquier fundador de las empresas listadas y recibirás 10.000 NGN en cuanto verifiquemos su identidad.",
+    "serviceTab": "Empresas de servicios",
+    "cryptoTab": "Empresas cripto",
+    "referCta": "Recomendar a un fundador",
+    "back": "Atrás"
+  },
+  "form": {
+    "heading": "Rellena el formulario del fundador",
+    "subtitle": "Queremos ponernos en contacto con algunos fundadores para que usen Swift Agents",
+    "founderInfo": "Información del fundador",
+    "yourInfo": "Tu información",
+    "next": "Siguiente",
+    "submit": "Enviar",
+    "back": "Atrás",
+    "fields": {
+      "founderName": {
+        "label": "Nombre del fundador",
+        "placeholder": "Nombre completo del fundador"
+      },
+      "companyName": {
+        "label": "Nombre de la empresa",
+        "placeholder": "Selecciona una empresa"
+      },
+      "position": {
+        "label": "Cargo del fundador en la empresa",
+        "placeholder": "Selecciona"
+      },
+      "phone": {
+        "label": "Teléfono del fundador",
+        "placeholder": "+234"
+      },
+      "email": {
+        "label": "Correo del fundador",
+        "placeholder": "fundador@fg.com"
+      },
+      "bankName": {
+        "label": "Nombre de tu banco",
+        "placeholder": "Nombre del banco"
+      },
+      "accountNumber": {
+        "label": "Tu número de cuenta",
+        "placeholder": "2245XXXXXXXX"
+      },
+      "accountName": {
+        "label": "Titular de la cuenta",
+        "placeholder": "Juan Pérez"
+      },
+      "yourEmail": {
+        "label": "Tu correo",
+        "placeholder": "juanperez@swftgo.com"
+      }
+    }
+  },
+  "done": {
+    "heading": "¡Gracias!",
+    "body": "Gracias por la recomendación. Verificaremos la identidad y enviaremos los fondos si todo es correcto.",
+    "expectedLabel": "Importe previsto",
+    "signoff": "Nos encanta la gente que no deja dinero sobre la mesa ~ El equipo de Swift Agents"
+  }
+}
