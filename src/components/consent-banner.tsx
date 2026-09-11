@@ -50,9 +50,9 @@ export function ConsentBanner() {
   return (
     <aside
       aria-label={t("ariaLabel")}
-      className="fixed bottom-4 left-4 z-50 max-w-sm rounded-lg border border-black/20 bg-white p-4 shadow-[-4px_4px_0px_0px_#000000]"
+      className="fixed bottom-4 left-4 z-100 max-w-sm rounded-lg border border-black/20 bg-white p-4 shadow-[-4px_4px_0px_0px_#000000]"
     >
-      <p className="font-dm-mono text-xs leading-[1.6] tracking-[0.05em] text-black uppercase">
+      <p className="font-jetbrains text-xs leading-normal tracking-[10%] text-black md:text-sm lg:text-base">
         {t("message")}{" "}
         <Link
           href="/privacy-policy"
@@ -63,11 +63,11 @@ export function ConsentBanner() {
         </Link>
       </p>
       <div className="mt-4 grid grid-cols-2 gap-3">
-        <Button size="sm" onClick={handleAccept}>
-          {t("accept")}
-        </Button>
         <Button size="sm" variant="outline" onClick={handleDecline}>
           {t("decline")}
+        </Button>
+        <Button size="sm" onClick={handleAccept}>
+          {t("accept")}
         </Button>
       </div>
     </aside>
