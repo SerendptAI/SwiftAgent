@@ -150,7 +150,7 @@ export default function StrollSettingsPage() {
             type="button"
             onClick={handleSave}
             disabled={updateConfig.isPending}
-            className="flex h-11 items-center justify-center gap-2 self-start rounded-2xl bg-[#006BE5] px-6 text-sm font-bold tracking-wide text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#0055B8] disabled:cursor-not-allowed disabled:opacity-50 sm:h-10"
+            className="flex h-11 items-center justify-center gap-2 self-start rounded-2xl bg-[#006BE5] px-6 text-sm font-bold tracking-wide text-white uppercase shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#0055B8] disabled:cursor-not-allowed disabled:opacity-50 sm:h-10"
           >
             {updateConfig.isPending ? (
               <Loader2 className="h-4 w-4 animate-spin" />

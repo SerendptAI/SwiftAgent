@@ -56,7 +56,7 @@ export function FormCreationSuccessModal({
       >
         <h2
           id="form-creation-success-title"
-          className="font-greed-narrow text-center text-[34px] leading-none font-medium tracking-[-0.02em] text-black uppercase"
+          className="font-greed text-center text-[34px] leading-none font-medium tracking-[-0.02em] text-black uppercase"
         >
           Your Form Is Live
         </h2>

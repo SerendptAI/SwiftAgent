@@ -205,7 +205,7 @@ export function OnlineFormDrawer({
           <div className="mx-auto flex w-full max-w-310 flex-col items-center">
             <h2
               id="online-form-title"
-              className="font-greed-narrow text-center text-[30px] leading-[0.95] font-medium tracking-[-0.02em] text-black uppercase md:text-[34px]"
+              className="font-greed text-center text-[30px] leading-[0.95] font-medium tracking-[-0.02em] text-black uppercase md:text-[34px]"
             >
               {isEdit ? "Edit Online Form" : "Create New Online Form"}
             </h2>

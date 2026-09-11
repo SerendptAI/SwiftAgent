@@ -48,7 +48,7 @@ export function ReferScreenOne({ onNext }: ReferScreenOneProps) {
       />
 
       <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1180px] flex-col items-center px-4 pt-[128px] pb-14 text-center sm:px-5 md:pt-[160px] md:pb-20">
-        <h1 className="font-greed-narrow w-full max-w-[700px] text-center text-[42px] leading-[1.08] font-medium tracking-[-0.02em] text-black uppercase sm:text-[52px] md:text-[60px] md:leading-[1.34]">
+        <h1 className="font-greed w-full max-w-[700px] text-center text-[42px] leading-[1.08] font-medium tracking-[-0.02em] text-black uppercase sm:text-[52px] md:text-[60px] md:leading-[1.34]">
           {t("heading")}
         </h1>
 
@@ -57,7 +57,7 @@ export function ReferScreenOne({ onNext }: ReferScreenOneProps) {
         </p>
 
         <div className="mt-[42px] w-full max-w-[720px] rounded-[28px] border border-black/25 bg-white px-4 pt-7 pb-9 text-center sm:mt-[50px] sm:px-6 md:mt-[57px] md:rounded-[49px] md:px-8 md:pt-9 md:pb-12">
-          <h2 className="font-greed-narrow text-center text-[32px] leading-[1.34] font-medium tracking-[-0.02em] text-black uppercase">
+          <h2 className="font-greed text-center text-[32px] leading-[1.34] font-medium tracking-[-0.02em] text-black uppercase">
             {t("rulesTitle")}
           </h2>
 
@@ -67,7 +67,7 @@ export function ReferScreenOne({ onNext }: ReferScreenOneProps) {
                 key={rule}
                 className="flex items-center gap-4 rounded-2xl bg-[#F5F5F5] px-4 py-3.5 sm:px-4.5 md:gap-6"
               >
-                <span className="font-greed-narrow flex h-9 w-9 shrink-0 items-center justify-center rounded-xs bg-black text-[32px] leading-[1.34] font-medium tracking-[-0.02em] text-white uppercase">
+                <span className="font-greed flex h-9 w-9 shrink-0 items-center justify-center rounded-xs bg-black text-[32px] leading-[1.34] font-medium tracking-[-0.02em] text-white uppercase">
                   {index + 1}
                 </span>
                 <span className="font-dm-mono min-w-0 text-left text-sm leading-[1.45] tracking-[0.08em] text-black uppercase sm:text-base md:text-lg md:leading-[1.39] md:tracking-widest">

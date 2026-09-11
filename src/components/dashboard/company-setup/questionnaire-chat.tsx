@@ -401,7 +401,7 @@ export function QuestionnaireChat({
           height={140}
           className="mt-16 mb-10.5 aspect-107/126 w-full max-w-[107px] object-contain object-center"
         />
-        <h2 className="font-greed-narrow mb-15.5 text-center text-[40px] leading-[1.1] font-semibold tracking-[-2%] text-black">
+        <h2 className="font-greed mb-15.5 text-center text-[40px] leading-[1.1] font-semibold tracking-[-2%] text-black">
           Thanks for helping
           <br />
           us learn about your
@@ -465,7 +465,7 @@ export function QuestionnaireChat({
           height={140}
           className="mb-4 aspect-98/163 max-w-24.5 object-contain object-center"
         />
-        <h2 className="font-greed-narrow mb-4 text-center text-[40px] leading-[1.1] font-semibold tracking-[-2%] text-black">
+        <h2 className="font-greed mb-4 text-center text-[40px] leading-[1.1] font-semibold tracking-[-2%] text-black">
           Congratulations
         </h2>
         <p className="font-dm-mono text-muted-foreground mb-5 text-sm leading-[1.96] tracking-[14%] uppercase">
@@ -473,7 +473,7 @@ export function QuestionnaireChat({
           <br />
           made with this email
         </p>
-        <div className="font-greed-narrow mb-9 flex h-[62px] w-full max-w-[307px] items-center justify-center rounded-[10px] border border-black pr-2 pl-4 text-center text-lg leading-[1.1] font-semibold tracking-[-1%] sm:pl-6 sm:text-2xl">
+        <div className="font-greed mb-9 flex h-[62px] w-full max-w-[307px] items-center justify-center rounded-[10px] border border-black pr-2 pl-4 text-center text-lg leading-[1.1] font-semibold tracking-[-1%] sm:pl-6 sm:text-2xl">
           <span className="min-w-0 truncate text-black">{emailHandle}</span>
           <span className="shrink-0 whitespace-nowrap text-black/50">
             @swifty.email
@@ -793,9 +793,9 @@ function EmailPickerScreen({
             onChange(e.target.value.toLowerCase().replace(/\s+/g, ""))
           }
           placeholder="companyname"
-          className="font-greed-narrow mr-2 min-w-0 flex-1 text-lg leading-[1.1] font-semibold tracking-[-1%] text-black outline-none placeholder:text-black/20 sm:text-2xl"
+          className="font-greed mr-2 min-w-0 flex-1 text-lg leading-[1.1] font-semibold tracking-[-1%] text-black outline-none placeholder:text-black/20 sm:text-2xl"
         />
-        <span className="font-greed-narrow shrink-0 text-lg leading-[1.1] font-semibold tracking-[-1%] whitespace-nowrap text-black/50 sm:text-2xl">
+        <span className="font-greed shrink-0 text-lg leading-[1.1] font-semibold tracking-[-1%] whitespace-nowrap text-black/50 sm:text-2xl">
           @swifty.email
         </span>
       </div>

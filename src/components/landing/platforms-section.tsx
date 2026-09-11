@@ -67,7 +67,7 @@ export function PlatformsSection() {
               <button
                 onClick={() => setActive(i)}
                 className={cn(
-                  "font-dm-mono flex w-full items-center justify-center gap-2 px-5 py-4 text-base font-medium tracking-[0.12em] uppercase transition-colors duration-150",
+                  "flex w-full items-center justify-center gap-2 px-5 py-4 text-base font-medium tracking-[10%] capitalize transition-colors duration-150",
                   "bg-white text-black",
                 )}
               >
@@ -82,10 +82,11 @@ export function PlatformsSection() {
                 )}
               >
                 <div className="overflow-hidden">
-                  <div className="flex flex-col gap-4 pt-4 pb-3">
-                    <p className="font-stolzl px-3 text-base leading-relaxed text-black">
+                  <div className="flex flex-col gap-4 space-y-6 pt-4 pb-3">
+                    <p className="px-3 text-base leading-normal text-black">
                       {t(`platforms.${p.id}.description`)}
                     </p>
+
                     <PlatformVideo
                       src={p.video}
                       className={cn("h-86", {
@@ -107,7 +108,7 @@ export function PlatformsSection() {
                   key={p.id}
                   onClick={() => setActive(i)}
                   className={cn(
-                    "font-dm-mono flex cursor-pointer items-center justify-center gap-2 px-5 py-2.5 text-lg font-medium tracking-[0.12em] whitespace-nowrap uppercase transition-colors duration-150",
+                    "flex cursor-pointer items-center justify-center gap-2 px-5 py-2.5 text-lg font-medium tracking-[10%] whitespace-nowrap capitalize transition-colors duration-150",
                     active === i
                       ? "bg-white text-black"
                       : "text-black/70 hover:text-black",
@@ -120,29 +121,31 @@ export function PlatformsSection() {
             </div>
           </div>
 
-          <p className="font-stolzl mb-8 max-w-235 text-center text-sm leading-relaxed md:mb-12 md:text-base">
+          <p className="mb-8 max-w-226 text-center text-sm leading-relaxed md:mb-12 md:text-base">
             {t(`platforms.${PLATFORMS[active].id}.description`)}
           </p>
 
-          <div className="mb-10 flex max-w-107.5 flex-wrap justify-center gap-4 md:grid md:grid-cols-2 md:gap-8">
+          <div className="mb-16 flex max-w-107.5 flex-wrap justify-center gap-4 md:grid md:grid-cols-2 md:gap-8">
             <Button
               variant="outline"
               size="lg"
-              className="px-4 text-center leading-tight whitespace-normal"
+              className="px-6 py-3 text-center leading-tight tracking-[10%] whitespace-normal capitalize"
               asChild
             >
               <DemoBookingLink location="landing-platforms">
                 {tc("bookDemo")}
               </DemoBookingLink>
             </Button>
+
             <Button
               size="lg"
-              className="px-4 text-center leading-tight whitespace-normal"
+              className="px-6 py-3 text-center leading-tight tracking-[10%] whitespace-normal capitalize"
               asChild
             >
               <Link href="/signup">{tc("getStarted")}</Link>
             </Button>
           </div>
+
           <div className="relative w-full">
             {PLATFORMS.map((p, i) => (
               <div

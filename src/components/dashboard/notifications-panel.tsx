@@ -73,7 +73,7 @@ export function NotificationsPanel({
     >
       <div className="flex flex-col gap-4 overflow-y-auto px-4 pt-4 pb-4">
         <div className="flex items-center justify-between gap-2">
-          <h2 className="font-greed-narrow text-[24px] leading-none font-medium text-black">
+          <h2 className="font-greed text-[24px] leading-none font-medium text-black">
             Notifications
           </h2>
           {unreadCount > 0 && (

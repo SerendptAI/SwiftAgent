@@ -9,23 +9,19 @@ import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 const FEATURES = [
   {
     id: "instantSupport",
-    icon: "/images/home/feature-instant-support.svg",
-    accent: "#7F9FFF",
+    icon: "chat-bubble-rounded-square.svg",
   },
   {
     id: "productGuidance",
-    icon: "/images/home/feature-product-guidance.svg",
-    accent: "#F2B035",
+    icon: "curly-braces-rounded-square.svg",
   },
   {
     id: "paymentSupport",
-    icon: "/images/home/feature-payment-support.svg",
-    accent: "#F25430",
+    icon: "wallet-rounded-square.svg",
   },
   {
     id: "knowledgeSearch",
-    icon: "/images/home/feature-knowledge-search.svg",
-    accent: "#03A84E",
+    icon: "bot-rounded-square.svg",
   },
 ];
 
@@ -35,27 +31,28 @@ export function FeaturesGridSection() {
 
   return (
     <section className="w-full bg-white px-6 py-16 md:px-10 md:py-20 lg:px-16 lg:py-20">
-      <div className="mx-auto max-w-360">
-        <p className="font-dm-mono mb-8 text-2xl leading-normal font-medium text-[#1f1f1f] uppercase md:mb-10 md:text-[32px]">
+      <div className="mx-auto max-w-360 space-y-12">
+        <h2 className="font-greed max-w-4xl text-4xl leading-[1.42] font-semibold tracking-[-2%] whitespace-pre-line text-black capitalize md:text-5xl">
           {t("heading")}
-        </p>
+        </h2>
 
         <div ref={cardsRef} className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {FEATURES.map((feature) => (
             <div
               key={feature.id}
-              className="flex flex-col gap-4 rounded-2xl border border-[#1f1f1f] bg-[#F6F4EF] p-8 drop-shadow-[-3px_4px_0px_#000000]"
+              className="flex flex-col gap-4 rounded-2xl border border-black bg-[#F6F4EF] p-8 drop-shadow-[-4px_4px_0px_#000000]"
             >
-              <div
-                className="flex size-12 shrink-0 items-center justify-center rounded-lg border border-[#1f1f1f]"
-                style={{ backgroundColor: feature.accent }}
-              >
-                <Image src={feature.icon} alt="" width={24} height={24} />
-              </div>
-              <p className="font-dm-mono text-xl font-medium text-[#1f1f1f] uppercase">
+              <img
+                loading="eager"
+                src={`/icons/${feature.icon}`}
+                alt={t(`items.${feature.id}.title`)}
+                className="size-12 object-contain object-center"
+              />
+
+              <p className="font-press-start text-base text-[#1F1F1F] uppercase">
                 {t(`items.${feature.id}.title`)}
               </p>
-              <p className="font-stolzl text-base leading-relaxed text-black">
+              <p className="text-base leading-normal text-black">
                 {t(`items.${feature.id}.description`)}
               </p>
             </div>

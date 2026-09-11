@@ -50,7 +50,7 @@ export function ConsentBanner() {
   return (
     <aside
       aria-label={t("ariaLabel")}
-      className="fixed bottom-4 left-4 z-50 max-w-sm rounded-lg border border-black/20 bg-white p-4 shadow-[-3px_3px_0px_0px_#000000]"
+      className="fixed bottom-4 left-4 z-50 max-w-sm rounded-lg border border-black/20 bg-white p-4 shadow-[-4px_4px_0px_0px_#000000]"
     >
       <p className="font-dm-mono text-xs leading-[1.6] tracking-[0.05em] text-black uppercase">
         {t("message")}{" "}

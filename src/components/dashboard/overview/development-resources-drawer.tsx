@@ -202,7 +202,7 @@ export function DevelopmentResourcesDrawer({
             <header className="flex justify-center text-center">
               <h2
                 id="development-resources-title"
-                className={`font-greed-narrow max-w-full text-center leading-[0.95] font-medium text-black uppercase ${
+                className={`font-greed max-w-full text-center leading-[0.95] font-medium text-black uppercase ${
                   selectedVideo
                     ? "mt-10 text-[30px] md:mt-[86px] md:text-[42px]"
                     : "text-[30px] md:text-[34px]"

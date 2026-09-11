@@ -1,14 +1,6 @@
 {
   "hero": {
-    "headline": {
-      "customer": "Customer",
-      "support": "Support",
-      "that": "That",
-      "doesnt": "Doesn't",
-      "scale": "Scale",
-      "your": "Your",
-      "headcount": "Headcount"
-    },
+    "headline": "Customer support that doesn't scale your headcount",
     "subtitle": "Swift Agents helps businesses automate customer conversations, reduce support workload, and deliver faster customer experiences across every support channel.",
     "callouts": {
       "hours": "Live in hours — not weeks.",

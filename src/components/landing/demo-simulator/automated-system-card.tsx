@@ -24,7 +24,7 @@ export function AutomatedSystemCard({
   const t = useTranslations("demo.automated");
 
   return (
-    <div className="bg-white p-6 shadow-[-3px_3px_0px_0px_#000000] md:px-8.5 md:pt-5.5 md:pb-8">
+    <div className="bg-white p-6 shadow-[-4px_4px_0px_0px_#000000] md:px-8.5 md:pt-5.5 md:pb-8">
       <div className="font-dm-mono mb-8 flex flex-col text-base leading-[1.6] tracking-[10%] uppercase md:flex-row md:items-center md:justify-between md:text-lg">
         <span className="text-black/60">{t("badge")}</span>
         <span className="text-black">
@@ -71,7 +71,7 @@ export function AutomatedSystemCard({
         </div>
       </div>
 
-      <div className="font-stolzl flex items-center justify-between gap-3 bg-[#F2B035] p-4 leading-normal tracking-[2%] text-black shadow-[-3px_3px_0px_0px_#000000] md:px-6 md:py-5">
+      <div className="font-stolzl flex items-center justify-between gap-3 bg-[#F2B035] p-4 leading-normal tracking-[2%] text-black shadow-[-4px_4px_0px_0px_#000000] md:px-6 md:py-5">
         <span className="min-w-0 flex-1">{t("monthlySavings")}</span>
         <span className="shrink-0 text-xl font-medium whitespace-nowrap sm:text-2xl md:text-[30px]">
           {fmtMoney(monthlySavings, sym)}

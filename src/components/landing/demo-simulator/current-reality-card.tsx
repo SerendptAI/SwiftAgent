@@ -18,7 +18,7 @@ export function CurrentRealityCard({
   const t = useTranslations("demo.currentReality");
 
   return (
-    <div className="bg-white p-6 shadow-[-3px_3px_0px_0px_#000000] md:px-8.5 md:pt-5.5 md:pb-8">
+    <div className="bg-white p-6 shadow-[-4px_4px_0px_0px_#000000] md:px-8.5 md:pt-5.5 md:pb-8">
       <div className="mb-8">
         <span className="font-dm-mono text-base leading-[1.6] tracking-[10%] text-black/60 uppercase md:text-lg">
           {t("badge")}

@@ -160,7 +160,7 @@ export function AffiliateHeroSection() {
         <div className="pt-32 pb-16 md:pt-40 lg:pt-48 lg:pb-20 xl:max-w-[58%] xl:pt-56 xl:pb-24">
           <h1
             ref={headlineRef}
-            className="font-greed-narrow max-w-[720px] text-[40px] leading-[1.15] font-medium tracking-[-0.02em] text-[#1f1f1f] uppercase sm:text-[52px] lg:text-[64px] xl:text-[72px]"
+            className="font-greed max-w-[720px] text-[40px] leading-[1.15] font-medium tracking-[-0.02em] text-[#1f1f1f] uppercase sm:text-[52px] lg:text-[64px] xl:text-[72px]"
           >
             <span className="block whitespace-pre-line">
               {t("headline")}

@@ -19,7 +19,7 @@ export function CtaPanel() {
           SUPPORT AGENTS YOU DON&apos;T NEED TO HIRE
         </p>
 
-        <h2 className="font-greed-narrow mb-8 text-3xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase md:text-4xl lg:text-[46px]">
+        <h2 className="font-greed mb-8 text-3xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase md:text-4xl lg:text-[46px]">
           {t("heading")}
         </h2>
 
@@ -34,7 +34,7 @@ export function CtaPanel() {
           </p>
           <DemoBookingLink
             location="roi-simulator"
-            className="font-greed-narrow w-full shrink-0 border border-black bg-white p-3 text-center text-3xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-shadow sm:max-w-101 md:p-5 md:text-4xl lg:text-[46px]"
+            className="font-greed w-full shrink-0 border border-black bg-white p-3 text-center text-3xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase shadow-[-4px_4px_0px_0px_#000000] transition-shadow sm:max-w-101 md:p-5 md:text-4xl lg:text-[46px]"
           >
             {t("bookDemo")}
           </DemoBookingLink>

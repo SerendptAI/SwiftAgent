@@ -26,9 +26,7 @@ export function Panel({
           <p className="font-dm-mono text-[12px] text-[#7e7e7e] uppercase">
             {eyebrow}
           </p>
-          <h2 className="font-greed-narrow text-[16px] text-[#1f1f1f]">
-            {title}
-          </h2>
+          <h2 className="font-greed text-[16px] text-[#1f1f1f]">{title}</h2>
         </div>
         {action}
       </div>

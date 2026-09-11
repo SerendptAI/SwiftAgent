@@ -346,7 +346,7 @@ export function DashboardSearch() {
                       className="search-section my-2 rounded-md border-b border-gray-100 bg-[#F3F3F3] p-4 first:pt-0 last:border-b-0 last:pb-0"
                     >
                       <div className="mb-3 flex flex-wrap items-baseline gap-2 sm:gap-3">
-                        <h3 className="font-greed-narrow text-xl font-bold text-black sm:text-2xl">
+                        <h3 className="font-greed text-xl font-bold text-black sm:text-2xl">
                           {section.name}
                         </h3>
                         <span className="font-dm-mono max-w-full truncate text-xs font-semibold tracking-wider text-black uppercase">

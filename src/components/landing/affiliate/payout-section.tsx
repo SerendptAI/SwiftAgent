@@ -41,7 +41,7 @@ export function PayoutSection() {
           <p className="font-dm-mono text-sm tracking-[0.15em] text-[#7e7e7e] uppercase">
             {t("rewardLabel")}
           </p>
-          <p className="font-greed-narrow text-[64px] font-medium text-[#f2b035]">
+          <p className="font-greed text-[64px] font-medium text-[#f2b035]">
             20%
           </p>
           <p className="font-dm-mono text-[18px] text-[#1f1f1f] uppercase">
@@ -52,7 +52,7 @@ export function PayoutSection() {
         <div className="h-px w-full shrink-0 bg-black/15 md:h-30 md:w-px" />
 
         <div className="flex flex-1 flex-col gap-3">
-          <h2 className="font-greed-narrow text-[28px] font-medium text-[#1f1f1f] uppercase">
+          <h2 className="font-greed text-[28px] font-medium text-[#1f1f1f] uppercase">
             {t("heading")}
           </h2>
           <p className="font-stolzl text-base leading-[1.6] text-[#7e7e7e]">

@@ -132,7 +132,7 @@ export function FeaturesSection() {
             {t("eyebrow")}
           </span>
 
-          <h2 className="font-greed-narrow w-full max-w-2xl text-4xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase md:text-5xl lg:text-[66px]">
+          <h2 className="font-greed w-full max-w-2xl text-4xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase md:text-5xl lg:text-[66px]">
             {t("heading")}
           </h2>
         </div>
@@ -187,7 +187,7 @@ export function FeaturesSection() {
           </div>
 
           <div className="w-full max-md:hidden lg:w-[50%]">
-            <h3 className="font-greed-narrow text-3xl leading-[1.15] font-black tracking-tight whitespace-pre-line text-black uppercase md:text-5xl lg:text-6xl">
+            <h3 className="font-greed text-3xl leading-[1.15] font-black tracking-tight whitespace-pre-line text-black uppercase md:text-5xl lg:text-6xl">
               {t("quote")}
             </h3>
             <div className="absolute bottom-30 -left-20">

@@ -6,7 +6,7 @@ import { useState } from "react";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 
 const SECTION_HEADING =
-  "font-greed-narrow mb-3 text-[34px] leading-[0.95] font-medium tracking-[-0.68px] text-black uppercase";
+  "font-greed mb-3 text-[34px] leading-[0.95] font-medium tracking-[-0.68px] text-black uppercase";
 
 const SECTION_DESCRIPTION =
   "font-dm-mono mb-6 text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase";

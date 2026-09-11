@@ -102,7 +102,7 @@ export function AddCardModal({ onClose, onSubmit }: AddCardModalProps) {
           BACK
         </button>
 
-        <h2 className="font-greed-narrow mb-6 text-3xl font-bold tracking-tight text-black uppercase">
+        <h2 className="font-greed mb-6 text-3xl font-bold tracking-tight text-black uppercase">
           CARD DETAILS
         </h2>
 
@@ -144,7 +144,7 @@ export function AddCardModal({ onClose, onSubmit }: AddCardModalProps) {
           </div>
         </div>
 
-        <h2 className="font-greed-narrow mt-6 mb-4 text-2xl font-bold tracking-tight text-black uppercase">
+        <h2 className="font-greed mt-6 mb-4 text-2xl font-bold tracking-tight text-black uppercase">
           BILLING ADDRESS
         </h2>
 
@@ -226,7 +226,7 @@ export function AddCardModal({ onClose, onSubmit }: AddCardModalProps) {
 
         <button
           onClick={handleSubmit}
-          className="font-dm-mono mt-8 w-full rounded-lg bg-[#006BE5] py-3 text-sm font-bold tracking-widest text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#1E88E5]"
+          className="font-dm-mono mt-8 w-full rounded-lg bg-[#006BE5] py-3 text-sm font-bold tracking-widest text-white uppercase shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#1E88E5]"
         >
           ADD CARD
         </button>

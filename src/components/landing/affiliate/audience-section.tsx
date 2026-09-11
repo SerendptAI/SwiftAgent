@@ -71,7 +71,7 @@ export function AudienceSection() {
             <div className="flex flex-col gap-8">
               <h2
                 data-reveal
-                className="font-greed-narrow text-3xl leading-[1.1] font-medium tracking-[-0.02em] uppercase md:text-4xl"
+                className="font-greed text-3xl leading-[1.1] font-medium tracking-[-0.02em] uppercase md:text-4xl"
                 style={{ color: column.titleColor }}
               >
                 {t(`${column.id}.title`)}

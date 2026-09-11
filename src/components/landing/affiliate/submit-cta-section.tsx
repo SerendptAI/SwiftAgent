@@ -41,7 +41,7 @@ export function SubmitCtaSection() {
         className="mx-auto flex max-w-360 flex-col items-center gap-10 text-center"
       >
         <div className="flex flex-col items-center gap-4">
-          <h2 className="font-greed-narrow text-3xl leading-[1.1] font-medium tracking-[-0.02em] text-[#1f1f1f] uppercase md:text-5xl lg:text-[56px]">
+          <h2 className="font-greed text-3xl leading-[1.1] font-medium tracking-[-0.02em] text-[#1f1f1f] uppercase md:text-5xl lg:text-[56px]">
             {t("heading")}
           </h2>
           <p className="font-stolzl text-lg text-[#1f1f1f]/85 md:text-xl">

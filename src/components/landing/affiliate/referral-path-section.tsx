@@ -100,7 +100,7 @@ export function ReferralPathSection() {
           <p className="font-dm-mono text-sm tracking-[0.15em] text-[#6433cc] uppercase">
             {t("eyebrow")}
           </p>
-          <h2 className="font-greed-narrow max-w-3xl text-3xl leading-[1.1] font-medium tracking-[-0.02em] text-[#1f1f1f] uppercase md:text-4xl lg:text-5xl">
+          <h2 className="font-greed max-w-3xl text-3xl leading-[1.1] font-medium tracking-[-0.02em] text-[#1f1f1f] uppercase md:text-4xl lg:text-5xl">
             {t("heading")}
           </h2>
         </div>

@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
-import { LocaleSwitcher } from "@/components/locale-switcher";
 import { useCurrentUser } from "@/hooks/use-auth";
 import { Link } from "@/i18n/navigation";
 import { cn, getProfileImage } from "@/lib/utils";
@@ -17,6 +16,7 @@ import {
   isLandingNavLinkActive,
   LANDING_NAV_LINKS,
 } from "./nav-links";
+import { useLenis } from "./smooth-scroll-provider";
 
 interface NavigationMenuProps {
   isOpen: boolean;
@@ -33,6 +33,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
   const pathname = usePathname();
   const { data: user } = useCurrentUser();
   const t = useTranslations("nav");
+  const lenis = useLenis();
 
   const isLoggedIn = isMounted && !!user;
 
@@ -44,6 +45,25 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
     window.addEventListener("hashchange", updateHash);
     return () => window.removeEventListener("hashchange", updateHash);
   }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const { overflow } = document.body.style;
+    document.body.style.overflow = "hidden";
+    // Lenis drives scrolling itself, bypassing native overflow, so it needs
+    // to be stopped independently of the body's overflow lock.
+    lenis?.stop();
+    // The chatbot widget mounts itself outside this component with its own
+    // high z-index, so the open menu needs a hook (see globals.css) to sit
+    // above it instead of being covered by the widget's launcher button.
+    document.body.setAttribute("data-mobile-menu-open", "true");
+    return () => {
+      document.body.style.overflow = overflow;
+      lenis?.start();
+      document.body.removeAttribute("data-mobile-menu-open");
+    };
+  }, [isOpen, lenis]);
 
   useEffect(() => {
     if (!overlayRef.current || !containerRef.current || !linksRef.current)
@@ -136,7 +156,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
           offset plus 24px of breathing room at the bottom.
         */}
         <div className="mx-auto max-h-[calc(100dvh-7.125rem)] w-full max-w-360 overflow-y-auto border-r border-b border-l border-black bg-white pt-8 md:max-h-[calc(100dvh-7.625rem)]">
-          <div ref={linksRef} className="flex flex-col">
+          <div ref={linksRef} className="flex flex-col gap-1">
             {LANDING_NAV_LINKS.map((link) => {
               const isActive = isLandingNavLinkActive(
                 link.href,
@@ -148,11 +168,11 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                 const isOpen = openDropdown === link.id;
 
                 return (
-                  <div key={link.href} className="m-4">
+                  <div key={link.href} className="mx-4">
                     <button
                       onClick={() => setOpenDropdown(isOpen ? null : link.id)}
                       className={cn(
-                        "font-dm-mono flex w-full items-center justify-between px-6 py-3 text-base font-normal tracking-[0.2em] text-gray-900 uppercase transition-colors hover:bg-gray-50",
+                        "flex w-full items-center justify-between px-6 py-3 text-base font-normal tracking-[10%] text-gray-900 transition-colors hover:bg-gray-50",
                         isActive &&
                           "border border-black bg-gray-50 font-medium",
                       )}
@@ -175,7 +195,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                       )}
                     >
                       <div className="overflow-hidden">
-                        <div className="flex flex-col gap-5 border border-t-0 border-black px-6 py-5">
+                        <div className="flex flex-col gap-5 border border-black px-6 py-5">
                           {link.dropdown.previewImage && (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img
@@ -185,6 +205,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                               style={{ aspectRatio: "265 / 100" }}
                             />
                           )}
+
                           <div className="flex flex-col gap-4">
                             {link.dropdown.links.map((item) => {
                               const isExternal = isExternalHref(item.href);
@@ -199,7 +220,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                                       ? "noopener noreferrer"
                                       : undefined
                                   }
-                                  className="font-dm-mono flex items-center gap-2 text-sm tracking-[0.12em] text-black uppercase hover:opacity-60"
+                                  className="flex items-center gap-2 text-sm tracking-[10%] text-black hover:opacity-60"
                                 >
                                   {t(`dropdowns.${link.id}.links.${item.id}`)}
                                   {item.arrow && (
@@ -226,7 +247,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                   onClick={onClose}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
-                    "font-dm-mono m-4 px-6 py-3 text-base font-normal tracking-[0.2em] text-gray-900 uppercase transition-colors hover:bg-gray-50",
+                    "mx-4 px-6 py-3 text-base font-normal tracking-[10%] text-gray-900 transition-colors hover:bg-gray-50",
                     isActive && "border border-black bg-gray-50 font-medium",
                   )}
                 >
@@ -235,16 +256,12 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
               );
             })}
 
-            <div className="px-4 pt-4">
-              <LocaleSwitcher variant="row" onSwitch={onClose} />
-            </div>
-
-            <div className="p-4">
+            <div className="mt-2 px-4 pb-4">
               {isLoggedIn ? (
                 <Link
                   href="/dashboard"
                   onClick={onClose}
-                  className="font-dm-mono flex w-full items-center justify-center gap-3 rounded-lg border bg-[#F2B035] px-8 py-3 text-base font-normal tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-800"
+                  className="flex w-full items-center justify-center gap-3 rounded-lg border bg-[#F2B035] px-8 py-3 text-base font-normal tracking-[10%] text-black shadow-[-4px_4px_0px_0px_#000000] transition-all hover:bg-gray-800"
                 >
                   <span className="relative h-7 w-7 shrink-0 overflow-hidden rounded-full border border-black/10">
                     <Image
@@ -265,7 +282,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                   <Link
                     href="/login"
                     onClick={onClose}
-                    className="font-dm-mono flex w-full items-center justify-center gap-3 rounded-lg border bg-[#F2B035] px-8 py-3 text-base font-normal tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:brightness-95"
+                    className="flex w-full items-center justify-center gap-3 rounded-lg border bg-[#F2B035] px-8 py-3 text-base font-normal tracking-[10%] text-black shadow-[-4px_4px_0px_0px_#000000] transition-all hover:brightness-95"
                   >
                     <Icons.AuthLogin className="size-5 shrink-0" />
                     {t("login")}
@@ -273,7 +290,7 @@ export function NavigationMenu({ isOpen, onClose }: NavigationMenuProps) {
                   <Link
                     href="/signup"
                     onClick={onClose}
-                    className="font-dm-mono flex w-full items-center justify-center gap-3 rounded-lg border border-black bg-white px-8 py-3 text-base font-normal tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-gray-50"
+                    className="flex w-full items-center justify-center gap-3 rounded-lg border border-black bg-white px-8 py-3 text-base font-normal tracking-[10%] text-black shadow-[-4px_4px_0px_0px_#000000] transition-all hover:bg-gray-50"
                   >
                     <Icons.AuthSignUp className="size-5 shrink-0" />
                     {t("signup")}

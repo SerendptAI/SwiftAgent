@@ -86,7 +86,7 @@ function StatCard({
           )}
 
           <div className="flex items-end justify-between gap-3">
-            <span className="font-greed-narrow font-condensed text-4xl font-medium tracking-tight text-gray-900 sm:text-5xl">
+            <span className="font-greed font-condensed text-4xl font-medium tracking-tight text-gray-900 sm:text-5xl">
               {isLoading ? "-" : value}
             </span>
             {pending && (
@@ -104,7 +104,7 @@ function StatCard({
                 )}
                 <span
                   className={cn(
-                    "font-greed-narrow font-semi-bold text-base sm:text-lg",
+                    "font-greed font-semi-bold text-base sm:text-lg",
                     isUp ? "text-[#008751]" : "text-[#F25430]",
                   )}
                 >

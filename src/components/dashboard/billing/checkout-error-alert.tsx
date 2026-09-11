@@ -42,7 +42,7 @@ export function CheckoutErrorAlert({
             type="button"
             onClick={portal.open}
             disabled={portal.isPending}
-            className="font-dm-mono inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#006BE5] px-6 py-2.5 text-xs font-bold tracking-wide text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#0058C0] disabled:opacity-50 sm:w-auto sm:self-start sm:text-sm"
+            className="font-dm-mono inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#006BE5] px-6 py-2.5 text-xs font-bold tracking-wide text-white uppercase shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#0058C0] disabled:opacity-50 sm:w-auto sm:self-start sm:text-sm"
           >
             {portal.isPending ? (
               <>

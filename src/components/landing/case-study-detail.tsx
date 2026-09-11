@@ -314,7 +314,7 @@ export function CaseStudyDetail({
           <div className="mb-6 flex items-center gap-6">
             {/* The partner name is the page's subject, so it carries the h1;
                 the size classes keep the heading looking exactly as before. */}
-            <h1 className="font-greed-narrow text-4xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase sm:text-5xl md:text-[56px] lg:text-[66px]">
+            <h1 className="font-greed text-4xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase sm:text-5xl md:text-[56px] lg:text-[66px]">
               {caseStudy.name}
             </h1>
             <ShareButton caseStudyId={caseStudy.id} />

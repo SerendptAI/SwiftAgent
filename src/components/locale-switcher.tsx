@@ -34,17 +34,11 @@ function rememberLocale(locale: string) {
 }
 
 interface LocaleSwitcherProps {
-  /** `dropdown` for the desktop navbar, `row` for the mobile menu. */
-  variant?: "dropdown" | "row";
   className?: string;
   onSwitch?: () => void;
 }
 
-export function LocaleSwitcher({
-  variant = "dropdown",
-  className,
-  onSwitch,
-}: LocaleSwitcherProps) {
+export function LocaleSwitcher({ className, onSwitch }: LocaleSwitcherProps) {
   const locale = useLocale();
   const t = useTranslations("nav");
   const router = useRouter();
@@ -85,35 +79,11 @@ export function LocaleSwitcher({
     startTransition(() => router.replace(pathname, { locale: next }));
   }
 
-  if (variant === "row") {
-    return (
-      <div
-        className={cn("flex items-center gap-2", className)}
-        role="group"
-        aria-label={t("changeLanguage")}
-      >
-        {routing.locales.map((option) => (
-          <button
-            key={option}
-            onClick={() => switchTo(option)}
-            aria-current={option === locale ? "true" : undefined}
-            lang={option}
-            className={cn(
-              "font-dm-mono flex-1 rounded-lg border px-3 py-2 text-sm tracking-[0.15em] uppercase transition-colors",
-              option === locale
-                ? "border-black bg-black text-white"
-                : "border-black/30 text-black hover:border-black",
-            )}
-          >
-            {option}
-          </button>
-        ))}
-      </div>
-    );
-  }
-
   return (
-    <div ref={containerRef} className={cn("relative", className)}>
+    <div
+      ref={containerRef}
+      className={cn("font-jetbrains relative", className)}
+    >
       <button
         onClick={() => setIsOpen((prev) => !prev)}
         aria-label={t("changeLanguage")}
@@ -121,12 +91,15 @@ export function LocaleSwitcher({
         aria-haspopup="menu"
         disabled={isPending}
         className={cn(
-          "font-dm-mono flex h-9 cursor-pointer items-center gap-1.5 rounded-lg border border-[#BDBDBD]/50 bg-white px-3 text-sm font-medium tracking-[0.15em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-black hover:text-white disabled:opacity-50",
+          "flex h-10 cursor-pointer items-center gap-1.5 rounded-md border border-black bg-white px-2.5 text-base font-medium tracking-[10%] text-black uppercase shadow-[-4px_4px_0px_0px_#000000] transition-all hover:bg-black hover:text-white disabled:opacity-50 sm:rounded-lg md:px-3 md:text-lg",
         )}
       >
         {locale}
         <Icons.NavChevronDown
-          className={cn("size-4 transition-transform", isOpen && "rotate-180")}
+          className={cn(
+            "size-3.5 transition-transform",
+            isOpen && "rotate-180",
+          )}
         />
       </button>
 
@@ -146,8 +119,10 @@ export function LocaleSwitcher({
             onClick={() => switchTo(option)}
             lang={option}
             className={cn(
-              "font-dm-mono flex w-full items-center justify-between px-4 py-2 text-left text-sm text-black/80 transition-colors hover:bg-gray-50 hover:text-black",
-              option === locale && "font-medium text-black",
+              "flex w-full cursor-pointer items-center justify-between px-4 py-2 text-left text-base text-black/70 transition-colors hover:bg-gray-200 hover:text-black",
+              {
+                "font-medium text-black": option === locale,
+              },
             )}
           >
             {LOCALE_NAMES[option] ?? option}

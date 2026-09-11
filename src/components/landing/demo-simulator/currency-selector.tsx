@@ -27,7 +27,7 @@ export function CurrencySelector({
       <div className="relative">
         <button
           onClick={onToggle}
-          className="font-greed-narrow flex items-center gap-2.5 border border-black bg-[#F2B035] px-8 py-1 text-3xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase shadow-[-4px_4px_0px_0px_#000000] transition-shadow md:text-4xl"
+          className="font-greed flex items-center gap-2.5 border border-black bg-[#F2B035] px-8 py-1 text-3xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase shadow-[-4px_4px_0px_0px_#000000] transition-shadow md:text-4xl"
         >
           {currency}
           <span>

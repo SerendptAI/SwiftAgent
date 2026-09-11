@@ -54,7 +54,7 @@ function SectionError({ onRetry }: { onRetry: () => void }) {
     <div
       className={cn(CARD, "flex flex-col items-center gap-3 py-16 text-center")}
     >
-      <h2 className="font-greed-narrow text-[18px] text-[#1f1f1f]">
+      <h2 className="font-greed text-[18px] text-[#1f1f1f]">
         Analytics unavailable
       </h2>
       <p className="font-stolzl max-w-md text-[14px] text-[#7e7e7e]">

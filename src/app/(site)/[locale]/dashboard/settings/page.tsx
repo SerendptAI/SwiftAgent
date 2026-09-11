@@ -64,7 +64,7 @@ function EditableField({
         <button
           onClick={handleUpdate}
           disabled={isPending}
-          className="flex h-10 items-center justify-center rounded-lg bg-[#2196F3] px-5 text-xs font-bold text-white shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#1E88E5] disabled:opacity-50 sm:h-auto sm:px-8 sm:py-2"
+          className="flex h-10 items-center justify-center rounded-lg bg-[#2196F3] px-5 text-xs font-bold text-white shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#1E88E5] disabled:opacity-50 sm:h-auto sm:px-8 sm:py-2"
         >
           {isPending ? (
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -184,7 +184,7 @@ export default function SettingsPage() {
             type="button"
             onClick={() => pfpInputRef.current?.click()}
             disabled={isUploadingPfp}
-            className="font-dm-mono mt-2 self-start rounded-lg bg-[#2196F3] px-6 py-2 text-xs font-bold text-white shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#1E88E5] disabled:opacity-50"
+            className="font-dm-mono mt-2 self-start rounded-lg bg-[#2196F3] px-6 py-2 text-xs font-bold text-white shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#1E88E5] disabled:opacity-50"
           >
             {isUploadingPfp ? (
               <span className="flex items-center gap-2">

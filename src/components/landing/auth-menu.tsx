@@ -48,14 +48,17 @@ export function AuthMenu({ className }: AuthMenuProps) {
   }, [isOpen]);
 
   return (
-    <div ref={containerRef} className={cn("relative", className)}>
+    <div
+      ref={containerRef}
+      className={cn("font-jetbrains relative", className)}
+    >
       <button
         onClick={() => setIsOpen((prev) => !prev)}
         aria-expanded={isOpen}
         aria-haspopup="menu"
         // 236px is the design width, which fits the English label. Longer
         // translations grow the button rather than spilling out of it.
-        className="font-dm-mono flex h-12 min-w-59 cursor-pointer items-center justify-center gap-2.5 rounded-lg bg-[#F2B035] px-5 text-base font-medium tracking-[0.15em] whitespace-nowrap text-[#1f1f1f] uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:brightness-95"
+        className="flex h-12 min-w-59 cursor-pointer items-center justify-center gap-2.5 rounded-lg bg-[#F2B035] px-5 text-base font-medium tracking-[10%] whitespace-nowrap text-[#1f1f1f] shadow-[-4px_4px_0px_0px_#000000] transition-all hover:brightness-95"
       >
         {t("loginSignUp")}
         <Icons.NavChevronDown
@@ -81,7 +84,7 @@ export function AuthMenu({ className }: AuthMenuProps) {
             // pulled out of the tab order while it is hidden.
             tabIndex={isOpen ? undefined : -1}
             onClick={() => setIsOpen(false)}
-            className="font-dm-mono flex h-9.5 items-center gap-[44px] rounded-lg pl-[13px] text-base tracking-[0.1em] text-black uppercase transition-colors hover:bg-[#F2B035]/45 focus-visible:bg-[#F2B035]/45 focus-visible:outline-none"
+            className="flex h-9.5 items-center gap-[44px] rounded-lg pl-[13px] text-base tracking-[10%] text-black transition-colors hover:bg-[#F2B035]/45 focus-visible:bg-[#F2B035]/45 focus-visible:outline-none"
           >
             <Icon className="size-6 shrink-0" />
             {t(id)}

@@ -119,7 +119,7 @@ export default function RegisterCompanyPage() {
             {step === "otp" ? (
               <div className="flex flex-col items-center gap-10">
                 <aside className="text-center">
-                  <h1 className="font-greed-narrow text-4xl leading-[1.05] tracking-tight text-gray-900 uppercase md:text-5xl lg:text-6xl">
+                  <h1 className="font-greed text-4xl leading-[1.05] tracking-tight text-gray-900 uppercase md:text-5xl lg:text-6xl">
                     Verify your
                     <br />
                     email
@@ -140,7 +140,7 @@ export default function RegisterCompanyPage() {
               </div>
             ) : (
               <>
-                <h1 className="font-greed-narrow text-4xl leading-[1.05] tracking-tight text-gray-900 uppercase md:text-5xl lg:text-6xl">
+                <h1 className="font-greed text-4xl leading-[1.05] tracking-tight text-gray-900 uppercase md:text-5xl lg:text-6xl">
                   SWIFT AGENTS
                   <br />
                   REGISTRATION FORM

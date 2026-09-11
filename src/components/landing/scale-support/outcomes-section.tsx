@@ -17,7 +17,7 @@ export function OutcomesSection() {
           {t("eyebrow")}
         </p>
 
-        <h2 className="font-greed-narrow max-w-280 text-4xl leading-[1.34] font-medium tracking-[-2%] uppercase md:text-5xl lg:text-[66px]">
+        <h2 className="font-greed max-w-280 text-4xl leading-[1.34] font-medium tracking-[-2%] uppercase md:text-5xl lg:text-[66px]">
           {t("heading")}
         </h2>
 
@@ -38,7 +38,7 @@ export function OutcomesSection() {
           ))}
         </div>
 
-        <p className="font-greed-narrow mt-12 max-w-2xl text-2xl leading-[1.4] font-medium tracking-[-2%] uppercase md:mt-16 md:text-3xl lg:text-4xl">
+        <p className="font-greed mt-12 max-w-2xl text-2xl leading-[1.4] font-medium tracking-[-2%] uppercase md:mt-16 md:text-3xl lg:text-4xl">
           This isn&apos;t another support tool. It&apos;s a customer support
           automation system.
         </p>

@@ -71,7 +71,7 @@ export function ProductsSection() {
           <p className="font-dm-mono mb-8 text-base leading-[1.2] tracking-[10%] text-black/60 uppercase md:text-lg">
             {t("eyebrow")}
           </p>
-          <h2 className="font-greed-narrow mb-8 text-4xl leading-[1.34] font-medium tracking-[-2%] uppercase md:mb-14 md:text-5xl lg:text-[66px]">
+          <h2 className="font-greed mb-8 text-4xl leading-[1.34] font-medium tracking-[-2%] uppercase md:mb-14 md:text-5xl lg:text-[66px]">
             {t("app.heading")}
           </h2>
 
@@ -100,7 +100,7 @@ export function ProductsSection() {
         </div>
 
         <div id="sdks">
-          <h2 className="font-greed-narrow mb-8 text-4xl leading-[1.34] font-medium tracking-[-2%] uppercase md:mb-14 md:text-5xl lg:text-right lg:text-[66px]">
+          <h2 className="font-greed mb-8 text-4xl leading-[1.34] font-medium tracking-[-2%] uppercase md:mb-14 md:text-5xl lg:text-right lg:text-[66px]">
             {t("sdk.heading")}
           </h2>
 
