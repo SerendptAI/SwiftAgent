@@ -21,7 +21,7 @@ export function AnalyticsNavbar() {
         <div className="relative size-9 overflow-hidden rounded-[4px] border-2 border-[rgba(31,31,31,0.1)]">
           <Image src="/favicon/favicon.svg" alt="Swift Agents" fill priority />
         </div>
-        <span className="font-greed-narrow text-[20px] tracking-[-0.4px] text-[#1f1f1f]">
+        <span className="font-greed text-[20px] tracking-[-0.4px] text-[#1f1f1f]">
           SWIFT AGENTS
         </span>
       </div>

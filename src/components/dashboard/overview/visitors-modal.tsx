@@ -49,7 +49,7 @@ function renderPieLabel(props: Record<string, unknown>) {
           fontSize={13}
           fontWeight={700}
           fill="white"
-          style={{ fontFamily: "var(--font-greed-narrow)" }}
+          style={{ fontFamily: "var(--font-greed)" }}
         >
           {name}
         </tspan>
@@ -114,7 +114,7 @@ export function VisitorsModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="m-4 flex items-center justify-between rounded-md bg-[#F3F3F3] px-6 py-3">
-          <h2 className="font-greed-narrow text-3xl font-bold text-gray-900">
+          <h2 className="font-greed text-3xl font-bold text-gray-900">
             Visitors
           </h2>
           <button

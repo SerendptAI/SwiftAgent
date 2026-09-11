@@ -153,7 +153,7 @@ export function AnswerBoundariesStep({
           <button
             key={field.id}
             onClick={() => removeIgnored(index)}
-            className="group flex items-center gap-2 rounded-xl bg-white px-2.5 py-2 text-xs font-bold text-gray-900 uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:translate-y-[2px] hover:shadow-[-2px_2px_0px_0px_#000000] sm:gap-3 sm:px-3 sm:py-3 sm:text-sm sm:shadow-[-4px_4px_0px_0px_#000000]"
+            className="group flex items-center gap-2 rounded-xl bg-white px-2.5 py-2 text-xs font-bold text-gray-900 uppercase shadow-[-4px_4px_0px_0px_#000000] transition-all hover:translate-y-[2px] hover:shadow-[-2px_2px_0px_0px_#000000] sm:gap-3 sm:px-3 sm:py-3 sm:text-sm sm:shadow-[-4px_4px_0px_0px_#000000]"
           >
             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#FF5F3D] text-white">
               <X className="h-3 w-3" />
@@ -175,7 +175,7 @@ export function AnswerBoundariesStep({
           <button
             key={field.id}
             onClick={() => addIgnored(index)}
-            className="group flex items-center gap-2 rounded-xl bg-white px-2.5 py-2 text-xs font-bold text-gray-900 uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:translate-y-[2px] hover:shadow-[-2px_2px_0px_0px_#000000] sm:gap-3 sm:px-3 sm:py-3 sm:text-sm sm:shadow-[-4px_4px_0px_0px_#000000]"
+            className="group flex items-center gap-2 rounded-xl bg-white px-2.5 py-2 text-xs font-bold text-gray-900 uppercase shadow-[-4px_4px_0px_0px_#000000] transition-all hover:translate-y-[2px] hover:shadow-[-2px_2px_0px_0px_#000000] sm:gap-3 sm:px-3 sm:py-3 sm:text-sm sm:shadow-[-4px_4px_0px_0px_#000000]"
           >
             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-200 text-black">
               <Plus className="h-3 w-3" />

@@ -36,7 +36,7 @@ export function Phone() {
         </div>
 
         <div className="mb-6 w-full px-6">
-          <div className="flex items-center justify-between rounded-[20px] bg-gray-50 px-6 py-2 shadow-[-3px_3px_0px_0px_#000000]">
+          <div className="flex items-center justify-between rounded-[20px] bg-gray-50 px-6 py-2 shadow-[-4px_4px_0px_0px_#000000]">
             <button className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300">
               <MoreHorizontal className="h-5 w-5" />
             </button>

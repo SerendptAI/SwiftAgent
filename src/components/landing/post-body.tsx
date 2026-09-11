@@ -13,7 +13,7 @@ const components: PortableTextComponents = {
       </p>
     ),
     h2: ({ children }) => (
-      <h2 className="font-greed-narrow mt-14 mb-5 text-2xl leading-[1.2] font-medium tracking-[-1%] text-black uppercase md:text-3xl">
+      <h2 className="font-greed mt-14 mb-5 text-2xl leading-[1.2] font-medium tracking-[-1%] text-black uppercase md:text-3xl">
         {children}
       </h2>
     ),

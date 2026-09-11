@@ -1,14 +1,6 @@
 {
   "hero": {
-    "headline": {
-      "customer": "Huduma",
-      "support": "kwa wateja",
-      "that": "bila",
-      "doesnt": "kuongeza",
-      "scale": "idadi ya",
-      "your": "wafanyakazi",
-      "headcount": "wako"
-    },
+    "headline": "Huduma kwa wateja bila kuongeza idadi ya wafanyakazi wako",
     "subtitle": "Swift Agents husaidia biashara kuendesha mazungumzo na wateja kiotomatiki, kupunguza mzigo wa timu ya huduma, na kutoa huduma ya haraka zaidi katika kila njia ya mawasiliano.",
     "callouts": {
       "hours": "Tayari kwa saa chache — si wiki.",

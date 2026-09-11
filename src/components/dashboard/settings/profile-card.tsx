@@ -243,7 +243,7 @@ export function ProfileCard({
                 <Image src="/logout.svg" alt="Logout" width={80} height={80} />
               </div>
 
-              <h2 className="font-greed-narrow mb-8 line-clamp-6 text-center text-3xl font-bold tracking-tight text-black uppercase sm:text-4xl">
+              <h2 className="font-greed mb-8 line-clamp-6 text-center text-3xl font-bold tracking-tight text-black uppercase sm:text-4xl">
                 ARE YOU SURE YOU
                 <br />
                 WANT TO LOG OUT?
@@ -253,13 +253,13 @@ export function ProfileCard({
                 <button
                   onClick={handleLogout}
                   disabled={logoutMutation.isPending}
-                  className="font-dm-mono w-full rounded-lg bg-[#006BE5] py-2 text-sm font-bold tracking-widest text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#1E88E5] disabled:opacity-50"
+                  className="font-dm-mono w-full rounded-lg bg-[#006BE5] py-2 text-sm font-bold tracking-widest text-white uppercase shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#1E88E5] disabled:opacity-50"
                 >
                   {logoutMutation.isPending ? "LOGGING OUT..." : "YES"}
                 </button>
                 <button
                   onClick={() => setShowLogoutModal(false)}
-                  className="font-dm-mono w-full rounded-lg border border-gray-200 bg-gray-100 py-2 text-sm font-bold tracking-widest text-gray-900 uppercase shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-gray-200"
+                  className="font-dm-mono w-full rounded-lg border border-gray-200 bg-gray-100 py-2 text-sm font-bold tracking-widest text-gray-900 uppercase shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-gray-200"
                 >
                   NO
                 </button>

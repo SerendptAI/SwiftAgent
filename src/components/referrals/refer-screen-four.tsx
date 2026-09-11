@@ -35,7 +35,7 @@ export function ReferScreenFour() {
 
       <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1180px] flex-col items-center px-4 pt-[128px] pb-16 text-center sm:px-5 md:pt-[160px] md:pb-24">
         <div className="mt-[42px] w-full max-w-[842px] rounded-[28px] border border-black/25 bg-white px-4 pt-18 pb-12 text-center sm:mt-[50px] sm:px-6 md:mt-[230px] md:rounded-[49px] md:px-8 md:pt-24 md:pb-20">
-          <h1 className="font-greed-narrow w-full text-center text-[42px] leading-[1.08] font-medium tracking-[-0.02em] text-black uppercase sm:text-[52px] md:text-[60px] md:leading-[1.34]">
+          <h1 className="font-greed w-full text-center text-[42px] leading-[1.08] font-medium tracking-[-0.02em] text-black uppercase sm:text-[52px] md:text-[60px] md:leading-[1.34]">
             {t("heading")}
           </h1>
 

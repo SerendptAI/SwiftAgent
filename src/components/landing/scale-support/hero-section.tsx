@@ -117,7 +117,7 @@ export function HeroSection() {
         <div className="flex w-full flex-col justify-center py-12 md:w-[78%] md:px-10 md:py-0 lg:w-[55%] lg:px-16">
           <h1
             ref={headlineRef}
-            className="font-greed-narrow flex flex-col gap-6 text-[50px] leading-normal font-medium tracking-[-2%] uppercase md:text-5xl lg:text-[56px] xl:text-[65px]"
+            className="font-greed flex flex-col gap-6 text-[50px] leading-normal font-medium tracking-[-2%] uppercase md:text-5xl lg:text-[56px] xl:text-[65px]"
           >
             <div className="xs:flex-row xs:items-center flex flex-col flex-wrap gap-6">
               <span

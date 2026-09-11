@@ -551,7 +551,7 @@ export function PrivacyContent() {
         <span className="mb-4 inline-block rounded border border-[#7CA2FE]/20 bg-[#7CA2FE]/10 px-3 py-1 font-mono text-[10px] font-bold tracking-widest text-[#7CA2FE] uppercase">
           Legal Portal
         </span>
-        <h1 className="font-greed-narrow mb-6 text-4xl font-medium tracking-tight text-black uppercase sm:text-5xl md:text-6xl">
+        <h1 className="font-greed mb-6 text-4xl font-medium tracking-tight text-black uppercase sm:text-5xl md:text-6xl">
           Privacy Policy
         </h1>
         <p className="font-mono text-base text-gray-500">
@@ -593,7 +593,7 @@ export function PrivacyContent() {
               id={section.id}
               className="scroll-mt-28 border-b border-black/5 pb-12 last:border-0"
             >
-              <h2 className="font-greed-narrow mb-6 text-2xl font-semibold text-black uppercase">
+              <h2 className="font-greed mb-6 text-2xl font-semibold text-black uppercase">
                 {section.title}
               </h2>
               <div className="prose max-w-none font-sans text-gray-600">

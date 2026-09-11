@@ -30,7 +30,7 @@ export function RoiCalloutBanner({
         <p className="font-dm-mono mb-4 text-sm tracking-[0.2em] text-white/70 uppercase md:text-base">
           {eyebrow}
         </p>
-        <h2 className="font-greed-narrow max-w-200 text-3xl leading-[1.34] font-medium tracking-[-2%] uppercase md:text-4xl lg:text-5xl">
+        <h2 className="font-greed max-w-200 text-3xl leading-[1.34] font-medium tracking-[-2%] uppercase md:text-4xl lg:text-5xl">
           {heading}
         </h2>
         <p className="font-stolzl mt-6 max-w-xl text-base leading-relaxed text-white/85 md:text-lg">

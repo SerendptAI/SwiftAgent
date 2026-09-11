@@ -37,7 +37,7 @@ export function FteAvoidedPanel({
         </p>
 
         <div className="flex min-w-0 flex-col gap-6 sm:flex-row sm:items-center">
-          <div className="font-greed-narrow text-8xl leading-none font-medium tracking-[-2%] text-white md:text-9xl lg:text-[128px]">
+          <div className="font-greed text-8xl leading-none font-medium tracking-[-2%] text-white md:text-9xl lg:text-[128px]">
             {fmtDec(fteAvoided)}
           </div>
 

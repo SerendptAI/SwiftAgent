@@ -17,7 +17,7 @@ export function WhyTeamsSection() {
           <p className="font-dm-mono mb-4 text-base leading-[1.2] tracking-[10%] text-gray-400 uppercase md:text-lg">
             {t("eyebrow")}
           </p>
-          <h2 className="font-greed-narrow max-w-280 text-4xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase md:text-5xl lg:text-[66px]">
+          <h2 className="font-greed max-w-280 text-4xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase md:text-5xl lg:text-[66px]">
             {t("heading")}
           </h2>
           <p className="font-stolzl mt-8 max-w-2xl text-base leading-relaxed text-black/70 md:text-lg">

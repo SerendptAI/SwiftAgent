@@ -122,7 +122,7 @@ export function CheckoutModal({
         <div className="min-w-0">
           <h2
             id="checkout-modal-title"
-            className="font-greed-narrow text-2xl leading-tight font-medium tracking-[-0.02em] text-black uppercase sm:text-[30px]"
+            className="font-greed text-2xl leading-tight font-medium tracking-[-0.02em] text-black uppercase sm:text-[30px]"
           >
             Subscribe to {plan.name}
           </h2>
@@ -161,7 +161,7 @@ export function CheckoutModal({
             type="button"
             onClick={handleConfirm}
             disabled={isSubmitting}
-            className="font-dm-mono inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#006BE5] px-6 text-sm tracking-[0.08em] text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#005fca] disabled:opacity-60 sm:h-10"
+            className="font-dm-mono inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#006BE5] px-6 text-sm tracking-[0.08em] text-white uppercase shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#005fca] disabled:opacity-60 sm:h-10"
           >
             {isSubmitting ? (
               <>

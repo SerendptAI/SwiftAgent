@@ -21,14 +21,14 @@ export function IndustriesSection() {
 
   return (
     <section className="w-full bg-white px-6 py-16 md:px-10 md:py-20 lg:px-16 lg:py-26">
-      <div className="mx-auto max-w-360">
-        <div className="mb-10 text-center md:mb-14 md:text-left">
-          <p className="font-dm-mono mb-4 text-xs tracking-[0.2em] text-gray-500 uppercase md:text-sm">
+      <div className="mx-auto max-w-360 space-y-12">
+        <div className="space-y-6 text-center md:mb-14 md:text-left">
+          <p className="font-press-start text-base leading-[1.2] font-medium tracking-[10%] text-[#03A84E] uppercase md:text-lg">
             {t("eyebrow")}
           </p>
           {/* The newline in the copy only becomes a break from md up, which is
               what the responsive <br> it replaced did. */}
-          <h2 className="font-greed-narrow max-w-240 text-4xl leading-[1.34] font-medium tracking-[-2%] whitespace-normal text-black uppercase md:text-5xl md:whitespace-pre-line lg:text-[66px]">
+          <h2 className="font-greed text-4xl leading-[1.42] font-semibold tracking-[-2%] whitespace-pre-line text-black capitalize md:text-5xl">
             {t("heading")}
           </h2>
         </div>
@@ -45,7 +45,7 @@ export function IndustriesSection() {
                 alt={t(`items.${industry.id}.label`)}
                 className="aspect-297/185 h-auto w-auto object-cover"
               />
-              <p className="font-stolzl text-base leading-normal tracking-[2%] text-black xl:text-lg">
+              <p className="text-base leading-normal tracking-[2%] text-black xl:text-lg">
                 <span className="font-bold">
                   {t(`items.${industry.id}.label`)}:
                 </span>{" "}

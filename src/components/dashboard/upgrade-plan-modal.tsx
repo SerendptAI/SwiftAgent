@@ -178,7 +178,7 @@ export function UpgradePlanModal({
 
         <h2
           id="upgrade-plan-title"
-          className="font-greed-narrow mx-auto mt-[46px] w-[447px] max-w-full text-center text-[40px] leading-[1.1] font-semibold tracking-[-0.8px] text-black"
+          className="font-greed mx-auto mt-[46px] w-[447px] max-w-full text-center text-[40px] leading-[1.1] font-semibold tracking-[-0.8px] text-black"
         >
           Upgrade your plan to have access to that
         </h2>

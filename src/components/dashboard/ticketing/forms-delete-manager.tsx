@@ -107,7 +107,7 @@ function ConfirmBody({
   return (
     <div className="flex flex-col items-center px-6 pt-14 pb-10">
       <PixelTrashIcon className="h-[94px] w-[94px] text-black" />
-      <h3 className="font-greed-narrow mt-7 text-center text-[44px] leading-[1.05] font-medium text-black">
+      <h3 className="font-greed mt-7 text-center text-[44px] leading-[1.05] font-medium text-black">
         Are you sure
         <br />
         you want to delete
@@ -145,7 +145,7 @@ function SuccessBody({ path }: { path: string }) {
           </svg>
         </span>
       </div>
-      <h3 className="font-greed-narrow mt-7 text-center text-[44px] leading-[1.05] font-medium text-black">
+      <h3 className="font-greed mt-7 text-center text-[44px] leading-[1.05] font-medium text-black">
         Deletion
         <br />
         Successful

@@ -28,7 +28,7 @@ function NorthStarCard({
           <p className="font-dm-mono text-[14px] text-[#6433cc] uppercase">
             {northStar.eyebrow}
           </p>
-          <h2 className="font-greed-narrow text-[24px] text-[#1f1f1f]">
+          <h2 className="font-greed text-[24px] text-[#1f1f1f]">
             {northStar.title}
           </h2>
         </div>
@@ -72,7 +72,7 @@ function CompaniesTable({
 
   return (
     <section className={cn(CARD, "flex flex-col gap-3")}>
-      <h2 className="font-greed-narrow text-[16px] text-[#1f1f1f]">
+      <h2 className="font-greed text-[16px] text-[#1f1f1f]">
         Top Companies by Conversation Volume
       </h2>
       <table className="w-full border-collapse">

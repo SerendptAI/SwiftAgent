@@ -99,7 +99,7 @@ export default async function HomePage({ params }: HomePageProps) {
           __html: JSON.stringify(softwareApplicationJsonLd(locale)),
         }}
       />
-      <main>
+      <main className="font-jetbrains">
         <HeroSection />
         <TrustedBySection />
         <LiveInHoursBanner />

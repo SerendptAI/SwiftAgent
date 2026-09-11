@@ -3,6 +3,7 @@ import {
   Instrument_Sans,
   Inter,
   JetBrains_Mono,
+  Press_Start_2P,
 } from "next/font/google";
 import localFont from "next/font/local";
 
@@ -15,6 +16,19 @@ const fontSans = Inter({
 const fontMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
+  fallback: ["system-ui", "arial"],
+});
+
+const fontJetBrains = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains",
+  fallback: ["system-ui", "arial"],
+});
+
+const fontPressStart2P = Press_Start_2P({
+  subsets: ["latin"],
+  variable: "--font-press-start",
+  weight: "400",
   fallback: ["system-ui", "arial"],
 });
 
@@ -31,16 +45,18 @@ const fontDmMono = DM_Mono({
   fallback: ["system-ui", "arial"],
 });
 
-const fontGreedNarrow = localFont({
-  src: "../../public/fonts/GreedNarrow-Medium.otf",
-  variable: "--font-greed-narrow",
+const fontGreedStandard = localFont({
+  src: "../../public/fonts/GreedStandard-Medium.otf",
+  variable: "--font-greed",
   fallback: ["system-ui", "arial"],
 });
 
 export const fonts = [
   fontSans.variable,
   fontMono.variable,
+  fontPressStart2P.variable,
   fontInstrument.variable,
+  fontJetBrains.variable,
   fontDmMono.variable,
-  fontGreedNarrow.variable,
+  fontGreedStandard.variable,
 ];

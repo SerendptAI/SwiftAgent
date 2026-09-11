@@ -34,7 +34,7 @@ export function WebsiteIntroStep({ onDone }: { onDone: () => void }) {
 
   return (
     <div className="mx-auto flex w-full max-w-xl flex-col items-center pt-6 pb-10 text-center sm:pt-10">
-      <h2 className="font-greed-narrow text-3xl leading-[1.1] font-semibold tracking-[-2%] text-black uppercase sm:text-[40px]">
+      <h2 className="font-greed text-3xl leading-[1.1] font-semibold tracking-[-2%] text-black uppercase sm:text-[40px]">
         Let&apos;s set up your company
       </h2>
       <p className="font-dm-mono mt-4 text-sm leading-[1.96] tracking-[0.14em] text-gray-500 uppercase">

@@ -215,7 +215,7 @@ export function ManagerShell({
         className="scrollbar-none relative flex max-h-[90vh] w-full max-w-[560px] flex-col overflow-y-auto rounded-[21px] bg-white py-3 shadow-[0px_24px_48px_0px_rgba(0,0,0,0.2)]"
       >
         <div className="mx-3 flex h-[51px] shrink-0 items-center justify-between rounded-[17px] bg-[#F3F3F3] px-[21px]">
-          <h2 className="font-greed-narrow text-[30px] leading-none font-medium text-black">
+          <h2 className="font-greed text-[30px] leading-none font-medium text-black">
             {title}
           </h2>
           <button

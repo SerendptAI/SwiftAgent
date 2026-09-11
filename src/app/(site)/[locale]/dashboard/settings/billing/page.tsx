@@ -123,7 +123,7 @@ export default function BillingPage() {
               <button
                 onClick={portal.open}
                 disabled={portal.isPending}
-                className="font-dm-mono flex items-center gap-2 rounded-2xl bg-[#006BE5] px-6 py-2.5 text-sm font-bold tracking-wide text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#0058C0] disabled:opacity-50"
+                className="font-dm-mono flex items-center gap-2 rounded-2xl bg-[#006BE5] px-6 py-2.5 text-sm font-bold tracking-wide text-white uppercase shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#0058C0] disabled:opacity-50"
               >
                 {portal.isPending ? (
                   <>

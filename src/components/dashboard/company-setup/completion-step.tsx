@@ -19,7 +19,7 @@ function IntroModal({ onStart }: { onStart: () => void }) {
     <div className="fixed inset-0 z-50 bg-black/60">
       <div className="absolute inset-y-0 right-[350px] left-0 flex items-center justify-center p-6 lg:left-[105px]">
         <div className="flex w-full max-w-2xl flex-col items-center bg-white px-14 py-16 text-center shadow-xl">
-          <h2 className="font-greed-narrow mb-5.5 text-4xl font-bold text-black">
+          <h2 className="font-greed mb-5.5 text-4xl font-bold text-black">
             We&apos;d love to get to know your
             <br />
             organization better.

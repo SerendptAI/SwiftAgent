@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: "Stolzl";
-  src: url("/fonts/Stolzl/stolzl_thin.otf") format("opentype");
+  src: url("/fonts/stolzl_thin.otf") format("opentype");
   font-weight: 100;
   font-style: normal;
   font-display: swap;
@@ -12,7 +12,7 @@
 
 @font-face {
   font-family: "Stolzl";
-  src: url("/fonts/Stolzl/stolzl_light.otf") format("opentype");
+  src: url("/fonts/stolzl_light.otf") format("opentype");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
@@ -20,7 +20,7 @@
 
 @font-face {
   font-family: "Stolzl";
-  src: url("/fonts/Stolzl/stolzl_book.otf") format("opentype");
+  src: url("/fonts/stolzl_book.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -28,7 +28,7 @@
 
 @font-face {
   font-family: "Stolzl";
-  src: url("/fonts/Stolzl/stolzl_regular.otf") format("opentype");
+  src: url("/fonts/stolzl_regular.otf") format("opentype");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -36,7 +36,7 @@
 
 @font-face {
   font-family: "Stolzl";
-  src: url("/fonts/Stolzl/stolzl_medium.otf") format("opentype");
+  src: url("/fonts/stolzl_medium.otf") format("opentype");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -44,7 +44,7 @@
 
 @font-face {
   font-family: "Stolzl";
-  src: url("/fonts/Stolzl/stolzl_bold.otf") format("opentype");
+  src: url("/fonts/stolzl_bold.otf") format("opentype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -107,8 +107,10 @@
   --font-instrument: "Naira Fallback", var(--font-instrument), "system-ui",
     "arial";
   --font-dm-mono: "Naira Fallback", var(--font-dm-mono), "system-ui", "arial";
-  --font-greed-narrow: var(--font-greed-narrow), "system-ui", "arial";
+  --font-greed: var(--font-greed), "system-ui", "arial";
   --font-stolzl: "Naira Fallback", "Stolzl", "system-ui", "arial";
+  --font-jetbrains: "Naira Fallback", var(--font-jetbrains), "system-ui", "arial";
+  --font-press-start: "Naira Fallback", var(--font-press-start), "system-ui", "arial";
 }
 
 :root {
@@ -381,4 +383,22 @@ body {
 .animate-arrows {
   animation: arrows-scroll-forward 8s linear infinite;
   will-change: transform;
+}
+
+/*
+ * The chatbot widget (see homepage-chatbot.tsx) mounts itself outside React
+ * with its own high z-index, so it normally floats above everything. While
+ * the mobile nav menu is open (navigation-menu.tsx sets this attribute on
+ * body), demote the widget below the menu's z-[99] so the menu covers it
+ * instead of the widget's launcher button poking through on top.
+ */
+body[data-mobile-menu-open="true"] iframe[src*="swiftagents" i],
+body[data-mobile-menu-open="true"] [id*="swift-agent" i],
+body[data-mobile-menu-open="true"] [class*="swift-agent" i],
+body[data-mobile-menu-open="true"] [id*="swiftagents" i],
+body[data-mobile-menu-open="true"] [class*="swiftagents" i],
+body[data-mobile-menu-open="true"] [data-swift-agent-widget],
+body[data-mobile-menu-open="true"] [data-swift-agent-root],
+body[data-mobile-menu-open="true"] [data-swiftagents-widget] {
+  z-index: 1 !important;
 }

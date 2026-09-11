@@ -48,7 +48,7 @@ text shrinking inside the drawer; nothing instructional goes below that.
 - **Locked stage.** The camera never moves (`cursor-ui-demo` static-stage
   variant). Every change is an element transform on the UI itself.
 - Reconstructed UI sits centred on `--paper`, carrying the app's real
-  `shadow-[-3px_3px_0px_0px_#000000]` offset shadow.
+  `shadow-[-4px_4px_0px_0px_#000000]` offset shadow.
 - Captions live in a fixed lower band, same position every scene, so the eye
   never hunts for them.
 

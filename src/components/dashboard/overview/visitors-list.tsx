@@ -65,7 +65,7 @@ export function VisitorsList({
           {visitors && visitors.length > 0 && (
             <button
               onClick={openModal}
-              className="font-greed-narrow cursor-pointer rounded-md bg-[#F7F7F7] px-3 py-2 text-sm font-bold tracking-wider text-gray-900 uppercase transition-colors hover:bg-gray-50 sm:px-4 sm:text-base"
+              className="font-greed cursor-pointer rounded-md bg-[#F7F7F7] px-3 py-2 text-sm font-bold tracking-wider text-gray-900 uppercase transition-colors hover:bg-gray-50 sm:px-4 sm:text-base"
             >
               SEE ALL
             </button>

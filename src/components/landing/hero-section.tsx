@@ -133,84 +133,16 @@ export function HeroSection() {
         </div>
 
         <div className="flex w-full flex-col justify-center py-12 md:w-[78%] md:px-10 md:py-0 lg:w-[55%] lg:px-16">
-          {/*
-            The headline is seven separately-styled word badges. Each badge is
-            one short word in English, but a translation can put a phrase in
-            one — Swahili's "customer" is "kwa wateja". So a badge never breaks
-            its own text (that would make a two-line pill and throw the row
-            heights out); instead the row wraps and the whole badge moves down
-            intact. Below `xs` the badges are full-width and already one per
-            line, so wrapping inside them is fine and avoids overflow.
-
-            The word order is still English's — a locale that orders them
-            differently needs a design pass here, not just a catalogue entry.
-          */}
-          <div
+          <h1
             ref={headlineRef}
-            className="font-greed-narrow flex flex-col gap-6 text-[50px] leading-normal font-medium tracking-[-2%] uppercase md:text-5xl lg:text-[56px] xl:text-[65px]"
+            className="font-press-start flex flex-col gap-6 text-2xl leading-normal font-medium tracking-[-2%] uppercase sm:text-3xl md:text-4xl lg:text-[40px]"
           >
-            {/* Row 1 desktop: CUSTOMER + SUPPORT. Mobile: stacked */}
-            <div className="xs:flex-row xs:items-center flex flex-col flex-wrap gap-6">
-              <span
-                className="hero-badge xs:w-auto xs:justify-start xs:whitespace-nowrap inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
-                style={{ backgroundColor: "#03A84E" }}
-              >
-                {t("headline.customer")}
-              </span>
-              <span
-                className="hero-badge xs:w-auto xs:justify-start xs:whitespace-nowrap inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
-                style={{ backgroundColor: "#F25430" }}
-              >
-                {t("headline.support")}
-              </span>
-            </div>
-
-            {/* Row 2 desktop: THAT DOESN'T + SCALE. Mobile: THAT DOESN'T alone */}
-            <div className="flex flex-wrap items-center gap-6">
-              <span className="hero-text flex flex-wrap gap-4 text-black">
-                <span className="whitespace-nowrap">{t("headline.that")}</span>{" "}
-                <span className="whitespace-nowrap">
-                  {t("headline.doesnt")}
-                </span>
-              </span>
-              <span
-                className="hero-badge xs:inline-flex xs:whitespace-nowrap hidden h-fit items-center rounded-4xl px-5 text-black"
-                style={{ backgroundColor: "#F2B035" }}
-              >
-                {t("headline.scale")}
-              </span>
-            </div>
-
-            {/* Mobile only: SCALE + YOUR share a row */}
-            <div className="xs:hidden flex flex-wrap items-center gap-6">
-              <span
-                className="hero-badge inline-flex h-fit items-center rounded-4xl px-5 text-black"
-                style={{ backgroundColor: "#F2B035" }}
-              >
-                {t("headline.scale")}
-              </span>
-              <span className="hero-badge text-black">
-                {t("headline.your")}
-              </span>
-            </div>
-
-            {/* Row 3 desktop: YOUR + HEADCOUNT. Mobile: HEADCOUNT alone */}
-            <div className="flex flex-wrap items-center gap-6">
-              <span className="hero-text xs:inline xs:whitespace-nowrap hidden text-black">
-                {t("headline.your")}
-              </span>
-              <span
-                className="hero-badge xs:w-auto xs:justify-start xs:whitespace-nowrap inline-flex w-full items-center justify-center rounded-4xl px-5 text-white"
-                style={{ backgroundColor: "#7F9FFF" }}
-              >
-                {t("headline.headcount")}
-              </span>
-            </div>
-          </div>
+            {t("headline")}
+          </h1>
 
           <p
             ref={subtitleRef}
-            className="font-stolzl mt-8 max-w-xl text-base leading-relaxed text-black md:mt-10 md:text-lg"
+            className="mt-8 max-w-xl text-base leading-relaxed text-black md:mt-10 md:text-lg"
           >
             {t("subtitle")}
           </p>
@@ -226,7 +158,7 @@ export function HeroSection() {
                     className="object-contain"
                   />
                 </span>
-                <span className="font-stolzl text-base text-[#1f1f1f]">
+                <span className="text-base text-[#1f1f1f]">
                   {t(`callouts.${callout.id}`)}
                 </span>
               </div>
@@ -240,7 +172,7 @@ export function HeroSection() {
             <Button
               variant="outline"
               size="lg"
-              className="w-full px-4 text-center leading-tight whitespace-normal"
+              className="w-full px-4 text-center leading-tight whitespace-normal capitalize"
               asChild
             >
               <DemoBookingLink location="landing-hero">
@@ -249,7 +181,7 @@ export function HeroSection() {
             </Button>
             <Button
               size="lg"
-              className="w-full px-4 text-center leading-tight whitespace-normal"
+              className="w-full px-4 text-center leading-tight whitespace-normal capitalize"
               asChild
             >
               <Link href="/signup">{t("getStarted")}</Link>

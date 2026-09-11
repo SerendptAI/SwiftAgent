@@ -5,6 +5,12 @@ import type { CSSProperties } from "react";
 // Logo alt text is the brand's own name, so it is not translated.
 const LOGOS = [
   {
+    src: "/images/logos/communomics.png",
+    alt: "Communomics",
+    width: 221,
+    height: 50,
+  },
+  {
     src: "/images/logos/serendpt.png",
     alt: "Serendpt",
     width: 198,
@@ -19,6 +25,12 @@ const LOGOS = [
     height: 54,
   },
   { src: "/images/logos/f10.png", alt: "F10", width: 124, height: 40 },
+  {
+    src: "/images/logos/renaissance.png",
+    alt: "Renaissance Innovation Labs",
+    width: 110,
+    height: 50,
+  },
 ];
 
 const MARQUEE_LOGOS = [...LOGOS, ...LOGOS];
@@ -28,7 +40,7 @@ export function TrustedBySection() {
 
   return (
     <section className="w-full bg-white py-10 md:py-14">
-      <p className="font-dm-mono text-muted-foreground mb-10 text-center text-sm leading-[1.6] font-medium tracking-[10%] uppercase md:mb-14 md:text-base">
+      <p className="font-dm-mono text-foreground mb-10 text-center text-sm leading-[1.6] font-medium tracking-[10%] uppercase md:mb-14 md:text-base lg:text-lg">
         {t("heading")}
       </p>
 

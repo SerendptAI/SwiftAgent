@@ -25,7 +25,7 @@ export function CtaSection({ variant = "light" }: CtaSectionProps) {
         <div className="relative z-10 flex flex-col pt-8 pb-12 md:w-120 md:pb-15 lg:w-[55%] lg:px-16 lg:pt-11 lg:pb-19">
           <h2
             className={cn(
-              "font-greed-narrow mb-3 text-4xl leading-[1.34] font-medium tracking-[-2%] uppercase md:text-5xl lg:min-w-120 lg:text-[66px]",
+              "font-greed mb-3 text-4xl leading-[1.34] font-medium tracking-[-2%] uppercase md:text-5xl lg:min-w-120 lg:text-[66px]",
               isGreen ? "text-white" : "text-black",
             )}
           >

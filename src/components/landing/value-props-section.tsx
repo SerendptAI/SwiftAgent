@@ -1,16 +1,15 @@
 "use client";
 
-import { Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 /** Copy lives in the `home.valueProps` catalogue, keyed by id. */
 const VALUE_PROPS = [
-  { id: "repetitiveRequests", accent: "#F2B035" },
-  { id: "responseTimes", accent: "#F25430" },
-  { id: "betterExperiences", accent: "#7F9FFF" },
-  { id: "scaleSupport", accent: "#03A84E" },
+  { id: "repetitiveRequests", icon: "wave-rounded-square" },
+  { id: "responseTimes", icon: "clock-rounded-square" },
+  { id: "betterExperiences", icon: "box-rounded-square" },
+  { id: "scaleSupport", icon: "scale-rounded-square" },
 ];
 
 export function ValuePropsSection() {
@@ -18,9 +17,9 @@ export function ValuePropsSection() {
   const t = useTranslations("home.valueProps");
 
   return (
-    <section className="w-full bg-white px-6 py-16 md:px-10 md:py-20 lg:px-16 lg:py-20">
-      <div className="mx-auto max-w-360">
-        <p className="font-dm-mono mb-8 text-2xl leading-normal font-medium text-[#1f1f1f] uppercase md:mb-10 md:text-[32px]">
+    <section className="w-full px-6 py-16 md:px-10 md:py-20 lg:px-16 lg:py-20">
+      <div className="mx-auto max-w-360 space-y-12">
+        <p className="font-greed text-2xl leading-[1.2] font-semibold tracking-[-2%] capitalize md:text-[32px] lg:text-[40px]">
           {t("heading")}
         </p>
 
@@ -31,18 +30,18 @@ export function ValuePropsSection() {
           {VALUE_PROPS.map((prop) => (
             <div
               key={prop.id}
-              className="flex flex-col gap-4 rounded-xl border border-[#1f1f1f] bg-[#F6F4EF] p-6 drop-shadow-[-3px_4px_0px_#000000]"
+              className="flex flex-col gap-4 rounded-xl border border-[#1f1f1f] bg-[#F6F4EF] p-6 drop-shadow-[-4px_4px_0px_#000000]"
             >
-              <div
-                className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-[#1f1f1f]"
-                style={{ backgroundColor: prop.accent }}
-              >
-                <Check className="size-4 text-white" strokeWidth={3} />
-              </div>
-              <p className="font-dm-mono text-lg font-medium text-[#1f1f1f] uppercase">
+              <img
+                src={`/icons/${prop.icon}.svg`}
+                alt={t(`items.${prop.id}.title`)}
+                className="size-10 object-contain object-center text-white"
+              />
+
+              <p className="font-press-start text-base font-medium uppercase">
                 {t(`items.${prop.id}.title`)}
               </p>
-              <p className="font-stolzl text-base leading-relaxed text-black">
+              <p className="text-base leading-normal text-black">
                 {t(`items.${prop.id}.description`)}
               </p>
             </div>

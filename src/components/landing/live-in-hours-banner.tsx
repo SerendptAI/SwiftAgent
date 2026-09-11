@@ -70,7 +70,7 @@ export function LiveInHoursBanner() {
         </div>
 
         <div className="pointer-events-none absolute inset-0 z-50 flex items-center px-6 md:px-10 lg:px-16">
-          <span className="font-greed-narrow mx-auto w-full max-w-360 text-2xl leading-[1.2] font-medium tracking-[10%] text-white uppercase md:text-4xl lg:text-[48px]">
+          <span className="font-press-start mx-auto w-full max-w-360 text-2xl leading-[1.2] font-medium tracking-tight text-white uppercase md:text-[26px] lg:text-3xl">
             {t("banner")}
           </span>
         </div>

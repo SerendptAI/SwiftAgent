@@ -192,7 +192,7 @@ export function WidgetCard() {
               <div className="flex items-center pt-[6px] sm:pr-6">
                 <button
                   onClick={() => setIsSettingsOpen(true)}
-                  className="font-greed-narrow flex h-[42px] cursor-pointer items-center gap-2 rounded-[7px] bg-[#EDEDED] px-3 text-[13px] font-bold tracking-wider text-gray-600 uppercase transition-colors hover:bg-gray-100 sm:px-4 sm:text-sm"
+                  className="font-greed flex h-[42px] cursor-pointer items-center gap-2 rounded-[7px] bg-[#EDEDED] px-3 text-[13px] font-bold tracking-wider text-gray-600 uppercase transition-colors hover:bg-gray-100 sm:px-4 sm:text-sm"
                 >
                   <Icons.Settings className="h-5 w-5" />
                   <span className="hidden min-[360px]:inline">SETTINGS</span>
