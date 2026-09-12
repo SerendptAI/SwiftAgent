@@ -26,7 +26,7 @@ export async function generateMetadata({
 export default function AgentsPage() {
   return (
     <SmoothScrollProvider>
-      <main>
+      <main className="font-jetbrains">
         <Navbar />
         <FeaturesSection />
         <CtaSection />

@@ -104,7 +104,7 @@ function SaveButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`font-dm-mono flex h-9 min-w-[110px] items-center justify-center rounded-[8px] bg-[#03A84E] px-4 text-[13px] font-medium text-white uppercase shadow-[-3px_4px_0px_0px_#000000] ${
+      className={`font-dm-mono flex h-9 min-w-[110px] items-center justify-center rounded-[8px] bg-[#03A84E] px-4 text-[13px] font-medium text-white uppercase shadow-[-4px_4px_0px_0px_#000000] ${
         onClick ? "cursor-pointer transition-colors hover:bg-[#029143]" : ""
       } disabled:cursor-not-allowed disabled:opacity-50`}
     >

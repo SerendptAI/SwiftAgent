@@ -90,7 +90,7 @@ export function NotificationsPanel({
 
         <button
           type="button"
-          className="font-dm-mono flex h-[48px] w-full shrink-0 items-center justify-center rounded-[16px] border border-black/40 bg-[#F2B035] px-3 text-[13px] font-medium text-black uppercase shadow-[-3px_4px_0px_0px_#000000] transition-transform hover:translate-y-[1px] hover:shadow-[-2px_3px_0px_0px_#000000]"
+          className="font-dm-mono flex h-[48px] w-full shrink-0 items-center justify-center rounded-[16px] border border-black/40 bg-[#F2B035] px-3 text-[13px] font-medium text-black uppercase shadow-[-4px_4px_0px_0px_#000000] transition-transform hover:translate-y-[1px] hover:shadow-[-2px_3px_0px_0px_#000000]"
         >
           Need anything? Reach out to us
         </button>

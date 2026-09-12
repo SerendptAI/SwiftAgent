@@ -55,15 +55,15 @@ function ReferrerBadge({
   return (
     <div
       className={cn(
-        "flex flex-col gap-1 rounded-2xl border border-black bg-white p-4 drop-shadow-[-3px_4px_0px_#000]",
+        "flex flex-col gap-1 rounded-2xl border border-black bg-white p-4 drop-shadow-[-4px_4px_0px_#000]",
         className,
       )}
     >
-      <span className="font-dm-mono text-sm whitespace-nowrap text-[#1f1f1f] uppercase">
+      <span className="text-sm whitespace-nowrap text-[#1f1f1f] uppercase">
         {t("proReferrer")}
       </span>
       <span
-        className="font-stolzl text-base font-bold whitespace-nowrap xl:text-lg"
+        className="text-base whitespace-nowrap xl:text-lg"
         style={{ color }}
       >
         {name}
@@ -157,20 +157,17 @@ export function AffiliateHeroSection() {
       <Navbar ref={navRef} />
 
       <div className="relative mx-auto max-w-360 px-6 md:px-10 lg:px-20 xl:min-h-[900px]">
-        <div className="pt-32 pb-16 md:pt-40 lg:pt-48 lg:pb-20 xl:max-w-[58%] xl:pt-56 xl:pb-24">
+        <div className="pt-32 pb-16 md:pt-40 lg:pt-48 lg:pb-20 xl:max-w-[60%] xl:pt-56 xl:pb-24">
           <h1
             ref={headlineRef}
-            className="font-greed max-w-[720px] text-[40px] leading-[1.15] font-medium tracking-[-0.02em] text-[#1f1f1f] uppercase sm:text-[52px] lg:text-[64px] xl:text-[72px]"
+            className="font-press-start flex flex-col gap-6 text-2xl leading-loose font-medium tracking-[-3%] uppercase sm:text-3xl md:text-4xl lg:text-[38px]"
           >
-            <span className="block whitespace-pre-line">
-              {t("headline")}
-              <span className="text-[#F2B035]">.</span>
-            </span>
+            {t("headline")}
           </h1>
 
           <p
             ref={subtitleRef}
-            className="font-stolzl mt-8 max-w-[633px] text-base leading-[1.6] text-[#7e7e7e] md:text-lg"
+            className="mt-8 max-w-[633px] text-base leading-relaxed text-[#7e7e7e] md:text-lg"
           >
             {t("body")}
           </p>
@@ -178,13 +175,13 @@ export function AffiliateHeroSection() {
           <div ref={ctaRef} className="mt-10 flex flex-wrap gap-5">
             <Link
               href="/refer"
-              className="font-dm-mono inline-flex w-full items-center justify-center rounded-lg border border-black bg-[#F2B035] px-9 py-[18px] text-sm tracking-[0.1em] text-[#1f1f1f] uppercase shadow-[-4px_5px_0px_0px_#000000] transition-all hover:translate-x-[-1px] hover:translate-y-[1px] hover:shadow-[-3px_4px_0px_0px_#000000] sm:w-auto md:text-[18px]"
+              className="inline-flex w-full items-center justify-center rounded-lg border border-black bg-[#F2B035] px-6 py-3 text-sm tracking-[2%] text-[#1f1f1f] capitalize shadow-[-4px_4px_0px_0px_#000000] transition-all hover:-translate-x-px hover:translate-y-px hover:shadow-[-1px_1px_0px_0px_#000000] sm:w-auto md:text-base"
             >
               {t("submitReferral")}
             </Link>
             <Link
               href="/#pricing"
-              className="font-dm-mono inline-flex w-full items-center justify-center rounded-lg border border-black bg-white px-9 py-[18px] text-sm tracking-[0.1em] text-[#1f1f1f] uppercase shadow-[-4px_5px_0px_0px_#000000] transition-all hover:translate-x-[-1px] hover:translate-y-[1px] hover:shadow-[-3px_4px_0px_0px_#000000] sm:w-auto md:text-[18px]"
+              className="inline-flex w-full items-center justify-center rounded-lg border border-black bg-white px-6 py-3 text-sm tracking-[2%] text-[#1f1f1f] capitalize shadow-[-4px_4px_0px_0px_#000000] transition-all hover:-translate-x-px hover:translate-y-px hover:shadow-[-1px_1px_0px_0px_#000000] sm:w-auto md:text-base"
             >
               {t("viewPlanMetrics")}
             </Link>

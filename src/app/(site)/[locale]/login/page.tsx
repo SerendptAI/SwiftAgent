@@ -74,7 +74,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="font-dm-mono flex min-h-screen w-full items-center justify-center px-4">
+    <div className="font-jetbrains flex min-h-screen w-full items-center justify-center px-4">
       <div className="flex w-full max-w-md flex-col items-center gap-7">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -84,7 +84,7 @@ export default function LoginPage() {
         />
 
         <div className="flex flex-col items-center gap-2.5 text-center">
-          <h3 className="text-muted-foreground font-dm-mono text-sm font-normal tracking-[0.2em] uppercase">
+          <h3 className="text-muted-foreground text-sm font-normal tracking-[2%] uppercase">
             {t("welcomeBack")}
           </h3>
           <h2 className="font-stolzl text-2xl font-normal tracking-tight">
@@ -114,14 +114,14 @@ export default function LoginPage() {
                     if (e.key === "Enter") handleSendOtp();
                   }}
                   placeholder={t("companyEmailPlaceholder")}
-                  className="text-foreground placeholder:text-muted-foreground font-dm-mono h-full flex-1 bg-transparent text-center text-xs leading-[1.2] tracking-[10%] uppercase outline-none md:text-sm"
+                  className="text-foreground placeholder:text-muted-foreground h-full flex-1 bg-transparent text-center text-xs leading-[1.2] tracking-[2%] outline-none md:text-sm"
                 />
                 {email.length > 0 && (
                   <button
                     type="button"
                     onClick={handleSendOtp}
                     disabled={!isValidEmail(email) || sendOtp.isPending}
-                    className="font-dm-mono h-9 shrink-0 rounded-sm bg-black px-2.5 text-xs leading-[1.2] font-medium tracking-[10%] text-white uppercase transition-opacity disabled:opacity-40 md:text-sm"
+                    className="h-9 shrink-0 rounded-sm bg-black px-2.5 text-xs leading-[1.2] font-medium tracking-[2%] text-white capitalize transition-opacity disabled:opacity-40 md:text-sm"
                   >
                     {t("signIn")}
                   </button>
@@ -129,19 +129,19 @@ export default function LoginPage() {
               </div>
 
               {emailError && (
-                <p className="mt-2 text-center text-[10px] tracking-widest text-red-500 uppercase">
+                <p className="mt-2 text-center text-[10px] tracking-[2%] text-red-500">
                   {emailError}
                 </p>
               )}
 
               {accountMissing && (
                 <div className="mt-3 flex flex-col items-center gap-2 text-center">
-                  <p className="text-[10px] tracking-widest text-red-500 uppercase">
+                  <p className="text-[10px] tracking-[2%] text-red-500">
                     {t("accountNotFound")}
                   </p>
                   <Link
                     href="/signup"
-                    className="text-foreground text-xs leading-[1.2] tracking-[10%] uppercase underline underline-offset-4"
+                    className="text-foreground text-xs leading-[1.2] tracking-[2%] capitalize underline underline-offset-4"
                   >
                     {t("createAccount")}
                   </Link>

@@ -32,7 +32,7 @@ export function FteAvoidedPanel({
         the whole phrase out.
       */}
       <div className="relative grid w-full min-w-0">
-        <p className="font-dm-mono mb-6 text-base leading-[1.2] tracking-[10%] text-white uppercase md:text-lg">
+        <p className="mb-6 text-base leading-[1.2] tracking-[2%] text-white uppercase md:text-lg">
           {t("eyebrow")}
         </p>
 
@@ -41,9 +41,9 @@ export function FteAvoidedPanel({
             {fmtDec(fteAvoided)}
           </div>
 
-          <div className="font-dm-mono flex min-w-0 flex-col gap-2 text-base leading-[1.2] tracking-[10%] uppercase md:-mb-10 md:text-lg lg:-mb-12">
-            <span className="text-white/50">{t("unit")}</span>
-            <div className="flex flex-wrap gap-x-8 gap-y-2 text-white">
+          <div className="flex min-w-0 flex-col gap-2 text-base leading-[1.2] tracking-[2%] md:-mb-10 md:text-lg lg:-mb-12">
+            <span className="text-white/50 capitalize">{t("unit")}</span>
+            <div className="flex flex-wrap gap-x-8 gap-y-2 text-white capitalize">
               <span>
                 {fmtDec(totalAgentsNeeded)} {t("needed")}
               </span>

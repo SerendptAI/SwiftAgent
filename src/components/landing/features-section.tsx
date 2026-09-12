@@ -47,7 +47,7 @@ function AgentCard({ agent }: { agent: Agent }) {
 
   return (
     <div className="flex flex-col gap-4 max-md:mb-6">
-      <h3 className="font-dm-mono text-xl font-normal tracking-[0.2em] text-black/40 uppercase md:mb-2 md:text-2xl lg:text-3xl xl:text-4xl">
+      <h3 className="font-greed font-relaxed text-2xl font-semibold tracking-[-2%] md:mb-2 md:text-3xl lg:text-4xl xl:text-[40px]">
         {t(`${agent.id}.name`)}
       </h3>
 
@@ -55,7 +55,7 @@ function AgentCard({ agent }: { agent: Agent }) {
         <AgentVideo src={agent.video} />
       </div>
 
-      <p className="font-dm-mono w-[90%] text-sm leading-relaxed tracking-[8%] text-black/80 uppercase md:text-base">
+      <p className="w-[90%] text-sm leading-relaxed tracking-[10%] md:text-base">
         {t(`${agent.id}.description`)}
       </p>
     </div>
@@ -123,16 +123,13 @@ export function FeaturesSection() {
       id="agents"
       className="relative flex overflow-hidden bg-white px-6 pt-44 pb-12 md:px-10 md:pt-50 lg:px-16 lg:pt-56"
     >
-      <div className="relative mx-auto max-w-360">
-        <div
-          ref={headerRef}
-          className="mb-10 flex flex-col gap-4 md:mb-14 lg:mb-18"
-        >
-          <span className="font-dm-mono text-base leading-[1.2] tracking-[10%] text-gray-400 uppercase md:text-lg lg:text-xl">
+      <div className="relative mx-auto max-w-360 space-y-12 md:space-y-16 lg:space-y-24">
+        <div ref={headerRef} className="flex flex-col gap-6">
+          <span className="text-base leading-[1.2] tracking-[10%] text-gray-400 uppercase md:text-lg lg:text-xl">
             {t("eyebrow")}
           </span>
 
-          <h2 className="font-greed w-full max-w-2xl text-4xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase md:text-5xl lg:text-[66px]">
+          <h2 className="font-press-start w-full max-w-4xl text-3xl leading-relaxed font-medium tracking-[-2%] text-black uppercase sm:text-4xl md:text-[40px]">
             {t("heading")}
           </h2>
         </div>
@@ -146,7 +143,7 @@ export function FeaturesSection() {
           ))}
         </div>
 
-        <div className="relative hidden h-[182px] lg:block">
+        <div className="relative hidden h-45.5 lg:block">
           <div className="absolute" style={{ left: "25%", top: 0 }}>
             <Image
               src="/images/lines/line1.png"
@@ -180,16 +177,17 @@ export function FeaturesSection() {
 
         <div
           ref={bottomRef}
-          className="mt-16 flex flex-col justify-between gap-8 lg:flex-row lg:gap-12"
+          className="flex flex-col justify-between gap-8 lg:flex-row lg:gap-12"
         >
-          <div className="w-full lg:-mt-18 lg:w-[35%]">
+          <div className="w-full lg:w-[35%]">
             <AgentCard agent={AGENT_001} />
           </div>
 
-          <div className="w-full max-md:hidden lg:w-[50%]">
-            <h3 className="font-greed text-3xl leading-[1.15] font-black tracking-tight whitespace-pre-line text-black uppercase md:text-5xl lg:text-6xl">
+          <div className="w-full max-md:hidden lg:w-[55%]">
+            <h3 className="font-greed text-3xl leading-snug font-black tracking-tight whitespace-pre-line text-black uppercase md:text-5xl lg:text-[66px]">
               {t("quote")}
             </h3>
+
             <div className="absolute bottom-30 -left-20">
               <Image
                 src="/images/lines/line4.png"
@@ -199,7 +197,8 @@ export function FeaturesSection() {
                 className="h-[154px] w-[230px] object-contain"
               />
             </div>
-            <div className="absolute top-19 right-30">
+
+            <div className="absolute top-28 right-30">
               <BriggsAnimation className="h-[124px] w-[150px]" />
             </div>
           </div>

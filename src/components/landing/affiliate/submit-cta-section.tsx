@@ -41,26 +41,26 @@ export function SubmitCtaSection() {
         className="mx-auto flex max-w-360 flex-col items-center gap-10 text-center"
       >
         <div className="flex flex-col items-center gap-4">
-          <h2 className="font-greed text-3xl leading-[1.1] font-medium tracking-[-0.02em] text-[#1f1f1f] uppercase md:text-5xl lg:text-[56px]">
+          <h2 className="font-greed text-[38px] leading-[1.1] font-medium tracking-[-3%] text-[#1f1f1f] md:text-5xl lg:text-[56px]">
             {t("heading")}
           </h2>
-          <p className="font-stolzl text-lg text-[#1f1f1f]/85 md:text-xl">
+          <p className="text-lg tracking-[2%] text-[#1f1f1f]/85 md:text-xl">
             {t("body")}
           </p>
         </div>
 
-        <div className="flex w-full max-w-[700px] flex-col items-stretch gap-6 border border-black bg-white p-6 shadow-[-4px_5px_0px_0px_#000000] sm:flex-row sm:items-center sm:gap-8">
-          <div className="flex flex-1 flex-col gap-1 text-left">
-            <span className="font-dm-mono text-xs text-[#7e7e7e] uppercase">
+        <div className="flex w-full max-w-[700px] flex-col items-stretch gap-6 border border-black bg-white p-6 shadow-[-4px_4px_0px_0px_#000000] sm:flex-row sm:items-center sm:gap-8">
+          <div className="flex flex-1 flex-col gap-2 text-left">
+            <span className="text-xs text-[#7e7e7e] uppercase">
               {t("channelLabel")}
             </span>
-            <span className="font-dm-mono text-lg break-all text-[#6433cc] md:text-xl">
-              THELMA@SWIFTAGENTS.ORG
+            <span className="text-lg break-all text-[#6433cc] md:text-xl">
+              thelma@swiftagents.org
             </span>
           </div>
           <a
             href="mailto:thelma@swiftagents.org"
-            className="font-dm-mono inline-flex shrink-0 items-center justify-center border border-black bg-[#1f1f1f] px-6 py-3 text-base text-white uppercase transition-opacity hover:opacity-85"
+            className="inline-flex shrink-0 items-center justify-center border border-black bg-[#1f1f1f] px-6 py-3 text-base font-medium tracking-[2%] text-white capitalize transition-opacity hover:opacity-85"
           >
             {t("emailNow")}
           </a>

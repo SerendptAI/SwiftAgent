@@ -26,7 +26,7 @@ export function NumberInput({
   const chars = Math.max(formatted.length, 1);
 
   return (
-    <label className="font-dm-mono flex h-9.5 items-center gap-2 rounded-[13px] border border-black bg-white px-4 text-base leading-[1.2] font-medium tracking-[10%] text-black">
+    <label className="font-jetbrains flex h-9.5 items-center gap-2 rounded-[13px] border border-black bg-white px-4 text-base leading-[1.2] font-medium tracking-[2%] text-black">
       {/*
         The number is the field's content and the suffix only labels its unit,
         so the number keeps its full width and the suffix is what gives way.
@@ -49,7 +49,7 @@ export function NumberInput({
           className="bg-transparent outline-none"
         />
       </span>
-      <span className="min-w-0 truncate text-sm text-black/60 uppercase">
+      <span className="min-w-0 truncate text-sm text-black/60 capitalize">
         {suffix}
       </span>
     </label>
