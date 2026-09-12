@@ -127,17 +127,17 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
 
                         <div
                           className={cn(
-                            "absolute top-13.5 -left-6.5 z-50 w-78.5 border border-black bg-white px-6 pt-2 pb-9 transition-all duration-200",
+                            "absolute top-13.5 -left-6.5 z-50 w-89 border border-black bg-white p-6 transition-all duration-200",
                             isOpen
                               ? "pointer-events-auto translate-y-0 opacity-100"
                               : "pointer-events-none -translate-y-1 opacity-0",
                           )}
                         >
                           <div className="mb-4 flex items-center justify-between">
-                            <span className="font-greed text-[30px] leading-[1.34] font-medium tracking-[10%]">
+                            <span className="font-press-start text-base leading-normal tracking-[-2%] uppercase">
                               {t(`dropdowns.${link.id}.title`)}
                             </span>
-                            <Icons.NavChevronDown className="size-5.5" />
+                            <Icons.NavChevronDown className="size-4.5" />
                           </div>
 
                           {link.dropdown.previewImage && (
@@ -145,12 +145,12 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                             <img
                               src={link.dropdown.previewImage}
                               alt={t("productPreviewAlt")}
-                              className="mb-6 h-25 w-full object-cover"
+                              className="mb-4 h-26 w-full object-cover"
                               style={{ aspectRatio: "265 / 100" }}
                             />
                           )}
 
-                          <div className="flex flex-col gap-4">
+                          <div className="flex flex-col gap-2">
                             {link.dropdown.links.map((item) => {
                               const isExternal = isExternalHref(item.href);
                               return (
@@ -163,7 +163,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                                       ? "noopener noreferrer"
                                       : undefined
                                   }
-                                  className="text-base leading-[1.83] tracking-[10%] text-black/80 hover:text-black"
+                                  className="text-base leading-[1.83] tracking-[-2%] text-black/80 hover:text-black"
                                 >
                                   {t(`dropdowns.${link.id}.links.${item.id}`)}
                                   {item.arrow && (
