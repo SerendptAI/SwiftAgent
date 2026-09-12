@@ -26,7 +26,7 @@ export async function generateMetadata({
 export default function ProductsPage() {
   return (
     <SmoothScrollProvider>
-      <main>
+      <main className="font-jetbrains">
         <Navbar />
         <ProductsSection />
         <CtaSection variant="green" />

@@ -96,163 +96,134 @@ export default function RegisterCompanyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fffff] p-4 md:p-8">
+    <div className="font-jetbrains min-h-screen bg-[#fffff] p-4 md:p-8">
       <div className="mx-auto w-full max-w-[1280px] overflow-hidden">
         <Navbar />
-        <div className="grid grid-cols-1 gap-6 p-6 pt-[140px] md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:gap-10 md:p-10 md:pt-[180px] lg:gap-14">
-          <div className="relative order-2 md:order-1">
-            <div className="relative aspect-528/724 w-full overflow-hidden rounded-sm">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={
-                  step === "otp"
-                    ? "/images/completeregisteration.svg"
-                    : "/images/registercompany.svg"
-                }
-                alt=""
-                className="h-full w-full object-cover"
+        <div className="flex flex-col items-center gap-6 p-6 pt-[140px] md:gap-10 md:p-10 md:pt-[180px]">
+          {step === "otp" ? (
+            <div className="flex flex-col items-center gap-10">
+              <aside className="text-center">
+                <h1 className="font-press-start w-full max-w-4xl text-center text-2xl leading-relaxed tracking-[-2%] uppercase md:text-3xl">
+                  Verify your email
+                </h1>
+                <p className="mt-8 max-w-4xl text-center text-base leading-normal tracking-[2%] text-black/60 sm:text-lg">
+                  We sent a code to {form.email.trim()}
+                </p>
+              </aside>
+
+              <OtpVerification
+                email={form.email.trim()}
+                onVerified={() => {
+                  trackEvent("login_completed", { method: "email" });
+                  router.push("/onboarding");
+                }}
+                onChangeEmail={() => setStep("form")}
               />
             </div>
-          </div>
+          ) : (
+            <div className="w-full max-w-xl">
+              <h1 className="font-press-start w-full max-w-4xl text-center text-2xl leading-relaxed tracking-[-2%] uppercase sm:text-3xl md:text-4xl lg:text-[40px]">
+                Register
+              </h1>
 
-          <div className="order-1 md:order-2">
-            {step === "otp" ? (
-              <div className="flex flex-col items-center gap-10">
-                <aside className="text-center">
-                  <h1 className="font-greed text-4xl leading-[1.05] tracking-tight text-gray-900 uppercase md:text-5xl lg:text-6xl">
-                    Verify your
-                    <br />
-                    email
-                  </h1>
-                  <p className="font-stolzl mt-4 text-xs tracking-[0.2em] text-gray-900 uppercase">
-                    we sent a code to {form.email.trim()}
-                  </p>
-                </aside>
+              <form
+                onSubmit={handleSubmit}
+                className="mt-8 flex flex-col gap-5"
+              >
+                <div>
+                  <FormLabel htmlFor="companyName">Company Name</FormLabel>
+                  <FormInput
+                    id="companyName"
+                    placeholder="Company Legal Name"
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    required
+                  />
+                </div>
 
-                <OtpVerification
-                  email={form.email.trim()}
-                  onVerified={() => {
-                    trackEvent("login_completed", { method: "email" });
-                    router.push("/onboarding");
-                  }}
-                  onChangeEmail={() => setStep("form")}
-                />
-              </div>
-            ) : (
-              <>
-                <h1 className="font-greed text-4xl leading-[1.05] tracking-tight text-gray-900 uppercase md:text-5xl lg:text-6xl">
-                  SWIFT AGENTS
-                  <br />
-                  REGISTRATION FORM
-                </h1>
+                <div>
+                  <FormLabel htmlFor="companyEmail">Company Email</FormLabel>
+                  <FormInput
+                    id="companyEmail"
+                    type="email"
+                    placeholder="Company@email.com"
+                    value={form.email}
+                    onChange={(e) =>
+                      setForm({ ...form, email: e.target.value })
+                    }
+                    required
+                  />
+                </div>
 
-                <form
-                  onSubmit={handleSubmit}
-                  className="font-stolzl mt-8 flex flex-col gap-5"
-                >
-                  <div>
-                    <FormLabel htmlFor="companyName">Company Name</FormLabel>
-                    <FormInput
-                      id="companyName"
-                      placeholder="Company Legal Name"
-                      value={form.name}
-                      onChange={(e) =>
-                        setForm({ ...form, name: e.target.value })
-                      }
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <FormLabel htmlFor="companyEmail">Company Email</FormLabel>
-                    <FormInput
-                      id="companyEmail"
-                      type="email"
-                      placeholder="Company@email.com"
-                      value={form.email}
-                      onChange={(e) =>
-                        setForm({ ...form, email: e.target.value })
-                      }
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <FormLabel htmlFor="companyWebsite">
-                      Company Website
-                    </FormLabel>
-                    <FormInput
-                      id="companyWebsite"
-                      placeholder="acme.com"
-                      value={form.website}
-                      onChange={(e) => {
-                        setWebsiteError("");
-                        setForm({ ...form, website: e.target.value });
-                      }}
-                      className={websiteError ? "ring-2 ring-red-500" : ""}
-                      required
-                    />
-                    {websiteError && (
-                      <p className="font-stolzl mt-1 text-sm text-red-600">
-                        {websiteError}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <FormLabel htmlFor="companyDescription">
-                      What does your company do
-                    </FormLabel>
-                    <FormTextarea
-                      id="companyDescription"
-                      placeholder="Brief description of what your company does"
-                      value={form.description}
-                      onChange={(e) =>
-                        setForm({ ...form, description: e.target.value })
-                      }
-                    />
-                  </div>
-
-                  <div>
-                    <FormLabel htmlFor="customerSize">
-                      Estimated/customer size or Average customer size
-                    </FormLabel>
-                    <FormSelect
-                      id="customerSize"
-                      className="[&_option]:text-black"
-                      value={form.size}
-                      onChange={(e) =>
-                        setForm({ ...form, size: e.target.value })
-                      }
-                    >
-                      <option value="" disabled>
-                        Select customer size
-                      </option>
-                      <option value="1-100">1 – 100</option>
-                      <option value="101-1000">101 – 1,000</option>
-                      <option value="1001-10000">1,001 – 10,000</option>
-                      <option value="10001-100000">10,001 – 100,000</option>
-                      <option value="100000+">100,000+</option>
-                    </FormSelect>
-                  </div>
-
-                  {submitError && (
-                    <p className="font-stolzl text-sm text-red-600">
-                      {submitError}
-                    </p>
+                <div>
+                  <FormLabel htmlFor="companyWebsite">
+                    Company Website
+                  </FormLabel>
+                  <FormInput
+                    id="companyWebsite"
+                    placeholder="acme.com"
+                    value={form.website}
+                    onChange={(e) => {
+                      setWebsiteError("");
+                      setForm({ ...form, website: e.target.value });
+                    }}
+                    className={websiteError ? "ring-2 ring-red-500" : ""}
+                    required
+                  />
+                  {websiteError && (
+                    <p className="mt-1 text-sm text-red-600">{websiteError}</p>
                   )}
+                </div>
 
-                  <NextButton
-                    type="submit"
-                    className="mt-2 uppercase disabled:cursor-not-allowed disabled:opacity-60"
-                    disabled={registerInterest.isPending}
+                <div>
+                  <FormLabel htmlFor="companyDescription">
+                    What does your company do
+                  </FormLabel>
+                  <FormTextarea
+                    id="companyDescription"
+                    placeholder="Brief description of what your company does"
+                    value={form.description}
+                    onChange={(e) =>
+                      setForm({ ...form, description: e.target.value })
+                    }
+                  />
+                </div>
+
+                <div>
+                  <FormLabel htmlFor="customerSize">
+                    Estimated/customer size or Average customer size
+                  </FormLabel>
+                  <FormSelect
+                    id="customerSize"
+                    className="[&_option]:text-black"
+                    value={form.size}
+                    onChange={(e) => setForm({ ...form, size: e.target.value })}
                   >
-                    {registerInterest.isPending ? "Submitting..." : "Register"}
-                  </NextButton>
-                </form>
-              </>
-            )}
-          </div>
+                    <option value="" disabled>
+                      Select customer size
+                    </option>
+                    <option value="1-100">1 – 100</option>
+                    <option value="101-1000">101 – 1,000</option>
+                    <option value="1001-10000">1,001 – 10,000</option>
+                    <option value="10001-100000">10,001 – 100,000</option>
+                    <option value="100000+">100,000+</option>
+                  </FormSelect>
+                </div>
+
+                {submitError && (
+                  <p className="text-sm text-red-600">{submitError}</p>
+                )}
+
+                <NextButton
+                  type="submit"
+                  className="mt-2 disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={registerInterest.isPending}
+                >
+                  {registerInterest.isPending ? "Submitting..." : "Register"}
+                </NextButton>
+              </form>
+            </div>
+          )}
         </div>
       </div>
     </div>

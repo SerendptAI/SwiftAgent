@@ -96,21 +96,21 @@ export function ReferralPathSection() {
       className="w-full bg-[#F6F6F6] px-6 py-16 md:px-10 md:py-24 lg:px-20"
     >
       <div className="mx-auto max-w-360">
-        <div ref={headerRef} className="flex flex-col gap-4">
-          <p className="font-dm-mono text-sm tracking-[0.15em] text-[#6433cc] uppercase">
+        <div ref={headerRef} className="flex flex-col gap-6">
+          <p className="font-press-start text-base leading-[1.2] font-medium tracking-[10%] text-[#6433CC] uppercase md:text-lg">
             {t("eyebrow")}
           </p>
-          <h2 className="font-greed max-w-3xl text-3xl leading-[1.1] font-medium tracking-[-0.02em] text-[#1f1f1f] uppercase md:text-4xl lg:text-5xl">
+          <h2 className="font-greed text-3xl leading-snug font-medium tracking-[-2%] text-[#1f1f1f] md:text-4xl lg:text-5xl">
             {t("heading")}
           </h2>
         </div>
 
         <div ref={flowRef} className="relative mt-14 px-4 md:mt-16 md:px-10">
-          <div className="absolute top-4 right-0 left-0 border-t border-dashed border-[#BDBDBD]" />
+          <div className="absolute top-4 right-0 left-0" />
           {/* Drawing progress line — referral (purple) flowing to payout (gold) */}
           <div
             ref={progressRef}
-            className="absolute top-4 right-0 left-0 h-[2px] origin-left -translate-y-1/2 rounded-full bg-gradient-to-r from-[#6433cc] to-[#F2B035]"
+            className="absolute top-2.5 right-0 left-0 h-0.5 origin-left -translate-y-1/2 rounded-full bg-gradient-to-r from-[#6433cc] to-[#F2B035] sm:top-4"
           />
 
           <div className="relative flex items-start gap-3 md:gap-0">
@@ -119,7 +119,7 @@ export function ReferralPathSection() {
                 <div
                   data-node
                   className={cn(
-                    "relative z-10 size-8 rounded-full border-2 border-black",
+                    "xs:border-2 relative z-10 size-5 rounded-full border border-black sm:size-8 md:border-3",
                     step.highlight ? "bg-[#F2B035]" : "bg-white",
                   )}
                 />
@@ -129,7 +129,7 @@ export function ReferralPathSection() {
                 >
                   <span
                     className={cn(
-                      "font-dm-mono text-xs tracking-[0.08em] uppercase md:text-[18px]",
+                      "xs:text-sm text-xs tracking-[10%] sm:text-base md:text-lg",
                       step.highlight ? "text-[#F2B035]" : "text-[#1f1f1f]",
                     )}
                   >
@@ -137,7 +137,7 @@ export function ReferralPathSection() {
                   </span>
                   <span
                     className={cn(
-                      "font-stolzl text-xs md:text-sm",
+                      "xs:text-xs text-[10px] tracking-[-2%] md:text-sm",
                       step.highlight
                         ? "font-bold text-[#1f1f1f]"
                         : "text-[#7e7e7e]",

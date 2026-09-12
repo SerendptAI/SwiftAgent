@@ -21,13 +21,13 @@ export function CurrencySelector({
 
   return (
     <div className="mb-6 flex items-center justify-end gap-5">
-      <span className="font-dm-mono xs:text-lg -mb-1 text-base leading-[1.59] font-medium tracking-[10%] text-black uppercase md:text-xl">
+      <span className="xs:text-lg -mb-1 text-base leading-[1.59] font-medium tracking-[2%] text-black capitalize md:text-xl">
         {t("label")}
       </span>
       <div className="relative">
         <button
           onClick={onToggle}
-          className="font-greed flex items-center gap-2.5 border border-black bg-[#F2B035] px-8 py-1 text-3xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase shadow-[-4px_4px_0px_0px_#000000] transition-shadow md:text-4xl"
+          className="flex cursor-pointer items-center gap-2.5 border border-black bg-[#F2B035] px-4 py-1 text-xl leading-snug font-medium text-black uppercase shadow-[-4px_4px_0px_0px_#000000] transition-shadow md:text-2xl"
         >
           {currency}
           <span>
@@ -53,7 +53,7 @@ export function CurrencySelector({
                 key={c.code}
                 onClick={() => onSelect(c.code)}
                 className={cn(
-                  "font-dm-mono block w-full cursor-pointer px-5 py-2.5 text-left text-sm leading-[1.2] font-medium tracking-[10%] text-black uppercase md:text-base lg:text-lg xl:text-xl",
+                  "block w-full cursor-pointer px-5 py-2.5 text-left text-sm leading-[1.2] font-medium tracking-[10%] text-black uppercase md:text-base lg:text-lg xl:text-xl",
                   {
                     "hover:bg-black/10": c.code !== currency,
                     "bg-[#F2B035] text-black": c.code === currency,

@@ -35,11 +35,11 @@ export function ReferScreenTwo({ onBack, onNext }: ReferScreenTwoProps) {
       />
 
       <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1180px] flex-col items-center px-4 pt-[128px] pb-16 text-center sm:px-5 md:pt-[160px] md:pb-24">
-        <h1 className="font-greed w-full max-w-[700px] text-center text-[42px] leading-[1.08] font-medium tracking-[-0.02em] text-black uppercase sm:text-[52px] md:text-[60px] md:leading-[1.34]">
+        <h1 className="font-press-start w-full max-w-4xl text-center text-2xl leading-relaxed tracking-[-2%] uppercase sm:text-3xl md:text-4xl lg:text-[40px]">
           {t("heading")}
         </h1>
 
-        <p className="font-dm-mono mt-[30px] max-w-[790px] text-center text-base leading-[1.45] tracking-[0.08em] text-black/60 uppercase sm:text-lg sm:leading-[1.39] sm:tracking-widest">
+        <p className="mt-8 max-w-4xl text-center text-base leading-normal tracking-[2%] text-black/60 sm:text-lg">
           {t("subtitle")}
         </p>
 
@@ -48,7 +48,7 @@ export function ReferScreenTwo({ onBack, onNext }: ReferScreenTwoProps) {
             type="button"
             onClick={() => setActiveTab("service")}
             aria-pressed={activeTab === "service"}
-            className={`font-dm-mono flex h-12 w-full cursor-pointer items-center justify-center gap-4 rounded-[10px] px-5 py-2.5 text-lg leading-[22px] font-medium uppercase ${
+            className={`flex h-12 w-full cursor-pointer items-center justify-center gap-4 rounded-[10px] px-5 py-2.5 text-lg leading-snug font-medium tracking-[2%] capitalize ${
               activeTab === "service"
                 ? "bg-[#F2B035] text-black"
                 : "bg-[#F2F1EE] opacity-60"
@@ -60,15 +60,16 @@ export function ReferScreenTwo({ onBack, onNext }: ReferScreenTwoProps) {
               width={32}
               height={32}
               aria-hidden="true"
-              className="size-7 shrink-0"
+              className="size-6 shrink-0"
             />
             {t("serviceTab")}
           </button>
+
           <button
             type="button"
             onClick={() => setActiveTab("crypto")}
             aria-pressed={activeTab === "crypto"}
-            className={`font-dm-mono flex h-12 w-full cursor-pointer items-center justify-center gap-4 rounded-[10px] px-5 py-2.5 text-lg leading-[22px] font-medium uppercase ${
+            className={`flex h-12 w-full cursor-pointer items-center justify-center gap-4 rounded-[10px] px-5 py-2.5 text-lg leading-snug font-medium tracking-[2%] capitalize ${
               activeTab === "crypto"
                 ? "bg-[#F2B035] text-black"
                 : "bg-[#F2F1EE] text-black opacity-60"
@@ -80,7 +81,7 @@ export function ReferScreenTwo({ onBack, onNext }: ReferScreenTwoProps) {
               width={32}
               height={32}
               aria-hidden="true"
-              className={`size-7 shrink-0 ${
+              className={`size-6 shrink-0 ${
                 activeTab === "crypto" ? "" : "opacity-60"
               }`}
             />
@@ -93,7 +94,7 @@ export function ReferScreenTwo({ onBack, onNext }: ReferScreenTwoProps) {
             {SERVICE_COMPANIES.map((company) => (
               <div
                 key={company.name}
-                className="flex h-14 w-full items-center gap-5 rounded-xl bg-[#F2F1EE] px-5 shadow-[-3px_4px_0_#000]"
+                className="flex h-14 w-full items-center gap-5 rounded-xl bg-[#F2F1EE] px-5 shadow-[-4px_4px_0_#000]"
               >
                 <Image
                   src={`/images/Referrals/logos/${company.logo}`}
@@ -102,7 +103,7 @@ export function ReferScreenTwo({ onBack, onNext }: ReferScreenTwoProps) {
                   height={44}
                   className="aspect-square w-full max-w-8.5 shrink-0 object-contain object-center"
                 />
-                <span className="font-dm-mono min-w-0 truncate text-left text-base leading-none font-medium tracking-[0.04em] text-black uppercase sm:text-lg">
+                <span className="min-w-0 truncate text-left text-base leading-none font-medium tracking-[2%] capitalize sm:text-lg">
                   {company.name}
                 </span>
               </div>
@@ -116,7 +117,7 @@ export function ReferScreenTwo({ onBack, onNext }: ReferScreenTwoProps) {
           <button
             type="button"
             onClick={onNext}
-            className="font-dm-mono mx-auto flex h-11 w-full max-w-[440px] shrink-0 cursor-pointer items-center justify-center gap-4 rounded-md bg-[#F2B035] text-base leading-none font-medium text-black uppercase shadow-[-3px_4px_0_#000] md:gap-5"
+            className="mx-auto flex h-12 w-full max-w-100 shrink-0 cursor-pointer items-center justify-center gap-4 rounded-md bg-[#F2B035] text-base leading-none font-medium text-black capitalize shadow-[-4px_4px_0_#000] md:gap-5"
           >
             <Image
               src="/images/Referrals/icons/hand-holding-coin.svg"
@@ -133,7 +134,7 @@ export function ReferScreenTwo({ onBack, onNext }: ReferScreenTwoProps) {
         <button
           type="button"
           onClick={onBack}
-          className="font-dm-mono mt-8 cursor-pointer text-sm tracking-[0.08em] text-black/50 uppercase underline underline-offset-4 md:text-base"
+          className="mt-8 cursor-pointer text-sm tracking-[0.08em] text-black/50 underline underline-offset-4 md:text-base"
         >
           Back
         </button>

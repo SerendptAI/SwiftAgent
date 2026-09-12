@@ -86,7 +86,7 @@ function ShadowButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`font-dm-mono flex h-[38px] w-full max-w-[378px] items-center justify-center rounded-[8px] bg-[#F25430] text-[14px] font-medium text-white uppercase shadow-[-3px_4px_0px_0px_#000000] ${
+      className={`font-dm-mono flex h-[38px] w-full max-w-[378px] items-center justify-center rounded-[8px] bg-[#F25430] text-[14px] font-medium text-white uppercase shadow-[-4px_4px_0px_0px_#000000] ${
         onClick ? "cursor-pointer transition-colors hover:bg-[#d94526]" : ""
       } disabled:cursor-not-allowed disabled:opacity-70`}
     >

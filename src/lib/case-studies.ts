@@ -51,7 +51,7 @@ export const DEFAULT_ACCENT_COLOR = "#F25430";
 const ALL_CASE_STUDIES: CaseStudy[] = [
   {
     id: "kuda-bank",
-    name: "KUDA BANK",
+    name: "Kuda Bank",
     logo: "/images/Referrals/logos/kuda.png",
     mockup: MOCKUP,
     published: false,
@@ -59,17 +59,17 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
       "<strong>Kuda Bank</strong> is a digital-first bank built for Africans, offering zero-fee banking, savings, and spending tools through a seamless mobile experience.",
     useCases: [
       {
-        title: "RESOLVE ACCOUNT ACCESS ISSUES",
+        title: "Resolve Account Access Issues",
         description:
           "Help customers unlock their accounts, reset PINs, and verify identity without waiting for a human agent.",
       },
       {
-        title: "ANSWER TRANSACTION QUERIES",
+        title: "Answer Transaction Queries",
         description:
           "Instantly explain failed transactions, pending payments, and transfer limits to reduce inbound support load.",
       },
       {
-        title: "GUIDE SAVINGS PRODUCT SETUP",
+        title: "Guide Savings Product Setup",
         description:
           "Walk customers through setting up savings targets, automated round-ups, and overdraft protection.",
       },
@@ -77,7 +77,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
   },
   {
     id: "flutterwave",
-    name: "FLUTTERWAVE",
+    name: "Flutterwave",
     logo: "/images/Referrals/logos/flutterwave.png",
     mockup: MOCKUP,
     published: false,
@@ -85,17 +85,17 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
       "<strong>Flutterwave</strong> is a global payments technology company that enables businesses across Africa and beyond to accept and make payments with a single API.",
     useCases: [
       {
-        title: "SUPPORT MERCHANT ONBOARDING",
+        title: "Support Merchant Onboarding",
         description:
           "Guide new merchants through KYC, account setup, and API integration so they can start accepting payments faster.",
       },
       {
-        title: "HANDLE PAYOUT DISPUTES",
+        title: "Handle Payout Disputes",
         description:
           "Automatically triage and respond to settlement queries, reducing time-to-resolution for payout disputes.",
       },
       {
-        title: "EXPLAIN COMPLIANCE REQUIREMENTS",
+        title: "Explain Compliance Requirements",
         description:
           "Answer questions about documentation, country-specific regulations, and integration requirements at scale.",
       },
@@ -103,7 +103,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
   },
   {
     id: "chowdeck",
-    name: "CHOWDECK",
+    name: "Chowdeck",
     logo: "/images/Referrals/logos/chowdeck.png",
     mockup: MOCKUP,
     description:
@@ -112,19 +112,19 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
     published: true,
     useCases: [
       {
-        title: "TURN COMMON QUESTIONS INTO INSTANT CONVERSATIONS",
+        title: "Turn Common Questions Into Instant Conversations",
         description:
           "A customer asking to change their delivery address gets the full answer in chat — what to do before the order is placed, how to reach support once it is already on its way, and when a fee adjustment applies.",
         video: partnerVideo("chowdeck/common-questions"),
       },
       {
-        title: "REDUCE REPETITIVE SUPPORT WORK",
+        title: "Reduce Repetitive Support Work",
         description:
           "Order tracking, payment issues, delivery timelines and merchant availability are the same handful of questions over and over. Swift Agents resolves those instantly so human agents keep their attention on the complex cases.",
         video: partnerVideo("chowdeck/repetitive-support"),
       },
       {
-        title: "DISCOVER THROUGH CONVERSATION",
+        title: "Discover Through Conversation",
         description:
           "Customers who do not know what they want can just ask. “Three breakfast options under ₦5,000” comes back as real dishes with vendors, prices and ratings, ready to order.",
         video: partnerVideo("chowdeck/discover-meals"),
@@ -133,7 +133,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
   },
   {
     id: "raenest",
-    name: "RAENEST",
+    name: "Raenest",
     logo: "/images/Referrals/logos/raenest.png",
     mockup: MOCKUP,
     description:
@@ -142,19 +142,19 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
     published: true,
     useCases: [
       {
-        title: "SIMPLIFY ACCOUNT SETUP & ONBOARDING",
+        title: "Simplify Account Setup & Onboarding",
         description:
           "New users are walked through verification in chat — which documents are accepted, why an upload was rejected for glare, a name mismatch or an expired proof of address, and exactly where in the dashboard to try again.",
         video: partnerVideo("raenest/setup-onboarding"),
       },
       {
-        title: "BRING CLARITY TO CROSS-BORDER PAYMENTS",
+        title: "Bring Clarity to Cross-Border Payments",
         description:
           "International transfers raise questions before, during and after they land. “Has my payment been received?” is answered rather than queued — the agent collects the transaction reference, amount and date, then confirms the status back to the user.",
         video: partnerVideo("raenest/payments"),
       },
       {
-        title: "KEEP USERS INFORMED EVERY STEP OF THE WAY",
+        title: "Keep Users Informed Every Step of the Way",
         description:
           "Once a transfer clears, the agent confirms the funds reached the recipient and tells them how to find the money in their account. Support should bring trust, not uncertainty.",
         video: partnerVideo("raenest/every-step"),
@@ -163,7 +163,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
   },
   {
     id: "partyverse",
-    name: "PARTYVERSE",
+    name: "Partyverse",
     logo: "/images/Referrals/logos/partyverse.png",
     mockup: MOCKUP,
     description:
@@ -172,7 +172,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
     published: true,
     useCases: [
       {
-        title: "DISCOVER EVENTS THROUGH CONVERSATION",
+        title: "Discover Events Through Conversation",
         description: [
           "<p>Instead of searching through multiple events, users can simply describe what they want:</p>",
           "<blockquote>",
@@ -185,7 +185,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
         video: partnerVideo("partyverse/describe-what-you-want"),
       },
       {
-        title: "HANDLE PAYMENT QUESTIONS FASTER",
+        title: "Handle Payment Questions Faster",
         description: [
           "<p>Help users get answers to common payment-related issues immediately:</p>",
           "<ul>",
@@ -198,7 +198,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
         video: partnerVideo("partyverse/payment-issues"),
       },
       {
-        title: "MAKE SUPPORT FEEL LIKE A CONVERSATION",
+        title: "Make Support Feel Like a Conversation",
         description:
           "Instead of sending customers to support forms or waiting for email responses, users can ask questions naturally and receive immediate guidance.",
         video: partnerVideo("partyverse/refund-in-chat"),
@@ -212,7 +212,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
   },
   {
     id: "evolution",
-    name: "EVOLUTION",
+    name: "Evolution",
     logo: "/images/Referrals/logos/evolution.png",
     mockup: MOCKUP,
     videoAspect: "aspect-[9/16]",
@@ -230,7 +230,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
     ].join(""),
     useCases: [
       {
-        title: "MAKE GLOBAL FINANCE FEEL SIMPLER",
+        title: "Make Global Finance Feel Simpler",
         description: [
           "<p>International banking can be complex, but getting help should not be. ",
           "Instead of searching through help articles or waiting for a response, users ",
@@ -247,7 +247,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
         video: partnerVideo("evolution/simpler-global-finance"),
       },
       {
-        title: "REDUCE UNCERTAINTY AROUND EVERY TRANSACTION",
+        title: "Reduce Uncertainty Around Every Transaction",
         description: [
           "<p>Cross-border payments often generate the same types of questions:</p>",
           "<ul>",
@@ -265,7 +265,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
         video: partnerVideo("evolution/reduce-uncertainty"),
       },
       {
-        title: "SUPPORT USERS ACROSS EVERY TIME ZONE",
+        title: "Support Users Across Every Time Zone",
         description: [
           "<p>Global finance does not stop when business hours end. Whether a customer is ",
           "receiving a payment from the US, sending funds to another country, or managing ",
@@ -286,7 +286,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
   },
   {
     id: "selar",
-    name: "SELAR",
+    name: "Selar",
     logo: "/images/Referrals/logos/selar.png",
     mockup: MOCKUP,
     videoAspect: "aspect-[9/16]",
@@ -307,7 +307,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
     ].join(""),
     useCases: [
       {
-        title: "TURN HELP ARTICLES INTO INSTANT ANSWERS",
+        title: "Turn Help Articles Into Instant Answers",
         description: [
           "<p>Selar already provides detailed documentation and support ",
           "resources. Instead of asking users to search through articles, ",
@@ -323,7 +323,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
         video: partnerVideo("selar/help-articles"),
       },
       {
-        title: "SUPPORT BOTH CREATORS AND BUYERS SIMULTANEOUSLY",
+        title: "Support Both Creators and Buyers Simultaneously",
         description: [
           "<p>Every transaction creates two different support journeys.</p>",
           "<p>The creator wants to know:</p>",
@@ -342,7 +342,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
         video: partnerVideo("selar/creators-and-buyers"),
       },
       {
-        title: "SCALE KNOWLEDGE, NOT SUPPORT TICKETS",
+        title: "Scale Knowledge, Not Support Tickets",
         description: [
           "<p>As more creators join Selar and more customers make purchases ",
           "across different countries, repetitive questions naturally ",
@@ -365,7 +365,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
   },
   {
     id: "rank",
-    name: "RANK",
+    name: "Rank",
     logo: "/images/Referrals/logos/rank.png",
     mockup: MOCKUP,
     videoAspect: "aspect-[9/16]",
@@ -385,7 +385,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
     ].join(""),
     useCases: [
       {
-        title: "MAKE EVERYDAY BANKING FEEL EFFORTLESS",
+        title: "Make Everyday Banking Feel Effortless",
         description: [
           "<p>Instead of searching through FAQs or waiting for a support ",
           "response, customers can simply ask:</p>",
@@ -401,7 +401,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
         video: partnerVideo("rank/everyday-banking"),
       },
       {
-        title: "TRANSFORM ROUTINE QUESTIONS INTO INSTANT CONVERSATIONS",
+        title: "Transform Routine Questions Into Instant Conversations",
         description: [
           "<p>Many customer enquiries follow familiar patterns:</p>",
           "<ul>",
@@ -419,7 +419,7 @@ const ALL_CASE_STUDIES: CaseStudy[] = [
         video: partnerVideo("rank/routine-questions"),
       },
       {
-        title: "GROW CUSTOMER CONFIDENCE ALONGSIDE THE PLATFORM",
+        title: "Grow Customer Confidence Alongside the Platform",
         description: [
           "<p>As Rank expands its banking and wealth offerings, customer ",
           "expectations continue to grow.</p>",
@@ -457,7 +457,7 @@ export function getCaseStudyPath(id: string): string {
 
 export function caseStudyChipClass(active: boolean): string {
   return cn(
-    "font-dm-mono ml-1 flex w-fit shrink-0 items-center gap-3 rounded-[10px] border px-4 py-2.5 text-sm font-medium tracking-[10%] text-black uppercase transition-colors md:gap-6 md:text-base lg:text-lg xl:text-xl",
+    "font-jetbrains ml-1 flex w-fit shrink-0 items-center gap-3 rounded-[10px] border px-4 py-2.5 text-sm font-medium tracking-[10%] text-black transition-colors md:gap-6 md:text-base lg:text-lg xl:text-xl",
     active
       ? "border-black bg-[#F6F4EF] shadow-[-4px_4px_0px_0px_#000000]"
       : "border-black/30 bg-[#F6F4EF]/50 hover:border-black",

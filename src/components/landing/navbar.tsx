@@ -53,7 +53,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
 
     return (
       <>
-        <header className="fixed top-6 right-0 left-0 z-100 flex w-full justify-center px-6">
+        <header className="font-jetbrains fixed top-6 right-0 left-0 z-100 flex w-full justify-center px-6">
           <nav
             ref={ref}
             className={cn(

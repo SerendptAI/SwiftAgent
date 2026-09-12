@@ -49,7 +49,7 @@ export function YourNumbersPanel({
       />
 
       <div className="relative grid w-full">
-        <p className="font-dm-mono mb-6 text-base leading-[1.2] tracking-[10%] text-white uppercase md:text-lg">
+        <p className="mb-6 text-base leading-[1.2] tracking-[2%] text-white uppercase md:text-lg">
           {t("title")}
         </p>
 
@@ -70,7 +70,7 @@ export function YourNumbersPanel({
             )}
           >
             <div>
-              <p className="font-dm-mono mb-2.5 text-sm leading-normal font-medium tracking-[10%] text-white/50 uppercase md:text-base">
+              <p className="mb-2.5 text-sm leading-normal font-medium tracking-[2%] text-white/75 capitalize md:text-base">
                 {t("monthlyConversations")}
               </p>
               <NumberInput
@@ -81,7 +81,7 @@ export function YourNumbersPanel({
             </div>
 
             <div>
-              <p className="font-dm-mono mb-2.5 text-sm leading-normal font-medium tracking-[10%] text-white/50 uppercase md:text-base">
+              <p className="mb-2.5 text-sm leading-normal font-medium tracking-[2%] text-white/75 capitalize md:text-base">
                 {t("currentTeamSize")}
               </p>
               <NumberInput
@@ -92,7 +92,7 @@ export function YourNumbersPanel({
             </div>
 
             <div>
-              <p className="font-dm-mono mb-2.5 text-sm leading-normal font-medium tracking-[10%] text-white/50 uppercase md:text-base">
+              <p className="mb-2.5 text-sm leading-normal font-medium tracking-[2%] text-white/75 capitalize md:text-base">
                 {t("monthlyCostPerAgent")}
               </p>
               <NumberInput
@@ -105,8 +105,10 @@ export function YourNumbersPanel({
           </div>
 
           <div>
-            <div className="font-dm-mono mb-2.5 flex items-center justify-between text-sm leading-normal font-medium tracking-[10%] uppercase md:text-base">
-              <p className="text-white/50">{t("repetitiveQueries")}</p>
+            <div className="mb-2.5 flex items-center justify-between text-sm leading-normal font-medium tracking-[2%] md:text-base">
+              <p className="text-white/75 capitalize">
+                {t("repetitiveQueries")}
+              </p>
               <span className="text-white">{repetitiveRate}%</span>
             </div>
 
@@ -116,7 +118,7 @@ export function YourNumbersPanel({
               max={100}
               value={repetitiveRate}
               onChange={(e) => setRepetitiveRate(Number(e.target.value))}
-              className="h-2 w-full cursor-grab rounded-full border border-black active:cursor-grabbing [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border [&::-moz-range-thumb]:border-black [&::-moz-range-thumb]:bg-white [&::-moz-range-track]:h-2 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:border-none [&::-moz-range-track]:bg-transparent [&::-webkit-slider-runnable-track]:h-2 [&::-webkit-slider-runnable-track]:appearance-none [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-transparent [&::-webkit-slider-thumb]:mt-[-6px] [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-black [&::-webkit-slider-thumb]:bg-white"
+              className="h-2 w-full cursor-grab rounded-full border border-black active:cursor-grabbing [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border [&::-moz-range-thumb]:border-black [&::-moz-range-thumb]:bg-white [&::-moz-range-track]:h-2 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:border-none [&::-moz-range-track]:bg-transparent [&::-webkit-slider-runnable-track]:h-2 [&::-webkit-slider-runnable-track]:appearance-none [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-transparent [&::-webkit-slider-thumb]:-mt-1.5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-black [&::-webkit-slider-thumb]:bg-white"
               style={{
                 appearance: "none",
                 WebkitAppearance: "none",
@@ -127,7 +129,7 @@ export function YourNumbersPanel({
           </div>
         </div>
 
-        <p className="font-dm-mono mt-8 w-full max-w-196 text-sm leading-normal tracking-[10%] text-white uppercase md:text-base">
+        <p className="mt-8 w-full max-w-196 text-sm leading-normal tracking-[2%] text-white uppercase md:text-base">
           {t("benchmark", { count: BENCHMARK.toLocaleString() })}
         </p>
       </div>

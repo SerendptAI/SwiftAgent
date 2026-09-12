@@ -30,7 +30,7 @@ export function RoiCalculatorSection() {
 
         <div
           ref={cardRef}
-          className="w-full max-w-100 shrink-0 rounded-2xl border border-[#1f1f1f] bg-white p-6 drop-shadow-[-3px_4px_0px_#000000]"
+          className="w-full max-w-100 shrink-0 rounded-2xl border border-[#1f1f1f] bg-white p-6 drop-shadow-[-4px_4px_0px_#000000]"
         >
           <div className="mb-4 flex items-center justify-between">
             <span className="text-xs font-medium text-[#1f1f1f] uppercase">

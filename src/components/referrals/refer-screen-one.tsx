@@ -47,17 +47,17 @@ export function ReferScreenOne({ onNext }: ReferScreenOneProps) {
         className="pointer-events-none absolute top-[570px] left-0 z-0 h-auto w-screen max-w-none select-none sm:top-[610px] md:top-[620px]"
       />
 
-      <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1180px] flex-col items-center px-4 pt-[128px] pb-14 text-center sm:px-5 md:pt-[160px] md:pb-20">
-        <h1 className="font-greed w-full max-w-[700px] text-center text-[42px] leading-[1.08] font-medium tracking-[-0.02em] text-black uppercase sm:text-[52px] md:text-[60px] md:leading-[1.34]">
+      <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1180px] flex-col items-center px-4 pt-32 pb-14 text-center sm:px-5 md:pt-40 md:pb-20">
+        <h1 className="font-press-start w-full max-w-200 text-center text-2xl leading-relaxed tracking-[-2%] uppercase sm:text-3xl md:text-4xl lg:text-[40px]">
           {t("heading")}
         </h1>
 
-        <p className="font-dm-mono mt-[30px] max-w-[760px] text-center text-base leading-[1.45] tracking-[0.08em] text-black/60 uppercase sm:text-lg sm:leading-[1.39] sm:tracking-widest">
+        <p className="mt-8 max-w-140 text-center text-base leading-normal tracking-[2%] text-black/60 sm:text-lg">
           {t("subtitle")}
         </p>
 
-        <div className="mt-[42px] w-full max-w-[720px] rounded-[28px] border border-black/25 bg-white px-4 pt-7 pb-9 text-center sm:mt-[50px] sm:px-6 md:mt-[57px] md:rounded-[49px] md:px-8 md:pt-9 md:pb-12">
-          <h2 className="font-greed text-center text-[32px] leading-[1.34] font-medium tracking-[-0.02em] text-black uppercase">
+        <div className="mt-10 w-full max-w-[720px] rounded-[28px] border border-black/25 bg-white px-4 pt-7 pb-9 text-center sm:mt-[50px] sm:px-6 md:mt-[57px] md:rounded-[49px] md:px-8 md:pt-9 md:pb-12">
+          <h2 className="font-greed text-center text-[26px] leading-relaxed font-semibold tracking-[-2%] md:text-[32px]">
             {t("rulesTitle")}
           </h2>
 
@@ -67,10 +67,10 @@ export function ReferScreenOne({ onNext }: ReferScreenOneProps) {
                 key={rule}
                 className="flex items-center gap-4 rounded-2xl bg-[#F5F5F5] px-4 py-3.5 sm:px-4.5 md:gap-6"
               >
-                <span className="font-greed flex h-9 w-9 shrink-0 items-center justify-center rounded-xs bg-black text-[32px] leading-[1.34] font-medium tracking-[-0.02em] text-white uppercase">
+                <span className="font-greed flex h-9 w-9 shrink-0 items-center justify-center rounded-xs bg-black text-[26px] leading-[1.34] font-medium tracking-[-0.02em] text-white md:text-[32px]">
                   {index + 1}
                 </span>
-                <span className="font-dm-mono min-w-0 text-left text-sm leading-[1.45] tracking-[0.08em] text-black uppercase sm:text-base md:text-lg md:leading-[1.39] md:tracking-widest">
+                <span className="min-w-0 text-left text-sm leading-[1.45] tracking-[2%] sm:text-base md:text-lg md:tracking-[10%] lg:text-xl">
                   {t(`rules.${rule}`)}
                 </span>
               </div>
@@ -80,14 +80,14 @@ export function ReferScreenOne({ onNext }: ReferScreenOneProps) {
           <button
             type="button"
             onClick={onNext}
-            className="font-dm-mono mx-auto mt-9 flex h-11 w-full max-w-[440px] shrink-0 cursor-pointer items-center justify-center gap-4 rounded-md bg-[#F2B035] text-base leading-none font-medium text-black uppercase shadow-[-3px_4px_0_#000] md:gap-5"
+            className="font-dm-mono mx-auto mt-9 flex h-12 w-full max-w-100 shrink-0 cursor-pointer items-center justify-center gap-4 rounded-md bg-[#F2B035] text-base leading-none font-medium shadow-[-4px_4px_0_#000] md:gap-5"
           >
             {t("continue")}
           </button>
 
           <a
             href="#terms"
-            className="font-dm-mono mt-[46px] inline-block text-xs tracking-[0.08em] text-black uppercase underline underline-offset-4 sm:text-sm"
+            className="mt-12 inline-block text-xs tracking-[2%] underline underline-offset-4 sm:text-sm"
           >
             {t("terms")}
           </a>
