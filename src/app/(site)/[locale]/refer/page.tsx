@@ -12,7 +12,7 @@ export default function ReferPage() {
   const [screen, setScreen] = useState<number>(0);
 
   return (
-    <main className="font-jetbrains relative min-h-screen overflow-hidden bg-white">
+    <main className="relative min-h-screen overflow-hidden bg-white">
       <Navbar />
 
       {screen === 0 && <ReferScreenOne onNext={() => setScreen(1)} />}

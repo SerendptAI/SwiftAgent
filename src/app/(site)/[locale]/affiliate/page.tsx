@@ -29,7 +29,7 @@ export async function generateMetadata({
 export default function AffiliatePage() {
   return (
     <SmoothScrollProvider>
-      <main className="font-jetbrains">
+      <main>
         <AffiliateHeroSection />
         <ReferralPathSection />
         <AudienceSection />

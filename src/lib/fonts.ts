@@ -1,5 +1,4 @@
 import {
-  DM_Mono,
   Instrument_Sans,
   Inter,
   JetBrains_Mono,
@@ -38,13 +37,6 @@ const fontInstrument = Instrument_Sans({
   fallback: ["system-ui", "arial"],
 });
 
-const fontDmMono = DM_Mono({
-  weight: ["400", "500"],
-  subsets: ["latin"],
-  variable: "--font-dm-mono",
-  fallback: ["system-ui", "arial"],
-});
-
 const fontGreedStandard = localFont({
   src: "../../public/fonts/GreedStandard-Medium.otf",
   variable: "--font-greed",
@@ -57,6 +49,5 @@ export const fonts = [
   fontPressStart2P.variable,
   fontInstrument.variable,
   fontJetBrains.variable,
-  fontDmMono.variable,
   fontGreedStandard.variable,
 ];

@@ -61,11 +61,7 @@ function targetIcon(kind: RenameTarget["kind"]): ReactNode {
 }
 
 function FieldLabel({ children }: { children: ReactNode }) {
-  return (
-    <p className="font-stolzl text-[11px] font-normal text-[#7E7E7E] uppercase">
-      {children}
-    </p>
-  );
+  return <p className="text-[11px] font-normal text-[#7E7E7E]">{children}</p>;
 }
 
 function PreviewCard({
@@ -81,11 +77,11 @@ function PreviewCard({
     <div className="flex w-full flex-col gap-1.5 border border-[#EDEDED] bg-[#F6F6F6] p-3">
       <div className="flex min-w-0 items-center gap-2">
         {icon}
-        <span className="font-dm-mono min-w-0 truncate text-[14px] font-medium text-black">
+        <span className="min-w-0 truncate text-[14px] font-medium text-black">
           {name}
         </span>
       </div>
-      {meta && <p className="font-stolzl text-[11px] text-[#7E7E7E]">{meta}</p>}
+      {meta && <p className="text-[11px] text-[#7E7E7E]">{meta}</p>}
     </div>
   );
 }
@@ -104,7 +100,7 @@ function SaveButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`font-dm-mono flex h-9 min-w-[110px] items-center justify-center rounded-[8px] bg-[#03A84E] px-4 text-[13px] font-medium text-white uppercase shadow-[-4px_4px_0px_0px_#000000] ${
+      className={`flex h-9 min-w-[110px] items-center justify-center rounded-[8px] bg-[#03A84E] px-4 text-[13px] font-medium text-white shadow-[-4px_4px_0px_0px_#000000] ${
         onClick ? "cursor-pointer transition-colors hover:bg-[#029143]" : ""
       } disabled:cursor-not-allowed disabled:opacity-50`}
     >
@@ -137,12 +133,12 @@ function RenameBody({
     <div className="flex flex-col gap-[5px] p-6">
       <div className="flex flex-col gap-1.5">
         <FieldLabel>Current name</FieldLabel>
-        <p className="font-dm-mono text-[16px] text-[#7E7E7E] line-through">
+        <p className="text-[16px] text-[#7E7E7E] line-through">
           {target.current}
         </p>
       </div>
       <div className="flex justify-center">
-        <span className="font-dm-mono text-[16px] text-[#C0C0C0]">→</span>
+        <span className="text-[16px] text-[#C0C0C0]">→</span>
       </div>
       <div className="flex flex-col gap-2">
         <FieldLabel>New name</FieldLabel>
@@ -153,9 +149,9 @@ function RenameBody({
           onKeyDown={(e) => {
             if (e.key === "Enter" && canSave) onSubmit();
           }}
-          className="font-dm-mono h-11 w-full border border-[#EDEDED] bg-white px-3 text-[16px] text-black caret-[#03A84E] outline-none focus:border-[#03A84E]"
+          className="h-11 w-full border border-[#EDEDED] bg-white px-3 text-[16px] text-black caret-[#03A84E] outline-none focus:border-[#03A84E]"
         />
-        <p className="font-stolzl text-[11px] font-normal text-[#7E7E7E]">
+        <p className="text-[11px] font-normal text-[#7E7E7E]">
           {HELPER_TEXT[target.kind]}
         </p>
       </div>
@@ -303,7 +299,7 @@ export function FormsEditManager({
           />
           <div className="flex flex-col">
             {websites.length === 0 ? (
-              <p className="font-stolzl py-6 text-center text-[13px] text-[#7E7E7E]">
+              <p className="py-6 text-center text-[13px] text-[#7E7E7E]">
                 No website forms to manage.
               </p>
             ) : (
@@ -320,7 +316,7 @@ export function FormsEditManager({
                       className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left"
                     >
                       <Globe className="h-4 w-4 shrink-0 text-black" />
-                      <span className="font-dm-mono min-w-0 truncate text-[18px] text-black uppercase">
+                      <span className="min-w-0 truncate text-[18px] text-black">
                         {site.website_link}
                       </span>
                     </button>
@@ -369,7 +365,7 @@ export function FormsEditManager({
           />
           <div className="flex flex-col">
             {pages.length === 0 ? (
-              <p className="font-stolzl py-6 text-center text-[13px] text-[#7E7E7E]">
+              <p className="py-6 text-center text-[13px] text-[#7E7E7E]">
                 No pages with forms yet.
               </p>
             ) : (
@@ -387,7 +383,7 @@ export function FormsEditManager({
                     className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left"
                   >
                     <FileText className="h-4 w-4 shrink-0 text-black" />
-                    <span className="font-dm-mono min-w-0 truncate text-[18px] text-black lowercase">
+                    <span className="min-w-0 truncate text-[18px] text-black lowercase">
                       {page.page_path}
                     </span>
                   </button>
@@ -395,7 +391,6 @@ export function FormsEditManager({
                     <ActionLink
                       label="Edit page name"
                       colorClass={EDIT_COLOR}
-                      uppercase={false}
                       onClick={() =>
                         openRename({
                           kind: "page",
@@ -440,14 +435,14 @@ export function FormsEditManager({
               className="flex items-center justify-between gap-3 border border-[#EDEDED] p-4"
             >
               <div className="flex min-w-0 flex-1 flex-col items-start gap-1">
-                <span className="font-dm-mono truncate text-[14px] font-medium text-black">
+                <span className="truncate text-[14px] font-medium text-black">
                   {group.form_name}
                 </span>
-                <span className="font-stolzl text-[11px] text-[#7E7E7E]">
+                <span className="text-[11px] text-[#7E7E7E]">
                   Entries: {group.entries_count}{" "}
                   {group.entries_count === 1 ? "submission" : "submissions"}
                 </span>
-                <span className="font-stolzl text-[11px] text-[#7E7E7E]">
+                <span className="text-[11px] text-[#7E7E7E]">
                   Last submission: {formatDate(group.last_submission)}
                 </span>
               </div>

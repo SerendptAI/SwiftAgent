@@ -25,7 +25,7 @@ function IntroModal({ onStart }: { onStart: () => void }) {
             organization better.
           </h2>
 
-          <p className="font-dm-mono text-muted-foreground mb-8.5 text-sm leading-[1.96] tracking-[10%] uppercase">
+          <p className="text-muted-foreground mb-8.5 text-sm leading-[1.96] tracking-[10%]">
             Our AI agents have a few questions for you so we
             <br />
             can understand your organization better
@@ -41,7 +41,7 @@ function IntroModal({ onStart }: { onStart: () => void }) {
             />
           </div>
 
-          <p className="font-dm-mono text-muted-foreground mb-9.5 flex items-center gap-1.5 text-sm leading-[1.96] tracking-[10%] uppercase">
+          <p className="text-muted-foreground mb-9.5 flex items-center gap-1.5 text-sm leading-[1.96] tracking-[10%]">
             <Icons.TimeFlow className="size-5" />
             Usually takes 5 minutes
           </p>

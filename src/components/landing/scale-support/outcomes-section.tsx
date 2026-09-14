@@ -13,7 +13,7 @@ export function OutcomesSection() {
   return (
     <section className="w-full bg-[#6433CC] px-6 py-16 text-white md:px-10 md:py-20 lg:px-16 lg:py-26">
       <div className="mx-auto max-w-360">
-        <p className="font-dm-mono mb-4 text-base leading-[1.2] tracking-[10%] text-white/60 uppercase md:text-lg">
+        <p className="mb-4 text-base leading-[1.2] tracking-[10%] text-white/60 uppercase md:text-lg">
           {t("eyebrow")}
         </p>
 
@@ -21,7 +21,7 @@ export function OutcomesSection() {
           {t("heading")}
         </h2>
 
-        <p className="font-stolzl mt-8 max-w-2xl text-base leading-relaxed text-white/80 md:mt-10 md:text-lg">
+        <p className="mt-8 max-w-2xl text-base leading-relaxed text-white/80 md:mt-10 md:text-lg">
           {t("body")}
         </p>
 
@@ -31,7 +31,7 @@ export function OutcomesSection() {
               key={outcome}
               className="border border-white/30 px-5 py-6 text-center"
             >
-              <span className="font-dm-mono text-sm tracking-[8%] uppercase md:text-base">
+              <span className="text-sm tracking-[8%] uppercase md:text-base">
                 {t(`items.${outcome}`)}
               </span>
             </div>

@@ -71,7 +71,7 @@ export function ResourcesCard() {
           <div className="absolute -bottom-6 left-1/2 z-10 h-12 w-24 -translate-x-1/2 rounded-t-full bg-white transition-transform duration-500 ease-out group-hover:translate-y-2" />
         </div>
 
-        <span className="font-dm-mono mt-2 text-sm leading-none text-[#3B82F6] transition-all duration-300 group-hover:text-[#2563EB]">
+        <span className="mt-2 text-sm leading-none text-[#3B82F6] transition-all duration-300 group-hover:text-[#2563EB]">
           Development Resources
         </span>
       </button>

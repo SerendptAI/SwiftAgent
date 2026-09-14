@@ -25,7 +25,7 @@ export function Pager({
 
   return (
     <div className="flex items-center justify-between gap-3">
-      <p className="font-dm-mono text-xs text-gray-500">
+      <p className="text-xs text-gray-500">
         Showing {first}–{last}
       </p>
       <div className="flex items-center gap-1">

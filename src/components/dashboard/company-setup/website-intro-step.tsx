@@ -34,10 +34,10 @@ export function WebsiteIntroStep({ onDone }: { onDone: () => void }) {
 
   return (
     <div className="mx-auto flex w-full max-w-xl flex-col items-center pt-6 pb-10 text-center sm:pt-10">
-      <h2 className="font-greed text-3xl leading-[1.1] font-semibold tracking-[-2%] text-black uppercase sm:text-[40px]">
+      <h2 className="font-greed text-3xl leading-[1.1] font-semibold tracking-[-2%] text-black sm:text-[40px]">
         Let&apos;s set up your company
       </h2>
-      <p className="font-dm-mono mt-4 text-sm leading-[1.96] tracking-[0.14em] text-gray-500 uppercase">
+      <p className="mt-4 text-sm leading-[1.96] tracking-[0.14em] text-gray-500">
         Enter your website and we&apos;ll prefill your details for you
       </p>
 
@@ -59,7 +59,7 @@ export function WebsiteIntroStep({ onDone }: { onDone: () => void }) {
               Analyzing your website…
             </span>
           ) : (
-            "ANALYZE MY SITE"
+            "Analyze my site"
           )}
         </NextButton>
       </form>
@@ -68,7 +68,7 @@ export function WebsiteIntroStep({ onDone }: { onDone: () => void }) {
         type="button"
         onClick={handleSkip}
         disabled={isAnalyzing}
-        className="font-dm-mono mt-6 cursor-pointer text-xs tracking-[0.12em] text-gray-400 uppercase underline underline-offset-4 transition-colors hover:text-gray-600 disabled:opacity-50"
+        className="mt-6 cursor-pointer text-xs tracking-[0.12em] text-gray-400 underline underline-offset-4 transition-colors hover:text-gray-600 disabled:opacity-50"
       >
         Skip, I&apos;ll fill it manually
       </button>

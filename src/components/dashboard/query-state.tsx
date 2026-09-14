@@ -29,13 +29,13 @@ export function QueryState<T>({
   if (query.isError || query.data === undefined) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-3 py-8">
-        <p className="font-stolzl max-w-md text-center text-sm text-gray-500">
+        <p className="max-w-md text-center text-sm text-gray-500">
           {getApiErrorMessage(query.error, fallback)}
         </p>
         <button
           type="button"
           onClick={() => query.refetch()}
-          className="font-dm-mono rounded-lg border border-gray-200 px-4 py-2 text-xs tracking-wider text-gray-700 uppercase transition-colors hover:bg-gray-50"
+          className="rounded-lg border border-gray-200 px-4 py-2 text-xs tracking-wider text-gray-700 transition-colors hover:bg-gray-50"
         >
           Retry
         </button>

@@ -457,7 +457,7 @@ export function getCaseStudyPath(id: string): string {
 
 export function caseStudyChipClass(active: boolean): string {
   return cn(
-    "font-jetbrains ml-1 flex w-fit shrink-0 items-center gap-3 rounded-[10px] border px-4 py-2.5 text-sm font-medium tracking-[10%] text-black transition-colors md:gap-6 md:text-base lg:text-lg xl:text-xl",
+    "ml-1 flex w-fit shrink-0 items-center gap-3 rounded-[10px] border px-4 py-2.5 text-sm font-medium tracking-[10%] text-black transition-colors md:gap-6 md:text-base lg:text-lg xl:text-xl",
     active
       ? "border-black bg-[#F6F4EF] shadow-[-4px_4px_0px_0px_#000000]"
       : "border-black/30 bg-[#F6F4EF]/50 hover:border-black",

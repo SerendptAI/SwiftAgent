@@ -153,7 +153,7 @@ export function HeroSection() {
 
           <p
             ref={subtitleRef}
-            className="font-stolzl mt-8 max-w-xl text-base leading-relaxed text-black md:mt-10 md:text-lg"
+            className="mt-8 max-w-xl text-base leading-relaxed text-black md:mt-10 md:text-lg"
           >
             {t("subtitle")}
           </p>

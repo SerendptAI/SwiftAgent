@@ -193,7 +193,7 @@ export function OnlineFormDrawer({
             <button
               type="button"
               onClick={closeDrawer}
-              className="font-dm-mono pointer-events-auto flex min-h-10 w-fit max-w-full cursor-pointer items-center gap-2 rounded-full bg-white px-3 py-1 text-xs leading-none tracking-[0.08em] text-black/60 uppercase shadow-sm transition-colors hover:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black md:min-h-0 md:gap-3 md:text-sm md:shadow-none"
+              className="pointer-events-auto flex min-h-10 w-fit max-w-full cursor-pointer items-center gap-2 rounded-full bg-white px-3 py-1 text-xs leading-none tracking-[0.08em] text-black/60 shadow-sm transition-colors hover:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black md:min-h-0 md:gap-3 md:text-sm md:shadow-none"
             >
               <Icons.leftArrow className="h-auto w-5 shrink-0 stroke-2 text-black md:w-6" />
               <span className="truncate">Back to Forms</span>
@@ -205,12 +205,12 @@ export function OnlineFormDrawer({
           <div className="mx-auto flex w-full max-w-310 flex-col items-center">
             <h2
               id="online-form-title"
-              className="font-greed text-center text-[30px] leading-[0.95] font-medium tracking-[-0.02em] text-black uppercase md:text-[34px]"
+              className="font-greed text-center text-[30px] leading-[0.95] font-medium tracking-[-0.02em] text-black md:text-[34px]"
             >
               {isEdit ? "Edit Online Form" : "Create New Online Form"}
             </h2>
 
-            <p className="font-dm-mono mt-6 w-full max-w-290 rounded-xl bg-[#EDEDED] px-4 py-3 text-center text-[11px] leading-[1.45] font-normal tracking-[0.12em] text-black/45 uppercase md:mt-14 md:rounded-2xl md:px-8 md:py-4 md:text-sm md:leading-[1.35] md:tracking-[0.18em]">
+            <p className="mt-6 w-full max-w-290 rounded-xl bg-[#EDEDED] px-4 py-3 text-center text-[11px] leading-[1.45] font-normal tracking-[0.12em] text-black/45 md:mt-14 md:rounded-2xl md:px-8 md:py-4 md:text-sm md:leading-[1.35] md:tracking-[0.18em]">
               A website form is a form that captures any info sent through any
               form on your website so you don&apos;t need email and backend code
               to have a functioning contact form
@@ -263,11 +263,11 @@ function OnlineFormProgress({ activeStep }: { activeStep: OnlineFormStep }) {
       className="mt-8 flex w-full items-end gap-2 overflow-x-auto md:mx-auto md:mt-24 md:w-fit md:overflow-visible"
       aria-label="Online form creation progress"
     >
-      <div className="font-dm-mono h-8 shrink-0 border-b-4 border-[#6433CC] px-2 text-xs font-normal tracking-[0.08em] whitespace-nowrap text-black uppercase md:h-9 md:text-sm">
+      <div className="h-8 shrink-0 border-b-4 border-[#6433CC] px-2 text-xs font-normal tracking-[0.08em] whitespace-nowrap text-black md:h-9 md:text-sm">
         Form Information
       </div>
       <div
-        className={`font-dm-mono h-8 shrink-0 border-b-4 px-2 text-xs font-normal tracking-[0.08em] whitespace-nowrap uppercase md:h-9 md:text-sm ${
+        className={`h-8 shrink-0 border-b-4 px-2 text-xs font-normal tracking-[0.08em] whitespace-nowrap md:h-9 md:text-sm ${
           isSecurityStep
             ? "border-[#F5A623] text-black"
             : "border-[#F2E6D6] text-black/20"
@@ -303,7 +303,7 @@ function OnlineFormInformation({
   return (
     <div className="space-y-5 md:space-y-7">
       <label className="block">
-        <span className="font-dm-mono mb-2 flex items-center gap-2 text-base leading-none font-bold tracking-[0.08em] text-black uppercase md:mb-4 md:text-2xl">
+        <span className="mb-2 flex items-center gap-2 text-base leading-none font-bold tracking-[0.08em] text-black md:mb-4 md:text-2xl">
           Upload Form Image
           <Info className="h-4 w-4 md:h-5 md:w-5" />
         </span>
@@ -313,19 +313,19 @@ function OnlineFormInformation({
           onChange={(e) => onFormImageChange(e.target.value)}
           placeholder="https://website.com"
           aria-invalid={Boolean(errors.formImage)}
-          className={`font-dm-mono h-11 w-full rounded-md border-0 bg-[#EDEDED] px-4 text-sm font-normal tracking-[0.08em] text-black uppercase outline-none placeholder:text-black/35 focus:ring-2 md:h-10 md:text-base ${
+          className={`h-11 w-full rounded-md border-0 bg-[#EDEDED] px-4 text-sm font-normal tracking-[0.08em] text-black outline-none placeholder:text-black/35 focus:ring-2 md:h-10 md:text-base ${
             errors.formImage ? "ring-2 ring-[#F25430]" : "focus:ring-[#6433CC]"
           }`}
         />
         {errors.formImage && (
-          <p className="font-dm-mono mt-2 text-xs font-normal tracking-[0.08em] text-[#F25430] uppercase">
+          <p className="mt-2 text-xs font-normal tracking-[0.08em] text-[#F25430]">
             {errors.formImage}
           </p>
         )}
       </label>
 
       <label className="block">
-        <span className="font-dm-mono mb-2 flex items-center gap-2 text-base leading-none font-bold tracking-[0.08em] text-black uppercase md:mb-4 md:text-2xl">
+        <span className="mb-2 flex items-center gap-2 text-base leading-none font-bold tracking-[0.08em] text-black md:mb-4 md:text-2xl">
           Form Title
           <Info className="h-4 w-4 md:h-5 md:w-5" />
         </span>
@@ -335,19 +335,19 @@ function OnlineFormInformation({
           onChange={(e) => onFormTitleChange(e.target.value)}
           placeholder="NG BALLERZ FORM"
           aria-invalid={Boolean(errors.formTitle)}
-          className={`font-dm-mono h-11 w-full rounded-md border-0 bg-[#EDEDED] px-4 text-sm font-normal tracking-[0.08em] text-black uppercase outline-none placeholder:text-black/35 focus:ring-2 md:h-10 md:text-base ${
+          className={`h-11 w-full rounded-md border-0 bg-[#EDEDED] px-4 text-sm font-normal tracking-[0.08em] text-black outline-none placeholder:text-black/35 focus:ring-2 md:h-10 md:text-base ${
             errors.formTitle ? "ring-2 ring-[#F25430]" : "focus:ring-[#6433CC]"
           }`}
         />
         {errors.formTitle && (
-          <p className="font-dm-mono mt-2 text-xs font-normal tracking-[0.08em] text-[#F25430] uppercase">
+          <p className="mt-2 text-xs font-normal tracking-[0.08em] text-[#F25430]">
             {errors.formTitle}
           </p>
         )}
       </label>
 
       {apiError && (
-        <p className="font-dm-mono text-xs font-normal tracking-[0.08em] text-[#F25430] uppercase">
+        <p className="text-xs font-normal tracking-[0.08em] text-[#F25430]">
           {apiError}
         </p>
       )}
@@ -356,7 +356,7 @@ function OnlineFormInformation({
         type="button"
         onClick={onContinue}
         disabled={isLoading}
-        className="font-dm-mono mt-8 h-11 w-full cursor-pointer rounded-lg bg-[#006BE5] text-sm font-normal tracking-[0.08em] text-white uppercase shadow-[-3px_5px_0px_0px_#000000] transition-colors hover:bg-[#005fca] disabled:cursor-not-allowed disabled:opacity-60 md:mt-14 md:h-10 md:text-base"
+        className="mt-8 h-11 w-full cursor-pointer rounded-lg bg-[#006BE5] text-sm font-normal tracking-[0.08em] text-white shadow-[-3px_5px_0px_0px_#000000] transition-colors hover:bg-[#005fca] disabled:cursor-not-allowed disabled:opacity-60 md:mt-14 md:h-10 md:text-base"
       >
         {isLoading
           ? isEdit
@@ -381,10 +381,10 @@ function OnlineFormSecurity({
     <div className="flex flex-col justify-center">
       <div className="grid gap-5 md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] md:gap-8">
         <section className="flex flex-col">
-          <h3 className="font-dm-mono mb-3 max-w-75 text-sm leading-[1.25] font-bold tracking-[0.04em] text-black uppercase md:mb-5 md:text-lg md:leading-[1.18]">
+          <h3 className="mb-3 max-w-75 text-sm leading-[1.25] font-bold tracking-[0.04em] text-black md:mb-5 md:text-lg md:leading-[1.18]">
             Copy this to your code base
           </h3>
-          <div className="font-dm-mono min-h-28 overflow-auto rounded-lg bg-[#F4F1EC] p-4 text-[10px] leading-[1.45] font-normal tracking-[0.1em] whitespace-pre-wrap text-black/40 md:h-full md:p-6 md:text-xs md:leading-[1.35] md:tracking-[0.12em]">
+          <div className="min-h-28 overflow-auto rounded-lg bg-[#F4F1EC] p-4 text-[10px] leading-[1.45] font-normal tracking-[0.1em] whitespace-pre-wrap text-black/40 md:h-full md:p-6 md:text-xs md:leading-[1.35] md:tracking-[0.12em]">
             {form?.snippet ?? ""}
           </div>
           {form?.snippet && (
@@ -395,10 +395,10 @@ function OnlineFormSecurity({
         </section>
 
         <section className="flex flex-col">
-          <h3 className="font-dm-mono mb-3 max-w-125 text-sm leading-[1.25] font-bold tracking-[0.04em] text-black uppercase md:mb-5 md:text-lg md:leading-[1.18]">
+          <h3 className="mb-3 max-w-125 text-sm leading-[1.25] font-bold tracking-[0.04em] text-black md:mb-5 md:text-lg md:leading-[1.18]">
             Copy this (you can find this later in swiftagents.org/forms/keys)
           </h3>
-          <div className="font-dm-mono flex min-h-28 flex-col justify-center gap-2 rounded-lg bg-[#F4F1EC] p-4 text-[10px] leading-[1.8] font-normal tracking-[0.1em] text-black/40 md:h-full md:p-6 md:text-xs md:tracking-[0.12em]">
+          <div className="flex min-h-28 flex-col justify-center gap-2 rounded-lg bg-[#F4F1EC] p-4 text-[10px] leading-[1.8] font-normal tracking-[0.1em] text-black/40 md:h-full md:p-6 md:text-xs md:tracking-[0.12em]">
             {form?.form_url && (
               <div className="flex min-w-0 items-center gap-3">
                 <span className="min-w-0 flex-1 truncate">
@@ -437,7 +437,7 @@ function OnlineFormSecurity({
         <button
           type="button"
           onClick={onSaveAndExit}
-          className="font-dm-mono h-11 w-full cursor-pointer rounded-lg bg-[#006BE5] text-sm font-normal tracking-[0.08em] text-white uppercase shadow-[-3px_5px_0px_0px_#000000] transition-colors hover:bg-[#005fca] md:h-10 md:text-base"
+          className="h-11 w-full cursor-pointer rounded-lg bg-[#006BE5] text-sm font-normal tracking-[0.08em] text-white shadow-[-3px_5px_0px_0px_#000000] transition-colors hover:bg-[#005fca] md:h-10 md:text-base"
         >
           Save and Exit
         </button>

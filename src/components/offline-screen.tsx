@@ -94,7 +94,7 @@ export function OfflineScreen({ children }: { children: React.ReactNode }) {
   if (phase === "online") return <>{children}</>;
 
   return (
-    <div className="font-dm-mono flex min-h-[400px] flex-col items-center justify-center pt-28">
+    <div className="flex min-h-[400px] flex-col items-center justify-center pt-28">
       {phase === "reconnected" ? (
         <>
           <p className="text-center text-[26px] leading-[134%] font-normal tracking-[-0.02em] text-black/60 uppercase">

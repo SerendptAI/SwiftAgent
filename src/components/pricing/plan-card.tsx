@@ -62,7 +62,7 @@ export function PlanCard({
         className="block h-auto w-full"
       />
 
-      <div className="font-dm-mono flex min-w-0 flex-1 flex-col px-4 pt-4 md:px-6 md:pt-6">
+      <div className="flex min-w-0 flex-1 flex-col px-4 pt-4 md:px-6 md:pt-6">
         <div className="mb-3 flex min-w-0 flex-wrap items-center gap-2 md:mb-3.5">
           <h3
             className={`text-sm leading-none tracking-widest uppercase md:text-base ${plan.textColor}`}

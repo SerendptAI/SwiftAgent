@@ -24,13 +24,13 @@ function ChannelTimesTable({
     <table className="w-full border-collapse">
       <thead>
         <tr className="bg-[#f6f4ef]">
-          <th className="font-dm-mono rounded-l-[6px] px-3 py-2 text-left text-[12px] font-normal text-[#7e7e7e] uppercase">
+          <th className="rounded-l-[6px] px-3 py-2 text-left text-[12px] font-normal text-[#7e7e7e] uppercase">
             Channel
           </th>
-          <th className="font-dm-mono px-3 py-2 text-right text-[12px] font-normal text-[#7e7e7e] uppercase">
+          <th className="px-3 py-2 text-right text-[12px] font-normal text-[#7e7e7e] uppercase">
             Avg Time
           </th>
-          <th className="font-dm-mono rounded-r-[6px] px-3 py-2 text-right text-[12px] font-normal text-[#7e7e7e] uppercase">
+          <th className="rounded-r-[6px] px-3 py-2 text-right text-[12px] font-normal text-[#7e7e7e] uppercase">
             Volume
           </th>
         </tr>
@@ -41,13 +41,13 @@ function ChannelTimesTable({
             key={row.channel}
             className="border-b border-[rgba(31,31,31,0.06)] last:border-0"
           >
-            <td className="font-stolzl px-3 py-3 text-[14px] text-[#1f1f1f]">
+            <td className="px-3 py-3 text-[14px] text-[#1f1f1f]">
               {row.channel}
             </td>
-            <td className="font-dm-mono px-3 py-3 text-right text-[14px] text-[#6433cc]">
+            <td className="px-3 py-3 text-right text-[14px] text-[#6433cc]">
               {row.time}
             </td>
-            <td className="font-dm-mono px-3 py-3 text-right text-[14px] text-[#1f1f1f]">
+            <td className="px-3 py-3 text-right text-[14px] text-[#1f1f1f]">
               {row.volume}
             </td>
           </tr>

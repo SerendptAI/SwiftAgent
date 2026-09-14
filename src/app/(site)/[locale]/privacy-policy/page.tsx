@@ -26,7 +26,7 @@ export async function generateMetadata({
 export default function PrivacyPolicyPage() {
   return (
     <SmoothScrollProvider>
-      <main className="font-jetbrains relative min-h-screen bg-[#fafafa]">
+      <main className="relative min-h-screen bg-[#fafafa]">
         <Navbar />
         <PrivacyContent />
         <ContactSection />

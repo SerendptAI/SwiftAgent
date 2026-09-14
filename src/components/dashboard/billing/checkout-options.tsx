@@ -31,7 +31,7 @@ export function CheckoutOptions({
   return (
     <div className="flex flex-col gap-4">
       <fieldset disabled={disabled} className="min-w-0">
-        <legend className="font-dm-mono text-xs font-semibold tracking-[0.15em] text-gray-500 uppercase sm:text-sm">
+        <legend className="text-xs font-semibold tracking-[0.15em] text-gray-500 sm:text-sm">
           Payment Method
         </legend>
         <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:gap-6">
@@ -39,7 +39,7 @@ export function CheckoutOptions({
             <label
               key={option.value}
               className={cn(
-                "font-dm-mono flex items-center gap-2 text-xs tracking-wider text-gray-700 uppercase sm:text-sm",
+                "flex items-center gap-2 text-xs tracking-wider text-gray-700 sm:text-sm",
                 disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer",
               )}
             >
@@ -61,7 +61,7 @@ export function CheckoutOptions({
         <div className="min-w-0">
           <label
             htmlFor="discount-code"
-            className="font-dm-mono block text-xs font-semibold tracking-[0.15em] text-gray-500 uppercase sm:text-sm"
+            className="block text-xs font-semibold tracking-[0.15em] text-gray-500 sm:text-sm"
           >
             Discount Code (Optional)
           </label>
@@ -74,7 +74,7 @@ export function CheckoutOptions({
             placeholder="ENTER CODE"
             autoComplete="off"
             autoCapitalize="characters"
-            className="font-dm-mono mt-2 w-full max-w-xs rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm tracking-wider text-gray-900 uppercase outline-none placeholder:text-gray-400 focus:border-gray-300 disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-2 w-full max-w-xs rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm tracking-wider text-gray-900 uppercase outline-none placeholder:text-gray-400 focus:border-gray-300 disabled:cursor-not-allowed disabled:opacity-60"
           />
         </div>
       )}

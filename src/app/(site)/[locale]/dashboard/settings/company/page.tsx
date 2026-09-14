@@ -43,7 +43,7 @@ export default function CompanyPage() {
                 key={tab}
                 onClick={() => setActiveTab(index)}
                 className={cn(
-                  "font-dm-mono relative min-h-12 shrink-0 cursor-pointer snap-start rounded-lg bg-gray-50 px-2 py-3 text-center text-[9px] leading-tight font-medium tracking-[0.08em] uppercase transition-colors sm:min-h-0 sm:rounded-none sm:bg-transparent sm:px-6 sm:py-4 sm:text-[10px] sm:tracking-wider",
+                  "relative min-h-12 shrink-0 cursor-pointer snap-start rounded-lg bg-gray-50 px-2 py-3 text-center text-[9px] leading-tight font-medium tracking-[2%] transition-colors sm:min-h-0 sm:rounded-none sm:bg-transparent sm:px-6 sm:py-4 sm:text-[10px] sm:tracking-[2%]",
                   isActive
                     ? "font-bold text-gray-900"
                     : "text-gray-400 hover:text-gray-600",

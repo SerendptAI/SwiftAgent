@@ -108,7 +108,7 @@ function ToastCard({
       ) : (
         <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
       )}
-      <p className="font-dm-mono flex-1 text-sm">{message}</p>
+      <p className="flex-1 text-sm">{message}</p>
       <button
         aria-label="Dismiss"
         onClick={onDismiss}

@@ -26,9 +26,9 @@ interface TicketListProps {
 function TicketListEmptyState() {
   return (
     <MessagesEmptyState className="flex h-full w-full items-center justify-center">
-      NOTHING HERE FOR
+      Nothing here for
       <br />
-      NOW
+      now
     </MessagesEmptyState>
   );
 }
@@ -125,7 +125,7 @@ export function TicketList({
           <div className="flex items-center justify-between">
             <span
               className={cn(
-                "font-dm-mono truncate text-sm",
+                "truncate text-sm",
                 unread
                   ? "font-black text-gray-900"
                   : "font-semibold text-gray-600",
@@ -140,13 +140,13 @@ export function TicketList({
           <div className="flex items-center justify-between gap-2 overflow-hidden">
             <span
               className={cn(
-                "font-stolzl min-w-0 truncate text-xs",
+                "min-w-0 truncate text-xs",
                 unread ? "font-bold text-gray-600" : "text-gray-400",
               )}
             >
               {subtitle}
             </span>
-            <span className="font-stolzl shrink-0 text-xs text-[#2196F3]">
+            <span className="shrink-0 text-xs text-[#2196F3]">
               {formatRelativeTime(ticket.updated_at)}
             </span>
           </div>
@@ -177,16 +177,16 @@ export function TicketList({
         </div>
         <div className="min-w-0 flex-1 space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="font-dm-mono truncate text-sm font-semibold text-gray-600">
+            <span className="truncate text-sm font-semibold text-gray-600">
               {sessionLabel}
             </span>
           </div>
           <div className="flex items-center justify-between gap-2 overflow-hidden">
-            <span className="font-stolzl min-w-0 truncate text-xs text-gray-400">
+            <span className="min-w-0 truncate text-xs text-gray-400">
               {chat.preview_message?.trim() ||
                 `${chat.message_count} ${chat.message_count === 1 ? "message" : "messages"}`}
             </span>
-            <span className="font-stolzl shrink-0 text-xs text-[#6433CC]">
+            <span className="shrink-0 text-xs text-[#6433CC]">
               {formatRelativeTime(chat.updated_at)}
             </span>
           </div>

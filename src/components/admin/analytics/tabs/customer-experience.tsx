@@ -29,13 +29,13 @@ function ThemeRow({
           style={{ backgroundColor: TONE_COLOR[tone] }}
         />
         <div className="flex min-w-0 flex-col gap-0.5">
-          <p className="font-stolzl truncate text-[14px] font-semibold text-[#1f1f1f]">
+          <p className="truncate text-[14px] font-semibold text-[#1f1f1f]">
             {label}
           </p>
-          <p className="font-dm-mono text-[12px] text-[#7e7e7e]">{mentions}</p>
+          <p className="text-[12px] text-[#7e7e7e]">{mentions}</p>
         </div>
       </div>
-      <span className="font-dm-mono shrink-0 rounded-[4px] border border-[rgba(31,31,31,0.1)] bg-[#f6f4ef] px-2 py-1 text-[10px] text-[#7e7e7e] uppercase">
+      <span className="shrink-0 rounded-[4px] border border-[rgba(31,31,31,0.1)] bg-[#f6f4ef] px-2 py-1 text-[10px] text-[#7e7e7e] uppercase">
         {tone}
       </span>
     </div>

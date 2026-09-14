@@ -58,7 +58,7 @@ function renderPieLabel(props: Record<string, unknown>) {
           dy="1.3em"
           fontSize={11}
           fill="rgba(255,255,255,0.85)"
-          style={{ fontFamily: "var(--font-dm-mono)" }}
+          style={{ fontFamily: "var(--font-jetbrains)" }}
         >
           ~{value.toLocaleString()}
         </tspan>
@@ -162,14 +162,14 @@ export function VisitorsModal({
           </div>
 
           <div className="min-h-0 flex-1">
-            <div className="font-dm-mono sticky top-0 flex justify-between gap-2 bg-white pb-3">
-              <span className="flex-1 rounded-xl border border-gray-200 px-6 py-2 text-center text-sm tracking-wider text-gray-400 uppercase">
+            <div className="sticky top-0 flex justify-between gap-2 bg-white pb-3">
+              <span className="flex-1 rounded-xl border border-gray-200 px-6 py-2 text-center text-sm tracking-wider text-gray-400">
                 Visitor
               </span>
-              <span className="flex-1 rounded-xl border border-gray-200 px-6 py-2 text-center text-sm tracking-wider text-gray-400 uppercase">
+              <span className="flex-1 rounded-xl border border-gray-200 px-6 py-2 text-center text-sm tracking-wider text-gray-400">
                 Duration
               </span>
-              <span className="flex-1 rounded-xl border border-gray-200 px-6 py-2 text-center text-sm tracking-wider text-gray-400 uppercase">
+              <span className="flex-1 rounded-xl border border-gray-200 px-6 py-2 text-center text-sm tracking-wider text-gray-400">
                 Time/Date
               </span>
             </div>

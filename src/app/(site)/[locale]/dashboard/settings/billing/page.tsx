@@ -34,13 +34,12 @@ export default function BillingPage() {
   const savedCards: SavedCard[] = [...backendCards, ...localAsSaved];
 
   const presentPlanName = companyPlan.isPaid
-    ? (details?.display_name?.toUpperCase() ??
-      String(companyPlan.tier).toUpperCase())
+    ? (details?.display_name ?? String(companyPlan.tier))
     : companyPlan.isFree
-      ? "FREE"
+      ? "Free"
       : companyPlan.isLoading
-        ? "LOADING…"
-        : "UNAVAILABLE";
+        ? "Loading…"
+        : "Unavailable";
 
   const subscriptionStatus =
     details?.subscription_status ?? details?.status ?? null;
@@ -55,18 +54,18 @@ export default function BillingPage() {
       <CanceledSubscriptionBanner details={details} />
 
       <div className="space-y-4">
-        <h3 className="font-stolzl text-base font-bold text-gray-900 sm:text-lg">
+        <h3 className="text-base font-bold text-gray-900 sm:text-lg">
           Billing details
         </h3>
 
         <div className="flex flex-col gap-3 rounded-xl border border-gray-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <span className="font-dm-mono text-xs font-semibold tracking-[0.15em] text-gray-500 uppercase sm:text-sm">
-            SAVED CARDS
+          <span className="text-xs font-semibold tracking-[2%] text-gray-500 sm:text-sm">
+            Saved Cards
           </span>
           {savedCards.length > 0 ? (
             <button className="flex min-w-0 items-center justify-between gap-2 rounded-2xl border border-gray-100 px-4 py-2.5 sm:justify-start">
               <CardBrandIcon brand={savedCards[0].brand} />
-              <span className="font-dm-mono min-w-0 truncate text-sm font-medium text-gray-700">
+              <span className="min-w-0 truncate text-sm font-medium text-gray-700">
                 {savedCards[0].last4}
               </span>
               <ChevronDown className="h-4 w-4 shrink-0 text-gray-400" />
@@ -76,8 +75,8 @@ export default function BillingPage() {
               onClick={() => setShowAddCard(true)}
               className="flex min-w-0 items-center justify-between gap-2 rounded-2xl border border-gray-100 px-4 py-2.5 transition-colors hover:bg-gray-50 sm:justify-start"
             >
-              <span className="font-dm-mono min-w-0 truncate text-xs font-semibold tracking-[0.15em] text-gray-600 uppercase sm:text-sm">
-                ADD NEW CARD
+              <span className="min-w-0 truncate text-xs font-semibold tracking-[2%] text-gray-600 sm:text-sm">
+                Add New Card
               </span>
               <ChevronDown className="h-4 w-4 shrink-0 text-gray-400" />
             </button>
@@ -85,8 +84,8 @@ export default function BillingPage() {
         </div>
 
         <div className="flex flex-col gap-3 rounded-xl border border-gray-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <span className="font-dm-mono text-xs font-semibold tracking-[0.15em] text-gray-500 uppercase sm:text-sm">
-            PRESENT PLAN
+          <span className="text-xs font-semibold tracking-[2%] text-gray-500 sm:text-sm">
+            Present Plan
           </span>
           <div className="flex flex-col items-start gap-1 sm:items-end">
             <button className="flex min-w-0 items-center justify-between gap-2 rounded-2xl border border-gray-100 px-4 py-2.5 sm:justify-start">
@@ -98,7 +97,7 @@ export default function BillingPage() {
                     : "bg-gray-300",
                 )}
               />
-              <span className="font-dm-mono min-w-0 truncate text-sm font-medium tracking-wide text-gray-700 uppercase">
+              <span className="min-w-0 truncate text-sm font-medium tracking-[2%] text-gray-700">
                 {presentPlanName}
               </span>
               <ChevronDown className="h-4 w-4 shrink-0 text-gray-400" />
@@ -106,7 +105,7 @@ export default function BillingPage() {
             {companyPlan.isError && (
               <button
                 onClick={() => refetchDetails()}
-                className="font-stolzl cursor-pointer text-xs text-red-500 underline underline-offset-2"
+                className="cursor-pointer text-xs text-red-500 underline underline-offset-2"
               >
                 Couldn&apos;t load your subscription. Try again.
               </button>
@@ -117,13 +116,13 @@ export default function BillingPage() {
         {canManageSubscription && (
           <div className="flex flex-col gap-2 rounded-xl border border-gray-100 px-6 py-4">
             <div className="flex items-center justify-between">
-              <span className="font-dm-mono text-sm font-semibold tracking-[0.15em] text-gray-500 uppercase">
+              <span className="text-sm font-semibold tracking-[2%] text-gray-500">
                 Manage Subscription
               </span>
               <button
                 onClick={portal.open}
                 disabled={portal.isPending}
-                className="font-dm-mono flex items-center gap-2 rounded-2xl bg-[#006BE5] px-6 py-2.5 text-sm font-bold tracking-wide text-white uppercase shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#0058C0] disabled:opacity-50"
+                className="flex items-center gap-2 rounded-2xl bg-[#006BE5] px-6 py-2.5 text-sm font-bold tracking-[2%] text-white shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#0058C0] disabled:opacity-50"
               >
                 {portal.isPending ? (
                   <>
@@ -138,7 +137,7 @@ export default function BillingPage() {
               </button>
             </div>
             {portal.error && (
-              <p className="font-stolzl text-xs text-red-500">{portal.error}</p>
+              <p className="text-xs text-red-500">{portal.error}</p>
             )}
           </div>
         )}
