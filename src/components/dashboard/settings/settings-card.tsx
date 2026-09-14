@@ -38,13 +38,11 @@ export function SettingsSection({
     <section className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h3 className="font-stolzl text-base font-bold text-gray-900 sm:text-lg">
+          <h3 className="text-base font-bold text-gray-900 sm:text-lg">
             {title}
           </h3>
           {description && (
-            <p className="font-dm-mono mt-1 text-xs text-gray-500">
-              {description}
-            </p>
+            <p className="mt-1 text-xs text-gray-500">{description}</p>
           )}
         </div>
         {action}
@@ -64,7 +62,7 @@ export function SettingsNotice({
   return (
     <p
       className={cn(
-        "font-dm-mono rounded-xl px-4 py-3 text-xs",
+        "rounded-xl px-4 py-3 text-xs",
         tone === "info" && "bg-[#006BE5]/5 text-[#0055B8]",
         tone === "warning" && "bg-amber-50 text-amber-800",
       )}

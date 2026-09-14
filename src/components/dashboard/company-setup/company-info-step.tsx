@@ -277,7 +277,7 @@ export function CompanyInfoStep({
           <div ref={dropdownRef} className="relative min-w-0 sm:w-fit">
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="font-dm-mono flex min-h-11 w-full min-w-0 items-center gap-2 rounded-full border border-gray-100 bg-gray-50 px-4 py-2 text-left text-xs font-medium text-gray-900 transition-colors hover:bg-gray-100 sm:w-fit sm:text-sm"
+              className="flex min-h-11 w-full min-w-0 items-center gap-2 rounded-full border border-gray-100 bg-gray-50 px-4 py-2 text-left text-xs font-medium text-gray-900 transition-colors hover:bg-gray-100 sm:w-fit sm:text-sm"
             >
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-[10px] font-bold text-gray-600">
                 {selectedCompany?.initial ?? "?"}
@@ -294,8 +294,8 @@ export function CompanyInfoStep({
             </button>
 
             {isDropdownOpen && (
-              <div className="animate-in fade-in slide-in-from-top-2 font-dm-mono absolute left-0 z-50 mt-2 w-full min-w-0 overflow-hidden rounded-2xl border border-gray-100 bg-white py-1 shadow-xl duration-200 sm:w-64">
-                <div className="px-3 py-2 text-xs font-semibold tracking-wider text-gray-400 uppercase">
+              <div className="animate-in fade-in slide-in-from-top-2 absolute left-0 z-50 mt-2 w-full min-w-0 overflow-hidden rounded-2xl border border-gray-100 bg-white py-1 shadow-xl duration-200 sm:w-64">
+                <div className="px-3 py-2 text-xs font-semibold tracking-wider text-gray-400">
                   Switch Company
                 </div>
                 {companies.map((company) => (
@@ -310,7 +310,7 @@ export function CompanyInfoStep({
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#6433CC]/10 text-xs font-bold text-[#6433CC]">
                       {company.initial}
                     </div>
-                    <span className="font-dm-mono flex-1 text-left font-medium">
+                    <span className="flex-1 text-left font-medium">
                       {company.name}
                     </span>
                     {selectedCompany?.id === company.id && (
@@ -349,8 +349,8 @@ export function CompanyInfoStep({
                 <Icons.pencil className="h-4 w-4 text-gray-900" />
               </button>
             </div>
-            <div className="font-dm-mono flex flex-col justify-center sm:pt-8">
-              <FormLabel>COMPANY LOGO</FormLabel>
+            <div className="flex flex-col justify-center sm:pt-8">
+              <FormLabel>Company Logo</FormLabel>
               <button
                 onClick={() => fileInputRef.current?.click()}
                 className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#6433CC] px-6 text-sm font-medium text-white font-stretch-50% shadow-[-6px_6px_0px_0px_#000000] transition-colors hover:bg-purple-700 sm:h-auto sm:py-2.5"
@@ -362,7 +362,7 @@ export function CompanyInfoStep({
         </div>
       )}
 
-      <div className="font-stolzl grid gap-x-8 gap-y-4 sm:gap-y-5 md:grid-cols-2">
+      <div className="grid gap-x-8 gap-y-4 sm:gap-y-5 md:grid-cols-2">
         <div className="col-span-1">
           <FormLabel htmlFor="companyName">Company Name</FormLabel>
           <FormInput
@@ -488,7 +488,7 @@ export function CompanyInfoStep({
                 Saving...
               </span>
             ) : isUpdateMode ? (
-              "UPDATE"
+              "Update"
             ) : (
               "Next"
             )}

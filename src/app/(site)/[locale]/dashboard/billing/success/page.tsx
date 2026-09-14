@@ -99,8 +99,8 @@ export default function BillingSuccessPage() {
         className="inline-flex items-center gap-2 text-[#1F1F1F]"
       >
         <Icons.BackArrow className="h-6 w-6" />
-        <span className="font-dm-mono text-[12px] tracking-wider text-black uppercase opacity-50">
-          BACK
+        <span className="text-[12px] tracking-wider text-black opacity-50">
+          Back
         </span>
       </Link>
 
@@ -121,11 +121,11 @@ export default function BillingSuccessPage() {
           >
             {heading}
           </h1>
-          <p className="font-stolzl mt-[23px] text-[16px] leading-normal text-white opacity-[0.77]">
+          <p className="mt-[23px] text-[16px] leading-normal text-white opacity-[0.77]">
             {subcopy}
           </p>
 
-          <dl className="font-dm-mono mt-[22px] flex flex-col gap-[20px] text-[14px] leading-none text-black/[0.69]">
+          <dl className="mt-[22px] flex flex-col gap-[20px] text-[14px] leading-none text-black/[0.69]">
             <div>Duration: {duration}</div>
             <div>Amount: {amount}</div>
             <div>Plan: {planName}</div>
@@ -133,14 +133,14 @@ export default function BillingSuccessPage() {
           </dl>
 
           <div className="mt-[30px] flex h-[58px] w-[383px] max-w-full items-center justify-between rounded-[10px] bg-[#174BE6] pr-[10px] pl-[18px]">
-            <span className="font-dm-mono text-[14px] tracking-[1.4px] text-[#F6F4EF] uppercase">
-              DOWNLOAD RECIEPT
+            <span className="text-[14px] tracking-[1.4px] text-[#F6F4EF]">
+              Download reciept
             </span>
             <button
               type="button"
-              className="font-dm-mono flex h-[38px] w-[167px] shrink-0 cursor-pointer items-center justify-center rounded-[13px] bg-[#006BE5] text-[14px] tracking-[1.4px] text-white uppercase transition-colors hover:bg-[#0058C0]"
+              className="flex h-[38px] w-[167px] shrink-0 cursor-pointer items-center justify-center rounded-[13px] bg-[#006BE5] text-[14px] tracking-[1.4px] text-white transition-colors hover:bg-[#0058C0]"
             >
-              DOWNLOAD
+              Download
             </button>
           </div>
         </div>

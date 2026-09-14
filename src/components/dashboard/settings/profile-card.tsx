@@ -163,7 +163,7 @@ export function ProfileCard({
             onChange={(e) => setNameDraft(e.target.value)}
             placeholder="Display name"
             disabled={isSavingName}
-            className="font-stolzl min-w-0 flex-1 rounded-md border border-gray-200 bg-white px-3 py-1.5 text-center text-base text-gray-900 outline-none focus:border-[#2196F3]"
+            className="min-w-0 flex-1 rounded-md border border-gray-200 bg-white px-3 py-1.5 text-center text-base text-gray-900 outline-none focus:border-[#2196F3]"
           />
           <button
             type="button"
@@ -190,9 +190,7 @@ export function ProfileCard({
         </div>
       ) : (
         <div className="flex items-center justify-center gap-2">
-          <p className="font-400 font-stolzl text-center text-xl text-gray-900">
-            {name}
-          </p>
+          <p className="font-400 text-center text-xl text-gray-900">{name}</p>
           <button
             type="button"
             onClick={startEditingName}
@@ -204,27 +202,25 @@ export function ProfileCard({
         </div>
       )}
 
-      <div className="font-dm-mono mt-2 flex w-full items-center justify-center gap-2 rounded-md border border-gray-100 px-3 py-2 text-xs font-medium text-gray-600 shadow-[-4px_4px_0px_0px_#000000] lg:mt-6 lg:text-sm lg:shadow-[-6px_6px_0px_0px_#000000]">
-        <span>LOGGED IN VIA</span>
+      <div className="mt-2 flex w-full items-center justify-center gap-2 rounded-md border border-gray-100 px-3 py-2 text-xs font-medium text-gray-600 shadow-[-4px_4px_0px_0px_#000000] lg:mt-6 lg:text-sm lg:shadow-[-6px_6px_0px_0px_#000000]">
+        <span>Logged in via</span>
         {loginMethod === "Google" ? (
           <Icons.google className="h-4 w-4" />
         ) : (
-          <span className="font-dm-mono text-sm font-semibold uppercase">
-            Email
-          </span>
+          <span className="text-sm font-semibold">Email</span>
         )}
       </div>
 
-      <div className="font-dm-mono flex w-full items-center justify-center rounded-md border border-gray-100 px-3 py-2 text-xs text-gray-500 shadow-[-4px_4px_0px_0px_#000000] lg:text-sm lg:shadow-[-6px_6px_0px_0px_#000000]">
+      <div className="flex w-full items-center justify-center rounded-md border border-gray-100 px-3 py-2 text-xs text-gray-500 shadow-[-4px_4px_0px_0px_#000000] lg:text-sm lg:shadow-[-6px_6px_0px_0px_#000000]">
         IP: {displayIp}
       </div>
 
       <button
         onClick={() => setShowLogoutModal(true)}
         disabled={logoutMutation.isPending}
-        className="font-dm-mono mt-2 w-full rounded-md bg-red-500 py-2.5 text-xs font-bold tracking-widest text-white uppercase shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-red-600 disabled:opacity-50 lg:mt-auto lg:text-sm lg:shadow-[-6px_6px_0px_0px_#000000]"
+        className="mt-2 w-full rounded-md bg-red-500 py-2.5 text-xs font-bold tracking-[2%] text-white shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-red-600 disabled:opacity-50 lg:mt-auto lg:text-sm lg:shadow-[-6px_6px_0px_0px_#000000]"
       >
-        {logoutMutation.isPending ? "LOGGING OUT..." : "LOG OUT"}
+        {logoutMutation.isPending ? "Logging out..." : "Log out"}
       </button>
 
       {showLogoutModal && (
@@ -243,25 +239,25 @@ export function ProfileCard({
                 <Image src="/logout.svg" alt="Logout" width={80} height={80} />
               </div>
 
-              <h2 className="font-greed mb-8 line-clamp-6 text-center text-3xl font-bold tracking-tight text-black uppercase sm:text-4xl">
-                ARE YOU SURE YOU
+              <h2 className="font-greed mb-8 line-clamp-6 text-center text-3xl font-bold tracking-tight text-black sm:text-4xl">
+                Are you sure you
                 <br />
-                WANT TO LOG OUT?
+                want to log out?
               </h2>
 
               <div className="flex w-full flex-col gap-3">
                 <button
                   onClick={handleLogout}
                   disabled={logoutMutation.isPending}
-                  className="font-dm-mono w-full rounded-lg bg-[#006BE5] py-2 text-sm font-bold tracking-widest text-white uppercase shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#1E88E5] disabled:opacity-50"
+                  className="w-full rounded-lg bg-[#006BE5] py-2 text-sm font-bold tracking-[2%] text-white shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#1E88E5] disabled:opacity-50"
                 >
-                  {logoutMutation.isPending ? "LOGGING OUT..." : "YES"}
+                  {logoutMutation.isPending ? "Logging out..." : "Yes"}
                 </button>
                 <button
                   onClick={() => setShowLogoutModal(false)}
-                  className="font-dm-mono w-full rounded-lg border border-gray-200 bg-gray-100 py-2 text-sm font-bold tracking-widest text-gray-900 uppercase shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-gray-200"
+                  className="w-full rounded-lg border border-gray-200 bg-gray-100 py-2 text-sm font-bold tracking-[2%] text-gray-900 shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-gray-200"
                 >
-                  NO
+                  No
                 </button>
               </div>
             </div>

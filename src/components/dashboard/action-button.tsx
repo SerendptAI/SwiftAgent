@@ -23,7 +23,7 @@ export function ActionButton({
       type="button"
       disabled={disabled || loading}
       className={cn(
-        "flex h-11 shrink-0 items-center justify-center gap-2 rounded-2xl px-6 text-sm font-bold tracking-wide uppercase transition-colors disabled:cursor-not-allowed disabled:opacity-50 sm:h-10",
+        "flex h-11 shrink-0 items-center justify-center gap-2 rounded-2xl px-6 text-sm font-bold tracking-wide transition-colors disabled:cursor-not-allowed disabled:opacity-50 sm:h-10",
         variant === "primary" &&
           "bg-[#006BE5] text-white shadow-[-4px_4px_0px_0px_#000000] hover:bg-[#0055B8]",
         variant === "secondary" &&

@@ -49,7 +49,7 @@ function StoreButton({
     <Link
       href={href}
       className={cn(
-        "font-dm-mono inline-flex items-center gap-3 rounded-[13px] bg-[#006BE5] px-6 py-3.5 text-base font-medium tracking-[0.12em] text-white uppercase transition-colors hover:bg-[#0059c1] sm:text-lg",
+        "inline-flex items-center gap-3 rounded-[13px] bg-[#006BE5] px-6 py-3.5 text-base font-medium tracking-[0.12em] text-white uppercase transition-colors hover:bg-[#0059c1] sm:text-lg",
         className,
       )}
     >

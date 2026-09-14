@@ -181,7 +181,7 @@ function Field({
 }) {
   return (
     <label className="flex flex-col gap-2.5 text-left">
-      <span className="font-jetbrains text-base leading-normal font-normal text-black">
+      <span className="text-base leading-normal font-normal text-black">
         {label}
         {required && <span className="text-[#F25430]">*</span>}
       </span>
@@ -224,7 +224,7 @@ function SelectField({
 }) {
   return (
     <label className="flex flex-col gap-2.5 text-left">
-      <span className="font-jetbrains text-base leading-normal font-normal text-black">
+      <span className="text-base leading-normal font-normal text-black">
         {label}
       </span>
       <span className="relative block">

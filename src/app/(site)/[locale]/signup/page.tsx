@@ -96,7 +96,7 @@ export default function RegisterCompanyPage() {
   };
 
   return (
-    <div className="font-jetbrains min-h-screen bg-[#fffff] p-4 md:p-8">
+    <div className="min-h-screen bg-[#fffff] p-4 md:p-8">
       <div className="mx-auto w-full max-w-[1280px] overflow-hidden">
         <Navbar />
         <div className="flex flex-col items-center gap-6 p-6 pt-[140px] md:gap-10 md:p-10 md:pt-[180px]">

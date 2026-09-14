@@ -80,7 +80,7 @@ export function ReferScreenOne({ onNext }: ReferScreenOneProps) {
           <button
             type="button"
             onClick={onNext}
-            className="font-dm-mono mx-auto mt-9 flex h-12 w-full max-w-100 shrink-0 cursor-pointer items-center justify-center gap-4 rounded-md bg-[#F2B035] text-base leading-none font-medium shadow-[-4px_4px_0_#000] md:gap-5"
+            className="mx-auto mt-9 flex h-12 w-full max-w-100 shrink-0 cursor-pointer items-center justify-center gap-4 rounded-md bg-[#F2B035] text-base leading-none font-medium shadow-[-4px_4px_0_#000] md:gap-5"
           >
             {t("continue")}
           </button>

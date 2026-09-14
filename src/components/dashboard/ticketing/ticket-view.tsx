@@ -198,7 +198,7 @@ function AttachmentCard({
   return (
     <span
       className={cn(
-        "font-dm-mono inline-flex max-w-full items-center gap-1.5 rounded-xl px-2 py-1.5",
+        "inline-flex max-w-full items-center gap-1.5 rounded-xl px-2 py-1.5",
         toneClasses,
         onOpen && "transition-opacity hover:opacity-80",
       )}
@@ -257,7 +257,7 @@ function AttachmentPreviewModal({
       />
       <div className="relative mx-auto flex h-full w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-xl">
         <div className="flex items-center justify-between gap-3 border-b border-gray-100 px-4 py-3">
-          <span className="font-dm-mono truncate text-sm font-medium text-gray-900">
+          <span className="truncate text-sm font-medium text-gray-900">
             {displayName}
           </span>
           <div className="flex shrink-0 items-center gap-1">
@@ -365,11 +365,11 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
   if (!ticket && !isFetching) {
     return (
       <MessagesEmptyState className="flex min-h-[420px] w-full items-center justify-center rounded-[20px] bg-white px-4 pb-20 shadow-sm lg:h-full lg:rounded-3xl lg:pb-0">
-        NOTHING HERE FOR NOW,
+        Nothing here for now,
         <br />
-        WHEN YOU GET MESSAGES THEY’LL
+        when you get messages they’ll
         <br />
-        APPEAR HERE
+        appear here
       </MessagesEmptyState>
     );
   }
@@ -481,11 +481,11 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
             <img src={avatar} alt="Ticket avatar" width={36} height={31} />
           </div>
           <div className="min-w-0">
-            <div className="font-dm-mono truncate text-sm font-bold tracking-wider text-gray-900 uppercase">
+            <div className="truncate text-sm font-bold tracking-wider text-gray-900">
               {title}
             </div>
             {ticket?.subject && (
-              <div className="font-stolzl truncate text-xs text-gray-500">
+              <div className="truncate text-xs text-gray-500">
                 {ticket.subject}
               </div>
             )}
@@ -519,7 +519,7 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
           <button
             type="button"
             onClick={() => setShowOriginalChat((v) => !v)}
-            className="flex w-full cursor-pointer items-center gap-2 text-left text-xs font-semibold tracking-wide text-gray-500 uppercase transition-colors hover:text-gray-700"
+            className="flex w-full cursor-pointer items-center gap-2 text-left text-xs font-semibold tracking-wide text-gray-500 transition-colors hover:text-gray-700"
             aria-expanded={showOriginalChat}
           >
             {showOriginalChat ? (
@@ -577,7 +577,7 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
             return (
               <div key={`${ticket?.id}-${i}`} className="flex justify-start">
                 <div className="max-w-[85%] rounded-2xl border border-dashed border-gray-200 bg-gray-50 px-4 py-3 text-xs leading-relaxed [overflow-wrap:anywhere] text-gray-500">
-                  <div className="font-dm-mono mb-1 text-[10px] font-semibold tracking-wider text-gray-400 uppercase">
+                  <div className="mb-1 text-[10px] font-semibold tracking-wider text-gray-400">
                     System note
                   </div>
                   <MessageMarkdown text={body} compact />
@@ -656,7 +656,7 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
         {ticket?.status === "resolved" ? (
           <div className="flex items-center justify-center gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-4 py-2.5">
             <Check className="h-4 w-4 text-green-500" />
-            <span className="font-dm-mono text-xs font-semibold tracking-wider text-gray-500 uppercase">
+            <span className="text-xs font-semibold tracking-wider text-gray-500">
               Ticket resolved
             </span>
           </div>
@@ -684,9 +684,7 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
               </div>
             )}
             {attachError && (
-              <p className="font-dm-mono mb-2 text-xs text-red-500">
-                {attachError}
-              </p>
+              <p className="mb-2 text-xs text-red-500">{attachError}</p>
             )}
             <div className="flex items-center gap-2">
               <form
@@ -706,7 +704,7 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
                   onChange={(e) => setDraft(e.target.value)}
                   placeholder="Type a reply..."
                   disabled={isSending}
-                  className="font-dm-mono flex-1 bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400 disabled:opacity-60"
+                  className="flex-1 bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400 disabled:opacity-60"
                 />
                 <button
                   type="button"
@@ -735,7 +733,7 @@ export function TicketView({ ticketId, className, onClose }: TicketViewProps) {
                   type="button"
                   onClick={handleResolve}
                   disabled={isResolving}
-                  className="font-dm-mono flex h-10 shrink-0 cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-4 text-xs font-semibold tracking-wider text-white uppercase transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="flex h-10 shrink-0 cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-4 text-xs font-semibold tracking-wider text-white transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isResolving ? (
                     <Loader2 className="h-4 w-4 animate-spin" />

@@ -103,7 +103,7 @@ function SubmissionAvatar({ name }: { name: string }) {
   const initial = name.charAt(0).toUpperCase() || "?";
   return (
     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#EDEDED] lg:h-[52px] lg:w-[52px]">
-      <span className="font-dm-mono text-base font-bold text-black/60 uppercase lg:text-lg">
+      <span className="text-base font-bold text-black/60 lg:text-lg">
         {initial}
       </span>
     </div>
@@ -179,7 +179,7 @@ function EmptyStateCenter({ lines }: { lines: string[] }) {
 function InboxHeader() {
   return (
     <div className="absolute top-5 left-5 z-10 sm:top-9 sm:left-10">
-      <h2 className="font-dm-mono text-xl font-bold tracking-[-0.02em] text-black uppercase sm:text-2xl">
+      <h2 className="text-xl font-bold tracking-[-0.02em] text-black sm:text-2xl">
         Inbox
       </h2>
     </div>
@@ -201,7 +201,7 @@ function StatusControls({
         <button
           type="button"
           onClick={() => onStatusChange("unread")}
-          className={`font-stolzl flex h-9 cursor-pointer items-center gap-1.5 rounded-lg px-2.5 text-xs font-normal sm:h-12 sm:gap-2 sm:rounded-xl sm:px-5 sm:text-base ${
+          className={`flex h-9 cursor-pointer items-center gap-1.5 rounded-lg px-2.5 text-xs font-normal sm:h-12 sm:gap-2 sm:rounded-xl sm:px-5 sm:text-base ${
             activeStatus === "unread"
               ? "bg-[#808080] text-white"
               : "bg-[#F6F6F6] text-black"
@@ -214,7 +214,7 @@ function StatusControls({
         <button
           type="button"
           onClick={() => onStatusChange("read")}
-          className={`font-stolzl flex h-9 cursor-pointer items-center gap-1.5 rounded-lg px-2.5 text-xs font-normal sm:h-12 sm:gap-2 sm:rounded-xl sm:px-5 sm:text-base ${
+          className={`flex h-9 cursor-pointer items-center gap-1.5 rounded-lg px-2.5 text-xs font-normal sm:h-12 sm:gap-2 sm:rounded-xl sm:px-5 sm:text-base ${
             activeStatus === "read"
               ? "bg-[#808080] text-white"
               : "bg-[#F6F6F6] text-black"
@@ -271,7 +271,7 @@ function CreateFormMenu({
 }) {
   return (
     <div
-      className={`font-dm-mono ${widthClass} max-w-[calc(100vw-2rem)] rounded-xl bg-white px-2 py-1.5 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] lg:max-w-[calc(100vw-3rem)] lg:px-3 lg:py-2`}
+      className={`${widthClass} max-w-[calc(100vw-2rem)] rounded-xl bg-white px-2 py-1.5 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] lg:max-w-[calc(100vw-3rem)] lg:px-3 lg:py-2`}
     >
       {(["website", "online"] as FormType[]).map((type, index) => {
         const meta = FORM_TYPE_META[type];
@@ -292,7 +292,7 @@ function CreateFormMenu({
               className="h-[18px] w-[18px] shrink-0 lg:h-[23px] lg:w-[23px]"
             />
             <span
-              className={`min-w-0 flex-1 truncate text-xs font-normal tracking-[0.1em] uppercase lg:text-base lg:tracking-[0.18em] ${meta.textColor}`}
+              className={`min-w-0 flex-1 truncate text-xs font-normal tracking-[0.1em] lg:text-base lg:tracking-[0.18em] ${meta.textColor}`}
             >
               {meta.label}
             </span>
@@ -370,7 +370,7 @@ function FormsToolbar({
           type="button"
           onClick={onDelete}
           disabled={forms.length === 0}
-          className="font-dm-mono flex h-12 min-w-0 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#6433CC] px-3 text-xs font-normal tracking-[0.12em] text-white uppercase transition-colors hover:bg-[#572bb5] disabled:cursor-not-allowed disabled:opacity-50 lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
+          className="flex h-12 min-w-0 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#6433CC] px-3 text-xs font-normal tracking-[0.12em] text-white transition-colors hover:bg-[#572bb5] disabled:cursor-not-allowed disabled:opacity-50 lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
         >
           <Trash2 className="h-4 w-4 shrink-0 lg:h-5 lg:w-5" />
           <span className="truncate">Delete</span>
@@ -379,7 +379,7 @@ function FormsToolbar({
           type="button"
           onClick={onEdit}
           disabled={forms.length === 0}
-          className="font-dm-mono flex h-12 min-w-0 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#F25430] px-3 text-xs font-normal tracking-[0.12em] text-white uppercase transition-colors hover:bg-[#d94526] disabled:cursor-not-allowed disabled:opacity-50 lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
+          className="flex h-12 min-w-0 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#F25430] px-3 text-xs font-normal tracking-[0.12em] text-white transition-colors hover:bg-[#d94526] disabled:cursor-not-allowed disabled:opacity-50 lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
         >
           <Pencil className="h-4 w-4 shrink-0 lg:h-5 lg:w-5" />
           <span className="truncate">Edit</span>
@@ -388,7 +388,7 @@ function FormsToolbar({
           <button
             type="button"
             onClick={() => setIsCreateMenuOpen((open) => !open)}
-            className="font-dm-mono flex h-12 w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#006BE5] px-3 text-xs font-normal tracking-[0.12em] text-white uppercase transition-colors hover:bg-[#005fca] lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
+            className="flex h-12 w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#006BE5] px-3 text-xs font-normal tracking-[0.12em] text-white transition-colors hover:bg-[#005fca] lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
             aria-expanded={isCreateMenuOpen}
           >
             {isCreateMenuOpen ? (
@@ -420,7 +420,7 @@ function FormsToolbar({
         )}
 
         <div className="relative z-[70] flex h-12 min-w-0 items-center rounded-[18px] border border-[#EDEDED] bg-white px-2 shadow-sm lg:h-15 lg:rounded-[22px] lg:px-4">
-          <div className="font-dm-mono shrink-0 pr-2 pl-1 text-xs font-normal tracking-[0.1em] text-black uppercase lg:pr-5 lg:pl-3 lg:text-base lg:tracking-[0.16em]">
+          <div className="shrink-0 pr-2 pl-1 text-xs font-normal tracking-[0.1em] text-black lg:pr-5 lg:pl-3 lg:text-base lg:tracking-[0.16em]">
             Forms
           </div>
           <button
@@ -438,7 +438,7 @@ function FormsToolbar({
                 className="ml-0.5 h-[18px] w-[18px] shrink-0 lg:ml-1 lg:h-[23px] lg:w-[23px]"
               />
             )}
-            <span className="font-dm-mono min-w-0 flex-1 truncate text-xs font-normal tracking-[0.1em] text-black uppercase lg:text-base lg:tracking-[0.18em]">
+            <span className="min-w-0 flex-1 truncate text-xs font-normal tracking-[0.1em] text-black lg:text-base lg:tracking-[0.18em]">
               {selectedForm
                 ? getFormDisplayName(selectedForm)
                 : forms.length > 0
@@ -456,7 +456,7 @@ function FormsToolbar({
             {forms.length === 0 ? (
               <CreateFormMenu onSelect={handleCreateForm} widthClass="w-full" />
             ) : (
-              <div className="font-dm-mono rounded-xl bg-white px-2 py-1.5 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] lg:px-3 lg:py-2">
+              <div className="rounded-xl bg-white px-2 py-1.5 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] lg:px-3 lg:py-2">
                 <button
                   type="button"
                   className="flex h-10 w-full cursor-pointer items-center gap-2 border-b border-[#EDEDED] px-2 text-left transition-colors hover:bg-gray-50 lg:h-12 lg:gap-3 lg:px-3"
@@ -466,7 +466,7 @@ function FormsToolbar({
                   }}
                 >
                   <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-[#6433CC] lg:h-[23px] lg:w-[23px]" />
-                  <span className="min-w-0 flex-1 truncate text-xs font-medium tracking-[0.1em] text-[#6433CC] uppercase lg:text-base lg:tracking-[0.18em]">
+                  <span className="min-w-0 flex-1 truncate text-xs font-medium tracking-[0.1em] text-[#6433CC] lg:text-base lg:tracking-[0.18em]">
                     All Forms
                   </span>
                 </button>
@@ -487,7 +487,7 @@ function FormsToolbar({
                       height={23}
                       className="h-[18px] w-[18px] shrink-0 lg:h-[23px] lg:w-[23px]"
                     />
-                    <span className="min-w-0 flex-1 truncate text-xs font-normal tracking-[0.1em] text-black uppercase lg:text-base lg:tracking-[0.18em]">
+                    <span className="min-w-0 flex-1 truncate text-xs font-normal tracking-[0.1em] text-black lg:text-base lg:tracking-[0.18em]">
                       {getFormDisplayName(form)}
                     </span>
                   </button>
@@ -550,7 +550,7 @@ function SubmissionNameDropdown({
           height={23}
           className="h-[23px] w-[23px] shrink-0"
         />
-        <span className="font-dm-mono min-w-0 flex-1 truncate text-base font-normal tracking-[0.12em] text-black uppercase">
+        <span className="min-w-0 flex-1 truncate text-base font-normal tracking-[0.12em] text-black">
           {getSubmissionDisplayName(selected)}
         </span>
         <ChevronDown
@@ -564,7 +564,7 @@ function SubmissionNameDropdown({
             <button
               key={submission.id}
               type="button"
-              className="font-dm-mono flex h-10 w-full cursor-pointer items-center rounded-lg px-3 text-left text-sm font-normal tracking-[0.12em] text-black uppercase transition-colors hover:bg-gray-50"
+              className="flex h-10 w-full cursor-pointer items-center rounded-lg px-3 text-left text-sm font-normal tracking-[0.12em] text-black transition-colors hover:bg-gray-50"
               onClick={() => {
                 onSelect(submission.id);
                 setIsOpen(false);
@@ -603,7 +603,7 @@ function FormSubmissionDetail({
     return (
       <FormsEmptyState
         variant="list"
-        lines={["SELECT A MESSAGE", "TO VIEW IT"]}
+        lines={["Select a message", "to view it"]}
       />
     );
   }
@@ -614,7 +614,7 @@ function FormSubmissionDetail({
   return (
     <div className="relative min-h-[420px] w-full overflow-hidden lg:h-full lg:rounded-3xl lg:bg-white lg:px-10 lg:py-9 lg:shadow-sm">
       {!hideTitle && (
-        <h2 className="font-dm-mono text-xl font-bold tracking-[-0.02em] text-black uppercase sm:text-2xl">
+        <h2 className="text-xl font-bold tracking-[-0.02em] text-black sm:text-2xl">
           Inbox
         </h2>
       )}
@@ -628,11 +628,11 @@ function FormSubmissionDetail({
         />
       </div>
 
-      <p className="font-dm-mono mt-6 text-xs font-normal tracking-[0.14em] text-black/60 uppercase sm:mt-8 sm:text-sm sm:tracking-[0.18em]">
+      <p className="mt-6 text-xs font-normal tracking-[0.14em] text-black/60 sm:mt-8 sm:text-sm sm:tracking-[0.18em]">
         Received at {formatSubmissionReceivedAt(selected.submitted_at)}
       </p>
 
-      <div className="font-dm-mono mt-7 space-y-4 text-base leading-[1.45] font-normal tracking-[-0.02em] text-black uppercase sm:mt-10 sm:space-y-7 sm:text-2xl sm:leading-[1.32]">
+      <div className="mt-7 space-y-4 text-base leading-[1.45] font-normal tracking-[-0.02em] text-black sm:mt-10 sm:space-y-7 sm:text-2xl sm:leading-[1.32]">
         {Object.entries(selected.data).map(([key, value]) => (
           <p key={key}>
             <span className="font-bold">
@@ -652,18 +652,18 @@ function FormSubmissionDetail({
 
       {(selected.replies?.length ?? 0) > 0 && (
         <div className="mt-8 space-y-3">
-          <p className="font-dm-mono text-xs font-normal tracking-[0.14em] text-black/60 uppercase sm:text-sm sm:tracking-[0.18em]">
+          <p className="text-xs font-normal tracking-[0.14em] text-black/60 sm:text-sm sm:tracking-[0.18em]">
             Replies
           </p>
           {selected.replies!.map((reply, index) => (
             <div key={index} className="rounded-xl bg-gray-50 p-4">
-              <p className="font-dm-mono text-sm whitespace-pre-wrap text-black">
+              <p className="text-sm whitespace-pre-wrap text-black">
                 {typeof reply.reply_text === "string"
                   ? reply.reply_text
                   : JSON.stringify(reply)}
               </p>
               {typeof reply.sent_at === "string" && (
-                <p className="font-dm-mono mt-2 text-xs text-black/40 uppercase">
+                <p className="mt-2 text-xs text-black/40">
                   {formatSubmissionReceivedAt(reply.sent_at)}
                 </p>
               )}
@@ -705,7 +705,7 @@ function SubmissionReplyComposer({ submissionId }: { submissionId: string }) {
           onChange={(e) => setDraft(e.target.value)}
           placeholder="Type a reply..."
           disabled={isSending}
-          className="font-dm-mono flex-1 bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400 disabled:opacity-60"
+          className="flex-1 bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400 disabled:opacity-60"
         />
         <button
           type="submit"
@@ -721,7 +721,7 @@ function SubmissionReplyComposer({ submissionId }: { submissionId: string }) {
         </button>
       </div>
       {replyToSubmission.isError && (
-        <p className="font-dm-mono mt-2 text-xs text-red-500">
+        <p className="mt-2 text-xs text-red-500">
           Failed to send reply. Please try again.
         </p>
       )}
@@ -783,12 +783,12 @@ function FormSubmissionList({
                 <SubmissionAvatar name={displayName} />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <div className="font-dm-mono min-w-0 truncate text-base font-normal tracking-[0.08em] uppercase">
+                    <div className="min-w-0 truncate text-base font-normal tracking-[0.08em]">
                       {displayName}
                     </div>
                     {isNew && (
                       <span
-                        className={`font-dm-mono shrink-0 rounded-full px-1.5 py-0.5 text-[9px] font-bold uppercase ${
+                        className={`shrink-0 rounded-full px-1.5 py-0.5 text-[9px] font-bold ${
                           isSelected
                             ? "bg-white/20 text-white"
                             : "bg-[#6433CC] text-white"
@@ -799,7 +799,7 @@ function FormSubmissionList({
                     )}
                   </div>
                   <div
-                    className={`font-stolzl mt-1 truncate text-sm ${
+                    className={`mt-1 truncate text-sm ${
                       isSelected ? "text-white/80" : "text-[#9B9B9B]"
                     }`}
                   >
@@ -807,7 +807,7 @@ function FormSubmissionList({
                   </div>
                 </div>
                 <span
-                  className={`font-stolzl shrink-0 text-sm ${
+                  className={`shrink-0 text-sm ${
                     isSelected ? "text-white" : "text-[#6433CC]"
                   }`}
                 >
@@ -817,7 +817,7 @@ function FormSubmissionList({
             );
           })}
           {visibleSubmissions.length === 0 && (
-            <p className="font-dm-mono py-8 text-center text-sm tracking-widest text-black/40 uppercase">
+            <p className="py-8 text-center text-sm tracking-widest text-black/40">
               No {activeStatus} submissions
             </p>
           )}
@@ -854,7 +854,7 @@ export function PageFormTabs({
               key={page.page_path}
               type="button"
               onClick={() => onSelectPage(page.page_path)}
-              className={`font-dm-mono flex h-[42px] max-w-[170px] cursor-pointer items-center justify-center rounded-[9px] border border-black/5 px-2.5 text-base tracking-[0.1em] uppercase transition-colors ${
+              className={`flex h-[42px] max-w-[170px] cursor-pointer items-center justify-center rounded-[9px] border border-black/5 px-2.5 text-base tracking-[0.1em] transition-colors ${
                 isActive
                   ? "bg-[#006BE5] font-medium text-white"
                   : "bg-white font-normal text-black hover:bg-gray-50"
@@ -879,7 +879,7 @@ export function PageFormTabs({
                   [page.page_path]: !isCollapsed,
                 }))
               }
-              className="font-dm-mono flex h-[37px] w-full cursor-pointer items-center gap-1.5 px-2.5 text-base font-medium tracking-[0.1em] text-white uppercase"
+              className="flex h-[37px] w-full cursor-pointer items-center gap-1.5 px-2.5 text-base font-medium tracking-[0.1em] text-white"
               aria-expanded={!isCollapsed}
             >
               <ChevronDown
@@ -902,7 +902,7 @@ export function PageFormTabs({
                       onClick={() =>
                         onSelectFormIdentifier(group.form_identifier)
                       }
-                      className={`font-dm-mono flex h-[37px] w-[152px] cursor-pointer items-center justify-center rounded-[9px] border border-black/5 px-2.5 text-xs tracking-[0.1em] uppercase transition-colors ${
+                      className={`flex h-[37px] w-[152px] cursor-pointer items-center justify-center rounded-[9px] border border-black/5 px-2.5 text-xs tracking-[0.1em] transition-colors ${
                         isActiveForm
                           ? "bg-[#F25430] font-medium text-white"
                           : "bg-white font-normal text-black hover:bg-gray-50"
@@ -1285,10 +1285,10 @@ export function FormsTabContent() {
               >
                 <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#6433CC]" />
                 <div className="min-w-0 flex-1">
-                  <p className="font-dm-mono truncate text-xs font-bold tracking-[0.08em] text-black uppercase">
+                  <p className="truncate text-xs font-bold tracking-[0.08em] text-black">
                     New submission — {getSubmissionDisplayName(submission)}
                   </p>
-                  <p className="font-stolzl mt-1 truncate text-sm text-[#7E7E7E]">
+                  <p className="mt-1 truncate text-sm text-[#7E7E7E]">
                     {getSubmissionPreview(submission)}
                   </p>
                 </div>
@@ -1349,7 +1349,7 @@ export function FormsTabContent() {
         <div className="fixed inset-0 z-10000 bg-black/45 lg:hidden">
           <section className="animate-in slide-in-from-right ml-auto flex h-full w-full max-w-[520px] flex-col bg-white shadow-[-20px_0_70px_rgba(0,0,0,0.18)] duration-300">
             <div className="flex h-14 shrink-0 items-center justify-between border-b border-gray-100 px-4">
-              <h2 className="font-dm-mono text-xl font-bold tracking-[-0.02em] text-black uppercase">
+              <h2 className="text-xl font-bold tracking-[-0.02em] text-black">
                 Inbox
               </h2>
               <button

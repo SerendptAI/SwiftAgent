@@ -52,7 +52,7 @@ export function ConsentBanner() {
       aria-label={t("ariaLabel")}
       className="fixed bottom-4 left-4 z-100 max-w-sm rounded-lg border border-black/20 bg-white p-4 shadow-[-4px_4px_0px_0px_#000000]"
     >
-      <p className="font-jetbrains text-xs leading-normal tracking-[10%] text-black md:text-sm lg:text-base">
+      <p className="text-xs leading-normal tracking-[10%] text-black md:text-sm lg:text-base">
         {t("message")}{" "}
         <Link
           href="/privacy-policy"

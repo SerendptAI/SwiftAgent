@@ -2,55 +2,7 @@
 @import "tw-animate-css";
 @import "./widget-animations.css";
 
-@font-face {
-  font-family: "Stolzl";
-  src: url("/fonts/stolzl_thin.otf") format("opentype");
-  font-weight: 100;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Stolzl";
-  src: url("/fonts/stolzl_light.otf") format("opentype");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Stolzl";
-  src: url("/fonts/stolzl_book.otf") format("opentype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Stolzl";
-  src: url("/fonts/stolzl_regular.otf") format("opentype");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Stolzl";
-  src: url("/fonts/stolzl_medium.otf") format("opentype");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Stolzl";
-  src: url("/fonts/stolzl_bold.otf") format("opentype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* DM Mono, Stolzl, and Instrument Sans have no naira glyph (U+20A6). Without
+/* Instrument Sans has no naira glyph (U+20A6). Without
    this face the glyph comes from next/font's metric-adjusted fallback, which
    upscales it well past the digits' cap height. Helvetica/Arial's naira is
    already digit-height (0.717em vs 0.724em), so no size-adjust is needed;
@@ -104,13 +56,13 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --font-instrument: "Naira Fallback", var(--font-instrument), "system-ui",
-    "arial";
-  --font-dm-mono: "Naira Fallback", var(--font-dm-mono), "system-ui", "arial";
+  --font-instrument:
+    "Naira Fallback", var(--font-instrument), "system-ui", "arial";
   --font-greed: var(--font-greed), "system-ui", "arial";
-  --font-stolzl: "Naira Fallback", "Stolzl", "system-ui", "arial";
-  --font-jetbrains: "Naira Fallback", var(--font-jetbrains), "system-ui", "arial";
-  --font-press-start: "Naira Fallback", var(--font-press-start), "system-ui", "arial";
+  --font-jetbrains:
+    "Naira Fallback", var(--font-jetbrains), "system-ui", "arial";
+  --font-press-start:
+    "Naira Fallback", var(--font-press-start), "system-ui", "arial";
 }
 
 :root {
@@ -366,8 +318,12 @@ body {
 }
 
 @keyframes logos-scroll-right {
-  from { transform: translateX(-50%); }
-  to   { transform: translateX(0); }
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 .animate-marquee {
@@ -376,8 +332,12 @@ body {
 }
 
 @keyframes arrows-scroll-forward {
-  from { transform: translateX(calc(-1 * var(--arrow-set-width, 1436px))); }
-  to   { transform: translateX(0); }
+  from {
+    transform: translateX(calc(-1 * var(--arrow-set-width, 1436px)));
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 .animate-arrows {

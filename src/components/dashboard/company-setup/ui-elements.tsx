@@ -1,5 +1,5 @@
 import { ChevronDown } from "lucide-react";
-import { type ChangeEvent, type ComponentProps, forwardRef } from "react";
+import { type ComponentProps, forwardRef } from "react";
 
 import { cn } from "@/lib/utils";
 export const FormLabel = ({
@@ -23,18 +23,11 @@ export const FormLabel = ({
 
 export const FormInput = forwardRef<HTMLInputElement, ComponentProps<"input">>(
   ({ className, onChange, type, ...props }, ref) => {
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-      if (type !== "file") {
-        event.currentTarget.value = event.currentTarget.value.toUpperCase();
-      }
-      onChange?.(event);
-    };
-
     return (
       <input
         ref={ref}
         type={type}
-        onChange={handleChange}
+        onChange={onChange}
         className={cn(
           "h-12 w-full rounded-md border-0 bg-gray-100 px-4 py-2 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-blue-600 focus:outline-hidden",
           className,
@@ -75,15 +68,10 @@ export const FormTextarea = forwardRef<
   HTMLTextAreaElement,
   ComponentProps<"textarea">
 >(({ className, onChange, ...props }, ref) => {
-  const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    event.currentTarget.value = event.currentTarget.value.toUpperCase();
-    onChange?.(event);
-  };
-
   return (
     <textarea
       ref={ref}
-      onChange={handleChange}
+      onChange={onChange}
       className={cn(
         "min-h-[120px] w-full rounded-md border-0 bg-gray-100 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-blue-600 focus:outline-hidden",
         className,

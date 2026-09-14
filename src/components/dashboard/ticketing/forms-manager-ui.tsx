@@ -48,7 +48,7 @@ export function PathChip({ children }: { children: ReactNode }) {
   return (
     <span className="flex max-w-full min-w-0 items-center gap-[5px] rounded-[15px] bg-[#F6F6F6] px-2 py-[7px]">
       <Globe className="h-[18px] w-[18px] shrink-0 text-[#7E7E7E]" />
-      <span className="font-dm-mono min-w-0 truncate text-[11px] text-[#7E7E7E] uppercase">
+      <span className="min-w-0 truncate text-[11px] text-[#7E7E7E]">
         {children}
       </span>
     </span>
@@ -57,7 +57,7 @@ export function PathChip({ children }: { children: ReactNode }) {
 
 export function CountPill({ children }: { children: ReactNode }) {
   return (
-    <span className="font-dm-mono rounded-[10px] bg-[#F6F6F6] px-2 py-0.5 text-[11px] whitespace-nowrap text-[#7E7E7E] uppercase">
+    <span className="rounded-[10px] bg-[#F6F6F6] px-2 py-0.5 text-[11px] whitespace-nowrap text-[#7E7E7E]">
       {children}
     </span>
   );
@@ -67,7 +67,7 @@ export function ActionLink({
   label,
   onClick,
   colorClass,
-  uppercase = true,
+  uppercase = false,
 }: {
   label: string;
   onClick: () => void;
@@ -78,7 +78,7 @@ export function ActionLink({
     <button
       type="button"
       onClick={onClick}
-      className={`font-dm-mono cursor-pointer text-[16px] font-medium whitespace-nowrap transition-opacity hover:opacity-70 ${
+      className={`cursor-pointer text-[16px] font-medium whitespace-nowrap transition-opacity hover:opacity-70 ${
         uppercase ? "uppercase" : ""
       } ${colorClass}`}
     >
@@ -100,7 +100,7 @@ export function SolidActionButton({
     <button
       type="button"
       onClick={onClick}
-      className={`font-dm-mono h-7 cursor-pointer rounded-[6px] px-3 text-[11px] font-medium whitespace-nowrap text-white uppercase transition-opacity hover:opacity-85 ${colorClass}`}
+      className={`h-7 cursor-pointer rounded-[6px] px-3 text-[11px] font-medium whitespace-nowrap text-white transition-opacity hover:opacity-85 ${colorClass}`}
     >
       {label}
     </button>
@@ -118,21 +118,15 @@ export function Row({ children }: { children: ReactNode }) {
 export function SectionIntro({ title, sub }: { title: string; sub: string }) {
   return (
     <div className="flex flex-col gap-3">
-      <p className="font-dm-mono text-[16px] font-medium text-[#7E7E7E] uppercase">
-        {title}
-      </p>
-      <p className="font-stolzl text-[14px] font-normal text-[#7E7E7E]">
-        {sub}
-      </p>
+      <p className="text-[16px] font-medium text-[#7E7E7E]">{title}</p>
+      <p className="text-[14px] font-normal text-[#7E7E7E]">{sub}</p>
     </div>
   );
 }
 
 export function HintText({ children }: { children: ReactNode }) {
   return (
-    <p className="font-stolzl text-[12px] font-normal text-[#7E7E7E]/60">
-      {children}
-    </p>
+    <p className="text-[12px] font-normal text-[#7E7E7E]/60">{children}</p>
   );
 }
 
@@ -148,7 +142,7 @@ export function CancelButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="font-dm-mono flex h-9 w-20 cursor-pointer items-center justify-center rounded-[8px] border border-[#EDEDED] text-[13px] text-[#7E7E7E] uppercase transition-colors hover:bg-gray-50 disabled:opacity-60"
+      className="flex h-9 w-20 cursor-pointer items-center justify-center rounded-[8px] border border-[#EDEDED] text-[13px] text-[#7E7E7E] transition-colors hover:bg-gray-50 disabled:opacity-60"
     >
       Cancel
     </button>
@@ -166,7 +160,7 @@ function Crumb({
 }) {
   return (
     <span
-      className={`font-stolzl flex items-center gap-2 text-[14px] font-normal uppercase ${
+      className={`flex items-center gap-2 text-[14px] font-normal ${
         reached ? "text-black" : "text-[#7E7E7E]"
       }`}
     >
@@ -242,7 +236,7 @@ export function ManagerShell({
                 reached
               />
             </button>
-            <span className="font-dm-mono text-[14px] text-[#7E7E7E]">→</span>
+            <span className="text-[14px] text-[#7E7E7E]">→</span>
             <button
               type="button"
               disabled={level < 1}
@@ -255,7 +249,7 @@ export function ManagerShell({
                 reached={level >= 1}
               />
             </button>
-            <span className="font-dm-mono text-[14px] text-[#7E7E7E]">→</span>
+            <span className="text-[14px] text-[#7E7E7E]">→</span>
             <Crumb
               icon={<FormCheckIcon className="h-[18px] w-[18px]" />}
               label="Form"

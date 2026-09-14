@@ -40,7 +40,7 @@ export function TrustedBySection() {
 
   return (
     <section className="w-full bg-white py-10 md:py-14">
-      <p className="font-dm-mono text-foreground mb-10 text-center text-sm leading-[1.6] font-medium tracking-[10%] uppercase md:mb-14 md:text-base lg:text-lg">
+      <p className="text-foreground mb-10 text-center text-sm leading-[1.6] font-medium tracking-[10%] uppercase md:mb-14 md:text-base lg:text-lg">
         {t("heading")}
       </p>
 

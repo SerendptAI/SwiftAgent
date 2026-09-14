@@ -82,7 +82,7 @@ export default function StrollSettingsPage() {
     return (
       <div className={CARD_CLASS}>
         <HelpBanner bgColor="bg-[#006BE5]" />
-        <p className="font-stolzl px-6 py-6 text-center text-sm text-gray-400">
+        <p className="px-6 py-6 text-center text-sm text-gray-400">
           Select a company to configure its strolls.
         </p>
       </div>
@@ -96,10 +96,10 @@ export default function StrollSettingsPage() {
       <FreePlanBanner feature="more strolls" />
 
       <div>
-        <h3 className="font-stolzl text-base font-bold text-gray-900 sm:text-lg">
+        <h3 className="text-base font-bold text-gray-900 sm:text-lg">
           Stroll Configuration
         </h3>
-        <p className="font-dm-mono mt-1 text-xs text-gray-500">
+        <p className="mt-1 text-xs text-gray-500">
           Agent 047 signs into a sandbox account on your dashboard and strolls
           it on a schedule, so it can point customers at the exact feature they
           ask for. Use a sandbox account — never a real customer login.
@@ -112,13 +112,13 @@ export default function StrollSettingsPage() {
         </div>
       ) : isError ? (
         <div className="flex flex-1 flex-col items-center justify-center gap-3 py-8">
-          <p className="font-stolzl text-sm text-gray-500">
+          <p className="text-sm text-gray-500">
             Could not load your stroll configuration.
           </p>
           <button
             type="button"
             onClick={() => refetch()}
-            className="font-dm-mono rounded-lg border border-gray-200 px-4 py-2 text-xs tracking-wider text-gray-700 uppercase transition-colors hover:bg-gray-50"
+            className="rounded-lg border border-gray-200 px-4 py-2 text-xs tracking-[2%] text-gray-700 transition-colors hover:bg-gray-50"
           >
             Retry
           </button>
@@ -126,7 +126,7 @@ export default function StrollSettingsPage() {
       ) : (
         <>
           {!config && (
-            <p className="font-dm-mono rounded-xl bg-[#006BE5]/5 px-4 py-3 text-xs text-[#0055B8]">
+            <p className="rounded-xl bg-[#006BE5]/5 px-4 py-3 text-xs text-[#0055B8]">
               No configuration yet — fill this in to schedule your first stroll.
             </p>
           )}
@@ -138,7 +138,7 @@ export default function StrollSettingsPage() {
           {status && (
             <p
               role="status"
-              className={`font-dm-mono text-xs ${
+              className={`text-xs ${
                 status.kind === "success" ? "text-green-600" : "text-red-600"
               }`}
             >
@@ -150,7 +150,7 @@ export default function StrollSettingsPage() {
             type="button"
             onClick={handleSave}
             disabled={updateConfig.isPending}
-            className="flex h-11 items-center justify-center gap-2 self-start rounded-2xl bg-[#006BE5] px-6 text-sm font-bold tracking-wide text-white uppercase shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#0055B8] disabled:cursor-not-allowed disabled:opacity-50 sm:h-10"
+            className="flex h-11 items-center justify-center gap-2 self-start rounded-2xl bg-[#006BE5] px-6 text-sm font-bold tracking-[2%] text-white shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#0055B8] disabled:cursor-not-allowed disabled:opacity-50 sm:h-10"
           >
             {updateConfig.isPending ? (
               <Loader2 className="h-4 w-4 animate-spin" />

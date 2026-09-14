@@ -185,7 +185,7 @@ export function DevelopmentResourcesDrawer({
 
                 closeDrawer();
               }}
-              className="font-dm-mono pointer-events-auto flex min-h-10 w-fit max-w-full cursor-pointer items-center gap-2 rounded-full bg-white px-3 py-1 text-xs leading-none tracking-[0.08em] text-black/60 uppercase shadow-sm transition-colors hover:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black md:min-h-0 md:gap-3 md:text-sm md:shadow-none"
+              className="pointer-events-auto flex min-h-10 w-fit max-w-full cursor-pointer items-center gap-2 rounded-full bg-white px-3 py-1 text-xs leading-none tracking-[0.08em] text-black/60 shadow-sm transition-colors hover:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black md:min-h-0 md:gap-3 md:text-sm md:shadow-none"
             >
               <Icons.leftArrow className="h-auto w-5 shrink-0 stroke-2 text-black md:w-6" />
               <span className="truncate">
@@ -202,7 +202,7 @@ export function DevelopmentResourcesDrawer({
             <header className="flex justify-center text-center">
               <h2
                 id="development-resources-title"
-                className={`font-greed max-w-full text-center leading-[0.95] font-medium text-black uppercase ${
+                className={`font-greed max-w-full text-center leading-[0.95] font-medium text-black ${
                   selectedVideo
                     ? "mt-10 text-[30px] md:mt-[86px] md:text-[42px]"
                     : "text-[30px] md:text-[34px]"
@@ -242,7 +242,7 @@ export function DevelopmentResourcesDrawer({
                     onClick={() =>
                       setIsTutorialVideosExpanded((isExpanded) => !isExpanded)
                     }
-                    className="font-dm-mono inline-flex h-13 cursor-pointer items-center gap-3 rounded-full bg-[#F4F4F4] pr-5 pl-2 text-sm leading-none tracking-[0.08em] text-black uppercase transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black md:h-16 md:gap-5 md:pr-8 md:pl-3 md:text-lg"
+                    className="inline-flex h-13 cursor-pointer items-center gap-3 rounded-full bg-[#F4F4F4] pr-5 pl-2 text-sm leading-none tracking-[0.08em] text-black transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black md:h-16 md:gap-5 md:pr-8 md:pl-3 md:text-lg"
                   >
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#E9E9E9] md:h-12 md:w-12">
                       <ChevronDown
@@ -283,18 +283,18 @@ export function DevelopmentResourcesDrawer({
                               </span>
                             </span>
                           </div>
-                          <h3 className="font-dm-mono mt-3 text-base leading-tight font-medium text-black uppercase md:mt-[22px] md:text-xl md:leading-none">
+                          <h3 className="mt-3 text-base leading-tight font-medium text-black md:mt-[22px] md:text-xl md:leading-none">
                             {title}
                           </h3>
                         </button>
                       ) : (
                         <div key={title} className="text-left">
                           <div className="flex aspect-365/195 w-full items-center justify-center border border-black/8 bg-[#F4F4F4]">
-                            <span className="font-dm-mono text-xs leading-none tracking-[0.08em] text-black/40 uppercase md:text-sm">
+                            <span className="text-xs leading-none tracking-[0.08em] text-black/40 md:text-sm">
                               Coming soon
                             </span>
                           </div>
-                          <h3 className="font-dm-mono mt-3 text-base leading-tight font-medium text-black/40 uppercase md:mt-[22px] md:text-xl md:leading-none">
+                          <h3 className="mt-3 text-base leading-tight font-medium text-black/40 md:mt-[22px] md:text-xl md:leading-none">
                             {title}
                           </h3>
                         </div>

@@ -38,7 +38,7 @@ export default async function BlogPage({
 
   return (
     <SmoothScrollProvider>
-      <main className="font-jetbrains min-h-screen">
+      <main className="min-h-screen">
         <Navbar />
         <div className="w-full px-6 pt-36 pb-16 md:px-10 md:pt-48 md:pb-20 lg:px-16 lg:pt-56 lg:pb-26">
           <div className="mx-auto max-w-360">

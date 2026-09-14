@@ -40,13 +40,13 @@ export function DataTable<T>({
           <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
         </div>
       ) : rows.length === 0 ? (
-        <p className="font-stolzl px-6 py-6 text-center text-sm text-gray-400">
+        <p className="px-6 py-6 text-center text-sm text-gray-400">
           {emptyMessage}
         </p>
       ) : (
         <table className="w-full min-w-160 text-left text-sm">
           <thead>
-            <tr className="font-dm-mono border-b border-gray-100 text-[11px] tracking-wider text-gray-500 uppercase">
+            <tr className="border-b border-gray-100 text-[11px] tracking-wider text-gray-500">
               {columns.map((column) => (
                 <th
                   key={column.key}
@@ -64,7 +64,7 @@ export function DataTable<T>({
                   <td
                     key={column.key}
                     className={cn(
-                      "font-stolzl px-4 py-3 align-top text-gray-800",
+                      "px-4 py-3 align-top text-gray-800",
                       column.className,
                     )}
                   >

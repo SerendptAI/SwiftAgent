@@ -5,7 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { NAV_LINKS } from "./constants";
 
 const LINK_CLS =
-  "font-jetbrains text-sm tracking-[2%] font-medium text-white transition-colors hover:text-gray-300";
+  "text-sm tracking-[2%] font-medium text-white transition-colors hover:text-gray-300";
 
 export function ContactLinks() {
   const t = useTranslations("common.contact");

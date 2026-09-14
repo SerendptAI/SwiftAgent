@@ -8,7 +8,7 @@ export function ContactCopyright() {
   const t = useTranslations("common.contact");
 
   return (
-    <div className="font-jetbrains absolute bottom-34 left-0 z-20 flex w-full flex-col items-center gap-2 text-center md:bottom-12">
+    <div className="absolute bottom-34 left-0 z-20 flex w-full flex-col items-center gap-2 text-center md:bottom-12">
       <span className="text-[10px] font-semibold tracking-widest text-white uppercase sm:text-xs">
         {COPYRIGHT_TEXT}
       </span>

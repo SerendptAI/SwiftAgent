@@ -18,13 +18,13 @@ export default function NotFoundPage() {
             priority
           />
 
-          <h1 className="font-dm-mono mb-8 text-center text-[26px] leading-[1.34] tracking-[-2px] text-black/60 uppercase">
+          <h1 className="mb-8 text-center text-[26px] leading-[1.34] tracking-[-2px] text-black/60 uppercase">
             YOU ARE LOST
           </h1>
 
           <Link
             href="/"
-            className="font-dm-mono flex h-9 w-full max-w-81.5 items-center justify-center rounded-[13px] border border-[#EDEDED] bg-[#006BE5] text-center text-sm leading-none font-medium text-white uppercase"
+            className="flex h-9 w-full max-w-81.5 items-center justify-center rounded-[13px] border border-[#EDEDED] bg-[#006BE5] text-center text-sm leading-none font-medium text-white uppercase"
           >
             BACK TO HOMEPAGE
           </Link>

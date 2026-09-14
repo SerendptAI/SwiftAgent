@@ -74,7 +74,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="font-jetbrains flex min-h-screen w-full items-center justify-center px-4">
+    <div className="flex min-h-screen w-full items-center justify-center px-4">
       <div className="flex w-full max-w-md flex-col items-center gap-7">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -87,7 +87,7 @@ export default function LoginPage() {
           <h3 className="text-muted-foreground text-sm font-normal tracking-[2%] uppercase">
             {t("welcomeBack")}
           </h3>
-          <h2 className="font-stolzl text-2xl font-normal tracking-tight">
+          <h2 className="text-2xl font-normal tracking-tight">
             {t("logInToYourAccount")}
           </h2>
         </div>

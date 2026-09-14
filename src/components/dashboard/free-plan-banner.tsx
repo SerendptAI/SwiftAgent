@@ -39,10 +39,10 @@ export function FreePlanBanner({ feature }: FreePlanBannerProps) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-[#006BE5]/5 px-4 py-3">
       <div className="min-w-0">
-        <p className="font-dm-mono text-xs font-bold tracking-wider text-[#0055B8] uppercase">
+        <p className="text-xs font-bold tracking-wider text-[#0055B8]">
           Free plan
         </p>
-        <p className="font-dm-mono mt-1 text-[11px] leading-[1.6] text-gray-500">
+        <p className="mt-1 text-[11px] leading-[1.6] text-gray-500">
           One agent and one automated stroll a month.
           {counters.length > 0 && ` ${counters.join(" · ")}.`}
         </p>
@@ -50,7 +50,7 @@ export function FreePlanBanner({ feature }: FreePlanBannerProps) {
       <button
         type="button"
         onClick={() => showUpgrade(feature)}
-        className="font-dm-mono shrink-0 cursor-pointer rounded-md bg-[#006BE5] px-4 py-2 text-[11px] font-semibold tracking-wider text-white uppercase transition-colors hover:bg-[#0055B8]"
+        className="shrink-0 cursor-pointer rounded-md bg-[#006BE5] px-4 py-2 text-[11px] font-semibold tracking-wider text-white transition-colors hover:bg-[#0055B8]"
       >
         Upgrade
       </button>

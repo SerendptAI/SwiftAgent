@@ -83,7 +83,7 @@ export function ChannelNavigator({ active, onChange }: ChannelNavigatorProps) {
                 </span>
               )}
               <span
-                className={`font-dm-mono sr-only truncate text-xs uppercase ${
+                className={`sr-only truncate text-xs ${
                   isActive ? "text-white" : "text-gray-500"
                 }`}
               >

@@ -88,14 +88,13 @@ interface QuestionDef {
 const INITIAL_QUESTION: QuestionDef = {
   id: "company_type",
   question: "What kind of company are you?",
-  options: BUSINESS_CATEGORY_OPTIONS.map((o) => o.label.toUpperCase()),
+  options: BUSINESS_CATEGORY_OPTIONS.map((o) => o.label),
   type: "select",
   apiMapping: {
     section: "type",
     field: "company_type",
     transform: (v) =>
-      BUSINESS_CATEGORY_OPTIONS.find((o) => o.label.toUpperCase() === v)
-        ?.value ?? "other",
+      BUSINESS_CATEGORY_OPTIONS.find((o) => o.label === v)?.value ?? "other",
   },
 };
 
@@ -468,7 +467,7 @@ export function QuestionnaireChat({
         <h2 className="font-greed mb-4 text-center text-[40px] leading-[1.1] font-semibold tracking-[-2%] text-black">
           Congratulations
         </h2>
-        <p className="font-dm-mono text-muted-foreground mb-5 text-sm leading-[1.96] tracking-[14%] uppercase">
+        <p className="text-muted-foreground mb-5 text-sm leading-[1.96] tracking-[14%]">
           All customer replies will be
           <br />
           made with this email
@@ -522,9 +521,7 @@ export function QuestionnaireChat({
                 width={34}
                 height={34}
               />
-              <span className="font-dm-mono text-base leading-none uppercase">
-                SWIFT AGENTS
-              </span>
+              <span className="text-base leading-none">SWIFT AGENTS</span>
             </div>
             <ChevronDown className="size-8.5 stroke-1 text-black" />
           </div>
@@ -533,7 +530,7 @@ export function QuestionnaireChat({
             {entries.map((entry, entryIdx) => (
               <div key={entryIdx} className="mb-6">
                 <div className="mb-4 w-fit max-w-[274px] rounded-3xl bg-blue-50 px-4 py-2.5">
-                  <p className="font-stolzl text-sm leading-6 text-[#006BE5]">
+                  <p className="text-sm leading-6 text-[#006BE5]">
                     {entry.question}
                   </p>
                 </div>
@@ -547,7 +544,7 @@ export function QuestionnaireChat({
                           key={option}
                           disabled={!!entry.selected}
                           onClick={() => handleSelectOption(option)}
-                          className={`font-dm-mono flex items-center gap-2 border px-4 py-2 text-left text-sm leading-normal uppercase transition-colors ${
+                          className={`flex items-center gap-2 border px-4 py-2 text-left text-sm leading-normal transition-colors ${
                             isSelected
                               ? "border-[#E8613C] bg-[#E8613C] text-white"
                               : entry.selected
@@ -587,7 +584,7 @@ export function QuestionnaireChat({
                         />
                         {item.status !== "done" && (
                           <p
-                            className={`font-dm-mono mt-2 text-[10px] font-bold tracking-wider uppercase ${
+                            className={`mt-2 text-[10px] font-bold tracking-wider ${
                               item.status === "error"
                                 ? "text-red-500"
                                 : "text-gray-400"
@@ -599,7 +596,7 @@ export function QuestionnaireChat({
                           </p>
                         )}
                         {item.status === "error" && item.error && (
-                          <p className="font-dm-mono mt-1 max-w-[200px] text-right text-[10px] leading-snug text-red-500">
+                          <p className="mt-1 max-w-[200px] text-right text-[10px] leading-snug text-red-500">
                             {item.error}
                           </p>
                         )}
@@ -625,12 +622,12 @@ export function QuestionnaireChat({
                             : "bg-blue-600"
                       }`}
                     >
-                      <p className="font-dm-mono text-xs font-bold tracking-wider text-white">
+                      <p className="text-xs font-bold tracking-wider text-white">
                         {item.label}
                         {statusLabel}
                       </p>
                       {item.status === "error" && item.error && (
-                        <p className="font-dm-mono mt-1 text-[11px] leading-snug text-white/90">
+                        <p className="mt-1 text-[11px] leading-snug text-white/90">
                           {item.error}
                         </p>
                       )}
@@ -660,7 +657,7 @@ export function QuestionnaireChat({
                   onKeyDown={(e) => e.key === "Enter" && handleTextSubmit()}
                   placeholder="Ask a question"
                   disabled={ingestKnowledge.isPending}
-                  className="font-dm-mono flex-1 text-sm outline-none placeholder:text-gray-400 disabled:opacity-50"
+                  className="flex-1 text-sm outline-none placeholder:text-gray-400 disabled:opacity-50"
                 />
                 <button
                   onClick={handleTextSubmit}
@@ -712,7 +709,7 @@ function PrimaryActionButton({
     <button
       onClick={onClick}
       disabled={disabled}
-      className="font-dm-mono h-9 w-full cursor-pointer rounded-[13px] bg-[#006BE5] text-center text-sm leading-none text-white uppercase transition-colors hover:bg-[#0055B8] disabled:cursor-not-allowed disabled:opacity-50"
+      className="h-9 w-full cursor-pointer rounded-[13px] bg-[#006BE5] text-center text-sm leading-none text-white transition-colors hover:bg-[#0055B8] disabled:cursor-not-allowed disabled:opacity-50"
     >
       {children}
     </button>
@@ -782,7 +779,7 @@ function EmailPickerScreen({
         height={180}
         className="mb-7.5 aspect-93/186 w-full max-w-[93px] object-contain object-center"
       />
-      <p className="font-dm-mono text-muted-foreground mb-10 text-sm leading-[1.96] tracking-[14%] uppercase">
+      <p className="text-muted-foreground mb-10 text-sm leading-[1.96] tracking-[14%]">
         This is the email address that will be used to communicate with
         customers via email, it should correspond with your company name
       </p>
@@ -799,7 +796,7 @@ function EmailPickerScreen({
           @swifty.email
         </span>
       </div>
-      <div className="font-dm-mono mb-5.5 flex items-center gap-1.5 text-xs leading-[1.96] tracking-[10%] uppercase">
+      <div className="mb-5.5 flex items-center gap-1.5 text-xs leading-[1.96] tracking-[10%]">
         {availability === "checking" && (
           <span className="text-gray-400">Checking availability…</span>
         )}

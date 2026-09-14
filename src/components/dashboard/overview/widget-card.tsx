@@ -148,7 +148,7 @@ export function WidgetCard() {
               >
                 <button
                   onClick={() => setModeDropdownOpen((v) => !v)}
-                  className="font-dm-mono mt-[-2px] flex h-[46px] items-center gap-[9px] rounded-[14px] bg-[#006BE5] px-4 text-[16px] font-semibold text-white transition-colors hover:bg-[#1E88E5]"
+                  className="mt-[-2px] flex h-[46px] items-center gap-[9px] rounded-[14px] bg-[#006BE5] px-4 text-[16px] font-semibold text-white transition-colors hover:bg-[#1E88E5]"
                 >
                   <ChevronDown
                     className={`h-5 w-5 transition-transform ${modeDropdownOpen ? "rotate-180" : ""}`}
@@ -163,7 +163,7 @@ export function WidgetCard() {
                         setMode("widget");
                         setModeDropdownOpen(false);
                       }}
-                      className={`font-dm-mono flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm transition-colors hover:bg-gray-50 ${mode === "widget" ? "font-semibold text-[#006BE5]" : "text-gray-700"}`}
+                      className={`flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm transition-colors hover:bg-gray-50 ${mode === "widget" ? "font-semibold text-[#006BE5]" : "text-gray-700"}`}
                     >
                       <span className="flex h-5 w-5 items-center justify-center rounded bg-[#006BE5]/10 text-[#006BE5]">
                         <ChevronDown className="h-3.5 w-3.5 rotate-180" />
@@ -176,7 +176,7 @@ export function WidgetCard() {
                         setMode("button");
                         setModeDropdownOpen(false);
                       }}
-                      className={`font-dm-mono flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm transition-colors hover:bg-gray-50 ${mode === "button" ? "font-semibold text-[#006BE5]" : "text-gray-700"}`}
+                      className={`flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm transition-colors hover:bg-gray-50 ${mode === "button" ? "font-semibold text-[#006BE5]" : "text-gray-700"}`}
                     >
                       <span
                         className={`flex h-5 w-5 items-center justify-center rounded ${mode === "button" ? "bg-[#006BE5]/10 text-[#006BE5]" : "bg-gray-100 text-gray-500"}`}
@@ -192,10 +192,10 @@ export function WidgetCard() {
               <div className="flex items-center pt-[6px] sm:pr-6">
                 <button
                   onClick={() => setIsSettingsOpen(true)}
-                  className="font-greed flex h-[42px] cursor-pointer items-center gap-2 rounded-[7px] bg-[#EDEDED] px-3 text-[13px] font-bold tracking-wider text-gray-600 uppercase transition-colors hover:bg-gray-100 sm:px-4 sm:text-sm"
+                  className="font-greed flex h-[42px] cursor-pointer items-center gap-2 rounded-[7px] bg-[#EDEDED] px-3 text-[13px] font-bold tracking-wider text-gray-600 transition-colors hover:bg-gray-100 sm:px-4 sm:text-sm"
                 >
                   <Icons.Settings className="h-5 w-5" />
-                  <span className="hidden min-[360px]:inline">SETTINGS</span>
+                  <span className="hidden min-[360px]:inline">Settings</span>
                 </button>
               </div>
             </div>
@@ -203,14 +203,14 @@ export function WidgetCard() {
             <div className="rounded-[21px] border border-gray-100 bg-white px-6 pt-[84px] pb-6 shadow-sm">
               <div className="relative overflow-hidden rounded-[12px] border border-gray-200/80 bg-[#FBFBFB]">
                 <div className="flex h-[38px] items-center justify-between gap-3 border-b border-gray-200/80 bg-white px-3">
-                  <span className="font-dm-mono text-[10px] font-bold tracking-[0.12em] text-gray-400 uppercase">
+                  <span className="text-[10px] font-bold tracking-[0.12em] text-gray-400">
                     {mode === "button" ? "Button snippet" : "Widget snippet"}
                   </span>
                   {codeSnippet && (
                     <button
                       onClick={() => setRevealed((v) => !v)}
                       aria-pressed={revealed}
-                      className="font-dm-mono -mr-1 flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[6px] px-2 py-1 text-[10px] font-bold tracking-[0.12em] text-gray-500 uppercase transition-colors hover:bg-gray-100 hover:text-gray-700"
+                      className="-mr-1 flex shrink-0 cursor-pointer items-center gap-1.5 rounded-[6px] px-2 py-1 text-[10px] font-bold tracking-[0.12em] text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
                     >
                       {revealed ? (
                         <EyeOff className="h-3.5 w-3.5" />
@@ -221,11 +221,11 @@ export function WidgetCard() {
                     </button>
                   )}
                 </div>
-                <pre className="font-dm-mono max-h-[132px] overflow-y-auto px-3.5 py-3 text-[12px] leading-[1.75] [overflow-wrap:anywhere] whitespace-pre-wrap text-[#6E6E6E] sm:text-[13px]">
+                <pre className="max-h-[132px] overflow-y-auto px-3.5 py-3 text-[12px] leading-[1.75] [overflow-wrap:anywhere] whitespace-pre-wrap text-[#6E6E6E] sm:text-[13px]">
                   {displayedSnippet || "No widget code found."}
                 </pre>
               </div>
-              <p className="font-dm-mono mt-3 text-[11px] leading-[1.6] text-gray-400">
+              <p className="mt-3 text-[11px] leading-[1.6] text-gray-400">
                 Replace{" "}
                 <code className="rounded bg-gray-100 px-1 py-0.5 text-gray-600">
                   YOUR_API_KEY
@@ -240,7 +240,7 @@ export function WidgetCard() {
                 .
               </p>
               {mode === "button" && (
-                <p className="font-dm-mono mt-2 text-[11px] leading-[1.6] text-gray-400">
+                <p className="mt-2 text-[11px] leading-[1.6] text-gray-400">
                   Add the{" "}
                   <code className="rounded bg-gray-100 px-1 py-0.5 text-gray-600">
                     data-swift-agent-open
@@ -252,7 +252,7 @@ export function WidgetCard() {
               <button
                 onClick={handleCopy}
                 disabled={!codeSnippet}
-                className="font-dm-mono mt-5 flex h-[46px] w-full cursor-pointer items-center justify-center gap-2.5 rounded-[8px] bg-[#006BE5] text-[16px] font-normal text-white shadow-[-4px_4px_0px_0px_#000000] transition-all hover:bg-[#1E88E5] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-1px_2px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-50"
+                className="mt-5 flex h-[46px] w-full cursor-pointer items-center justify-center gap-2.5 rounded-[8px] bg-[#006BE5] text-[16px] font-normal text-white shadow-[-4px_4px_0px_0px_#000000] transition-all hover:bg-[#1E88E5] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-1px_2px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Copy className="h-5 w-5" />
                 {copied ? "Copied!" : "Copy"}
@@ -574,7 +574,7 @@ function ChatbotSettingsSidebar({
           <button
             type="button"
             onClick={closeWithAnimation}
-            className="font-dm-mono flex items-center gap-1.5 text-xs tracking-wider text-black/50 uppercase hover:text-black"
+            className="flex items-center gap-1.5 text-xs tracking-wider text-black/50 hover:text-black"
           >
             <ChevronLeft className="h-4 w-4" />
             Back
@@ -585,7 +585,7 @@ function ChatbotSettingsSidebar({
             onChange={setRouteToHuman}
           />
           <CollapsibleSection title="Select Agents" defaultOpen>
-            <p className="font-dm-mono mb-5 text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase">
+            <p className="mb-5 text-[14px] leading-[1.96] tracking-[1.4px] text-black/60">
               Which agents are allowed to work in this chatbot
             </p>
             <ul className="space-y-4">
@@ -601,14 +601,14 @@ function ChatbotSettingsSidebar({
                         className="mt-1 h-4 w-4 cursor-pointer accent-[#006BE5]"
                       />
                       <div className="flex-1">
-                        <p className="font-dm-mono mb-1 text-xs font-bold tracking-wider text-gray-900 uppercase">
+                        <p className="mb-1 text-xs font-bold tracking-wider text-gray-900">
                           Agent {agent.id}
                         </p>
-                        <p className="font-dm-mono text-[11px] leading-relaxed tracking-wide text-gray-500 uppercase">
+                        <p className="text-[11px] leading-relaxed tracking-wide text-gray-500">
                           {agent.description}
                         </p>
                         {isChecked && agent.requiresLogin && (
-                          <p className="font-dm-mono mt-2 rounded-sm bg-[#006BE5] px-3 py-1.5 text-[11px] font-bold tracking-wider text-white uppercase">
+                          <p className="mt-2 rounded-sm bg-[#006BE5] px-3 py-1.5 text-[11px] font-bold tracking-wider text-white">
                             Users must be logged in
                           </p>
                         )}
@@ -621,7 +621,7 @@ function ChatbotSettingsSidebar({
           </CollapsibleSection>
 
           <CollapsibleSection title="Sandbox" defaultOpen>
-            <p className="font-dm-mono mb-5 text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase">
+            <p className="mb-5 text-[14px] leading-[1.96] tracking-[1.4px] text-black/60">
               Please create a sandbox account and share the login details for
               Agent 047
             </p>
@@ -645,7 +645,7 @@ function ChatbotSettingsSidebar({
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="font-dm-mono w-full cursor-pointer rounded-[8px] bg-[#006BE5] py-3 text-center text-sm tracking-wider text-white uppercase shadow-[-4px_4px_0px_0px_#000000] transition-all hover:bg-[#0055B8] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-1px_2px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-50"
+            className="w-full cursor-pointer rounded-[8px] bg-[#006BE5] py-3 text-center text-sm tracking-wider text-white shadow-[-4px_4px_0px_0px_#000000] transition-all hover:bg-[#0055B8] active:translate-x-[-2px] active:translate-y-[2px] active:shadow-[-1px_2px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isSaving ? "Saving…" : "Save & Close"}
           </button>
@@ -679,7 +679,7 @@ function ToastNotification({
       ) : (
         <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
       )}
-      <p className="font-dm-mono flex-1 text-sm">{message}</p>
+      <p className="flex-1 text-sm">{message}</p>
       <button
         aria-label="Dismiss"
         onClick={onDismiss}

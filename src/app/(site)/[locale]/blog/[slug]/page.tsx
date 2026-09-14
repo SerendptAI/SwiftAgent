@@ -80,7 +80,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <div className="mx-auto max-w-3xl">
             <Link
               href="/blog"
-              className="font-dm-mono mb-10 flex w-fit items-center gap-2 text-sm tracking-[10%] text-black/60 uppercase transition-colors hover:text-black md:mb-14 md:text-base"
+              className="mb-10 flex w-fit items-center gap-2 text-sm tracking-[10%] text-black/60 uppercase transition-colors hover:text-black md:mb-14 md:text-base"
             >
               ← All posts
             </Link>
@@ -89,7 +89,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               {post.title}
             </h1>
 
-            <div className="font-dm-mono mb-10 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs tracking-[10%] text-black/60 uppercase md:mb-14 md:text-sm">
+            <div className="mb-10 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs tracking-[10%] text-black/60 uppercase md:mb-14 md:text-sm">
               <span className="text-black">{post.authorName}</span>
               {post.authorRole && <span>· {post.authorRole}</span>}
               <span>·</span>

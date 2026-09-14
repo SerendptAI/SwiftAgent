@@ -243,9 +243,9 @@ export function CompanyIdentityStep({
                       Saving...
                     </span>
                   ) : isUpdateMode ? (
-                    "UPDATE"
+                    "Update"
                   ) : (
-                    "FINISH"
+                    "Finish"
                   )}
                 </NextButton>
               )}

@@ -116,7 +116,7 @@ export function KnowledgeSourcesStep({
                 key={option.value}
                 onClick={() => setValue("companyType", option.value)}
                 className={cn(
-                  "relative z-10 flex min-h-10 items-center justify-center gap-2 rounded-xl px-3 text-xs font-bold uppercase transition-all duration-300 sm:justify-start sm:px-2 sm:text-sm",
+                  "relative z-10 flex min-h-10 items-center justify-center gap-2 rounded-xl px-3 text-xs font-bold transition-all duration-300 sm:justify-start sm:px-2 sm:text-sm",
                   companyType === option.value
                     ? "bg-white text-gray-900 shadow-[-6px_6px_0px_0px_#000000] ring-1 ring-black/5"
                     : "text-gray-400 hover:text-gray-600",
@@ -248,7 +248,7 @@ export function KnowledgeSourcesStep({
                   Saving...
                 </span>
               ) : isUpdateMode ? (
-                "UPDATE"
+                "Update"
               ) : (
                 "Next"
               )}
@@ -287,7 +287,7 @@ export function KnowledgeSourcesStep({
                     Saving...
                   </span>
                 ) : isUpdateMode ? (
-                  "UPDATE"
+                  "Update"
                 ) : (
                   "Next"
                 )}
@@ -366,7 +366,7 @@ function UploadSection({
       />
       <div
         className={cn(
-          "font-dm-mono flex flex-col gap-4 rounded-lg px-4 py-4 text-white shadow-[-4px_4px_0px_0px_#000000] transition-transform hover:scale-[1.01] sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-2 sm:shadow-[-6px_6px_0px_0px_#000000]",
+          "flex flex-col gap-4 rounded-lg px-4 py-4 text-white shadow-[-4px_4px_0px_0px_#000000] transition-transform hover:scale-[1.01] sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-2 sm:shadow-[-6px_6px_0px_0px_#000000]",
           color,
         )}
       >

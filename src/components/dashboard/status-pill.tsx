@@ -22,7 +22,7 @@ export function StatusPill({
   return (
     <span
       className={cn(
-        "font-dm-mono inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold tracking-wider whitespace-nowrap uppercase",
+        "inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold tracking-wider whitespace-nowrap",
         TONE_CLASS[tone],
         className,
       )}

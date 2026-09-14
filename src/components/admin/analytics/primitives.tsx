@@ -23,9 +23,7 @@ export function Panel({
     <section className={cn(CARD, "flex flex-col gap-3", className)}>
       <div className="flex items-start justify-between gap-4">
         <div className="flex flex-col gap-1">
-          <p className="font-dm-mono text-[12px] text-[#7e7e7e] uppercase">
-            {eyebrow}
-          </p>
+          <p className="text-[12px] text-[#7e7e7e] uppercase">{eyebrow}</p>
           <h2 className="font-greed text-[16px] text-[#1f1f1f]">{title}</h2>
         </div>
         {action}
@@ -46,7 +44,7 @@ export function KpiCard({ label, value, delta, fit }: Kpi & { fit?: boolean }) {
     >
       <p
         className={cn(
-          "font-dm-mono text-[12px] text-[#7e7e7e] uppercase",
+          "text-[12px] text-[#7e7e7e] uppercase",
           fit ? "whitespace-nowrap" : "truncate",
         )}
       >
@@ -55,7 +53,7 @@ export function KpiCard({ label, value, delta, fit }: Kpi & { fit?: boolean }) {
       <div className="flex items-baseline justify-between gap-3">
         <p
           className={cn(
-            "font-dm-mono text-[22px] font-medium text-[#1f1f1f]",
+            "text-[22px] font-medium text-[#1f1f1f]",
             fit ? "whitespace-nowrap" : "truncate",
           )}
         >
@@ -63,7 +61,7 @@ export function KpiCard({ label, value, delta, fit }: Kpi & { fit?: boolean }) {
         </p>
         <div className="flex shrink-0 items-center gap-1">
           <ArrowUpRight className="size-3 text-[#6433cc]/40" />
-          <span className="font-dm-mono text-[12px] font-medium text-[#6433cc]">
+          <span className="text-[12px] font-medium text-[#6433cc]">
             {delta}
           </span>
         </div>
@@ -99,13 +97,13 @@ export function BarList({
           <div className="flex items-center justify-between gap-4">
             <p
               className={cn(
-                "font-stolzl text-[14px] font-semibold text-[#1f1f1f]",
+                "text-[14px] font-semibold text-[#1f1f1f]",
                 labelClassName,
               )}
             >
               {item.label}
             </p>
-            <p className="font-dm-mono shrink-0 text-[13px] text-[#7e7e7e]">
+            <p className="shrink-0 text-[13px] text-[#7e7e7e]">
               {item.display}
             </p>
           </div>
@@ -132,7 +130,7 @@ export function InlineBarList({ items }: { items: BarDatum[] }) {
     <div className="flex flex-col gap-3">
       {items.map((item) => (
         <div key={item.label} className="flex items-center gap-3">
-          <p className="font-dm-mono w-14 shrink-0 text-[13px] text-[#1f1f1f]">
+          <p className="w-14 shrink-0 text-[13px] text-[#1f1f1f]">
             {item.label}
           </p>
           <div className="h-4 flex-1 overflow-hidden rounded-[4px] border-[1.5px] border-[rgba(31,31,31,0.1)] bg-[#f6f4ef]">
@@ -144,7 +142,7 @@ export function InlineBarList({ items }: { items: BarDatum[] }) {
               }}
             />
           </div>
-          <p className="font-dm-mono w-8 shrink-0 text-right text-[13px] text-[#7e7e7e]">
+          <p className="w-8 shrink-0 text-right text-[13px] text-[#7e7e7e]">
             {item.display}
           </p>
         </div>
@@ -211,12 +209,8 @@ export function Donut({
         })}
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
-        <p className="font-dm-mono text-[18px] font-medium text-[#1f1f1f]">
-          {centerValue}
-        </p>
-        <p className="font-dm-mono text-[10px] text-[#7e7e7e] uppercase">
-          {centerLabel}
-        </p>
+        <p className="text-[18px] font-medium text-[#1f1f1f]">{centerValue}</p>
+        <p className="text-[10px] text-[#7e7e7e] uppercase">{centerLabel}</p>
       </div>
     </div>
   );
@@ -241,15 +235,13 @@ export function DonutLegend({
           />
           {variant === "stacked" ? (
             <div className="flex flex-col gap-0.5">
-              <p className="font-stolzl text-[14px] font-semibold text-[#1f1f1f]">
+              <p className="text-[14px] font-semibold text-[#1f1f1f]">
                 {slice.label}
               </p>
-              <p className="font-dm-mono text-[12px] text-[#7e7e7e]">
-                {slice.display}
-              </p>
+              <p className="text-[12px] text-[#7e7e7e]">{slice.display}</p>
             </div>
           ) : (
-            <p className="font-stolzl text-[14px] text-[#1f1f1f]">
+            <p className="text-[14px] text-[#1f1f1f]">
               {slice.label}: {slice.display}
             </p>
           )}
@@ -274,7 +266,7 @@ export function ChartLegend({
           />
           <span
             className={cn(
-              "font-stolzl text-[13px]",
+              "text-[13px]",
               item.muted ? "text-[#7e7e7e]" : "text-[#1f1f1f]",
             )}
           >

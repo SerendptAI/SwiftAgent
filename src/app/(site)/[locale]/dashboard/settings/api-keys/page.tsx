@@ -62,10 +62,10 @@ export default function ApiKeysPage() {
 
       <div className="flex items-center gap-3 rounded-xl border border-gray-100 px-4 py-4 sm:px-6">
         <div className="min-w-0 flex-1">
-          <p className="font-dm-mono mb-1.5 text-xs font-semibold tracking-[0.15em] text-gray-500 uppercase">
+          <p className="mb-1.5 text-xs font-semibold tracking-[2%] text-gray-500">
             Company ID
           </p>
-          <code className="font-stolzl block truncate text-sm text-gray-800">
+          <code className="block truncate text-sm text-gray-800">
             {companyId ?? "—"}
           </code>
         </div>
@@ -74,10 +74,10 @@ export default function ApiKeysPage() {
 
       <div className="space-y-4">
         <div>
-          <h3 className="font-stolzl text-base font-bold text-gray-900 sm:text-lg">
+          <h3 className="text-base font-bold text-gray-900 sm:text-lg">
             Widget API Keys
           </h3>
-          <p className="font-dm-mono mt-1 text-xs text-gray-500">
+          <p className="mt-1 text-xs text-gray-500">
             Generate a key and paste it into your embed snippet&apos;s{" "}
             <code className="rounded bg-gray-100 px-1 py-0.5 text-gray-700">
               data-api-key
@@ -90,12 +90,12 @@ export default function ApiKeysPage() {
           <div className="rounded-xl border border-[#00B37E]/30 bg-[#00B37E]/5 px-4 py-4 sm:px-6">
             <div className="mb-3 flex items-start gap-2">
               <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[#00875c]" />
-              <p className="font-dm-mono text-xs leading-relaxed text-[#00684a]">
+              <p className="text-xs leading-relaxed text-[#00684a]">
                 Copy this key now — you won&apos;t be able to see it again.
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <code className="font-stolzl flex-1 overflow-x-auto rounded-lg bg-white px-3 py-2 text-xs break-all text-gray-800">
+              <code className="flex-1 overflow-x-auto rounded-lg bg-white px-3 py-2 text-xs break-all text-gray-800">
                 {revealKey}
               </code>
               <button
@@ -114,7 +114,7 @@ export default function ApiKeysPage() {
             <button
               type="button"
               onClick={() => setRevealKey(null)}
-              className="font-dm-mono mt-3 text-xs text-gray-500 underline hover:text-gray-700"
+              className="mt-3 text-xs text-gray-500 underline hover:text-gray-700"
             >
               I&apos;ve saved it — dismiss
             </button>
@@ -125,7 +125,7 @@ export default function ApiKeysPage() {
           <div className="min-w-0 flex-1">
             <label
               htmlFor="api-key-label"
-              className="font-dm-mono mb-1.5 block text-xs font-semibold tracking-[0.15em] text-gray-500 uppercase"
+              className="mb-1.5 block text-xs font-semibold tracking-[2%] text-gray-500"
             >
               Key Label
             </label>
@@ -142,7 +142,7 @@ export default function ApiKeysPage() {
             type="button"
             onClick={handleGenerate}
             disabled={createKey.isPending || !companyId}
-            className="flex h-11 shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#00B37E] px-6 text-sm font-bold tracking-wide text-white uppercase shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#00966a] disabled:cursor-not-allowed disabled:opacity-50 sm:h-10"
+            className="flex h-11 shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#00B37E] px-6 text-sm font-bold tracking-[2%] text-white shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#00966a] disabled:cursor-not-allowed disabled:opacity-50 sm:h-10"
           >
             {createKey.isPending ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -152,11 +152,11 @@ export default function ApiKeysPage() {
           </button>
         </div>
 
-        {error && <p className="font-dm-mono text-xs text-red-600">{error}</p>}
+        {error && <p className="text-xs text-red-600">{error}</p>}
       </div>
 
       <div className="space-y-4">
-        <h3 className="font-stolzl text-base font-bold text-gray-900 sm:text-lg">
+        <h3 className="text-base font-bold text-gray-900 sm:text-lg">
           Your Keys
         </h3>
         <div className="rounded-xl border border-gray-100">
@@ -165,7 +165,7 @@ export default function ApiKeysPage() {
               <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
             </div>
           ) : !keys || keys.length === 0 ? (
-            <p className="font-stolzl px-6 py-6 text-center text-sm text-gray-400">
+            <p className="px-6 py-6 text-center text-sm text-gray-400">
               No keys yet. Generate one to authenticate your widget.
             </p>
           ) : (
@@ -178,10 +178,10 @@ export default function ApiKeysPage() {
                   }`}
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="font-stolzl truncate text-sm font-semibold text-gray-900">
+                    <p className="truncate text-sm font-semibold text-gray-900">
                       {key.label}
                     </p>
-                    <p className="font-stolzl truncate text-xs text-gray-400">
+                    <p className="truncate text-xs text-gray-400">
                       {key.key_prefix}··· · created{" "}
                       {new Date(key.created_at).toLocaleDateString()}
                       {key.last_used_at
@@ -190,7 +190,7 @@ export default function ApiKeysPage() {
                     </p>
                   </div>
                   <span
-                    className={`font-dm-mono shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase ${
+                    className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-semibold tracking-[2%] ${
                       key.active
                         ? "bg-green-50 text-green-700"
                         : "bg-gray-100 text-gray-500"

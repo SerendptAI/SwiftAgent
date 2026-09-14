@@ -80,10 +80,7 @@ export function LocaleSwitcher({ className, onSwitch }: LocaleSwitcherProps) {
   }
 
   return (
-    <div
-      ref={containerRef}
-      className={cn("font-jetbrains relative", className)}
-    >
+    <div ref={containerRef} className={cn("relative", className)}>
       <button
         onClick={() => setIsOpen((prev) => !prev)}
         aria-label={t("changeLanguage")}

@@ -50,11 +50,11 @@ export function ChatView({ ticketId, className, onClose }: ChatViewProps) {
   if (!chat && !isFetching) {
     return (
       <MessagesEmptyState className="flex min-h-[420px] w-full items-center justify-center rounded-[20px] bg-white px-4 pb-20 shadow-sm lg:h-full lg:rounded-3xl lg:pb-0">
-        NOTHING HERE FOR NOW,
+        Nothing here for now,
         <br />
-        WHEN YOU GET MESSAGES THEY’LL
+        when you get messages they’ll
         <br />
-        APPEAR HERE
+        appear here
       </MessagesEmptyState>
     );
   }
@@ -78,7 +78,7 @@ export function ChatView({ ticketId, className, onClose }: ChatViewProps) {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={avatarSrc} alt="Chat avatar" width={36} height={31} />
           </div>
-          <span className="font-dm-mono min-w-0 truncate text-sm font-bold tracking-wider text-gray-900 uppercase">
+          <span className="min-w-0 truncate text-sm font-bold tracking-wider text-gray-900 uppercase">
             {chat?.session_id
               ? chat.session_id.slice(0, 13).toUpperCase()
               : "Conversation"}
@@ -119,7 +119,7 @@ export function ChatView({ ticketId, className, onClose }: ChatViewProps) {
             return (
               <div key={`${chat?.id}-${i}`} className="flex justify-center">
                 <div className="max-w-[85%] rounded-2xl border border-dashed border-gray-200 bg-gray-50 px-4 py-3 text-center text-xs leading-relaxed [overflow-wrap:anywhere] text-gray-500">
-                  <div className="font-dm-mono mb-1 text-[10px] font-semibold tracking-wider text-gray-400 uppercase">
+                  <div className="mb-1 text-[10px] font-semibold tracking-wider text-gray-400">
                     System note
                   </div>
                   <MessageMarkdown text={message.content} compact />
@@ -166,7 +166,7 @@ export function ChatView({ ticketId, className, onClose }: ChatViewProps) {
       <div className="border-t border-gray-100 px-4 py-3">
         <div className="flex items-center justify-center gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-4 py-2.5">
           <Check className="h-4 w-4 text-green-500" />
-          <span className="font-dm-mono text-xs font-semibold tracking-wider text-gray-500 uppercase">
+          <span className="text-xs font-semibold tracking-wider text-gray-500">
             Resolved
           </span>
         </div>

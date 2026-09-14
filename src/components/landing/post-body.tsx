@@ -8,7 +8,7 @@ import { PortableText, type PortableTextComponents } from "next-sanity";
 const components: PortableTextComponents = {
   block: {
     normal: ({ children }) => (
-      <p className="font-stolzl mb-6 text-base leading-[1.8] tracking-[2%] text-black/80 md:text-lg">
+      <p className="mb-6 text-base leading-[1.8] tracking-[2%] text-black/80 md:text-lg">
         {children}
       </p>
     ),
@@ -18,24 +18,24 @@ const components: PortableTextComponents = {
       </h2>
     ),
     h3: ({ children }) => (
-      <h3 className="font-dm-mono mt-10 mb-4 text-base font-medium tracking-[10%] text-black uppercase md:text-lg">
+      <h3 className="mt-10 mb-4 text-base font-medium tracking-[10%] text-black uppercase md:text-lg">
         {children}
       </h3>
     ),
     blockquote: ({ children }) => (
-      <blockquote className="font-stolzl my-8 border-l-2 border-black py-2 pl-6 text-lg leading-[1.7] text-black italic md:text-xl">
+      <blockquote className="my-8 border-l-2 border-black py-2 pl-6 text-lg leading-[1.7] text-black italic md:text-xl">
         {children}
       </blockquote>
     ),
   },
   list: {
     bullet: ({ children }) => (
-      <ul className="font-stolzl mb-6 list-disc space-y-2 pl-6 text-base leading-[1.8] text-black/80 md:text-lg">
+      <ul className="mb-6 list-disc space-y-2 pl-6 text-base leading-[1.8] text-black/80 md:text-lg">
         {children}
       </ul>
     ),
     number: ({ children }) => (
-      <ol className="font-stolzl mb-6 list-decimal space-y-2 pl-6 text-base leading-[1.8] text-black/80 md:text-lg">
+      <ol className="mb-6 list-decimal space-y-2 pl-6 text-base leading-[1.8] text-black/80 md:text-lg">
         {children}
       </ol>
     ),
@@ -45,7 +45,7 @@ const components: PortableTextComponents = {
       <strong className="font-medium text-black">{children}</strong>
     ),
     code: ({ children }) => (
-      <code className="font-dm-mono rounded bg-[#F3F4F6] px-1.5 py-0.5 text-[0.9em]">
+      <code className="rounded bg-[#F3F4F6] px-1.5 py-0.5 text-[0.9em]">
         {children}
       </code>
     ),

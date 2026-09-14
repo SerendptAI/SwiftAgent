@@ -90,7 +90,7 @@ export function VoiceConversationStep({
 
   return (
     <div className="mx-auto w-full max-w-4xl pb-4 text-center">
-      <h2 className="font-stolzl mb-8 text-sm font-bold tracking-wide text-gray-900 uppercase sm:mb-12">
+      <h2 className="mb-8 text-sm font-bold tracking-wide text-gray-900 sm:mb-12">
         How should your agent sound to customers
       </h2>
 
@@ -143,7 +143,7 @@ export function VoiceConversationStep({
                 Saving...
               </span>
             ) : isUpdateMode ? (
-              "UPDATE"
+              "Update"
             ) : (
               "Finish"
             )}
@@ -198,7 +198,7 @@ function VoiceCard({
         />
       </div>
 
-      <div className="font-dm-mono mb-4 flex justify-center sm:mb-6">
+      <div className="mb-4 flex justify-center sm:mb-6">
         <div
           className={cn(
             "rounded-xl px-4 py-1.5 text-xs font-semibold shadow-[-4px_4px_0px_0px_#000000] sm:text-sm",
@@ -210,10 +210,8 @@ function VoiceCard({
       </div>
 
       <div className="mb-6 flex-1 text-left sm:mb-8">
-        <p className="font-stolzl mb-1 text-xs font-bold text-gray-900 uppercase">
-          Sounds like
-        </p>
-        <div className="font-dm-mono border-l-4 border-gray-400 pl-3">
+        <p className="mb-1 text-xs font-bold text-gray-900">Sounds like</p>
+        <div className="border-l-4 border-gray-400 pl-3">
           <p className="mb-2 text-xs text-gray-600 italic">
             &quot;{sampleText}&quot;
           </p>
@@ -223,7 +221,7 @@ function VoiceCard({
 
       <button
         className={cn(
-          "font-dm-mono mt-auto w-full rounded-xl py-3 text-sm font-bold text-gray-900 uppercase transition-colors",
+          "mt-auto w-full rounded-xl py-3 text-sm font-bold text-gray-900 transition-colors",
           selected
             ? "bg-[#F25430] text-white shadow-[-4px_4px_0px_0px_#000000]"
             : "bg-white text-gray-900 shadow-[-4px_4px_0px_0px_#000000] hover:bg-gray-50",
