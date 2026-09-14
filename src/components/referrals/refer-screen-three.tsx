@@ -48,7 +48,7 @@ const RECAPTCHA_SCRIPT_ID = "google-recaptcha-script";
 const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
 const inputClass =
-  "font-dm-mono h-9.5 w-full rounded-md bg-[#EDEDED] px-3 text-sm leading-none text-black outline-none placeholder:text-black/45";
+  "h-10 w-full rounded-md bg-[#EDEDED] px-3 text-sm leading-none text-black outline-none placeholder:text-black/45";
 
 const initialValues: FormValues = {
   founderName: "",
@@ -90,7 +90,7 @@ function normalizeNumericValue(name: FieldName, value: string) {
 
   if (name === "accountNumber") return value.replace(/\D/g, "").slice(0, 10);
 
-  return value.toUpperCase();
+  return value;
 }
 
 function getPhoneDigitGroups(value: string) {
@@ -181,7 +181,7 @@ function Field({
 }) {
   return (
     <label className="flex flex-col gap-2.5 text-left">
-      <span className="font-stolzl text-base leading-normal font-normal text-black">
+      <span className="text-base leading-normal font-normal text-black">
         {label}
         {required && <span className="text-[#F25430]">*</span>}
       </span>
@@ -190,16 +190,14 @@ function Field({
         inputMode={inputMode}
         value={value}
         placeholder={placeholder}
-        className={`${inputClass} uppercase ${error ? "ring-1 ring-[#F25430]" : ""}`}
+        className={`${inputClass} ${error ? "ring-1 ring-[#F25430]" : ""}`}
         onBlur={() => onBlur(name)}
         onChange={(event) =>
           onChange(name, normalizeNumericValue(name, event.target.value))
         }
       />
       {error && (
-        <span className="font-dm-mono text-xs leading-normal text-[#F25430]">
-          {error}
-        </span>
+        <span className="text-xs leading-normal text-[#F25430]">{error}</span>
       )}
     </label>
   );
@@ -226,13 +224,13 @@ function SelectField({
 }) {
   return (
     <label className="flex flex-col gap-2.5 text-left">
-      <span className="font-stolzl text-base leading-normal font-normal text-black">
+      <span className="text-base leading-normal font-normal text-black">
         {label}
       </span>
       <span className="relative block">
         <select
           value={value}
-          className={`${inputClass} appearance-none pr-10 uppercase ${
+          className={`${inputClass} appearance-none pr-10 ${
             value ? "" : "text-black/45"
           } ${error ? "ring-1 ring-[#F25430]" : ""}`}
           onBlur={() => onBlur(name)}
@@ -257,9 +255,7 @@ function SelectField({
         />
       </span>
       {error && (
-        <span className="font-dm-mono text-xs leading-normal text-[#F25430]">
-          {error}
-        </span>
+        <span className="text-xs leading-normal text-[#F25430]">{error}</span>
       )}
     </label>
   );
@@ -321,7 +317,7 @@ function RecaptchaField({
     <div className="mt-18 flex flex-col items-center gap-2">
       <div ref={containerRef} />
       {(error || scriptError) && (
-        <span className="font-dm-mono text-xs leading-normal text-[#F25430]">
+        <span className="text-xs leading-normal text-[#F25430]">
           {error || scriptError}
         </span>
       )}
@@ -405,11 +401,11 @@ export function ReferScreenThree({ onBack, onNext }: ReferScreenThreeProps) {
       />
 
       <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1180px] flex-col items-center px-4 pt-[128px] pb-16 text-center sm:px-5 md:pt-[160px] md:pb-24">
-        <h1 className="font-greed-narrow w-full max-w-[700px] text-center text-[42px] leading-[1.08] font-medium tracking-[-0.02em] text-black uppercase sm:text-[52px] md:text-[60px] md:leading-[1.34]">
+        <h1 className="font-press-start w-full max-w-4xl text-center text-2xl leading-relaxed tracking-[-2%] uppercase sm:text-3xl md:text-4xl lg:text-[40px]">
           {t("heading")}
         </h1>
 
-        <p className="font-dm-mono mt-[30px] max-w-[790px] text-center text-base leading-[1.45] tracking-[0.08em] text-black/60 uppercase sm:text-lg sm:leading-[1.39] sm:tracking-widest">
+        <p className="mt-8 max-w-lg text-center text-base leading-normal tracking-[2%] text-black/60 sm:text-lg">
           {t("subtitle")}
         </p>
 
@@ -417,14 +413,14 @@ export function ReferScreenThree({ onBack, onNext }: ReferScreenThreeProps) {
           <div className="mx-auto w-full max-w-[720px]">
             <div className="flex flex-wrap gap-5 text-left">
               <div className="w-fit">
-                <p className="font-dm-mono text-sm leading-[22px] font-medium text-black uppercase">
+                <p className="text-sm leading-[22px] font-medium text-black capitalize">
                   {t("founderInfo")}
                 </p>
                 <div className="-mx-2 mt-3 h-1 rounded-t-[5px] bg-[#7132D7]" />
               </div>
               <div className="w-fit">
                 <p
-                  className={`font-dm-mono text-sm leading-[22px] font-medium uppercase ${
+                  className={`text-sm leading-[22px] font-medium capitalize ${
                     formScreen === "you" ? "text-black" : "text-black/25"
                   }`}
                 >
@@ -561,7 +557,7 @@ export function ReferScreenThree({ onBack, onNext }: ReferScreenThreeProps) {
             <button
               type="button"
               onClick={handlePrimaryAction}
-              className="font-dm-mono mx-auto mt-18 flex h-11 w-full max-w-[440px] shrink-0 cursor-pointer items-center justify-center rounded-md bg-[#F2B035] text-base leading-none font-medium text-black uppercase shadow-[-3px_4px_0_#000]"
+              className="mx-auto mt-18 flex h-11 w-full max-w-100 shrink-0 cursor-pointer items-center justify-center rounded-md bg-[#F2B035] text-base leading-none font-medium shadow-[-4px_4px_0_#000]"
             >
               {formScreen === "founder" ? t("next") : t("submit")}
             </button>
@@ -569,7 +565,7 @@ export function ReferScreenThree({ onBack, onNext }: ReferScreenThreeProps) {
             <button
               type="button"
               onClick={handleBack}
-              className="font-dm-mono mt-8 cursor-pointer text-sm tracking-[0.08em] text-black/50 uppercase underline underline-offset-4 md:text-base"
+              className="mt-8 cursor-pointer text-sm tracking-[2%] text-black/50 underline underline-offset-4 md:text-base"
             >
               {t("back")}
             </button>

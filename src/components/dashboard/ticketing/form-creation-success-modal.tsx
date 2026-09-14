@@ -56,7 +56,7 @@ export function FormCreationSuccessModal({
       >
         <h2
           id="form-creation-success-title"
-          className="font-greed-narrow text-center text-[34px] leading-none font-medium tracking-[-0.02em] text-black uppercase"
+          className="font-greed text-center text-[34px] leading-none font-medium tracking-[-0.02em] text-black"
         >
           Your Form Is Live
         </h2>
@@ -72,7 +72,7 @@ export function FormCreationSuccessModal({
             height={23}
             className="h-[23px] w-[23px] shrink-0"
           />
-          <span className="font-dm-mono min-w-0 truncate text-base font-normal tracking-[0.18em] text-black uppercase">
+          <span className="min-w-0 truncate text-base font-normal tracking-[0.18em] text-black">
             {formName}
           </span>
           <span className="h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-black/30" />
@@ -91,7 +91,7 @@ export function FormCreationSuccessModal({
         <button
           type="button"
           onClick={onClose}
-          className="font-dm-mono h-10 w-full cursor-pointer rounded-lg bg-[#006BE5] text-base font-normal tracking-[0.08em] text-white uppercase shadow-[-3px_5px_0px_0px_#000000] transition-colors hover:bg-[#005fca]"
+          className="h-10 w-full cursor-pointer rounded-lg bg-[#006BE5] text-base font-normal tracking-[0.08em] text-white shadow-[-3px_5px_0px_0px_#000000] transition-colors hover:bg-[#005fca]"
         >
           Finish
         </button>

@@ -122,11 +122,11 @@ export function CheckoutModal({
         <div className="min-w-0">
           <h2
             id="checkout-modal-title"
-            className="font-greed-narrow text-2xl leading-tight font-medium tracking-[-0.02em] text-black uppercase sm:text-[30px]"
+            className="font-greed text-2xl leading-tight font-medium tracking-[-0.02em] text-black sm:text-[30px]"
           >
             Subscribe to {plan.name}
           </h2>
-          <p className="font-dm-mono mt-2 flex items-baseline gap-2 text-sm tracking-[0.1em] text-black/60 uppercase">
+          <p className="mt-2 flex items-baseline gap-2 text-sm tracking-[0.1em] text-black/60">
             {plan.priceOriginal ? (
               <span className="text-black/35 line-through">
                 {plan.priceOriginal}
@@ -153,7 +153,7 @@ export function CheckoutModal({
             type="button"
             onClick={onClose}
             disabled={isSubmitting}
-            className="font-dm-mono h-11 rounded-lg border border-gray-200 px-6 text-sm tracking-[0.08em] text-gray-700 uppercase transition-colors hover:bg-gray-50 disabled:opacity-50 sm:h-10"
+            className="h-11 rounded-lg border border-gray-200 px-6 text-sm tracking-[0.08em] text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50 sm:h-10"
           >
             Cancel
           </button>
@@ -161,7 +161,7 @@ export function CheckoutModal({
             type="button"
             onClick={handleConfirm}
             disabled={isSubmitting}
-            className="font-dm-mono inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#006BE5] px-6 text-sm tracking-[0.08em] text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#005fca] disabled:opacity-60 sm:h-10"
+            className="inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#006BE5] px-6 text-sm tracking-[0.08em] text-white shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#005fca] disabled:opacity-60 sm:h-10"
           >
             {isSubmitting ? (
               <>

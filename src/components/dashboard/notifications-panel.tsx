@@ -73,7 +73,7 @@ export function NotificationsPanel({
     >
       <div className="flex flex-col gap-4 overflow-y-auto px-4 pt-4 pb-4">
         <div className="flex items-center justify-between gap-2">
-          <h2 className="font-greed-narrow text-[24px] leading-none font-medium text-black">
+          <h2 className="font-greed text-[24px] leading-none font-medium text-black">
             Notifications
           </h2>
           {unreadCount > 0 && (
@@ -81,7 +81,7 @@ export function NotificationsPanel({
               type="button"
               onClick={() => markAllRead.mutate()}
               disabled={markAllRead.isPending}
-              className="font-dm-mono text-[11px] font-medium text-black/60 uppercase underline-offset-2 transition-colors hover:text-black hover:underline disabled:opacity-40"
+              className="text-[11px] font-medium text-black/60 underline-offset-2 transition-colors hover:text-black hover:underline disabled:opacity-40"
             >
               Mark all read
             </button>
@@ -90,7 +90,7 @@ export function NotificationsPanel({
 
         <button
           type="button"
-          className="font-dm-mono flex h-[48px] w-full shrink-0 items-center justify-center rounded-[16px] border border-black/40 bg-[#F2B035] px-3 text-[13px] font-medium text-black uppercase shadow-[-3px_4px_0px_0px_#000000] transition-transform hover:translate-y-[1px] hover:shadow-[-2px_3px_0px_0px_#000000]"
+          className="flex h-[48px] w-full shrink-0 items-center justify-center rounded-[16px] border border-black/40 bg-[#F2B035] px-3 text-[13px] font-medium text-black shadow-[-4px_4px_0px_0px_#000000] transition-transform hover:translate-y-[1px] hover:shadow-[-2px_3px_0px_0px_#000000]"
         >
           Need anything? Reach out to us
         </button>
@@ -128,9 +128,7 @@ export function NotificationsPanel({
 
 function PanelMessage({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-dm-mono py-6 text-center text-[12px] text-black/40 uppercase">
-      {children}
-    </p>
+    <p className="py-6 text-center text-[12px] text-black/40">{children}</p>
   );
 }
 
@@ -172,7 +170,7 @@ function NotificationRow({
         <span className="flex min-w-0 flex-1 flex-col gap-0.5">
           <span
             className={cn(
-              "font-dm-mono line-clamp-1 text-[12px] leading-tight font-medium text-black uppercase",
+              "line-clamp-1 text-[12px] leading-tight font-medium text-black",
               item.read && "opacity-40",
             )}
           >
@@ -181,7 +179,7 @@ function NotificationRow({
           {item.body && (
             <span
               className={cn(
-                "font-dm-mono line-clamp-2 text-[11px] leading-tight text-black/70",
+                "line-clamp-2 text-[11px] leading-tight text-black/70",
                 item.read && "opacity-40",
               )}
             >
@@ -189,9 +187,7 @@ function NotificationRow({
             </span>
           )}
           {timestamp && (
-            <span className="font-dm-mono text-[10px] text-black/30 uppercase">
-              {timestamp}
-            </span>
+            <span className="text-[10px] text-black/30">{timestamp}</span>
           )}
         </span>
       </button>

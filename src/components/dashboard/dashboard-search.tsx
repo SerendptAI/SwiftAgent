@@ -255,7 +255,7 @@ export function DashboardSearch() {
   return (
     <div ref={containerRef} className="relative w-full">
       <div
-        className="font-dm-mono relative w-full"
+        className="relative w-full"
         style={isOpen && query.trim() ? { zIndex: 9999 } : undefined}
       >
         <input
@@ -270,7 +270,7 @@ export function DashboardSearch() {
           onFocus={() => {
             if (query.trim()) setIsOpen(true);
           }}
-          placeholder="SEARCH YOUR DASHBOARD"
+          placeholder="Search your dashboard"
           className="focus:ring-primary/20 h-11 w-full rounded-full bg-[#EDEDED] px-4 pr-10 text-[16px] outline-none placeholder:text-[13px] focus:ring-2 sm:placeholder:text-[16px] md:h-10"
         />
         {isOpen && query.trim() ? (
@@ -346,30 +346,30 @@ export function DashboardSearch() {
                       className="search-section my-2 rounded-md border-b border-gray-100 bg-[#F3F3F3] p-4 first:pt-0 last:border-b-0 last:pb-0"
                     >
                       <div className="mb-3 flex flex-wrap items-baseline gap-2 sm:gap-3">
-                        <h3 className="font-greed-narrow text-xl font-bold text-black sm:text-2xl">
+                        <h3 className="font-greed text-xl font-bold text-black sm:text-2xl">
                           {section.name}
                         </h3>
-                        <span className="font-dm-mono max-w-full truncate text-xs font-semibold tracking-wider text-black uppercase">
+                        <span className="max-w-full truncate text-xs font-semibold tracking-wider text-black">
                           &ldquo;{query.trim()}&rdquo;
                         </span>
-                        <span className="font-dm-mono text-xs tracking-wider text-gray-400 uppercase">
-                          {section.results.length} RESULT
-                          {section.results.length !== 1 ? "S" : ""}
+                        <span className="text-xs tracking-wider text-gray-400">
+                          {section.results.length} result
+                          {section.results.length !== 1 ? "s" : ""}
                         </span>
                         {section.results.length > 0 && !isFocused && (
                           <button
                             onClick={() => setFocusedSection(section.name)}
-                            className="ml-auto cursor-pointer rounded-full border border-gray-200 px-3 py-0.5 text-xs font-semibold tracking-wider text-gray-500 uppercase hover:bg-gray-50"
+                            className="ml-auto cursor-pointer rounded-full border border-gray-200 px-3 py-0.5 text-xs font-semibold tracking-wider text-gray-500 hover:bg-gray-50"
                           >
-                            SEE ALL
+                            See all
                           </button>
                         )}
                         {isFocused && (
                           <button
                             onClick={() => setFocusedSection(null)}
-                            className="ml-auto cursor-pointer rounded-full border border-gray-200 px-3 py-0.5 text-xs font-semibold tracking-wider text-gray-500 uppercase hover:bg-gray-50"
+                            className="ml-auto cursor-pointer rounded-full border border-gray-200 px-3 py-0.5 text-xs font-semibold tracking-wider text-gray-500 hover:bg-gray-50"
                           >
-                            BACK
+                            Back
                           </button>
                         )}
                       </div>
@@ -377,8 +377,8 @@ export function DashboardSearch() {
                       {section.results.length === 0 ? (
                         <div className="flex items-center gap-3 py-2 text-sm text-gray-400">
                           <Icons.notfoundsearch className="h-8 w-8 shrink-0" />
-                          <span className="font-dm-mono text-xs tracking-wider uppercase">
-                            NO MATCHING INFO FOUND
+                          <span className="text-xs tracking-wider">
+                            No matching info found
                           </span>
                         </div>
                       ) : (
@@ -406,7 +406,7 @@ export function DashboardSearch() {
                                   />
                                 )}
                               <span
-                                className="font-dm-mono text-sm text-gray-600"
+                                className="text-sm text-gray-600"
                                 dangerouslySetInnerHTML={{
                                   __html: result.highlight,
                                 }}

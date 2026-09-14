@@ -58,10 +58,10 @@ export function ProtocolSection() {
     >
       <div className="mx-auto max-w-360">
         <div ref={headerRef} className="flex flex-col gap-3">
-          <p className="font-dm-mono text-sm tracking-[0.15em] text-[#111827] uppercase">
+          <p className="font-press-start text-base leading-[1.2] font-medium tracking-[10%] uppercase md:text-lg">
             {t("eyebrow")}
           </p>
-          <h2 className="font-greed-narrow text-3xl leading-[1.1] font-medium tracking-[-0.02em] text-[#111827] uppercase md:text-4xl lg:text-5xl">
+          <h2 className="font-greed text-3xl leading-tight font-medium tracking-[-2%] text-[#111827] md:text-4xl lg:text-5xl">
             {t("heading")}
           </h2>
         </div>
@@ -73,16 +73,16 @@ export function ProtocolSection() {
           {STEPS.map((step) => (
             <div
               key={step.id}
-              className="flex flex-col gap-6 rounded-[8px] border border-[#111827] bg-white p-8 shadow-[-3px_4px_0px_0px_#111827]"
+              className="flex flex-col gap-6 rounded-[8px] border border-[#111827] bg-white p-8 shadow-[-4px_4px_0px_0px_#111827]"
             >
-              <span className="font-dm-mono text-[32px] text-[#f25430]">
+              <span className="text-[32px] leading-tight font-medium text-[#f25430]">
                 {step.number}
               </span>
               <div className="flex flex-col gap-2">
-                <h3 className="font-greed-narrow text-2xl font-medium text-[#111827] uppercase">
+                <h3 className="font-greed text-2xl leading-snug font-medium tracking-[-2%] text-[#111827]">
                   {t(`steps.${step.id}.title`)}
                 </h3>
-                <p className="font-stolzl text-[15px] leading-[1.5] text-[#374151]">
+                <p className="text-base leading-normal text-[#374151]">
                   {t(`steps.${step.id}.body`)}
                 </p>
               </div>

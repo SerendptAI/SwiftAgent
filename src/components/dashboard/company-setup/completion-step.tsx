@@ -19,13 +19,13 @@ function IntroModal({ onStart }: { onStart: () => void }) {
     <div className="fixed inset-0 z-50 bg-black/60">
       <div className="absolute inset-y-0 right-[350px] left-0 flex items-center justify-center p-6 lg:left-[105px]">
         <div className="flex w-full max-w-2xl flex-col items-center bg-white px-14 py-16 text-center shadow-xl">
-          <h2 className="font-greed-narrow mb-5.5 text-4xl font-bold text-black">
+          <h2 className="font-greed mb-5.5 text-4xl font-bold text-black">
             We&apos;d love to get to know your
             <br />
             organization better.
           </h2>
 
-          <p className="font-dm-mono text-muted-foreground mb-8.5 text-sm leading-[1.96] tracking-[10%] uppercase">
+          <p className="text-muted-foreground mb-8.5 text-sm leading-[1.96] tracking-[10%]">
             Our AI agents have a few questions for you so we
             <br />
             can understand your organization better
@@ -41,7 +41,7 @@ function IntroModal({ onStart }: { onStart: () => void }) {
             />
           </div>
 
-          <p className="font-dm-mono text-muted-foreground mb-9.5 flex items-center gap-1.5 text-sm leading-[1.96] tracking-[10%] uppercase">
+          <p className="text-muted-foreground mb-9.5 flex items-center gap-1.5 text-sm leading-[1.96] tracking-[10%]">
             <Icons.TimeFlow className="size-5" />
             Usually takes 5 minutes
           </p>

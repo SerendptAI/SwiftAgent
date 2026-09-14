@@ -34,30 +34,30 @@ export function ReferScreenFour() {
       />
 
       <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-[1180px] flex-col items-center px-4 pt-[128px] pb-16 text-center sm:px-5 md:pt-[160px] md:pb-24">
-        <div className="mt-[42px] w-full max-w-[842px] rounded-[28px] border border-black/25 bg-white px-4 pt-18 pb-12 text-center sm:mt-[50px] sm:px-6 md:mt-[230px] md:rounded-[49px] md:px-8 md:pt-24 md:pb-20">
-          <h1 className="font-greed-narrow w-full text-center text-[42px] leading-[1.08] font-medium tracking-[-0.02em] text-black uppercase sm:text-[52px] md:text-[60px] md:leading-[1.34]">
+        <div className="mt-[42px] flex w-full max-w-[842px] flex-col items-center rounded-[28px] border border-black/25 bg-white px-4 pt-18 pb-12 text-center sm:mt-[50px] sm:px-6 md:mt-[230px] md:rounded-[49px] md:px-8 md:pt-24 md:pb-20">
+          <h1 className="font-press-start w-full max-w-4xl text-center text-2xl leading-relaxed tracking-[-2%] uppercase sm:text-3xl md:text-4xl lg:text-[40px]">
             {t("heading")}
           </h1>
 
-          <p className="font-dm-mono mx-auto mt-[30px] max-w-[663px] text-center text-base leading-[1.45] tracking-[0.08em] text-black/60 uppercase sm:text-lg sm:leading-[1.39] sm:tracking-widest">
+          <p className="mt-8 max-w-xl text-center text-base leading-normal tracking-[2%] text-black/60 sm:text-lg">
             {t("body")}
           </p>
 
           <div
             className={cn(
-              "mx-auto mt-12 flex w-full max-w-[442px] items-center gap-4 overflow-hidden rounded-[10px] py-2.5 pr-3 pl-3 text-white sm:items-center sm:justify-between sm:gap-8 md:pr-14",
+              "mx-auto mt-12 flex w-full max-w-100 items-center gap-4 overflow-hidden rounded-[10px] py-2.5 pr-3 pl-3 text-white sm:items-center sm:justify-between sm:gap-8 md:pr-14",
               amountColor,
             )}
           >
             <span
               className={cn(
-                "font-dm-mono shrink-0 rounded-[13px] px-3 py-2.5 text-xs leading-none font-medium tracking-[0.12em] uppercase sm:text-sm lg:text-base",
+                "shrink-0 rounded-[13px] px-3 py-2.5 text-xs leading-none font-medium tracking-[2%] sm:text-sm lg:text-base",
                 expectedAmount === "5,000" ? "bg-[#D49A2D]" : "bg-[#804AF3]",
               )}
             >
               {t("expectedLabel")}
             </span>
-            <span className="font-dm-mono shrink-0 text-sm leading-none tracking-[0.12em] uppercase sm:text-base lg:text-lg">
+            <span className="shrink-0 text-sm leading-none tracking-[2%] sm:text-base lg:text-lg">
               {expectedAmount} NGN
             </span>
           </div>
@@ -71,7 +71,7 @@ export function ReferScreenFour() {
             className="mx-auto mt-16 w-full max-w-[420px] select-none md:max-w-[510px]"
           />
 
-          <p className="font-dm-mono mx-auto mt-16 max-w-[540px] text-center text-sm leading-[1.45] tracking-[0.08em] text-black/60 uppercase sm:text-base sm:leading-[1.39] sm:tracking-widest">
+          <p className="mx-auto mt-16 max-w-md text-center text-sm leading-snug tracking-[2%] text-black/60 sm:text-base">
             {t("signoff")}
           </p>
         </div>

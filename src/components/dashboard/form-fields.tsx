@@ -3,7 +3,7 @@ import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 
 const CONTROL_CLASS =
-  "font-stolzl w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#006BE5] disabled:cursor-not-allowed disabled:bg-gray-50";
+  "w-full rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#006BE5] disabled:cursor-not-allowed disabled:bg-gray-50";
 
 export function Field({
   id,
@@ -22,15 +22,15 @@ export function Field({
     <div className="min-w-0">
       <label
         htmlFor={id}
-        className="font-dm-mono mb-1.5 block text-xs font-semibold tracking-[0.15em] text-gray-500 uppercase"
+        className="mb-1.5 block text-xs font-semibold tracking-[0.15em] text-gray-500"
       >
         {label}
       </label>
       {children}
       {error ? (
-        <p className="font-dm-mono mt-1 text-xs text-red-600">{error}</p>
+        <p className="mt-1 text-xs text-red-600">{error}</p>
       ) : hint ? (
-        <p className="font-dm-mono mt-1 text-xs text-gray-400">{hint}</p>
+        <p className="mt-1 text-xs text-gray-400">{hint}</p>
       ) : null}
     </div>
   );

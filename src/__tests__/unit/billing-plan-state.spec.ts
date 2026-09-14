@@ -1,6 +1,10 @@
 import { toCompanyPlan } from "@/hooks/use-billing";
 import type { BillingDetails, SubscriptionTier } from "@/services/billing";
-import { hasPaidSubscription, isFreeTier } from "@/services/billing";
+import {
+  canManageBilling,
+  hasPaidSubscription,
+  isFreeTier,
+} from "@/services/billing";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -72,6 +76,39 @@ describe("hasPaidSubscription", () => {
     expect(hasPaidSubscription(details({ tier: "free" }))).toBe(false);
     expect(hasPaidSubscription(details({ tier: "none" }))).toBe(false);
     expect(hasPaidSubscription(details({ tier: null }))).toBe(false);
+  });
+});
+
+describe("canManageBilling", () => {
+  it("lets a subscriber in dunning reach the portal to fix or stop it", () => {
+    expect(canManageBilling(details({ status: "inactive" }))).toBe(true);
+  });
+
+  it("keeps the portal open to a lapsed subscriber", () => {
+    expect(
+      canManageBilling(
+        details({
+          status: "canceled",
+          subscription_expires_at: new Date(Date.now() - DAY_MS).toISOString(),
+        }),
+      ),
+    ).toBe(true);
+  });
+
+  it("does not turn on paying today, unlike hasPaidSubscription", () => {
+    const lapsed = details({ status: "inactive" });
+    expect(hasPaidSubscription(lapsed)).toBe(false);
+    expect(canManageBilling(lapsed)).toBe(true);
+  });
+
+  it("offers nothing to a company that never subscribed", () => {
+    for (const tier of ["free", "none", null] as SubscriptionTier[]) {
+      expect(canManageBilling(details({ tier }))).toBe(false);
+    }
+  });
+
+  it("offers nothing before the details arrive", () => {
+    expect(canManageBilling(undefined)).toBe(false);
   });
 });
 

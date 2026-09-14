@@ -48,11 +48,11 @@ export function TicketsTabContent({
     )
   ) : (
     <MessagesEmptyState className="flex min-h-[420px] w-full items-center justify-center rounded-[20px] bg-white px-4 pb-20 shadow-sm lg:h-full lg:rounded-3xl lg:pb-0">
-      NOTHING HERE FOR NOW,
+      Nothing here for now,
       <br />
-      WHEN YOU GET MESSAGES THEY&apos;LL
+      when you get messages they&apos;ll
       <br />
-      APPEAR HERE
+      appear here
     </MessagesEmptyState>
   );
 

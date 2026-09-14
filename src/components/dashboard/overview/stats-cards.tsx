@@ -65,7 +65,7 @@ function StatCard({
             />
             <span
               className={cn(
-                "font-dm-mono truncate text-sm font-normal sm:text-base",
+                "truncate text-sm font-normal sm:text-base",
                 iconColor || "text-gray-900",
               )}
             >
@@ -80,17 +80,15 @@ function StatCard({
 
         <div>
           {!action && (
-            <p className="font-dm-mono mb-1 text-sm font-normal text-gray-400">
-              Today
-            </p>
+            <p className="mb-1 text-sm font-normal text-gray-400">Today</p>
           )}
 
           <div className="flex items-end justify-between gap-3">
-            <span className="font-greed-narrow font-condensed text-4xl font-medium tracking-tight text-gray-900 sm:text-5xl">
+            <span className="font-greed font-condensed text-4xl font-medium tracking-tight text-gray-900 sm:text-5xl">
               {isLoading ? "-" : value}
             </span>
             {pending && (
-              <span className="font-stolzl mb-1 text-base font-medium text-gray-400 sm:mb-2 sm:text-lg">
+              <span className="mb-1 text-base font-medium text-gray-400 sm:mb-2 sm:text-lg">
                 pending
               </span>
             )}
@@ -104,7 +102,7 @@ function StatCard({
                 )}
                 <span
                   className={cn(
-                    "font-greed-narrow font-semi-bold text-base sm:text-lg",
+                    "font-greed font-semi-bold text-base sm:text-lg",
                     isUp ? "text-[#008751]" : "text-[#F25430]",
                   )}
                 >
@@ -117,7 +115,7 @@ function StatCard({
       </div>
 
       {trend && !action && !isLoading && (
-        <div className="font-stolzl flex items-end justify-between">
+        <div className="flex items-end justify-between">
           <div className="flex w-full items-center justify-between gap-3 text-xs font-medium sm:text-sm">
             <span className="text-gray-900">Last 7 days</span>
             <div className="flex items-center gap-2">
@@ -136,7 +134,7 @@ function StatCard({
         <button
           onClick={action.onClick}
           disabled={isLoading}
-          className="font-dm-mono w-full rounded-md bg-[#6433CC] py-1 text-base font-bold text-white shadow-[-4px_4px_0px_0px_#000000] transition-transform hover:bg-[#d94526] active:translate-y-1 active:shadow-none disabled:opacity-50"
+          className="w-full rounded-md bg-[#6433CC] py-1 text-base font-bold text-white shadow-[-4px_4px_0px_0px_#000000] transition-transform hover:bg-[#d94526] active:translate-y-1 active:shadow-none disabled:opacity-50"
         >
           {action.label}
         </button>
@@ -156,7 +154,7 @@ export function StatsCards({
   return (
     <>
       <StatCard
-        title="VISITORS"
+        title="Visitors"
         icon={Icons.visitors}
         value={stats?.visitors.today || 0}
         trend={{
@@ -170,7 +168,7 @@ export function StatsCards({
       />
 
       <StatCard
-        title="CHATS"
+        title="Chats"
         icon={Icons.chats}
         value={stats?.chats.pending || 0}
         pending={true}
@@ -184,7 +182,7 @@ export function StatsCards({
       />
 
       <StatCard
-        title="CALLS"
+        title="Calls"
         icon={Icons.calls}
         value={stats?.calls.today || 0}
         trend={{
@@ -198,7 +196,7 @@ export function StatsCards({
       />
 
       <StatCard
-        title="DOCUMENTS"
+        title="Documents"
         icon={Icons.documents}
         value={stats?.documents.today || 0}
         trend={{
@@ -213,7 +211,7 @@ export function StatsCards({
       />
 
       <StatCard
-        title="SCRAPES"
+        title="Scrapes"
         icon={Icons.scrapes}
         value={stats?.scrapes.today || 0}
         trend={{

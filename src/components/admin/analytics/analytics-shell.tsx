@@ -21,7 +21,7 @@ export function AnalyticsNavbar() {
         <div className="relative size-9 overflow-hidden rounded-[4px] border-2 border-[rgba(31,31,31,0.1)]">
           <Image src="/favicon/favicon.svg" alt="Swift Agents" fill priority />
         </div>
-        <span className="font-greed-narrow text-[20px] tracking-[-0.4px] text-[#1f1f1f]">
+        <span className="font-greed text-[20px] tracking-[-0.4px] text-[#1f1f1f]">
           SWIFT AGENTS
         </span>
       </div>
@@ -30,13 +30,13 @@ export function AnalyticsNavbar() {
           href={`${siteConfig.url}/docs`}
           target="_blank"
           rel="noreferrer"
-          className="font-dm-mono text-[14px] text-[#1f1f1f] uppercase transition-opacity hover:opacity-60"
+          className="text-[14px] text-[#1f1f1f] uppercase transition-opacity hover:opacity-60"
         >
           Docs
         </a>
         <Link
           href="/dashboard/settings"
-          className="font-dm-mono text-[14px] text-[#1f1f1f] uppercase transition-opacity hover:opacity-60"
+          className="text-[14px] text-[#1f1f1f] uppercase transition-opacity hover:opacity-60"
         >
           Support
         </Link>
@@ -74,7 +74,7 @@ export function AnalyticsTabs({
             aria-selected={isActive}
             onClick={() => onChange(tab)}
             className={cn(
-              "font-dm-mono shrink-0 border-b-[3px] px-3 py-2 text-[14px] font-medium whitespace-nowrap uppercase transition-colors",
+              "shrink-0 border-b-[3px] px-3 py-2 text-[14px] font-medium whitespace-nowrap uppercase transition-colors",
               isActive
                 ? "border-[rgba(100,51,204,0.1)] text-[#6433cc]"
                 : "border-[rgba(0,0,0,0.1)] text-[#7e7e7e] hover:text-[#1f1f1f]",
@@ -102,11 +102,11 @@ export function AnalyticsControls({
   return (
     <div className="flex items-center justify-between px-10 py-3">
       <div className="flex items-center gap-3">
-        <span className="font-dm-mono text-[12px] text-[#7e7e7e] uppercase">
+        <span className="text-[12px] text-[#7e7e7e] uppercase">
           Current View:
         </span>
         <DropdownMenu>
-          <DropdownMenuTrigger className="font-dm-mono rounded-[4px] border-[1.5px] border-[rgba(31,31,31,0.1)] bg-white px-3 py-1.5 text-[12px] text-[#1f1f1f] uppercase transition-colors hover:border-[rgba(31,31,31,0.25)]">
+          <DropdownMenuTrigger className="rounded-[4px] border-[1.5px] border-[rgba(31,31,31,0.1)] bg-white px-3 py-1.5 text-[12px] text-[#1f1f1f] uppercase transition-colors hover:border-[rgba(31,31,31,0.25)]">
             {range}
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
@@ -118,7 +118,7 @@ export function AnalyticsControls({
                 <DropdownMenuRadioItem
                   key={option}
                   value={option}
-                  className="font-dm-mono text-[12px] uppercase"
+                  className="text-[12px] uppercase"
                 >
                   {option}
                 </DropdownMenuRadioItem>
@@ -130,7 +130,7 @@ export function AnalyticsControls({
       <button
         onClick={onExport}
         disabled={exporting}
-        className="font-dm-mono rounded-[6px] border-2 border-[rgba(31,31,31,0.1)] bg-[#6433cc] px-4 py-2 text-[12px] text-white uppercase transition-opacity hover:opacity-90 disabled:opacity-60"
+        className="rounded-[6px] border-2 border-[rgba(31,31,31,0.1)] bg-[#6433cc] px-4 py-2 text-[12px] text-white uppercase transition-opacity hover:opacity-90 disabled:opacity-60"
       >
         {exporting ? "Exporting…" : "Export Report"}
       </button>

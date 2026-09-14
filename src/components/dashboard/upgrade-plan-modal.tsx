@@ -15,7 +15,7 @@ import { Icons } from "../icons";
 
 // Figma: 143x38 button pinned 14px from the card's right edge, 97px from its top.
 const MODAL_CTA_CLASS =
-  "font-dm-mono absolute top-[97px] right-[14px] inline-flex h-[38px] w-[143px] cursor-pointer items-center justify-center rounded-[13px] border border-[#EDEDED] bg-[#006BE5] text-[14px] leading-[1.2] tracking-[1.4px] text-white uppercase transition-colors hover:bg-[#0055B8]";
+  "absolute top-[97px] right-[14px] inline-flex h-[38px] w-[143px] cursor-pointer items-center justify-center rounded-[13px] border border-[#EDEDED] bg-[#006BE5] text-[14px] leading-[1.2] tracking-[1.4px] text-white transition-colors hover:bg-[#0055B8]";
 
 // Exact path data lifted from the Figma export (viewBox 0 0 136 150).
 const PLAN_ICON_DATA: Record<
@@ -178,11 +178,11 @@ export function UpgradePlanModal({
 
         <h2
           id="upgrade-plan-title"
-          className="font-greed-narrow mx-auto mt-[46px] w-[447px] max-w-full text-center text-[40px] leading-[1.1] font-semibold tracking-[-0.8px] text-black"
+          className="font-greed mx-auto mt-[46px] w-[447px] max-w-full text-center text-[40px] leading-[1.1] font-semibold tracking-[-0.8px] text-black"
         >
           Upgrade your plan to have access to that
         </h2>
-        <p className="font-dm-mono mx-auto mt-[22px] w-[492px] max-w-full text-center text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase">
+        <p className="mx-auto mt-[22px] w-[492px] max-w-full text-center text-[14px] leading-[1.96] tracking-[1.4px] text-black/60">
           {feature
             ? `Your current plan doesn't include ${feature}. Upgrade to unlock it.`
             : "Your current plan doesn't include this feature. Upgrade to unlock it."}
@@ -229,7 +229,7 @@ function UpgradePlanCard({
       </div>
 
       <p
-        className={`font-dm-mono absolute top-[12px] left-[154px] leading-[1.2] uppercase ${plan.textColor} ${
+        className={`absolute top-[12px] left-[154px] leading-[1.2] ${plan.textColor} ${
           isLargeTitle
             ? "text-[20px] tracking-[2px]"
             : "text-[18px] tracking-[1.8px]"
@@ -238,13 +238,13 @@ function UpgradePlanCard({
         {plan.name}
       </p>
 
-      <p className="font-dm-mono absolute top-[43px] left-[154px] text-[18px] leading-[1.2] tracking-[1.8px] text-black uppercase">
+      <p className="absolute top-[43px] left-[154px] text-[18px] leading-[1.2] tracking-[1.8px] text-black">
         {plan.contactSales
           ? t("contactSales")
           : `${plan.price} ${plan.billing}`}
       </p>
 
-      <div className="font-dm-mono absolute top-[90px] left-[154px] max-h-[51px] w-[269px] overflow-hidden text-[14px] leading-[1.86] tracking-[1.4px] text-black/70 uppercase">
+      <div className="absolute top-[90px] left-[154px] max-h-[51px] w-[269px] overflow-hidden text-[14px] leading-[1.86] tracking-[1.4px] text-black/70">
         {plan.features.map((feature, i) => (
           <p key={i} className="whitespace-pre-line">
             {feature}
@@ -253,14 +253,14 @@ function UpgradePlanCard({
       </div>
 
       {isActive && (
-        <span className="font-dm-mono absolute top-[44px] right-[27px] flex items-center gap-[7px] text-[16px] leading-[1.2] tracking-[1.6px] text-black/60 uppercase">
+        <span className="absolute top-[44px] right-[27px] flex items-center gap-[7px] text-[16px] leading-[1.2] tracking-[1.6px] text-black/60">
           <Icons.CheckCircle className="h-[24px] w-[24px]" />
           Subscribed
         </span>
       )}
 
       {isActive ? (
-        <span className="font-dm-mono absolute top-[97px] right-[27px] inline-flex h-[38px] w-[160px] items-center justify-center rounded-[13px] border border-[#EDEDED] bg-[#EDEDED] text-[14px] leading-[1.2] tracking-[1.4px] text-black uppercase">
+        <span className="absolute top-[97px] right-[27px] inline-flex h-[38px] w-[160px] items-center justify-center rounded-[13px] border border-[#EDEDED] bg-[#EDEDED] text-[14px] leading-[1.2] tracking-[1.4px] text-black">
           Presently On
         </span>
       ) : plan.contactSales ? (

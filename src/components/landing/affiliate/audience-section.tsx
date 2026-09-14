@@ -71,7 +71,7 @@ export function AudienceSection() {
             <div className="flex flex-col gap-8">
               <h2
                 data-reveal
-                className="font-greed-narrow text-3xl leading-[1.1] font-medium tracking-[-0.02em] uppercase md:text-4xl"
+                className="font-greed text-3xl leading-snug font-medium tracking-[-2%] md:text-4xl"
                 style={{ color: column.titleColor }}
               >
                 {t(`${column.id}.title`)}
@@ -84,10 +84,10 @@ export function AudienceSection() {
                     className="flex items-start gap-4"
                   >
                     <span
-                      className="mt-[7px] size-2 shrink-0"
+                      className="mt-2 size-2 shrink-0"
                       style={{ backgroundColor: bullet.color }}
                     />
-                    <span className="font-stolzl text-base leading-[1.5] text-[#1f1f1f]">
+                    <span className="text-base leading-normal text-[#1f1f1f]">
                       {t(`${column.id}.bullets.${bullet.id}`)}
                     </span>
                   </li>

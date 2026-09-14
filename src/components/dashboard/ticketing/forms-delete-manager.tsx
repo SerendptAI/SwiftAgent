@@ -86,7 +86,7 @@ function ShadowButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`font-dm-mono flex h-[38px] w-full max-w-[378px] items-center justify-center rounded-[8px] bg-[#F25430] text-[14px] font-medium text-white uppercase shadow-[-3px_4px_0px_0px_#000000] ${
+      className={`flex h-[38px] w-full max-w-[378px] items-center justify-center rounded-[8px] bg-[#F25430] text-[14px] font-medium text-white shadow-[-4px_4px_0px_0px_#000000] ${
         onClick ? "cursor-pointer transition-colors hover:bg-[#d94526]" : ""
       } disabled:cursor-not-allowed disabled:opacity-70`}
     >
@@ -107,7 +107,7 @@ function ConfirmBody({
   return (
     <div className="flex flex-col items-center px-6 pt-14 pb-10">
       <PixelTrashIcon className="h-[94px] w-[94px] text-black" />
-      <h3 className="font-greed-narrow mt-7 text-center text-[44px] leading-[1.05] font-medium text-black">
+      <h3 className="font-greed mt-7 text-center text-[44px] leading-[1.05] font-medium text-black">
         Are you sure
         <br />
         you want to delete
@@ -145,7 +145,7 @@ function SuccessBody({ path }: { path: string }) {
           </svg>
         </span>
       </div>
-      <h3 className="font-greed-narrow mt-7 text-center text-[44px] leading-[1.05] font-medium text-black">
+      <h3 className="font-greed mt-7 text-center text-[44px] leading-[1.05] font-medium text-black">
         Deletion
         <br />
         Successful
@@ -285,7 +285,7 @@ export function FormsDeleteManager({
           />
           <div className="flex flex-col">
             {websites.length === 0 ? (
-              <p className="font-stolzl py-6 text-center text-[13px] text-[#7E7E7E]">
+              <p className="py-6 text-center text-[13px] text-[#7E7E7E]">
                 No website forms to manage.
               </p>
             ) : (
@@ -302,7 +302,7 @@ export function FormsDeleteManager({
                       className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left"
                     >
                       <Globe className="h-4 w-4 shrink-0 text-black" />
-                      <span className="font-dm-mono min-w-0 truncate text-[18px] text-black uppercase">
+                      <span className="min-w-0 truncate text-[18px] text-black">
                         {site.website_link}
                       </span>
                     </button>
@@ -348,11 +348,11 @@ export function FormsDeleteManager({
           />
           <div className="flex flex-col">
             {pagesLoading ? (
-              <p className="font-stolzl py-6 text-center text-[13px] text-[#7E7E7E]">
+              <p className="py-6 text-center text-[13px] text-[#7E7E7E]">
                 Loading pages…
               </p>
             ) : pages.length === 0 ? (
-              <p className="font-stolzl py-6 text-center text-[13px] text-[#7E7E7E]">
+              <p className="py-6 text-center text-[13px] text-[#7E7E7E]">
                 No pages with forms yet.
               </p>
             ) : (
@@ -370,7 +370,7 @@ export function FormsDeleteManager({
                     className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left"
                   >
                     <FileText className="h-4 w-4 shrink-0 text-black" />
-                    <span className="font-dm-mono min-w-0 truncate text-[18px] text-black lowercase">
+                    <span className="min-w-0 truncate text-[18px] text-black lowercase">
                       {page.page_path}
                     </span>
                   </button>
@@ -378,7 +378,6 @@ export function FormsDeleteManager({
                     <ActionLink
                       label="Delete page"
                       colorClass={DELETE_COLOR}
-                      uppercase={false}
                       onClick={() =>
                         setPending({
                           kind: "page",
@@ -416,11 +415,11 @@ export function FormsDeleteManager({
           />
           <div className="flex flex-col gap-3">
             {formsLoading ? (
-              <p className="font-stolzl py-6 text-center text-[13px] text-[#7E7E7E]">
+              <p className="py-6 text-center text-[13px] text-[#7E7E7E]">
                 Loading forms…
               </p>
             ) : pageForms.length === 0 ? (
-              <p className="font-stolzl py-6 text-center text-[13px] text-[#7E7E7E]">
+              <p className="py-6 text-center text-[13px] text-[#7E7E7E]">
                 No forms on this page.
               </p>
             ) : (
@@ -442,14 +441,14 @@ export function FormsDeleteManager({
                     }
                     className="flex min-w-0 flex-1 cursor-pointer flex-col items-start gap-1 text-left"
                   >
-                    <span className="font-dm-mono truncate text-[14px] font-medium text-black">
+                    <span className="truncate text-[14px] font-medium text-black">
                       {group.form_name}
                     </span>
-                    <span className="font-stolzl text-[11px] text-[#7E7E7E]">
+                    <span className="text-[11px] text-[#7E7E7E]">
                       Entries: {group.entries_count}{" "}
                       {group.entries_count === 1 ? "submission" : "submissions"}
                     </span>
-                    <span className="font-stolzl text-[11px] text-[#7E7E7E]">
+                    <span className="text-[11px] text-[#7E7E7E]">
                       Last submission: {formatDate(group.last_submission)}
                     </span>
                   </button>
@@ -483,7 +482,7 @@ export function FormsDeleteManager({
                 pagePath: step.pagePath,
               })
             }
-            className="font-dm-mono cursor-pointer text-left text-[13px] font-medium text-[#F25430] uppercase transition-opacity hover:opacity-70"
+            className="cursor-pointer text-left text-[13px] font-medium text-[#F25430] transition-opacity hover:opacity-70"
           >
             Delete all forms on {step.pagePath}
           </button>
@@ -499,7 +498,7 @@ export function FormsDeleteManager({
         />
         <div className="flex flex-col">
           {entries.length === 0 ? (
-            <p className="font-stolzl py-6 text-center text-[13px] text-[#7E7E7E]">
+            <p className="py-6 text-center text-[13px] text-[#7E7E7E]">
               No entries for this form.
             </p>
           ) : (
@@ -513,13 +512,13 @@ export function FormsDeleteManager({
                     {getSubmissionDisplayName(entry).charAt(0).toUpperCase()}
                   </span>
                   <div className="flex min-w-0 flex-col gap-0.5">
-                    <span className="font-dm-mono truncate text-[14px] font-medium text-black">
+                    <span className="truncate text-[14px] font-medium text-black">
                       {getSubmissionDisplayName(entry)}
                     </span>
-                    <span className="font-stolzl truncate text-[12px] text-[#7E7E7E]">
+                    <span className="truncate text-[12px] text-[#7E7E7E]">
                       {getEntryPreview(entry)}
                     </span>
-                    <span className="font-stolzl text-[11px] text-[#7E7E7E]">
+                    <span className="text-[11px] text-[#7E7E7E]">
                       {formatDateTime(entry.submitted_at)}
                     </span>
                   </div>
@@ -533,7 +532,7 @@ export function FormsDeleteManager({
                       submissionIds: [entry.id],
                     })
                   }
-                  className="font-dm-mono h-7 shrink-0 cursor-pointer rounded-[6px] border border-[#F25430] px-3 text-[11px] font-medium text-[#F25430] uppercase transition-colors hover:bg-[#F25430]/5"
+                  className="h-7 shrink-0 cursor-pointer rounded-[6px] border border-[#F25430] px-3 text-[11px] font-medium text-[#F25430] transition-colors hover:bg-[#F25430]/5"
                 >
                   Delete
                 </button>
@@ -551,7 +550,7 @@ export function FormsDeleteManager({
                 submissionIds: entries.map((e) => e.id),
               })
             }
-            className="font-dm-mono cursor-pointer text-left text-[13px] font-medium text-[#F25430] uppercase transition-opacity hover:opacity-70"
+            className="cursor-pointer text-left text-[13px] font-medium text-[#F25430] transition-opacity hover:opacity-70"
           >
             Delete all entries in {step.formName}
           </button>

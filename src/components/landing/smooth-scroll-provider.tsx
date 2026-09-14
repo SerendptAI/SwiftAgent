@@ -3,16 +3,25 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
-import { useEffect, useRef } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
+
+const LenisContext = createContext<Lenis | null>(null);
+
+// Lenis intercepts wheel/touch input to drive its own scroll loop, so
+// toggling `overflow: hidden` on the body (e.g. for a modal or mobile menu)
+// has no effect on it — callers must stop/start the instance directly.
+export function useLenis() {
+  return useContext(LenisContext);
+}
 
 interface SmoothScrollProviderProps {
   children: React.ReactNode;
 }
 
 export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
-  const lenisRef = useRef<Lenis | null>(null);
+  const [lenis, setLenis] = useState<Lenis | null>(null);
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -20,7 +29,7 @@ export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
       smoothWheel: true,
     });
 
-    lenisRef.current = lenis;
+    setLenis(lenis);
 
     lenis.on("scroll", ScrollTrigger.update);
 
@@ -33,8 +42,11 @@ export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
     return () => {
       lenis.destroy();
       gsap.ticker.remove(lenis.raf);
+      setLenis(null);
     };
   }, []);
 
-  return <>{children}</>;
+  return (
+    <LenisContext.Provider value={lenis}>{children}</LenisContext.Provider>
+  );
 }

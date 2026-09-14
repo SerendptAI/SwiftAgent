@@ -11,7 +11,7 @@ export function ProgressBar({
   label,
 }: ProgressBarProps & { label?: string }) {
   return (
-    <div className="font-dm-mono mb-6 flex items-center space-x-4">
+    <div className="mb-6 flex items-center space-x-4">
       <div className="h-4 w-full max-w-[90px] rounded-full bg-gray-100">
         <div
           className={cn(
@@ -21,7 +21,7 @@ export function ProgressBar({
           style={{ width: `${((currentStep + 1) / totalSteps) * 100}%` }}
         />
       </div>
-      <h2 className="text-sm font-semibold tracking-wider text-gray-900 uppercase">
+      <h2 className="text-sm font-semibold tracking-wider text-gray-900">
         {label || "Company Setup"}
       </h2>
     </div>

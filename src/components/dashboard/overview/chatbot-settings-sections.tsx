@@ -6,15 +6,15 @@ import { useState } from "react";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 
 const SECTION_HEADING =
-  "font-greed-narrow mb-3 text-[34px] leading-[0.95] font-medium tracking-[-0.68px] text-black uppercase";
+  "font-greed mb-3 text-[34px] leading-[0.95] font-medium tracking-[-0.68px] text-black";
 
 const SECTION_DESCRIPTION =
-  "font-dm-mono mb-6 text-[14px] leading-[1.96] tracking-[1.4px] text-black/60 uppercase";
+  "mb-6 text-[14px] leading-[1.96] tracking-[1.4px] text-black/60";
 
-const FIELD_LABEL = "font-stolzl text-[16px] text-black";
+const FIELD_LABEL = "text-[16px] text-black";
 
 const FIELD_INPUT =
-  "font-dm-mono w-full rounded-[5px] bg-[#EDEDED] pl-[10px] pr-[37px] py-[10px] text-[14px] text-black outline-none placeholder:text-black/50";
+  "w-full rounded-[5px] bg-[#EDEDED] pl-[10px] pr-[37px] py-[10px] text-[14px] text-black outline-none placeholder:text-black/50";
 
 export function CollapsibleSection({
   title,
@@ -154,7 +154,7 @@ export function ApiIntegrationSection({
               API Key
             </label>
             {value.integrationId && (
-              <span className="font-dm-mono rounded-full bg-[#006BE5]/10 px-2 py-0.5 text-[10px] tracking-wider text-[#006BE5] uppercase">
+              <span className="rounded-full bg-[#006BE5]/10 px-2 py-0.5 text-[10px] tracking-wider text-[#006BE5]">
                 Configured
               </span>
             )}
@@ -176,7 +176,7 @@ export function ApiIntegrationSection({
         <button
           type="button"
           onClick={() => setAuthOpen((v) => !v)}
-          className="font-dm-mono flex items-center gap-1 text-[12px] tracking-[1.4px] text-black/50 uppercase hover:text-black"
+          className="flex items-center gap-1 text-[12px] tracking-[1.4px] text-black/50 hover:text-black"
         >
           <ChevronDown
             className={`h-3.5 w-3.5 transition-transform ${
@@ -207,10 +207,8 @@ export function ApiIntegrationSection({
       </div>
 
       <div className="mt-8">
-        <h4 className="font-stolzl mb-1 text-[16px] text-black">
-          Documentation
-        </h4>
-        <p className="font-dm-mono mb-4 text-[12px] leading-[1.8] tracking-[1.2px] text-black/50 uppercase">
+        <h4 className="mb-1 text-[16px] text-black">Documentation</h4>
+        <p className="mb-4 text-[12px] leading-[1.8] tracking-[1.2px] text-black/50">
           Help agents understand your API. Drop a link to your docs and
           we&apos;ll index them, or paste the documentation text directly.
         </p>
@@ -251,7 +249,7 @@ export function ApiIntegrationSection({
               value={value.documentation}
               onChange={(e) => update({ documentation: e.target.value })}
               placeholder="Paste your API documentation here…"
-              className="font-dm-mono h-[160px] w-full resize-none rounded-[5px] bg-[#EDEDED] px-[10px] py-[10px] text-[14px] text-black outline-none placeholder:text-black/50"
+              className="h-[160px] w-full resize-none rounded-[5px] bg-[#EDEDED] px-[10px] py-[10px] text-[14px] text-black outline-none placeholder:text-black/50"
             />
           </div>
         )}
@@ -273,7 +271,7 @@ function DocumentationModeButton({
     <button
       type="button"
       onClick={onClick}
-      className={`font-dm-mono flex-1 rounded-[5px] px-3 py-2 text-[12px] tracking-[1px] uppercase transition-colors ${
+      className={`flex-1 rounded-[5px] px-3 py-2 text-[12px] tracking-[1px] transition-colors ${
         active
           ? "bg-[#006BE5] text-white"
           : "bg-[#EDEDED] text-black/60 hover:text-black"
@@ -300,7 +298,7 @@ export function RouteToHumanSection({
       </p>
 
       <div className="flex items-center justify-between gap-3">
-        <span className="font-dm-mono text-[12px] tracking-[1.2px] text-black/60 uppercase">
+        <span className="text-[12px] tracking-[1.2px] text-black/60">
           Route all chats to my support team
         </span>
         <ToggleSwitch
@@ -350,7 +348,7 @@ export function SuggestedQuestionsSection({
       </p>
 
       <div className="mb-6 flex items-center justify-between gap-3">
-        <span className="font-dm-mono text-[12px] tracking-[1.2px] text-black/60 uppercase">
+        <span className="text-[12px] tracking-[1.2px] text-black/60">
           Show suggestions in the widget
         </span>
         <ToggleSwitch
@@ -380,7 +378,7 @@ export function SuggestedQuestionsSection({
         <button
           type="button"
           onClick={addSuggestion}
-          className="font-dm-mono relative flex w-full items-center justify-center gap-6 rounded-[5px] bg-[#F2B035] px-[10px] py-[10px] text-[14px] tracking-[1.4px] text-black/60 uppercase shadow-[inset_0px_-1px_4px_0px_rgba(0,0,0,0.25)] transition-colors hover:bg-[#E0A030]"
+          className="relative flex w-full items-center justify-center gap-6 rounded-[5px] bg-[#F2B035] px-[10px] py-[10px] text-[14px] tracking-[1.4px] text-black/60 shadow-[inset_0px_-1px_4px_0px_rgba(0,0,0,0.25)] transition-colors hover:bg-[#E0A030]"
         >
           <Plus className="h-5 w-5" />
           Add a new suggestion
@@ -461,9 +459,9 @@ function SuggestionField({
           maxLength={SUGGESTION_MAX_LENGTH}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Whats the pricing like?"
-          className="font-dm-mono h-[81px] w-full resize-none rounded-[5px] bg-[#EDEDED] px-[10px] pt-[10px] pb-[26px] text-[14px] text-black outline-none placeholder:text-black/50"
+          className="h-[81px] w-full resize-none rounded-[5px] bg-[#EDEDED] px-[10px] pt-[10px] pb-[26px] text-[14px] text-black outline-none placeholder:text-black/50"
         />
-        <span className="font-dm-mono pointer-events-none absolute right-[10px] bottom-[8px] text-[12px] text-black/50">
+        <span className="pointer-events-none absolute right-[10px] bottom-[8px] text-[12px] text-black/50">
           {value.length}/{SUGGESTION_MAX_LENGTH}
         </span>
       </div>

@@ -27,7 +27,7 @@ export interface CardFormData {
 
 function FormLabel({ children }: { children: React.ReactNode }) {
   return (
-    <label className="font-stolzl mb-1 block text-sm font-semibold text-gray-900">
+    <label className="mb-1 block text-sm font-semibold text-gray-900">
       {children}
     </label>
   );
@@ -52,7 +52,7 @@ function FormInput({
       placeholder={placeholder}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className={`font-dm-mono w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-gray-300 ${className}`}
+      className={`w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-gray-300 ${className}`}
     />
   );
 }
@@ -96,14 +96,14 @@ export function AddCardModal({ onClose, onSubmit }: AddCardModalProps) {
       >
         <button
           onClick={onClose}
-          className="font-dm-mono mb-6 flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-gray-900"
+          className="mb-6 flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-gray-900"
         >
           <ArrowLeft className="h-4 w-4" />
-          BACK
+          Back
         </button>
 
-        <h2 className="font-greed-narrow mb-6 text-3xl font-bold tracking-tight text-black uppercase">
-          CARD DETAILS
+        <h2 className="font-greed mb-6 text-3xl font-bold tracking-tight text-black">
+          Card Details
         </h2>
 
         <div className="mb-2 space-y-4">
@@ -124,28 +124,28 @@ export function AddCardModal({ onClose, onSubmit }: AddCardModalProps) {
                 placeholder="*************"
                 value={form.cardNumber}
                 onChange={(e) => update("cardNumber", e.target.value)}
-                className="font-dm-mono min-w-0 flex-1 bg-transparent px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400"
+                className="min-w-0 flex-1 bg-transparent px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400"
               />
               <input
                 type="text"
                 placeholder="CVV"
                 value={form.cvv}
                 onChange={(e) => update("cvv", e.target.value)}
-                className="font-dm-mono w-16 bg-transparent px-3 py-3 text-center text-sm text-gray-900 outline-none placeholder:text-gray-400"
+                className="w-16 bg-transparent px-3 py-3 text-center text-sm text-gray-900 outline-none placeholder:text-gray-400"
               />
               <input
                 type="text"
                 placeholder="MM/YY"
                 value={form.expiry}
                 onChange={(e) => update("expiry", e.target.value)}
-                className="font-dm-mono w-20 bg-transparent px-3 py-3 text-center text-sm text-gray-900 outline-none placeholder:text-gray-400"
+                className="w-20 bg-transparent px-3 py-3 text-center text-sm text-gray-900 outline-none placeholder:text-gray-400"
               />
             </div>
           </div>
         </div>
 
-        <h2 className="font-greed-narrow mt-6 mb-4 text-2xl font-bold tracking-tight text-black uppercase">
-          BILLING ADDRESS
+        <h2 className="font-greed mt-6 mb-4 text-2xl font-bold tracking-tight text-black">
+          Billing Address
         </h2>
 
         <div className="space-y-4">
@@ -191,14 +191,14 @@ export function AddCardModal({ onClose, onSubmit }: AddCardModalProps) {
                 placeholder="State"
                 value={form.state}
                 onChange={(e) => update("state", e.target.value)}
-                className="font-dm-mono min-w-0 flex-1 bg-transparent px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400"
+                className="min-w-0 flex-1 bg-transparent px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400"
               />
               <input
                 type="text"
                 placeholder="City"
                 value={form.city}
                 onChange={(e) => update("city", e.target.value)}
-                className="font-dm-mono w-2/5 min-w-0 bg-transparent px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400"
+                className="w-2/5 min-w-0 bg-transparent px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400"
               />
             </div>
           </div>
@@ -211,14 +211,14 @@ export function AddCardModal({ onClose, onSubmit }: AddCardModalProps) {
                 placeholder="Country"
                 value={form.country}
                 onChange={(e) => update("country", e.target.value)}
-                className="font-dm-mono min-w-0 flex-1 bg-transparent px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400"
+                className="min-w-0 flex-1 bg-transparent px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400"
               />
               <input
                 type="text"
                 placeholder="Postal Code"
                 value={form.postalCode}
                 onChange={(e) => update("postalCode", e.target.value)}
-                className="font-dm-mono min-w-0 bg-transparent px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400"
+                className="min-w-0 bg-transparent px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400"
               />
             </div>
           </div>
@@ -226,9 +226,9 @@ export function AddCardModal({ onClose, onSubmit }: AddCardModalProps) {
 
         <button
           onClick={handleSubmit}
-          className="font-dm-mono mt-8 w-full rounded-lg bg-[#006BE5] py-3 text-sm font-bold tracking-widest text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#1E88E5]"
+          className="mt-8 w-full rounded-lg bg-[#006BE5] py-3 text-sm font-bold tracking-[2%] text-white shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#1E88E5]"
         >
-          ADD CARD
+          Add Card
         </button>
       </div>
     </div>

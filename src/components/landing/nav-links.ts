@@ -63,17 +63,26 @@ export const LANDING_NAV_LINKS: readonly NavLink[] = [
   {
     id: "earn",
     href: "/refer",
-    dropdown: { links: EARN_DROPDOWN_LINKS },
+    dropdown: {
+      links: EARN_DROPDOWN_LINKS,
+      previewImage: "/images/earn-dropdown.svg",
+    },
   },
   {
     id: "demo",
     href: "/demo",
-    dropdown: { links: DEMO_DROPDOWN_LINKS },
+    dropdown: {
+      links: DEMO_DROPDOWN_LINKS,
+      previewImage: "/images/demo-dropdown.svg",
+    },
   },
   {
     id: "resources",
     href: "/blog",
-    dropdown: { links: RESOURCES_DROPDOWN_LINKS },
+    dropdown: {
+      links: RESOURCES_DROPDOWN_LINKS,
+      previewImage: "/images/resources-dropdown.svg",
+    },
   },
   { id: "pricing", href: "/#pricing" },
 ];

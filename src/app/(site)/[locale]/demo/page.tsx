@@ -26,8 +26,9 @@ export async function generateMetadata({
 export default function DemoPage() {
   return (
     <SmoothScrollProvider>
-      <main className="min-h-screen bg-white">
+      <main>
         <Navbar />
+
         <div className="flex w-full justify-center px-6 pt-36 pb-16 md:px-10 md:pt-48 md:pb-20 lg:px-16 lg:pt-56">
           <div className="mx-auto w-full max-w-360">
             <DemoHeroSection />

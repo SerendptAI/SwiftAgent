@@ -81,12 +81,12 @@ export function PricingSection() {
       className="relative overflow-hidden bg-[#F6F4EF] px-4 py-8 md:px-12 md:py-24 lg:px-16"
       id="pricing"
     >
-      <div className="mx-auto max-w-7xl">
-        <div ref={titleRef} className="mb-6 md:mb-12">
-          <span className="mb-8 inline-block font-mono text-sm tracking-widest text-gray-500 uppercase">
+      <div className="mx-auto max-w-7xl space-y-12">
+        <div ref={titleRef} className="space-y-6">
+          <p className="font-press-start text-base leading-[1.2] font-medium tracking-[10%] text-black uppercase md:text-lg">
             {t("eyebrow")}
-          </span>
-          <h2 className="font-stolzl text-3xl font-normal text-gray-900 md:text-4xl lg:text-4xl">
+          </p>
+          <h2 className="font-greed text-4xl leading-[1.42] font-semibold tracking-[-2%] whitespace-pre-line capitalize md:text-5xl">
             {t("heading")}
           </h2>
         </div>

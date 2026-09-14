@@ -84,7 +84,7 @@ export function Header() {
       >
         <Icons.bell className="h-9 w-9 p-2 md:h-10 md:w-10" />
         {unreadCount > 0 && (
-          <span className="font-dm-mono absolute -top-1 -right-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full border border-white bg-[#F2B035] px-1 text-[10px] leading-none font-medium text-black">
+          <span className="absolute -top-1 -right-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full border border-white bg-[#F2B035] px-1 text-[10px] leading-none font-medium text-black">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}
@@ -98,7 +98,7 @@ export function Header() {
       className="flex h-10 cursor-pointer items-center gap-2 rounded-full bg-[#EDEDED] px-1 py-1"
     >
       <Icons.Questiondark className="h-8 w-8 rounded-full bg-white p-2 md:mr-2" />
-      <span className="font-dm-mono hidden pr-2 text-base font-normal whitespace-nowrap sm:block md:text-lg">
+      <span className="hidden pr-2 text-base font-normal whitespace-nowrap sm:block md:text-lg">
         How to use?
       </span>
     </div>

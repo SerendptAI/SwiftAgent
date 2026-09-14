@@ -32,7 +32,7 @@ export function StepIndicator({ currentStep, steps }: StepIndicatorProps) {
   ];
 
   return (
-    <div className="font-dm-mono relative mb-8">
+    <div className="relative mb-8">
       <div
         ref={scrollRef}
         className="scrollbar-none flex snap-x snap-mandatory overflow-x-auto border-b border-gray-100"
@@ -46,7 +46,7 @@ export function StepIndicator({ currentStep, steps }: StepIndicatorProps) {
               key={step}
               ref={isActive ? activeRef : undefined}
               className={cn(
-                "relative shrink-0 cursor-default snap-start px-3 py-2 text-xs font-medium whitespace-nowrap uppercase transition-colors",
+                "relative shrink-0 cursor-default snap-start px-3 py-2 text-xs font-medium whitespace-nowrap transition-colors",
                 isActive ? "text-gray-900" : "text-gray-400",
               )}
             >

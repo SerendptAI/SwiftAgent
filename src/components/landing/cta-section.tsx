@@ -25,7 +25,7 @@ export function CtaSection({ variant = "light" }: CtaSectionProps) {
         <div className="relative z-10 flex flex-col pt-8 pb-12 md:w-120 md:pb-15 lg:w-[55%] lg:px-16 lg:pt-11 lg:pb-19">
           <h2
             className={cn(
-              "font-greed-narrow mb-3 text-4xl leading-[1.34] font-medium tracking-[-2%] uppercase md:text-5xl lg:min-w-120 lg:text-[66px]",
+              "font-greed mb-3 text-4xl leading-[1.34] font-medium tracking-[-2%] uppercase md:text-5xl xl:text-6xl",
               isGreen ? "text-white" : "text-black",
             )}
           >
@@ -33,18 +33,18 @@ export function CtaSection({ variant = "light" }: CtaSectionProps) {
           </h2>
           <p
             className={cn(
-              "font-stolzl mb-8 text-base leading-normal tracking-[2%] lg:mb-12",
+              "mb-8 max-w-143 text-base leading-normal tracking-[2%] lg:mb-12",
               isGreen ? "text-white" : "text-black",
             )}
           >
             {t("body")}
           </p>
 
-          <div className="xs:max-w-107.5 flex w-full flex-wrap gap-4 sm:grid sm:grid-cols-2 md:gap-8">
+          <div className="xs:max-w-100 flex w-full flex-wrap gap-4 sm:grid sm:grid-cols-2 md:gap-8">
             <Button
               variant="outline"
               size="lg"
-              className="w-full px-4 text-center leading-tight whitespace-normal"
+              className="w-full px-4 py-3 text-center leading-tight whitespace-normal capitalize"
               asChild
             >
               <DemoBookingLink location="landing-cta">
@@ -54,7 +54,7 @@ export function CtaSection({ variant = "light" }: CtaSectionProps) {
             <Button
               size="lg"
               className={cn(
-                "w-full px-4 text-center leading-tight whitespace-normal",
+                "w-full px-4 py-3 text-center leading-tight whitespace-normal capitalize",
                 {
                   "border-transparent": isGreen,
                 },

@@ -80,7 +80,7 @@ const RootLayout = async ({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body
-        className={cn("min-h-screen font-sans", fonts)}
+        className={cn("font-jetbrains min-h-screen", fonts)}
         suppressHydrationWarning
       >
         <NextIntlClientProvider>

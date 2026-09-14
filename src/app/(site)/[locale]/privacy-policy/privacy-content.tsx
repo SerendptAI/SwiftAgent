@@ -48,7 +48,7 @@ export function PrivacyContent() {
           <div className="space-y-6">
             <div className="rounded-xl border border-black/10 bg-white p-6 shadow-sm transition-all hover:border-black/20 hover:shadow-md">
               <h4 className="mb-4 flex items-center gap-3 text-lg font-bold text-black">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#7CA2FE]/30 bg-[#7CA2FE]/10 font-mono text-xs font-bold text-[#7CA2FE]">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#7CA2FE]/30 bg-[#7CA2FE]/10 text-xs font-bold text-[#7CA2FE]">
                   A
                 </span>
                 Information Provided Voluntarily by Clients
@@ -83,7 +83,7 @@ export function PrivacyContent() {
 
             <div className="rounded-xl border border-black/10 bg-white p-6 shadow-sm transition-all hover:border-black/20 hover:shadow-md">
               <h4 className="mb-4 flex items-center gap-3 text-lg font-bold text-black">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#7CA2FE]/30 bg-[#7CA2FE]/10 font-mono text-xs font-bold text-[#7CA2FE]">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#7CA2FE]/30 bg-[#7CA2FE]/10 text-xs font-bold text-[#7CA2FE]">
                   B
                 </span>
                 Information Processed on Behalf of Your End-Users
@@ -102,7 +102,7 @@ export function PrivacyContent() {
 
             <div className="rounded-xl border border-black/10 bg-white p-6 shadow-sm transition-all hover:border-black/20 hover:shadow-md">
               <h4 className="mb-4 flex items-center gap-3 text-lg font-bold text-black">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#7CA2FE]/30 bg-[#7CA2FE]/10 font-mono text-xs font-bold text-[#7CA2FE]">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#7CA2FE]/30 bg-[#7CA2FE]/10 text-xs font-bold text-[#7CA2FE]">
                   C
                 </span>
                 Automatically Collected Technical Data
@@ -213,7 +213,7 @@ export function PrivacyContent() {
 
           <div className="space-y-6">
             <div className="flex items-start gap-4">
-              <div className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-black font-mono text-sm font-bold text-white">
+              <div className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-black text-sm font-bold text-white">
                 1
               </div>
               <div>
@@ -230,7 +230,7 @@ export function PrivacyContent() {
             </div>
 
             <div className="flex items-start gap-4">
-              <div className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-black font-mono text-sm font-bold text-white">
+              <div className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-black text-sm font-bold text-white">
                 2
               </div>
               <div>
@@ -246,7 +246,7 @@ export function PrivacyContent() {
             </div>
 
             <div className="flex items-start gap-4">
-              <div className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-black font-mono text-sm font-bold text-white">
+              <div className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-black text-sm font-bold text-white">
                 3
               </div>
               <div>
@@ -475,7 +475,7 @@ export function PrivacyContent() {
           </p>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-xl border border-black/10 bg-white p-5 shadow-sm">
-              <span className="mb-1 block font-mono text-xs tracking-wider text-gray-400 uppercase">
+              <span className="mb-1 block text-xs tracking-[2%] text-gray-400 uppercase">
                 Primary Support
               </span>
               <a
@@ -486,7 +486,7 @@ export function PrivacyContent() {
               </a>
             </div>
             <div className="rounded-xl border border-black/10 bg-white p-5 shadow-sm">
-              <span className="mb-1 block font-mono text-xs tracking-wider text-gray-400 uppercase">
+              <span className="mb-1 block text-xs tracking-[2%] text-gray-400 uppercase">
                 Corporate Services
               </span>
               <a
@@ -548,21 +548,19 @@ export function PrivacyContent() {
   return (
     <div className="mx-auto max-w-[1280px] px-6 pt-32 pb-24 md:pt-40">
       <div className="mb-16 max-w-3xl text-left">
-        <span className="mb-4 inline-block rounded border border-[#7CA2FE]/20 bg-[#7CA2FE]/10 px-3 py-1 font-mono text-[10px] font-bold tracking-widest text-[#7CA2FE] uppercase">
+        <span className="mb-4 inline-block rounded border border-[#7CA2FE]/20 bg-[#7CA2FE]/10 px-3 py-1 text-[10px] font-bold tracking-[10%] text-[#7CA2FE] uppercase">
           Legal Portal
         </span>
-        <h1 className="font-greed-narrow mb-6 text-4xl font-medium tracking-tight text-black uppercase sm:text-5xl md:text-6xl">
+        <h1 className="font-greed mb-6 text-4xl font-medium tracking-[-2%] text-black sm:text-5xl md:text-6xl">
           Privacy Policy
         </h1>
-        <p className="font-mono text-base text-gray-500">
-          EFFECTIVE DATE: JULY 2, 2026
-        </p>
+        <p className="text-base text-gray-500">Effective Date: July 2, 2026</p>
       </div>
 
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-[280px_1fr]">
         <aside className="hidden lg:block">
-          <div className="sticky top-28 flex flex-col gap-2 rounded-2xl border border-black/10 bg-white p-6 shadow-sm">
-            <h3 className="mb-4 font-mono text-[11px] font-bold tracking-wider text-gray-400 uppercase">
+          <div className="sticky top-28 flex flex-col gap-2 rounded-2xl border border-black/10 bg-white p-4 shadow-sm">
+            <h3 className="mb-4 text-[11px] font-bold tracking-[2%] text-gray-400">
               Sections
             </h3>
             <nav className="flex flex-col gap-1.5">
@@ -572,7 +570,7 @@ export function PrivacyContent() {
                   <button
                     key={section.id}
                     onClick={() => scrollToSection(section.id)}
-                    className={`rounded-lg px-3 py-1.5 text-left text-xs font-semibold transition-all ${
+                    className={`rounded-lg px-3 py-1.5 text-left text-xs font-medium tracking-[-2%] transition-all ${
                       isActive
                         ? "bg-black text-white"
                         : "text-gray-500 hover:bg-gray-50 hover:text-black"
@@ -593,10 +591,10 @@ export function PrivacyContent() {
               id={section.id}
               className="scroll-mt-28 border-b border-black/5 pb-12 last:border-0"
             >
-              <h2 className="font-greed-narrow mb-6 text-2xl font-semibold text-black uppercase">
+              <h2 className="font-greed mb-6 text-2xl font-semibold text-black capitalize">
                 {section.title}
               </h2>
-              <div className="prose max-w-none font-sans text-gray-600">
+              <div className="prose max-w-none tracking-[-2%] text-gray-600">
                 {section.content}
               </div>
             </section>

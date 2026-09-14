@@ -51,7 +51,7 @@ function EditableField({
 
   return (
     <div className="space-y-1 p-0 sm:p-2">
-      <label className="font-stolzl mb-3 block text-xs font-semibold tracking-wider text-gray-500 uppercase sm:mb-4 sm:text-sm">
+      <label className="mb-3 block text-xs font-semibold tracking-[2%] text-gray-500 sm:mb-4 sm:text-sm">
         {label}
       </label>
       <div className="flex flex-col gap-2 overflow-hidden rounded-[5px] border bg-[#EDEDED] p-2 shadow-sm sm:flex-row sm:items-center sm:p-0 sm:pr-1">
@@ -59,19 +59,19 @@ function EditableField({
           type={type}
           value={localValue}
           onChange={(e) => setLocalValue(e.target.value)}
-          className="font-stolzl min-w-0 flex-1 bg-[#EDEDED] px-2 py-2.5 text-sm outline-none sm:px-4 sm:py-3"
+          className="min-w-0 flex-1 bg-[#EDEDED] px-2 py-2.5 text-sm outline-none sm:px-4 sm:py-3"
         />
         <button
           onClick={handleUpdate}
           disabled={isPending}
-          className="flex h-10 items-center justify-center rounded-lg bg-[#2196F3] px-5 text-xs font-bold text-white shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#1E88E5] disabled:opacity-50 sm:h-auto sm:px-8 sm:py-2"
+          className="flex h-10 items-center justify-center rounded-lg bg-[#2196F3] px-5 text-xs font-bold text-white shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#1E88E5] disabled:opacity-50 sm:h-auto sm:px-8 sm:py-2"
         >
           {isPending ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : saved ? (
-            "SAVED ✓"
+            "Saved ✓"
           ) : (
-            "UPDATE"
+            "Update"
           )}
         </button>
       </div>
@@ -174,33 +174,31 @@ export default function SettingsPage() {
           />
         </div>
         <div className="flex flex-col gap-1">
-          <span className="font-stolzl text-sm font-semibold text-gray-900">
+          <span className="text-sm font-semibold text-gray-900">
             Profile Picture
           </span>
-          <span className="font-stolzl text-xs text-gray-400">
+          <span className="text-xs text-gray-400">
             JPG, PNG, WebP or GIF. Max 5 MB.
           </span>
           <button
             type="button"
             onClick={() => pfpInputRef.current?.click()}
             disabled={isUploadingPfp}
-            className="font-dm-mono mt-2 self-start rounded-lg bg-[#2196F3] px-6 py-2 text-xs font-bold text-white shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#1E88E5] disabled:opacity-50"
+            className="mt-2 self-start rounded-lg bg-[#2196F3] px-6 py-2 text-xs font-bold text-white shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#1E88E5] disabled:opacity-50"
           >
             {isUploadingPfp ? (
               <span className="flex items-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                UPLOADING…
+                Uploading…
               </span>
             ) : user?.picture ? (
-              "REPLACE"
+              "Replace"
             ) : (
-              "UPLOAD"
+              "Upload"
             )}
           </button>
           {pfpError && (
-            <span className="font-stolzl mt-1 text-xs text-red-500">
-              {pfpError}
-            </span>
+            <span className="mt-1 text-xs text-red-500">{pfpError}</span>
           )}
         </div>
         <input

@@ -143,14 +143,14 @@ export function StrollConfigFields({
           onChange={(e) => update({ sandboxMode: e.target.checked })}
           className="h-4 w-4 accent-[#006BE5]"
         />
-        <span className="font-dm-mono text-xs text-gray-700">Sandbox mode</span>
+        <span className="text-xs text-gray-700">Sandbox mode</span>
       </label>
 
       <button
         type="button"
         onClick={() => setAdvancedOpen((v) => !v)}
         aria-expanded={advancedOpen}
-        className="font-dm-mono flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700"
+        className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700"
       >
         <ChevronDown
           className={`h-3.5 w-3.5 transition-transform ${
@@ -211,10 +211,7 @@ function ScheduleSelect({
   return (
     <div>
       <div className="mb-1.5 flex items-center justify-between">
-        <label
-          htmlFor="stroll-schedule"
-          className="font-dm-mono text-xs text-gray-700"
-        >
+        <label htmlFor="stroll-schedule" className="text-xs text-gray-700">
           How often should we scan?
         </label>
         <InfoTooltip
@@ -228,7 +225,7 @@ function ScheduleSelect({
         onChange={(e) => {
           if (e.target.value !== "__custom") onChange(e.target.value);
         }}
-        className="font-dm-mono w-full rounded-sm border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#006BE5]"
+        className="w-full rounded-sm border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#006BE5]"
       >
         {SCHEDULE_PRESETS.map((p) => (
           <option key={p.value} value={p.value}>
@@ -261,7 +258,7 @@ function FieldInput({
   return (
     <div>
       <div className="mb-1.5 flex items-center justify-between">
-        <label htmlFor={id} className="font-dm-mono text-xs text-gray-700">
+        <label htmlFor={id} className="text-xs text-gray-700">
           {label}
         </label>
         <InfoTooltip text={tooltip} className="h-3.5 w-3.5" />
@@ -272,7 +269,7 @@ function FieldInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="font-dm-mono w-full rounded-sm border border-gray-200 px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#006BE5]"
+        className="w-full rounded-sm border border-gray-200 px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-[#006BE5]"
       />
     </div>
   );

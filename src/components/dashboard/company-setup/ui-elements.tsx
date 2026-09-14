@@ -1,5 +1,5 @@
 import { ChevronDown } from "lucide-react";
-import { type ChangeEvent, type ComponentProps, forwardRef } from "react";
+import { type ComponentProps, forwardRef } from "react";
 
 import { cn } from "@/lib/utils";
 export const FormLabel = ({
@@ -23,20 +23,13 @@ export const FormLabel = ({
 
 export const FormInput = forwardRef<HTMLInputElement, ComponentProps<"input">>(
   ({ className, onChange, type, ...props }, ref) => {
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-      if (type !== "file") {
-        event.currentTarget.value = event.currentTarget.value.toUpperCase();
-      }
-      onChange?.(event);
-    };
-
     return (
       <input
         ref={ref}
         type={type}
-        onChange={handleChange}
+        onChange={onChange}
         className={cn(
-          "font-dm-mono h-12 w-full rounded-md border-0 bg-gray-100 px-4 py-2 text-gray-900 uppercase placeholder:text-gray-400 focus:ring-2 focus:ring-purple-600 focus:outline-hidden",
+          "h-12 w-full rounded-md border-0 bg-gray-100 px-4 py-2 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-blue-600 focus:outline-hidden",
           className,
         )}
         {...props}
@@ -55,7 +48,7 @@ export const FormSelect = forwardRef<
       <select
         ref={ref}
         className={cn(
-          "font-dm-mono h-12 w-full appearance-none rounded-md border-0 bg-gray-100 px-4 py-2 pr-10 text-gray-900 uppercase focus:ring-2 focus:ring-purple-600 focus:outline-hidden",
+          "h-12 w-full appearance-none rounded-md border-0 bg-gray-100 px-4 py-2 pr-10 text-gray-900 focus:ring-2 focus:ring-blue-600 focus:outline-hidden",
           props.value === "" && "text-gray-400",
           className,
         )}
@@ -75,17 +68,12 @@ export const FormTextarea = forwardRef<
   HTMLTextAreaElement,
   ComponentProps<"textarea">
 >(({ className, onChange, ...props }, ref) => {
-  const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    event.currentTarget.value = event.currentTarget.value.toUpperCase();
-    onChange?.(event);
-  };
-
   return (
     <textarea
       ref={ref}
-      onChange={handleChange}
+      onChange={onChange}
       className={cn(
-        "font-dm-mono min-h-[120px] w-full rounded-md border-0 bg-gray-100 px-4 py-3 text-gray-900 uppercase placeholder:text-gray-400 focus:ring-2 focus:ring-purple-600 focus:outline-hidden",
+        "min-h-[120px] w-full rounded-md border-0 bg-gray-100 px-4 py-3 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-blue-600 focus:outline-hidden",
         className,
       )}
       {...props}
@@ -102,7 +90,7 @@ export const NextButton = ({
   return (
     <button
       className={cn(
-        "font-dm-mono h-9 w-full cursor-pointer rounded-xl bg-[#006BE5] text-center text-lg leading-[1.2] tracking-[10%] text-white shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#0055B8]",
+        "h-12 w-full cursor-pointer rounded-xl bg-[#006BE5] text-center text-lg leading-[1.2] tracking-[2%] text-white capitalize shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#0055B8]",
         className,
       )}
       {...props}

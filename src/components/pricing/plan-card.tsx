@@ -22,7 +22,7 @@ export interface Plan {
 }
 
 const CTA_CLASS =
-  "flex h-11 w-full cursor-pointer items-center justify-center rounded-md bg-[#006BE5] py-1 text-xs text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all active:translate-x-[-1px] active:translate-y-[1px] active:shadow-[-1px_1px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-60 md:h-9 md:text-sm";
+  "flex h-11 w-full cursor-pointer items-center justify-center rounded-md bg-[#006BE5] py-1 text-xs text-white capitalize shadow-[-4px_4px_0px_0px_#000000] transition-all active:translate-x-[-1px] active:translate-y-[1px] active:shadow-[-1px_1px_0px_0px_#000000] disabled:cursor-not-allowed disabled:opacity-60 md:h-9 md:text-sm";
 
 interface PlanCardProps {
   plan: Plan;
@@ -62,7 +62,7 @@ export function PlanCard({
         className="block h-auto w-full"
       />
 
-      <div className="font-dm-mono flex min-w-0 flex-1 flex-col px-4 pt-4 md:px-6 md:pt-6">
+      <div className="flex min-w-0 flex-1 flex-col px-4 pt-4 md:px-6 md:pt-6">
         <div className="mb-3 flex min-w-0 flex-wrap items-center gap-2 md:mb-3.5">
           <h3
             className={`text-sm leading-none tracking-widest uppercase md:text-base ${plan.textColor}`}
@@ -71,7 +71,7 @@ export function PlanCard({
           </h3>
         </div>
 
-        <p className="mb-3 flex items-baseline gap-2 text-sm leading-none text-gray-900 md:mb-3.5 md:text-base">
+        <p className="mb-3 flex items-baseline gap-2 text-sm leading-none text-black uppercase md:mb-3.5 md:text-base">
           {plan.contactSales ? (
             <span>{t("contactSales")}</span>
           ) : (
@@ -88,7 +88,7 @@ export function PlanCard({
           )}
         </p>
 
-        <p className="mb-4 text-xs leading-relaxed tracking-wider whitespace-normal text-gray-500 uppercase md:mb-5 md:text-sm md:whitespace-pre-line">
+        <p className="mb-4 text-xs leading-relaxed tracking-wider whitespace-normal text-black/60 md:mb-5 md:text-sm md:whitespace-pre-line">
           {plan.description}
         </p>
 
@@ -96,9 +96,9 @@ export function PlanCard({
           {plan.features.map((feature, i) => (
             <li
               key={i}
-              className="mb-0 flex items-start text-xs leading-relaxed text-gray-800 uppercase md:text-sm"
+              className="mb-0 flex items-start text-xs leading-relaxed text-gray-800 md:text-sm"
             >
-              <span className="mr-2 inline-block pt-[2px] text-[10px]">•</span>
+              <span className="mr-2 inline-block pt-0.5 text-[10px]">•</span>
               <span className="min-w-0 whitespace-pre-line">{feature}</span>
             </li>
           ))}

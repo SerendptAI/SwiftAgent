@@ -49,13 +49,13 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
 
   return (
     <SmoothScrollProvider>
-      <main className="min-h-screen bg-white">
+      <main className="min-h-screen">
         <Navbar />
         <div className="w-full px-6 pt-36 pb-16 md:px-10 md:pt-48 md:pb-20 lg:px-16 lg:pt-56 lg:pb-26">
           <div className="mx-auto max-w-360">
             <Link
               href="/case-studies"
-              className="font-dm-mono mb-10 flex w-fit items-center gap-2 text-sm tracking-[10%] text-black/60 uppercase transition-colors hover:text-black md:mb-14 md:text-base"
+              className="mb-10 flex w-fit items-center gap-2 text-sm tracking-[2%] text-black/60 transition-colors hover:text-black md:mb-14 md:text-base"
             >
               ← All case studies
             </Link>

@@ -149,7 +149,7 @@ export function OtpVerification({
             disabled={isVerifying}
             placeholder="*"
             aria-label={`Digit ${index + 1}`}
-            className={`font-dm-mono focus:ring-ring/50 h-12 w-7.5 rounded-lg border bg-transparent text-center text-sm text-[#7E7E7E] placeholder-[#7E7E7E] transition-colors outline-none focus:ring-1 ${
+            className={`focus:ring-ring/50 h-12 w-7.5 rounded-lg border bg-transparent text-center text-sm text-[#7E7E7E] placeholder-[#7E7E7E] transition-colors outline-none focus:ring-1 ${
               error ? "border-red-500" : "border-black/20"
             } ${isVerifying ? "opacity-60" : ""}`}
           />
@@ -158,18 +158,18 @@ export function OtpVerification({
 
       {/* Spam reminder — OTP emails are commonly filtered. */}
       {!isVerifying && !error && (
-        <p className="font-dm-mono max-w-xs text-center text-xs leading-[1.4] text-[#7E7E7E]">
+        <p className="max-w-xs text-center text-xs leading-[1.4] text-[#7E7E7E]">
           {t("checkSpam")}
         </p>
       )}
 
       {isVerifying && (
-        <p className="text-muted-foreground font-dm-mono text-sm leading-[1.2] tracking-[10%] uppercase">
+        <p className="text-muted-foreground text-sm leading-[1.2] tracking-[2%]">
           {t("signingIn")}
         </p>
       )}
       {error && (
-        <p className="text-muted-foreground font-dm-mono text-sm leading-[1.2] tracking-[10%] uppercase">
+        <p className="text-muted-foreground text-sm leading-[1.2] tracking-[2%]">
           {error}
         </p>
       )}
@@ -180,7 +180,7 @@ export function OtpVerification({
             type="button"
             onClick={handleResend}
             disabled={sendOtp.isPending || cooldown > 0}
-            className="text-muted-foreground font-dm-mono text-sm leading-[1.2] tracking-[10%] uppercase underline underline-offset-2 disabled:no-underline disabled:opacity-50"
+            className="text-muted-foreground text-sm leading-[1.2] tracking-[2%] capitalize underline underline-offset-2 disabled:no-underline disabled:opacity-50"
           >
             {cooldown > 0
               ? `${t("resendCode")} (${cooldown}s)`
@@ -189,7 +189,7 @@ export function OtpVerification({
           <button
             type="button"
             onClick={onChangeEmail}
-            className="text-muted-foreground font-dm-mono text-sm leading-[1.2] tracking-[10%] uppercase underline underline-offset-2"
+            className="text-muted-foreground text-sm leading-[1.2] tracking-[2%] capitalize underline underline-offset-2"
           >
             {t("backToEmail")}
           </button>

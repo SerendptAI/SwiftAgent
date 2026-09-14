@@ -113,12 +113,12 @@ export default function SecurityPage() {
       <HelpBanner bgColor="bg-[#7F9FFF]" />
 
       <div className="space-y-4">
-        <h3 className="font-stolzl text-base font-bold text-gray-900 sm:text-lg">
+        <h3 className="text-base font-bold text-gray-900 sm:text-lg">
           Set a Back-up email
         </h3>
 
         <div className="flex flex-col gap-3 rounded-xl border border-gray-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <span className="font-dm-mono text-xs font-semibold tracking-[0.15em] text-gray-500 uppercase sm:text-sm">
+          <span className="text-xs font-semibold tracking-[2%] text-gray-500 sm:text-sm">
             Back-up Email
           </span>
           {isEditingEmail ? (
@@ -154,7 +154,7 @@ export default function SecurityPage() {
               onClick={() => setIsEditingEmail(true)}
               className="flex min-w-0 items-center justify-between gap-2 rounded-2xl border border-gray-100 px-4 py-2.5 hover:bg-gray-50 sm:justify-start"
             >
-              <span className="font-dm-mono min-w-0 truncate text-sm font-medium tracking-wide text-gray-700 uppercase">
+              <span className="min-w-0 truncate text-sm font-medium tracking-[2%] text-gray-700">
                 {user?.backup_email
                   ? maskEmail(user.backup_email)
                   : "Add New Email"}
@@ -165,7 +165,7 @@ export default function SecurityPage() {
         </div>
 
         <div className="flex flex-col gap-3 rounded-xl border border-gray-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <span className="font-dm-mono text-xs font-semibold tracking-[0.15em] text-gray-500 uppercase sm:text-sm">
+          <span className="text-xs font-semibold tracking-[2%] text-gray-500 sm:text-sm">
             Access Code
           </span>
           {isEditingCode ? (
@@ -192,7 +192,7 @@ export default function SecurityPage() {
               onClick={() => setIsEditingCode(true)}
               className="rounded-2xl border border-gray-100 px-4 py-2.5 text-left hover:bg-gray-50 sm:text-center"
             >
-              <span className="font-dm-mono text-sm font-medium tracking-wider text-gray-700">
+              <span className="text-sm font-medium tracking-[2%] text-gray-700">
                 {user?.access_code ? "••••••••••••" : "Add Access Code"}
               </span>
             </button>
@@ -201,12 +201,12 @@ export default function SecurityPage() {
       </div>
 
       <div className="space-y-4">
-        <h3 className="font-stolzl text-base font-bold text-gray-900 sm:text-lg">
+        <h3 className="text-base font-bold text-gray-900 sm:text-lg">
           Add a new member
         </h3>
 
         <div className="flex flex-col gap-3 rounded-xl border border-gray-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <span className="font-dm-mono text-xs font-semibold tracking-[0.15em] text-gray-500 uppercase sm:text-sm">
+          <span className="text-xs font-semibold tracking-[2%] text-gray-500 sm:text-sm">
             Add Member
           </span>
           {isInviting ? (
@@ -242,7 +242,7 @@ export default function SecurityPage() {
           ) : (
             <button
               onClick={() => setIsInviting(true)}
-              className="h-11 rounded-2xl bg-[#006BE5] px-6 text-sm font-bold tracking-wide text-white uppercase shadow-[-3px_3px_0px_0px_#000000] transition-colors hover:bg-[#0058C0] sm:h-auto sm:py-2.5"
+              className="h-11 rounded-2xl bg-[#006BE5] px-6 text-sm font-bold tracking-[2%] text-white shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#0058C0] sm:h-auto sm:py-2.5"
             >
               Add Email
             </button>
@@ -255,7 +255,7 @@ export default function SecurityPage() {
               <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
             </div>
           ) : !members || members.length === 0 ? (
-            <p className="font-stolzl px-6 py-6 text-center text-sm text-gray-400">
+            <p className="px-6 py-6 text-center text-sm text-gray-400">
               No members yet.
             </p>
           ) : (
@@ -331,19 +331,17 @@ function MemberRow({ member }: { member: CompanyMember }) {
         )}
       </div>
       <div className="min-w-0 flex-1">
-        <p className="font-stolzl truncate text-sm font-semibold text-gray-900">
+        <p className="truncate text-sm font-semibold text-gray-900">
           {displayName}
         </p>
-        <p className="font-stolzl truncate text-xs text-gray-400">
-          {member.email}
-        </p>
+        <p className="truncate text-xs text-gray-400">{member.email}</p>
       </div>
-      <span className="font-dm-mono hidden shrink-0 text-xs tracking-wider text-gray-500 uppercase sm:inline">
+      <span className="hidden shrink-0 text-xs tracking-[2%] text-gray-500 sm:inline">
         {member.role}
       </span>
       <span
         className={cn(
-          "font-dm-mono shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase",
+          "shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-semibold tracking-[2%]",
           statusClass,
         )}
       >

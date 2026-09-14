@@ -62,7 +62,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
             )}
           >
             <Link href="/" className="flex shrink-0 items-center">
-              <div className="relative h-14 w-14">
+              <div className="relative h-11 w-11 sm:h-14 sm:w-14">
                 <Image
                   src="/images/newlogo.svg"
                   alt={t("logoAlt")}
@@ -115,7 +115,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                           href={link.href}
                           aria-current={isActive ? "page" : undefined}
                           className={cn(
-                            "font-dm-mono flex h-full items-center gap-1.5 text-sm tracking-[0.2em] whitespace-nowrap text-black uppercase transition-opacity hover:opacity-60",
+                            "flex h-full items-center gap-1.5 text-sm tracking-[10%] whitespace-nowrap text-black transition-opacity hover:opacity-60",
                             isActive
                               ? "font-medium hover:opacity-100"
                               : "font-normal",
@@ -127,17 +127,17 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
 
                         <div
                           className={cn(
-                            "absolute top-13.5 -left-6.5 z-50 w-78.5 border border-black bg-white px-6 pt-2 pb-9 transition-all duration-200",
+                            "absolute top-13.5 -left-6.5 z-50 w-89 border border-black bg-white p-6 transition-all duration-200",
                             isOpen
                               ? "pointer-events-auto translate-y-0 opacity-100"
                               : "pointer-events-none -translate-y-1 opacity-0",
                           )}
                         >
                           <div className="mb-4 flex items-center justify-between">
-                            <span className="font-greed-narrow text-[30px] leading-[1.34] font-medium tracking-[-2%] uppercase">
+                            <span className="font-press-start text-base leading-normal tracking-[-2%] uppercase">
                               {t(`dropdowns.${link.id}.title`)}
                             </span>
-                            <Icons.NavChevronDown className="size-5.5" />
+                            <Icons.NavChevronDown className="size-4.5" />
                           </div>
 
                           {link.dropdown.previewImage && (
@@ -145,12 +145,12 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                             <img
                               src={link.dropdown.previewImage}
                               alt={t("productPreviewAlt")}
-                              className="mb-6 h-25 w-full object-cover"
+                              className="mb-4 h-26 w-full object-cover"
                               style={{ aspectRatio: "265 / 100" }}
                             />
                           )}
 
-                          <div className="flex flex-col gap-4">
+                          <div className="flex flex-col gap-2">
                             {link.dropdown.links.map((item) => {
                               const isExternal = isExternalHref(item.href);
                               return (
@@ -163,7 +163,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                                       ? "noopener noreferrer"
                                       : undefined
                                   }
-                                  className="font-dm-mono text-base leading-[1.83] tracking-[10%] text-black/80 uppercase hover:text-black"
+                                  className="text-base leading-[1.83] tracking-[-2%] text-black/80 hover:text-black"
                                 >
                                   {t(`dropdowns.${link.id}.links.${item.id}`)}
                                   {item.arrow && (
@@ -184,7 +184,7 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                       href={link.href}
                       aria-current={isActive ? "page" : undefined}
                       className={cn(
-                        "font-dm-mono text-sm tracking-[0.2em] whitespace-nowrap text-gray-900 uppercase transition-opacity hover:opacity-60",
+                        "text-sm tracking-[10%] whitespace-nowrap text-gray-900 transition-opacity hover:opacity-60",
                         isActive ? "font-medium" : "font-normal",
                       )}
                     >
@@ -194,61 +194,63 @@ export const Navbar = forwardRef<HTMLElement, NavbarProps>(
                 })}
               </div>
 
-              <button
-                onClick={() => setIsMenuOpen((prev) => !prev)}
-                className="font-dm-mono relative flex h-[22px] w-[22px] cursor-pointer items-center justify-center text-gray-900 transition-opacity hover:opacity-70 xl:hidden"
-                aria-label={isMenuOpen ? t("closeMenu") : t("openMenu")}
-              >
-                <div
-                  className="absolute flex flex-col gap-[5px] transition-all duration-300"
-                  style={{
-                    opacity: isMenuOpen ? 0 : 1,
-                    transform: isMenuOpen
-                      ? "rotate(45deg) scale(0.5)"
-                      : "rotate(0) scale(1)",
-                  }}
-                >
-                  <Icons.MenuOpen />
-                </div>
-                <span
-                  className="font-dm-mono absolute text-2xl leading-none font-light transition-all duration-300"
-                  style={{
-                    opacity: isMenuOpen ? 1 : 0,
-                    transform: isMenuOpen
-                      ? "rotate(90deg) scale(1)"
-                      : "rotate(0) scale(0.5)",
-                  }}
-                >
-                  <Icons.Cross />
-                </span>
-              </button>
+              <div className="flex items-center gap-6 sm:gap-8 lg:gap-5">
+                <LocaleSwitcher className="shrink-0" />
 
-              <LocaleSwitcher className="hidden shrink-0 xl:block" />
-
-              {isLoggedIn ? (
-                <Link
-                  href="/dashboard"
-                  aria-label={t("goToDashboard")}
-                  // The chip is capped tighter than the login button it
-                  // replaces so that signing in cannot widen the row past
-                  // what the logged-out layout already fits.
-                  className="font-dm-mono hidden max-w-[150px] shrink-0 items-center justify-center gap-2 rounded-lg border border-black bg-white py-1 pr-3 pl-1 text-xs font-medium tracking-[0.1em] text-black uppercase shadow-[-3px_3px_0px_0px_#000000] transition-all hover:bg-black hover:text-white xl:flex"
+                <button
+                  onClick={() => setIsMenuOpen((prev) => !prev)}
+                  className="relative mr-1.5 flex h-7 w-7 cursor-pointer items-center justify-center text-gray-900 transition-opacity hover:opacity-70 xl:hidden"
+                  aria-label={isMenuOpen ? t("closeMenu") : t("openMenu")}
                 >
-                  <span className="relative h-7 w-7 shrink-0 overflow-hidden rounded-full border border-black/10">
-                    <Image
-                      src={user?.picture || getProfileImage(user?.id)}
-                      alt={user?.name || t("profileAlt")}
-                      fill
-                      className="object-cover"
-                    />
+                  <div
+                    className="absolute flex flex-col gap-[5px] transition-all duration-300"
+                    style={{
+                      opacity: isMenuOpen ? 0 : 1,
+                      transform: isMenuOpen
+                        ? "rotate(45deg) scale(0.5)"
+                        : "rotate(0) scale(0.8)",
+                    }}
+                  >
+                    <Icons.MenuOpen />
+                  </div>
+                  <span
+                    className="absolute transition-all duration-300"
+                    style={{
+                      opacity: isMenuOpen ? 1 : 0,
+                      transform: isMenuOpen
+                        ? "rotate(90deg) scale(0.7)"
+                        : "rotate(0) scale(0.5)",
+                    }}
+                  >
+                    <Icons.Cross />
                   </span>
-                  <span className="max-w-[70px] truncate">
-                    {user?.name || t("dashboard")}
-                  </span>
-                </Link>
-              ) : (
-                <AuthMenu className="hidden w-fit shrink-0 xl:block" />
-              )}
+                </button>
+
+                {isLoggedIn ? (
+                  <Link
+                    href="/dashboard"
+                    aria-label={t("goToDashboard")}
+                    // The chip is capped tighter than the login button it
+                    // replaces so that signing in cannot widen the row past
+                    // what the logged-out layout already fits.
+                    className="hidden max-w-[150px] shrink-0 items-center justify-center gap-2 rounded-lg border border-black bg-white py-1 pr-3 pl-1 text-xs font-medium tracking-[10%] text-black shadow-[-4px_4px_0px_0px_#000000] transition-all hover:bg-black hover:text-white xl:flex"
+                  >
+                    <span className="relative h-7 w-7 shrink-0 overflow-hidden rounded-full border border-black/10">
+                      <Image
+                        src={user?.picture || getProfileImage(user?.id)}
+                        alt={user?.name || t("profileAlt")}
+                        fill
+                        className="object-cover"
+                      />
+                    </span>
+                    <span className="max-w-[70px] truncate">
+                      {user?.name || t("dashboard")}
+                    </span>
+                  </Link>
+                ) : (
+                  <AuthMenu className="hidden w-fit shrink-0 xl:block" />
+                )}
+              </div>
             </div>
           </nav>
         </header>

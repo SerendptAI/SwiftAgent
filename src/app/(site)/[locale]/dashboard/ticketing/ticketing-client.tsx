@@ -139,7 +139,7 @@ export function TicketingClient() {
             placeholder="Search tickets by name, email, or subject"
             tabIndex={isSearchOpen ? 0 : -1}
             aria-hidden={!isSearchOpen}
-            className={`font-dm-mono min-w-0 bg-transparent text-sm tracking-wider text-black uppercase transition-opacity duration-500 ease-out placeholder:text-black/40 focus:outline-none ${
+            className={`min-w-0 bg-transparent text-sm tracking-wider text-black transition-opacity duration-500 ease-out placeholder:text-black/40 focus:outline-none ${
               isSearchOpen
                 ? "ml-3 flex-1 opacity-100 delay-200"
                 : "w-0 opacity-0"

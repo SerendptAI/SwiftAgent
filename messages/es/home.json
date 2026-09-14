@@ -1,14 +1,6 @@
 {
   "hero": {
-    "headline": {
-      "customer": "Atención",
-      "support": "al cliente",
-      "that": "que",
-      "doesnt": "no",
-      "scale": "dispara",
-      "your": "tu",
-      "headcount": "plantilla"
-    },
+    "headline": "Atención al cliente que no dispara tu plantilla",
     "subtitle": "Swift Agents ayuda a las empresas a automatizar las conversaciones con sus clientes, reducir la carga del equipo de soporte y ofrecer experiencias más rápidas en todos los canales.",
     "callouts": {
       "hours": "En marcha en horas, no en semanas.",

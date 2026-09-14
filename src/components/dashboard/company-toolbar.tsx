@@ -117,7 +117,7 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
         <button
           onClick={() => setIsOpen(!isOpen)}
           disabled={isLoading || companies.length === 0}
-          className="font-dm-mono flex max-w-full items-center gap-3 rounded-2xl bg-gray-50 px-4 py-3 text-sm font-normal text-gray-900 uppercase transition-colors hover:bg-gray-100 disabled:opacity-60"
+          className="flex max-w-full items-center gap-3 rounded-2xl bg-gray-50 px-4 py-3 text-sm font-normal text-gray-900 transition-colors hover:bg-gray-100 disabled:opacity-60"
         >
           <ChevronDown
             className={`h-4 w-4 text-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
@@ -141,7 +141,7 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
         )}
 
         {isOpen && (
-          <div className="animate-in fade-in slide-in-from-top-2 font-dm-mono absolute left-0 z-[70] mt-2 w-[min(calc(100vw-2rem),20rem)] rounded-2xl border border-gray-100 bg-white p-3 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] duration-200">
+          <div className="animate-in fade-in slide-in-from-top-2 absolute left-0 z-[70] mt-2 w-[min(calc(100vw-2rem),20rem)] rounded-2xl border border-gray-100 bg-white p-3 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] duration-200">
             {companies.map((company) => {
               const isSelected = selectedCompany?.id === company.id;
               return (
@@ -170,7 +170,7 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
                       </span>
                     )}
                   </div>
-                  <span className="flex-1 text-left text-sm font-bold tracking-wide text-gray-900 uppercase">
+                  <span className="flex-1 text-left text-sm font-bold tracking-wide text-gray-900">
                     {company.name}
                   </span>
                 </button>
@@ -183,7 +183,7 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100">
                 <Icons.addnewCompany className="h-5 w-5" />
               </div>
-              <span className="text-sm font-bold tracking-wide uppercase">
+              <span className="text-sm font-bold tracking-wide">
                 Add New Company
               </span>
             </button>

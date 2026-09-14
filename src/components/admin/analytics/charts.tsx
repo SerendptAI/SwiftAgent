@@ -17,13 +17,13 @@ import { SeriesPoint } from "@/lib/admin-analytics";
 const AXIS_TICK = {
   fill: "#7e7e7e",
   fontSize: 12,
-  fontFamily: "var(--font-dm-mono)",
+  fontFamily: "var(--font-jetbrains)",
 };
 
 const TOOLTIP_STYLE = {
   borderRadius: 8,
   border: "2px solid rgba(31,31,31,0.1)",
-  fontFamily: "var(--font-dm-mono)",
+  fontFamily: "var(--font-jetbrains)",
   fontSize: 12,
 } as const;
 

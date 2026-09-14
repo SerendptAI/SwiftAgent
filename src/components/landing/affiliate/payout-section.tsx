@@ -38,24 +38,24 @@ export function PayoutSection() {
         className="mx-auto flex max-w-[1000px] flex-col items-center gap-8 rounded-[8px] border border-black bg-white p-8 shadow-[-6px_8px_0px_0px_#000000] md:flex-row md:gap-12 md:p-12"
       >
         <div className="flex flex-1 flex-col gap-2">
-          <p className="font-dm-mono text-sm tracking-[0.15em] text-[#7e7e7e] uppercase">
+          <p className="text-sm leading-tight tracking-[10%] text-[#7e7e7e] uppercase">
             {t("rewardLabel")}
           </p>
-          <p className="font-greed-narrow text-[64px] font-medium text-[#f2b035]">
+          <p className="font-greed text-[64px] leading-tight font-medium tracking-[-2%] text-[#f2b035]">
             20%
           </p>
-          <p className="font-dm-mono text-[18px] text-[#1f1f1f] uppercase">
+          <p className="text-lg leading-tight font-medium tracking-[2%] text-[#1f1f1f] uppercase">
             {t("rewardCaption")}
           </p>
         </div>
 
         <div className="h-px w-full shrink-0 bg-black/15 md:h-30 md:w-px" />
 
-        <div className="flex flex-1 flex-col gap-3">
-          <h2 className="font-greed-narrow text-[28px] font-medium text-[#1f1f1f] uppercase">
+        <div className="flex flex-1 flex-col gap-4">
+          <h2 className="font-greed text-[28px] leading-tight font-medium tracking-[-2%] text-[#1f1f1f]">
             {t("heading")}
           </h2>
-          <p className="font-stolzl text-base leading-[1.6] text-[#7e7e7e]">
+          <p className="text-base leading-relaxed text-[#7e7e7e]">
             {t("body")}
           </p>
         </div>

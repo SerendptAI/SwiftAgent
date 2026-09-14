@@ -29,7 +29,7 @@ const TEXT_COLUMN_ORDER = 99;
  * `blockquote` is the stack of example prompts a user would type.
  */
 const RICH_TEXT = cn(
-  "font-stolzl text-base leading-[1.76] tracking-[2%] text-black md:text-lg",
+  "text-base leading-[1.76] tracking-[2%] text-black md:text-lg",
   "[&_p+p]:mt-3",
   "[&_ul]:mt-2 [&_ul]:list-disc [&_ul]:pl-6 [&_ul+p]:mt-3 [&_li]:mt-1",
   "[&_blockquote]:my-3 [&_blockquote]:border-l-2 [&_blockquote]:border-black/15 [&_blockquote]:pl-4",
@@ -238,7 +238,7 @@ export function CaseStudyDetail({
         >
           {mode === "fullscreen" && (
             <div className="absolute inset-x-0 top-0 flex items-center justify-between px-6 py-5 md:px-9">
-              <p className="font-dm-mono truncate pr-4 text-xs font-medium tracking-[10%] text-white uppercase md:text-[15px]">
+              <p className="truncate pr-4 text-xs font-medium tracking-[2%] text-white md:text-[15px]">
                 {active?.title}
               </p>
               <button
@@ -278,14 +278,14 @@ export function CaseStudyDetail({
             <button
               type="button"
               onClick={exitFullscreen}
-              className="flex w-full max-w-[557px] shrink-0 cursor-pointer items-center gap-3 rounded-[10px] border border-black bg-[#F6F4EF] px-3 py-2 text-left shadow-[-3px_4px_0px_0px_#000000]"
+              className="flex w-full max-w-[557px] shrink-0 cursor-pointer items-center gap-3 rounded-[10px] border border-black bg-[#F6F4EF] px-3 py-2 text-left shadow-[-4px_4px_0px_0px_#000000]"
             >
               <ProgressDisc
                 playing={playing}
                 progress={progress}
                 accentColor={DEFAULT_ACCENT_COLOR}
               />
-              <span className="font-dm-mono truncate text-sm font-medium tracking-[10%] text-black uppercase md:text-xl">
+              <span className="truncate text-sm font-medium tracking-[10%] text-black uppercase md:text-xl">
                 {active?.title}
               </span>
               <ChevronDown className="ml-auto size-6 shrink-0 text-black md:size-8" />
@@ -314,18 +314,18 @@ export function CaseStudyDetail({
           <div className="mb-6 flex items-center gap-6">
             {/* The partner name is the page's subject, so it carries the h1;
                 the size classes keep the heading looking exactly as before. */}
-            <h1 className="font-greed-narrow text-4xl leading-[1.34] font-medium tracking-[-2%] text-black uppercase sm:text-5xl md:text-[56px] lg:text-[66px]">
+            <h1 className="font-greed text-4xl leading-[1.34] font-medium tracking-[-2%] text-black sm:text-5xl md:text-[56px] lg:text-[66px]">
               {caseStudy.name}
             </h1>
             <ShareButton caseStudyId={caseStudy.id} />
           </div>
 
           <div
-            className="font-stolzl mb-8 text-sm leading-[1.66] tracking-[2%] text-black/80 md:text-base lg:text-lg [&_p+p]:mt-3"
+            className="mb-8 text-sm leading-[1.66] tracking-[2%] text-black/80 md:text-base lg:text-lg [&_p+p]:mt-3"
             dangerouslySetInnerHTML={{ __html: caseStudy.description }}
           />
 
-          <p className="font-dm-mono text-base leading-[1.2] font-medium tracking-[10%] text-black uppercase md:text-lg">
+          <p className="text-base leading-[1.2] font-medium tracking-[2%] text-black uppercase md:text-lg">
             {t("howWeHelp")}
           </p>
         </div>
@@ -347,11 +347,11 @@ export function CaseStudyDetail({
                 className={cn(
                   "mb-4 flex w-full items-center gap-3 rounded-[10px] border border-black bg-[#F6F4EF] px-3 py-2 text-left transition-transform md:mb-6",
                   useCase.video
-                    ? "cursor-pointer hover:translate-x-[-1px] hover:translate-y-[1px]"
+                    ? "cursor-pointer hover:-translate-x-px hover:translate-y-px"
                     : "cursor-default",
                   isActive
                     ? "shadow-[-1px_2px_0px_0px_#000000]"
-                    : "shadow-[-3px_4px_0px_0px_#000000]",
+                    : "shadow-[-4px_4px_0px_0px_#000000]",
                 )}
               >
                 {isActive && isVideoPlayable ? (
@@ -363,7 +363,7 @@ export function CaseStudyDetail({
                 ) : (
                   <PlayGlyph className="mx-2.5 h-[26px] w-[22px] text-black" />
                 )}
-                <span className="font-dm-mono text-sm font-medium tracking-[10%] text-black uppercase md:text-base lg:text-lg">
+                <span className="text-sm font-medium tracking-[-2%] text-black md:text-base lg:text-lg">
                   {useCase.title}
                 </span>
               </button>
@@ -390,7 +390,7 @@ export function CaseStudyDetail({
           >
             <Link
               href={getCaseStudyPath(caseStudy.id)}
-              className="font-dm-mono ml-1 flex w-fit items-center gap-3 rounded-[10px] border border-black bg-[#F6F4EF] px-4 py-2.5 text-sm font-medium tracking-[10%] text-black uppercase shadow-[-3px_4px_0px_0px_#000000] transition-transform hover:translate-x-[-1px] hover:translate-y-[1px] hover:shadow-[-2px_3px_0px_0px_#000000] md:text-base"
+              className="ml-1 flex w-fit items-center gap-3 rounded-[10px] border border-black bg-[#F6F4EF] px-4 py-2.5 text-sm font-medium tracking-[10%] text-black uppercase shadow-[-4px_4px_0px_0px_#000000] transition-transform hover:translate-x-[-1px] hover:translate-y-[1px] hover:shadow-[-2px_3px_0px_0px_#000000] md:text-base"
             >
               View full case study →
             </Link>

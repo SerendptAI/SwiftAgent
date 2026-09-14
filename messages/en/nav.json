@@ -10,28 +10,28 @@
   },
   "dropdowns": {
     "products": {
-      "title": "Our products",
+      "title": "Products",
       "links": {
         "downloadApp": "Download the Swift Agents app",
         "useSdks": "Use our SDKs"
       }
     },
     "earn": {
-      "title": "Start earning",
+      "title": "Start Earning",
       "links": {
-        "affiliate": "Affiliate program",
-        "refer": "Refer & earn"
+        "affiliate": "Affiliate Program",
+        "refer": "Refer & Earn"
       }
     },
     "demo": {
-      "title": "Try the demo",
+      "title": "Try The Demo",
       "links": {
-        "costCalculator": "Cost calculator",
-        "usecaseAnalysis": "Usecase analysis"
+        "costCalculator": "Cost Calculator",
+        "usecaseAnalysis": "Use Case Analysis"
       }
     },
     "resources": {
-      "title": "Read up",
+      "title": "Read Up",
       "links": {
         "blog": "Blog",
         "documentation": "Documentation"

@@ -88,14 +88,13 @@ interface QuestionDef {
 const INITIAL_QUESTION: QuestionDef = {
   id: "company_type",
   question: "What kind of company are you?",
-  options: BUSINESS_CATEGORY_OPTIONS.map((o) => o.label.toUpperCase()),
+  options: BUSINESS_CATEGORY_OPTIONS.map((o) => o.label),
   type: "select",
   apiMapping: {
     section: "type",
     field: "company_type",
     transform: (v) =>
-      BUSINESS_CATEGORY_OPTIONS.find((o) => o.label.toUpperCase() === v)
-        ?.value ?? "other",
+      BUSINESS_CATEGORY_OPTIONS.find((o) => o.label === v)?.value ?? "other",
   },
 };
 
@@ -401,7 +400,7 @@ export function QuestionnaireChat({
           height={140}
           className="mt-16 mb-10.5 aspect-107/126 w-full max-w-[107px] object-contain object-center"
         />
-        <h2 className="font-greed-narrow mb-15.5 text-center text-[40px] leading-[1.1] font-semibold tracking-[-2%] text-black">
+        <h2 className="font-greed mb-15.5 text-center text-[40px] leading-[1.1] font-semibold tracking-[-2%] text-black">
           Thanks for helping
           <br />
           us learn about your
@@ -465,15 +464,15 @@ export function QuestionnaireChat({
           height={140}
           className="mb-4 aspect-98/163 max-w-24.5 object-contain object-center"
         />
-        <h2 className="font-greed-narrow mb-4 text-center text-[40px] leading-[1.1] font-semibold tracking-[-2%] text-black">
+        <h2 className="font-greed mb-4 text-center text-[40px] leading-[1.1] font-semibold tracking-[-2%] text-black">
           Congratulations
         </h2>
-        <p className="font-dm-mono text-muted-foreground mb-5 text-sm leading-[1.96] tracking-[14%] uppercase">
+        <p className="text-muted-foreground mb-5 text-sm leading-[1.96] tracking-[14%]">
           All customer replies will be
           <br />
           made with this email
         </p>
-        <div className="font-greed-narrow mb-9 flex h-[62px] w-full max-w-[307px] items-center justify-center rounded-[10px] border border-black pr-2 pl-4 text-center text-lg leading-[1.1] font-semibold tracking-[-1%] sm:pl-6 sm:text-2xl">
+        <div className="font-greed mb-9 flex h-[62px] w-full max-w-[307px] items-center justify-center rounded-[10px] border border-black pr-2 pl-4 text-center text-lg leading-[1.1] font-semibold tracking-[-1%] sm:pl-6 sm:text-2xl">
           <span className="min-w-0 truncate text-black">{emailHandle}</span>
           <span className="shrink-0 whitespace-nowrap text-black/50">
             @swifty.email
@@ -522,9 +521,7 @@ export function QuestionnaireChat({
                 width={34}
                 height={34}
               />
-              <span className="font-dm-mono text-base leading-none uppercase">
-                SWIFT AGENTS
-              </span>
+              <span className="text-base leading-none">SWIFT AGENTS</span>
             </div>
             <ChevronDown className="size-8.5 stroke-1 text-black" />
           </div>
@@ -533,7 +530,7 @@ export function QuestionnaireChat({
             {entries.map((entry, entryIdx) => (
               <div key={entryIdx} className="mb-6">
                 <div className="mb-4 w-fit max-w-[274px] rounded-3xl bg-blue-50 px-4 py-2.5">
-                  <p className="font-stolzl text-sm leading-6 text-[#006BE5]">
+                  <p className="text-sm leading-6 text-[#006BE5]">
                     {entry.question}
                   </p>
                 </div>
@@ -547,7 +544,7 @@ export function QuestionnaireChat({
                           key={option}
                           disabled={!!entry.selected}
                           onClick={() => handleSelectOption(option)}
-                          className={`font-dm-mono flex items-center gap-2 border px-4 py-2 text-left text-sm leading-normal uppercase transition-colors ${
+                          className={`flex items-center gap-2 border px-4 py-2 text-left text-sm leading-normal transition-colors ${
                             isSelected
                               ? "border-[#E8613C] bg-[#E8613C] text-white"
                               : entry.selected
@@ -587,7 +584,7 @@ export function QuestionnaireChat({
                         />
                         {item.status !== "done" && (
                           <p
-                            className={`font-dm-mono mt-2 text-[10px] font-bold tracking-wider uppercase ${
+                            className={`mt-2 text-[10px] font-bold tracking-wider ${
                               item.status === "error"
                                 ? "text-red-500"
                                 : "text-gray-400"
@@ -599,7 +596,7 @@ export function QuestionnaireChat({
                           </p>
                         )}
                         {item.status === "error" && item.error && (
-                          <p className="font-dm-mono mt-1 max-w-[200px] text-right text-[10px] leading-snug text-red-500">
+                          <p className="mt-1 max-w-[200px] text-right text-[10px] leading-snug text-red-500">
                             {item.error}
                           </p>
                         )}
@@ -625,12 +622,12 @@ export function QuestionnaireChat({
                             : "bg-blue-600"
                       }`}
                     >
-                      <p className="font-dm-mono text-xs font-bold tracking-wider text-white">
+                      <p className="text-xs font-bold tracking-wider text-white">
                         {item.label}
                         {statusLabel}
                       </p>
                       {item.status === "error" && item.error && (
-                        <p className="font-dm-mono mt-1 text-[11px] leading-snug text-white/90">
+                        <p className="mt-1 text-[11px] leading-snug text-white/90">
                           {item.error}
                         </p>
                       )}
@@ -660,7 +657,7 @@ export function QuestionnaireChat({
                   onKeyDown={(e) => e.key === "Enter" && handleTextSubmit()}
                   placeholder="Ask a question"
                   disabled={ingestKnowledge.isPending}
-                  className="font-dm-mono flex-1 text-sm outline-none placeholder:text-gray-400 disabled:opacity-50"
+                  className="flex-1 text-sm outline-none placeholder:text-gray-400 disabled:opacity-50"
                 />
                 <button
                   onClick={handleTextSubmit}
@@ -712,7 +709,7 @@ function PrimaryActionButton({
     <button
       onClick={onClick}
       disabled={disabled}
-      className="font-dm-mono h-9 w-full cursor-pointer rounded-[13px] bg-[#006BE5] text-center text-sm leading-none text-white uppercase transition-colors hover:bg-[#0055B8] disabled:cursor-not-allowed disabled:opacity-50"
+      className="h-9 w-full cursor-pointer rounded-[13px] bg-[#006BE5] text-center text-sm leading-none text-white transition-colors hover:bg-[#0055B8] disabled:cursor-not-allowed disabled:opacity-50"
     >
       {children}
     </button>
@@ -782,7 +779,7 @@ function EmailPickerScreen({
         height={180}
         className="mb-7.5 aspect-93/186 w-full max-w-[93px] object-contain object-center"
       />
-      <p className="font-dm-mono text-muted-foreground mb-10 text-sm leading-[1.96] tracking-[14%] uppercase">
+      <p className="text-muted-foreground mb-10 text-sm leading-[1.96] tracking-[14%]">
         This is the email address that will be used to communicate with
         customers via email, it should correspond with your company name
       </p>
@@ -793,13 +790,13 @@ function EmailPickerScreen({
             onChange(e.target.value.toLowerCase().replace(/\s+/g, ""))
           }
           placeholder="companyname"
-          className="font-greed-narrow mr-2 min-w-0 flex-1 text-lg leading-[1.1] font-semibold tracking-[-1%] text-black outline-none placeholder:text-black/20 sm:text-2xl"
+          className="font-greed mr-2 min-w-0 flex-1 text-lg leading-[1.1] font-semibold tracking-[-1%] text-black outline-none placeholder:text-black/20 sm:text-2xl"
         />
-        <span className="font-greed-narrow shrink-0 text-lg leading-[1.1] font-semibold tracking-[-1%] whitespace-nowrap text-black/50 sm:text-2xl">
+        <span className="font-greed shrink-0 text-lg leading-[1.1] font-semibold tracking-[-1%] whitespace-nowrap text-black/50 sm:text-2xl">
           @swifty.email
         </span>
       </div>
-      <div className="font-dm-mono mb-5.5 flex items-center gap-1.5 text-xs leading-[1.96] tracking-[10%] uppercase">
+      <div className="mb-5.5 flex items-center gap-1.5 text-xs leading-[1.96] tracking-[10%]">
         {availability === "checking" && (
           <span className="text-gray-400">Checking availability…</span>
         )}

@@ -54,16 +54,16 @@ function SectionError({ onRetry }: { onRetry: () => void }) {
     <div
       className={cn(CARD, "flex flex-col items-center gap-3 py-16 text-center")}
     >
-      <h2 className="font-greed-narrow text-[18px] text-[#1f1f1f]">
+      <h2 className="font-greed text-[18px] text-[#1f1f1f]">
         Analytics unavailable
       </h2>
-      <p className="font-stolzl max-w-md text-[14px] text-[#7e7e7e]">
+      <p className="max-w-md text-[14px] text-[#7e7e7e]">
         The analytics service did not respond, so nothing is shown here rather
         than figures that might be out of date.
       </p>
       <button
         onClick={onRetry}
-        className="font-dm-mono mt-1 rounded-[6px] border-2 border-[rgba(31,31,31,0.1)] bg-[#6433cc] px-4 py-2 text-[12px] text-white uppercase transition-opacity hover:opacity-90"
+        className="mt-1 rounded-[6px] border-2 border-[rgba(31,31,31,0.1)] bg-[#6433cc] px-4 py-2 text-[12px] text-white uppercase transition-opacity hover:opacity-90"
       >
         Retry
       </button>
