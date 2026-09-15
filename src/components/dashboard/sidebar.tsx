@@ -1,12 +1,19 @@
 "use client";
 
-import { Invoice01Icon, Settings01Icon, Ticket02Icon } from "hugeicons-react";
 import Image from "next/image";
 
 import { NavItem } from "@/components/dashboard/nav-item";
-import { Icons } from "@/components/icons";
-import { HugeiconsIcon } from "@/components/ui/hugeicons-icon";
 import { useTickets } from "@/hooks/use-tickets";
+
+function sidebarIcon(src: string, alt: string) {
+  return function SidebarIcon(props: { className?: string }) {
+    return (
+      <span className={`relative block ${props.className ?? ""}`}>
+        <Image src={src} alt={alt} fill className="object-contain" />
+      </span>
+    );
+  };
+}
 
 export function Sidebar() {
   const { data: tickets } = useTickets();
@@ -16,33 +23,33 @@ export function Sidebar() {
   const navItems = [
     {
       href: "/dashboard",
-      icon: (props: { className?: string }) => <Icons.Document {...props} />,
-      activeIcon: (props: { className?: string }) => (
-        <Icons.DocumentBold {...props} />
-      ),
+      icon: sidebarIcon("/icons/smart-home.svg", "Dashboard"),
       label: "Dashboard",
     },
     {
       href: "/dashboard/ticketing",
-      icon: (props: { className?: string }) => (
-        <HugeiconsIcon icon={Ticket02Icon} {...props} />
-      ),
-      label: "Ticketing",
+      icon: sidebarIcon("/icons/gmail.svg", "Messages"),
+      label: "Messages",
       badgeCount: pendingTicketsCount,
     },
     {
       href: "/dashboard/billing",
-      icon: (props: { className?: string }) => (
-        <HugeiconsIcon icon={Invoice01Icon} {...props} />
-      ),
+      icon: sidebarIcon("/icons/label.svg", "Billing"),
       label: "Billing",
     },
-
+    {
+      href: "/dashboard/agents",
+      icon: sidebarIcon("/icons/ai-scan.svg", "Agents"),
+      label: "Agents",
+    },
+    {
+      href: "/dashboard/knowledge-base",
+      icon: sidebarIcon("/icons/package.svg", "Knowledge Base"),
+      label: "Knowledge Base",
+    },
     {
       href: "/dashboard/settings",
-      icon: (props: { className?: string }) => (
-        <HugeiconsIcon icon={Settings01Icon} {...props} />
-      ),
+      icon: sidebarIcon("/icons/settings.svg", "Settings"),
       label: "Settings",
     },
   ];
