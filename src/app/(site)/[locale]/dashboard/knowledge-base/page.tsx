@@ -1,3 +1,5 @@
+import { KnowledgeBaseClient } from "./knowledge-base-client";
+
 export default function KnowledgeBasePage() {
-  return null;
+  return <KnowledgeBaseClient />;
 }
