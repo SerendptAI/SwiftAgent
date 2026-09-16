@@ -27,7 +27,7 @@ export default function DashboardLayout({
             <div className="flex h-full min-h-0 min-w-0 flex-col">
               <Header />
               <main className="flex min-h-0 min-w-0 flex-1 gap-4 overflow-visible px-4 pb-24 md:h-full md:overflow-hidden md:p-4 lg:gap-6 lg:p-6">
-                <div className="scrollbar-none min-h-0 min-w-0 flex-1 rounded-[20px] md:h-full md:overflow-y-auto md:rounded-3xl">
+                <div className="scrollbar-none min-h-0 min-w-0 flex-1 rounded-2xl md:h-full md:overflow-y-auto">
                   {children}
                 </div>
               </main>
