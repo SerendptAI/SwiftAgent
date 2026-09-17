@@ -37,7 +37,9 @@ export function NavItem({
         aria-label={label}
         className={cn(
           "bg-muted relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl transition-all duration-200 md:h-16 md:w-16",
-          isActive ? "" : "text-muted-foreground hover:bg-muted",
+          {
+            "text-muted-foreground hover:bg-muted": !isActive,
+          },
           className,
         )}
         style={
@@ -45,7 +47,6 @@ export function NavItem({
             ? activeColor
               ? {
                   backgroundColor: activeColor,
-                  boxShadow: `0 0 0 1.5px ${activeColor}40`,
                   color: "white",
                 }
               : {
@@ -54,12 +55,6 @@ export function NavItem({
             : undefined
         }
       >
-        {isActive && activeColor && (
-          <span
-            className="absolute top-1/2 left-0 h-6 w-[3px] -translate-y-1/2 rounded-r-full"
-            style={{ backgroundColor: activeColor }}
-          />
-        )}
         {createElement(isActive && activeIcon ? activeIcon : icon, {
           className: `${iconClassName} ${!isActive ? "opacity-50" : "opacity-100"} transition-opacity duration-200`,
           style: {

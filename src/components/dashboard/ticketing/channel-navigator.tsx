@@ -33,6 +33,14 @@ const CHANNELS: Channel[] = [
     activeIcon: "text-white",
     badgeBg: "bg-[#6433CC]",
   },
+  // {
+  //   key: "mail",
+  //   label: "Business Emails",
+  //   icon: Icons.ticketEmail,
+  //   activeBg: "bg-[#F25430]",
+  //   activeIcon: "text-white",
+  //   badgeBg: "bg-[#6433CC]",
+  // },
 ];
 
 interface ChannelNavigatorProps {
@@ -60,7 +68,7 @@ export function ChannelNavigator({ active, onChange }: ChannelNavigatorProps) {
             <button
               type="button"
               onClick={() => onChange(ch.key)}
-              className={`relative flex h-13 min-w-0 flex-1 cursor-pointer items-center justify-center gap-2 rounded-2xl px-3 transition-colors sm:h-14 lg:h-20 lg:w-20 lg:flex-none lg:px-0 ${
+              className={`relative flex h-12 min-w-0 flex-1 cursor-pointer items-center justify-center gap-2 rounded-2xl px-3 transition-colors lg:h-16 lg:w-16 lg:flex-none lg:px-0 ${
                 isActive
                   ? `${ch.activeBg} shadow-sm`
                   : "bg-[#F6F6F6] hover:bg-gray-100"
@@ -71,7 +79,7 @@ export function ChannelNavigator({ active, onChange }: ChannelNavigatorProps) {
               aria-pressed={isActive}
             >
               <Icon
-                className={`h-6 w-6 shrink-0 lg:h-10 lg:w-10 ${
+                className={`h-6 w-6 shrink-0 lg:h-8 lg:w-8 ${
                   isActive ? ch.activeIcon : "text-gray-500"
                 }`}
               />
