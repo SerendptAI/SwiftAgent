@@ -1,3 +1,3 @@
 export function BusinessEmailsTabContent() {
-  return null;
+  return <div>Business Emails Content</div>;
 }
