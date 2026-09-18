@@ -52,4 +52,11 @@ export const strollApi = {
     );
     return data;
   },
+
+  /**
+   * Trigger an immediate, out-of-schedule stroll for a company.
+   */
+  run: async (companyId: string): Promise<void> => {
+    await apiClient.post(`/api/v1/stroll/${companyId}/run`);
+  },
 };

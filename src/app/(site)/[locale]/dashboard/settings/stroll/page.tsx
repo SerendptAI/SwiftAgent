@@ -13,11 +13,17 @@ import {
   type StrollFormValue,
 } from "@/components/dashboard/stroll-config-fields";
 import { useActiveCompanyId } from "@/hooks/use-active-company";
-import { useStrollConfig, useUpdateStrollConfig } from "@/hooks/use-stroll";
+import {
+  useRunStroll,
+  useStrollConfig,
+  useUpdateStrollConfig,
+} from "@/hooks/use-stroll";
 import { getApiErrorMessage } from "@/lib/api-error";
 
 const CARD_CLASS =
   "flex min-h-[360px] flex-col gap-5 rounded-[20px] bg-white p-3 shadow-sm sm:min-h-[450px] sm:gap-6 sm:rounded-xl sm:p-4";
+
+const STROLL_NOW_COOLDOWN_MS = 30_000;
 
 export default function StrollSettingsPage() {
   const companyId = useActiveCompanyId();
@@ -29,12 +35,35 @@ export default function StrollSettingsPage() {
     refetch,
   } = useStrollConfig(companyId);
   const updateConfig = useUpdateStrollConfig();
+  const runStroll = useRunStroll();
 
   const [form, setForm] = useState<StrollFormValue>(emptyStrollForm);
   const [status, setStatus] = useState<{
     kind: "success" | "error";
     message: string;
   } | null>(null);
+  const [cooldownUntil, setCooldownUntil] = useState<number | null>(null);
+  const [cooldownSecondsLeft, setCooldownSecondsLeft] = useState(0);
+
+  // The cooldown is wall-clock based rather than a plain countdown so it
+  // keeps ticking correctly even if the tab was backgrounded and timers were
+  // throttled.
+  useEffect(() => {
+    if (!cooldownUntil) return;
+
+    const tick = () => {
+      const secondsLeft = Math.max(
+        0,
+        Math.ceil((cooldownUntil - Date.now()) / 1000),
+      );
+      setCooldownSecondsLeft(secondsLeft);
+      if (secondsLeft === 0) setCooldownUntil(null);
+    };
+
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, [cooldownUntil]);
 
   // The active company comes from a store rather than the route, so switching
   // company re-runs this query without remounting the page. `config` is null
@@ -75,6 +104,25 @@ export default function StrollSettingsPage() {
           "Could not save the configuration. Please try again.",
         ),
       });
+    }
+  };
+
+  const handleStrollNow = async () => {
+    if (!companyId) return;
+    setStatus(null);
+    try {
+      await runStroll.mutateAsync(companyId);
+      setStatus({ kind: "success", message: "Stroll started." });
+    } catch (err) {
+      setStatus({
+        kind: "error",
+        message: getApiErrorMessage(
+          err,
+          "Could not start the stroll. Please try again.",
+        ),
+      });
+    } finally {
+      setCooldownUntil(Date.now() + STROLL_NOW_COOLDOWN_MS);
     }
   };
 
@@ -146,18 +194,35 @@ export default function StrollSettingsPage() {
             </p>
           )}
 
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={updateConfig.isPending}
-            className="flex h-11 items-center justify-center gap-2 self-start rounded-2xl bg-[#006BE5] px-6 text-sm font-bold tracking-[2%] text-white shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#0055B8] disabled:cursor-not-allowed disabled:opacity-50 sm:h-10"
-          >
-            {updateConfig.isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              "Save"
-            )}
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={updateConfig.isPending}
+              className="flex h-11 items-center justify-center gap-2 self-start rounded-2xl bg-[#006BE5] px-6 text-sm font-bold tracking-[2%] text-white shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-[#0055B8] disabled:cursor-not-allowed disabled:opacity-50 sm:h-10"
+            >
+              {updateConfig.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Save"
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleStrollNow}
+              disabled={runStroll.isPending || cooldownUntil !== null}
+              className="flex h-11 items-center justify-center gap-2 self-start rounded-2xl border border-gray-200 bg-white px-6 text-sm font-bold tracking-[2%] text-gray-900 shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 sm:h-10"
+            >
+              {runStroll.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : cooldownUntil ? (
+                `Stroll Now (${cooldownSecondsLeft}s)`
+              ) : (
+                "Stroll Now"
+              )}
+            </button>
+          </div>
         </>
       )}
     </div>
