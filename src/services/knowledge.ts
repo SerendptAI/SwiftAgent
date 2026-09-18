@@ -20,6 +20,24 @@ export interface KnowledgeEntry {
   created_at: string;
 }
 
+/** A list row. The list endpoint leaves out `content` and `metadata`. */
+export interface KnowledgeEntrySummary {
+  id: string;
+  user_id: string;
+  title: string;
+  company_id: string | null;
+  category: string | null;
+  created_at: string;
+}
+
+export interface KnowledgeEntryPage {
+  items: KnowledgeEntrySummary[];
+  total: number;
+  limit: number;
+  skip: number;
+  has_next: boolean;
+}
+
 export interface IngestKnowledgePayload {
   title: string;
   content: string;
@@ -27,6 +45,29 @@ export interface IngestKnowledgePayload {
   category?: string;
   metadata?: Record<string, unknown>;
 }
+
+export interface KnowledgeSearchResult {
+  title: string;
+  content: string;
+  score: number;
+  metadata: Record<string, unknown>;
+}
+
+export interface QueryKnowledgePayload {
+  query: string;
+  company_id: string;
+  limit?: number;
+  threshold?: number;
+}
+
+export interface QueryKnowledgeResponse {
+  results: KnowledgeSearchResult[];
+  confidence: number;
+  /** True when confidence is below the threshold and a human should step in. */
+  escalate: boolean;
+}
+
+export const KNOWLEDGE_PAGE_SIZE = 20;
 
 // Uploads can be much larger than JSON calls; give them a generous ceiling.
 const UPLOAD_TIMEOUT_MS = 120_000;
@@ -65,6 +106,30 @@ export const knowledgeApi = {
 
     if (Array.isArray(data)) return data;
     return data?.documents ?? data?.items ?? [];
+  },
+
+  /** One page of text entries, oldest first. */
+  listEntries: async (
+    companyId: string,
+    skip: number,
+    limit: number = KNOWLEDGE_PAGE_SIZE,
+  ): Promise<KnowledgeEntryPage> => {
+    const { data } = await apiClient.get<KnowledgeEntryPage>(
+      "/api/v1/knowledge/",
+      { params: { company_id: companyId, skip, limit } },
+    );
+    return data;
+  },
+
+  /** Semantic search over the company's knowledge base. */
+  queryKnowledge: async (
+    payload: QueryKnowledgePayload,
+  ): Promise<QueryKnowledgeResponse> => {
+    const { data } = await apiClient.post<QueryKnowledgeResponse>(
+      "/api/v1/knowledge/query",
+      payload,
+    );
+    return data;
   },
 
   /**
