@@ -10,12 +10,14 @@ interface DashboardSearchToolbarProps {
   searchQuery: string;
   onSearchQueryChange: (value: string) => void;
   searchPlaceholder: string;
+  showSearchButton?: boolean;
 }
 
 export function DashboardSearchToolbar({
   searchQuery,
   onSearchQueryChange,
   searchPlaceholder,
+  showSearchButton = true,
 }: DashboardSearchToolbarProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -30,6 +32,14 @@ export function DashboardSearchToolbar({
     setIsSearchOpen(false);
     onSearchQueryChange("");
   };
+
+  if (!showSearchButton) {
+    return (
+      <div className="w-full">
+        <CompanyToolbar />
+      </div>
+    );
+  }
 
   return (
     <>

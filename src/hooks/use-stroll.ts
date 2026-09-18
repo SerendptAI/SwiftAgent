@@ -35,3 +35,9 @@ export function useUpdateStrollConfig() {
     },
   });
 }
+
+export function useRunStroll() {
+  return useMutation({
+    mutationFn: (companyId: string) => strollApi.run(companyId),
+  });
+}
