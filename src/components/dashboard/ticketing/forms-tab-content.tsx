@@ -266,6 +266,10 @@ function FormsEmptyState({
   );
 }
 
+// Online form creation is hidden for now — existing online forms still
+// render and can be edited, this just removes it from the creation menu.
+const CREATABLE_FORM_TYPES: FormType[] = ["website"];
+
 function CreateFormMenu({
   onSelect,
   widthClass = "w-[430px]",
@@ -277,15 +281,13 @@ function CreateFormMenu({
     <div
       className={`${widthClass} max-w-[calc(100vw-2rem)] rounded-xl bg-white px-2 py-1.5 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] lg:max-w-[calc(100vw-3rem)] lg:px-3 lg:py-2`}
     >
-      {(["website", "online"] as FormType[]).map((type, index) => {
+      {CREATABLE_FORM_TYPES.map((type) => {
         const meta = FORM_TYPE_META[type];
         return (
           <button
             key={type}
             type="button"
-            className={`flex h-10 w-full cursor-pointer items-center gap-2 px-2 text-left transition-colors hover:bg-gray-50 lg:h-12 lg:gap-3 lg:px-3 ${
-              index === 0 ? "border-b border-[#808080]" : ""
-            }`}
+            className="flex h-10 w-full cursor-pointer items-center gap-2 px-2 text-left transition-colors hover:bg-gray-50 lg:h-12 lg:gap-3 lg:px-3"
             onClick={() => onSelect(type)}
           >
             <Image
