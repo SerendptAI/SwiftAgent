@@ -44,7 +44,7 @@ import {
   type ApiIntegrationValue,
   CollapsibleSection,
   emptyApiIntegration,
-  PaymentSandboxSection,
+  // PaymentSandboxSection,
   RouteToHumanSection,
   SuggestedQuestionsSection,
 } from "./chatbot-settings-sections";
@@ -628,7 +628,7 @@ function ChatbotSettingsSidebar({
             <StrollConfigFields value={strollForm} onChange={setStrollForm} />
           </CollapsibleSection>
 
-          <PaymentSandboxSection />
+          {/* <PaymentSandboxSection /> */}
           <ApiIntegrationSection
             value={apiIntegration}
             onChange={setApiIntegration}

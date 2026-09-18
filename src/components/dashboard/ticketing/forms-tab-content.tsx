@@ -4,6 +4,7 @@ import {
   ChevronDown,
   Info,
   Loader2,
+  MoreVertical,
   Pencil,
   Plus,
   Send,
@@ -38,6 +39,7 @@ import {
   useReplyToSubmission,
 } from "@/hooks/use-forms";
 import { useScrollLock } from "@/hooks/use-scroll-lock";
+import { cn } from "@/lib/utils";
 import type { Form, OverviewPage, Submission } from "@/services/forms";
 import { getFormDisplayName, getSubmissionDisplayName } from "@/services/forms";
 
@@ -179,7 +181,7 @@ function EmptyStateCenter({ lines }: { lines: string[] }) {
 function InboxHeader() {
   return (
     <div className="absolute top-5 left-5 z-10 sm:top-9 sm:left-10">
-      <h2 className="text-xl font-bold tracking-[-0.02em] text-black sm:text-2xl">
+      <h2 className="text-xl font-bold tracking-[2%] text-black sm:text-2xl">
         Inbox
       </h2>
     </div>
@@ -197,11 +199,11 @@ function StatusControls({
 }) {
   return (
     <div className="flex items-center justify-between gap-3 sm:gap-6">
-      <div className="flex min-w-0 items-center gap-2 sm:gap-8">
+      <div className="flex min-w-0 items-center gap-2 sm:gap-4">
         <button
           type="button"
           onClick={() => onStatusChange("unread")}
-          className={`flex h-9 cursor-pointer items-center gap-1.5 rounded-lg px-2.5 text-xs font-normal sm:h-12 sm:gap-2 sm:rounded-xl sm:px-5 sm:text-base ${
+          className={`flex h-9 cursor-pointer items-center gap-1.5 rounded-lg px-2.5 text-xs font-normal sm:h-12 sm:gap-2 sm:px-5 sm:text-base ${
             activeStatus === "unread"
               ? "bg-[#808080] text-white"
               : "bg-[#F6F6F6] text-black"
@@ -214,7 +216,7 @@ function StatusControls({
         <button
           type="button"
           onClick={() => onStatusChange("read")}
-          className={`flex h-9 cursor-pointer items-center gap-1.5 rounded-lg px-2.5 text-xs font-normal sm:h-12 sm:gap-2 sm:rounded-xl sm:px-5 sm:text-base ${
+          className={`flex h-9 cursor-pointer items-center gap-1.5 rounded-lg px-2.5 text-xs font-normal sm:h-12 sm:gap-2 sm:px-5 sm:text-base ${
             activeStatus === "read"
               ? "bg-[#808080] text-white"
               : "bg-[#F6F6F6] text-black"
@@ -225,15 +227,17 @@ function StatusControls({
           <span>Read</span>
         </button>
       </div>
-      <button
-        type="button"
-        aria-label="Form settings"
-        onClick={onSettings}
-        disabled={!onSettings}
-        className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg text-[#808080] transition-colors hover:bg-[#F6F6F6] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent sm:h-12 sm:w-12 sm:rounded-xl"
-      >
-        <Settings className="h-5 w-5 sm:h-7 sm:w-7" />
-      </button>
+      {onSettings && (
+        <button
+          type="button"
+          aria-label="Form settings"
+          onClick={onSettings}
+          disabled={!onSettings}
+          className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg text-[#808080] transition-colors hover:bg-[#F6F6F6] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent sm:h-12 sm:w-12"
+        >
+          <Settings className="h-5 w-5 sm:h-7 sm:w-7" />
+        </button>
+      )}
     </div>
   );
 }
@@ -292,7 +296,7 @@ function CreateFormMenu({
               className="h-[18px] w-[18px] shrink-0 lg:h-[23px] lg:w-[23px]"
             />
             <span
-              className={`min-w-0 flex-1 truncate text-xs font-normal tracking-[0.1em] lg:text-base lg:tracking-[0.18em] ${meta.textColor}`}
+              className={`min-w-0 flex-1 truncate text-xs font-normal tracking-[2%] lg:text-base ${meta.textColor}`}
             >
               {meta.label}
             </span>
@@ -325,10 +329,12 @@ function FormsToolbar({
 }) {
   const [isFormMenuOpen, setIsFormMenuOpen] = useState(false);
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false);
+  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
   const formDropdownRef = useRef<HTMLDivElement>(null);
   const createDropdownRef = useRef<HTMLDivElement>(null);
+  const moreMenuRef = useRef<HTMLDivElement>(null);
   const selectedForm = forms.find((f) => f.id === selectedFormId) ?? null;
-  useScrollLock(isFormMenuOpen || isCreateMenuOpen);
+  useScrollLock(isFormMenuOpen || isCreateMenuOpen || isMoreMenuOpen);
 
   const handleCreateForm = (type: FormType) => {
     setIsCreateMenuOpen(false);
@@ -354,61 +360,47 @@ function FormsToolbar({
       ) {
         setIsCreateMenuOpen(false);
       }
+      if (
+        moreMenuRef.current &&
+        !moreMenuRef.current.contains(event.target as Node)
+      ) {
+        setIsMoreMenuOpen(false);
+      }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
-    <div className="grid shrink-0 grid-cols-1 gap-3 lg:h-15 lg:grid-cols-12 lg:gap-8">
-      <div
-        className={`grid min-w-0 grid-cols-3 gap-2 lg:col-span-7 lg:flex lg:items-center lg:gap-8 ${
-          isCreateMenuOpen ? "relative z-[90]" : ""
-        }`}
-      >
+    <div
+      className={cn("flex shrink-0 items-center gap-3 lg:h-15 lg:gap-4", {
+        "relative z-90": isCreateMenuOpen || isMoreMenuOpen,
+      })}
+    >
+      <div ref={createDropdownRef} className="relative shrink-0">
         <button
           type="button"
-          onClick={onDelete}
-          disabled={forms.length === 0}
-          className="flex h-12 min-w-0 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#6433CC] px-3 text-xs font-normal tracking-[0.12em] text-white transition-colors hover:bg-[#572bb5] disabled:cursor-not-allowed disabled:opacity-50 lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
+          aria-label="Create form"
+          onClick={() => setIsCreateMenuOpen((open) => !open)}
+          className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-[18px] bg-[#006BE5] text-white shadow-sm transition-colors hover:bg-[#005fca] lg:h-15 lg:w-15 lg:rounded-[22px]"
+          aria-expanded={isCreateMenuOpen}
         >
-          <Trash2 className="h-4 w-4 shrink-0 lg:h-5 lg:w-5" />
-          <span className="truncate">Delete</span>
-        </button>
-        <button
-          type="button"
-          onClick={onEdit}
-          disabled={forms.length === 0}
-          className="flex h-12 min-w-0 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#F25430] px-3 text-xs font-normal tracking-[0.12em] text-white transition-colors hover:bg-[#d94526] disabled:cursor-not-allowed disabled:opacity-50 lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
-        >
-          <Pencil className="h-4 w-4 shrink-0 lg:h-5 lg:w-5" />
-          <span className="truncate">Edit</span>
-        </button>
-        <div ref={createDropdownRef} className="relative min-w-0 flex-1">
-          <button
-            type="button"
-            onClick={() => setIsCreateMenuOpen((open) => !open)}
-            className="flex h-12 w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-[#006BE5] px-3 text-xs font-normal tracking-[0.12em] text-white transition-colors hover:bg-[#005fca] lg:h-15 lg:gap-2 lg:px-5 lg:text-base lg:tracking-[0.18em]"
-            aria-expanded={isCreateMenuOpen}
-          >
-            {isCreateMenuOpen ? (
-              <X className="h-4 w-4 shrink-0 lg:h-5 lg:w-5" />
-            ) : (
-              <Plus className="h-4 w-4 shrink-0 lg:h-5 lg:w-5" />
-            )}
-            <span className="truncate">Create</span>
-          </button>
-          {isCreateMenuOpen && (
-            <div className="animate-in fade-in slide-in-from-top-2 absolute top-[calc(100%+0.75rem)] right-0 z-[70] duration-200 lg:top-[calc(100%+1rem)] lg:right-[-1.25rem]">
-              <CreateFormMenu onSelect={handleCreateForm} />
-            </div>
+          {isCreateMenuOpen ? (
+            <X className="h-5 w-5 lg:h-6 lg:w-6" />
+          ) : (
+            <Plus className="h-5 w-5 lg:h-6 lg:w-6" />
           )}
-        </div>
+        </button>
+        {isCreateMenuOpen && (
+          <div className="animate-in fade-in slide-in-from-top-2 absolute top-[calc(100%+0.75rem)] left-0 z-[70] duration-200">
+            <CreateFormMenu onSelect={handleCreateForm} />
+          </div>
+        )}
       </div>
 
       <div
         ref={formDropdownRef}
-        className={`relative min-w-0 lg:col-span-5 ${isFormMenuOpen ? "z-[70]" : ""}`}
+        className={`relative min-w-0 flex-1 ${isFormMenuOpen ? "z-[70]" : ""}`}
       >
         {isFormMenuOpen && (
           <button
@@ -420,7 +412,7 @@ function FormsToolbar({
         )}
 
         <div className="relative z-[70] flex h-12 min-w-0 items-center rounded-[18px] border border-[#EDEDED] bg-white px-2 shadow-sm lg:h-15 lg:rounded-[22px] lg:px-4">
-          <div className="shrink-0 pr-2 pl-1 text-xs font-normal tracking-[0.1em] text-black lg:pr-5 lg:pl-3 lg:text-base lg:tracking-[0.16em]">
+          <div className="shrink-0 pr-2 pl-1 text-xs font-normal tracking-[2%] text-black lg:pr-5 lg:pl-3 lg:text-base">
             Forms
           </div>
           <button
@@ -438,7 +430,7 @@ function FormsToolbar({
                 className="ml-0.5 h-[18px] w-[18px] shrink-0 lg:ml-1 lg:h-[23px] lg:w-[23px]"
               />
             )}
-            <span className="min-w-0 flex-1 truncate text-xs font-normal tracking-[0.1em] text-black lg:text-base lg:tracking-[0.18em]">
+            <span className="min-w-0 flex-1 truncate text-xs font-normal tracking-[2%] text-black lg:text-base">
               {selectedForm
                 ? getFormDisplayName(selectedForm)
                 : forms.length > 0
@@ -466,7 +458,7 @@ function FormsToolbar({
                   }}
                 >
                   <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-[#6433CC] lg:h-[23px] lg:w-[23px]" />
-                  <span className="min-w-0 flex-1 truncate text-xs font-medium tracking-[0.1em] text-[#6433CC] lg:text-base lg:tracking-[0.18em]">
+                  <span className="min-w-0 flex-1 truncate text-xs font-medium tracking-[2%] text-[#6433CC] lg:text-base">
                     All Forms
                   </span>
                 </button>
@@ -487,13 +479,52 @@ function FormsToolbar({
                       height={23}
                       className="h-[18px] w-[18px] shrink-0 lg:h-[23px] lg:w-[23px]"
                     />
-                    <span className="min-w-0 flex-1 truncate text-xs font-normal tracking-[0.1em] text-black lg:text-base lg:tracking-[0.18em]">
+                    <span className="min-w-0 flex-1 truncate text-xs font-normal tracking-[2%] text-black lg:text-base">
                       {getFormDisplayName(form)}
                     </span>
                   </button>
                 ))}
               </div>
             )}
+          </div>
+        )}
+      </div>
+
+      <div ref={moreMenuRef} className="relative shrink-0">
+        <button
+          type="button"
+          aria-label="Form actions"
+          aria-expanded={isMoreMenuOpen}
+          onClick={() => setIsMoreMenuOpen((open) => !open)}
+          disabled={forms.length === 0}
+          className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-[18px] bg-[#F6F6F6] text-black transition-colors hover:bg-[#E5E5E5] disabled:cursor-not-allowed disabled:opacity-40 lg:h-15 lg:w-15 lg:rounded-[22px]"
+        >
+          <MoreVertical className="h-5 w-5 lg:h-6 lg:w-6" />
+        </button>
+        {isMoreMenuOpen && (
+          <div className="animate-in fade-in slide-in-from-top-2 absolute top-[calc(100%+0.5rem)] right-0 z-[70] w-48 overflow-hidden rounded-xl bg-white py-1.5 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] duration-200">
+            <button
+              type="button"
+              onClick={() => {
+                setIsMoreMenuOpen(false);
+                onEdit();
+              }}
+              className="flex h-11 w-full cursor-pointer items-center gap-2.5 px-3.5 text-left text-sm tracking-[2%] text-black transition-colors hover:bg-gray-50"
+            >
+              <Pencil className="h-4 w-4 shrink-0" />
+              Edit forms
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setIsMoreMenuOpen(false);
+                onDelete();
+              }}
+              className="flex h-11 w-full cursor-pointer items-center gap-2.5 px-3.5 text-left text-sm tracking-[2%] text-[#F25430] transition-colors hover:bg-[#F25430]/10"
+            >
+              <Trash2 className="h-4 w-4 shrink-0" />
+              Delete forms
+            </button>
           </div>
         )}
       </div>
@@ -550,7 +581,7 @@ function SubmissionNameDropdown({
           height={23}
           className="h-[23px] w-[23px] shrink-0"
         />
-        <span className="min-w-0 flex-1 truncate text-base font-normal tracking-[0.12em] text-black">
+        <span className="min-w-0 flex-1 truncate text-base font-normal tracking-[2%] text-black">
           {getSubmissionDisplayName(selected)}
         </span>
         <ChevronDown
@@ -564,7 +595,7 @@ function SubmissionNameDropdown({
             <button
               key={submission.id}
               type="button"
-              className="flex h-10 w-full cursor-pointer items-center rounded-lg px-3 text-left text-sm font-normal tracking-[0.12em] text-black transition-colors hover:bg-gray-50"
+              className="flex h-10 w-full cursor-pointer items-center rounded-lg px-3 text-left text-sm font-normal tracking-[2%] text-black transition-colors hover:bg-gray-50"
               onClick={() => {
                 onSelect(submission.id);
                 setIsOpen(false);
@@ -612,69 +643,77 @@ function FormSubmissionDetail({
     forms.find((f) => f.id === selected.form_id)?.type ?? "website";
 
   return (
-    <div className="relative min-h-[420px] w-full overflow-hidden lg:h-full lg:rounded-3xl lg:bg-white lg:px-10 lg:py-9 lg:shadow-sm">
-      {!hideTitle && (
-        <h2 className="text-xl font-bold tracking-[-0.02em] text-black sm:text-2xl">
-          Inbox
-        </h2>
-      )}
+    <div className="relative min-h-[420px] w-full overflow-hidden lg:h-full lg:rounded-3xl lg:bg-white lg:shadow-sm">
+      <div className="scrollbar-none overflow-y-auto px-0 py-0 lg:h-full lg:px-10 lg:py-9">
+        {!hideTitle && (
+          <h2 className="text-xl font-bold tracking-[2%] text-black sm:text-2xl">
+            Inbox
+          </h2>
+        )}
 
-      <div className={hideTitle ? "" : "mt-5 sm:mt-6"}>
-        <SubmissionNameDropdown
-          allSubmissions={allSubmissions}
-          selectedId={selectedId}
-          onSelect={onSelect}
-          formType={formType}
-        />
-      </div>
+        <div className={hideTitle ? "" : "mt-5 sm:mt-6"}>
+          <SubmissionNameDropdown
+            allSubmissions={allSubmissions}
+            selectedId={selectedId}
+            onSelect={onSelect}
+            formType={formType}
+          />
+        </div>
 
-      <p className="mt-6 text-xs font-normal tracking-[0.14em] text-black/60 sm:mt-8 sm:text-sm sm:tracking-[0.18em]">
-        Received at {formatSubmissionReceivedAt(selected.submitted_at)}
-      </p>
+        <p className="mt-6 text-xs font-normal tracking-[2%] text-black/60 sm:mt-8 sm:text-sm">
+          Received at {formatSubmissionReceivedAt(selected.submitted_at)}
+        </p>
 
-      <div className="mt-7 space-y-4 text-base leading-[1.45] font-normal tracking-[-0.02em] text-black sm:mt-10 sm:space-y-7 sm:text-2xl sm:leading-[1.32]">
-        {Object.entries(selected.data).map(([key, value]) => (
-          <p key={key}>
-            <span className="font-bold">
-              {key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}:
-            </span>{" "}
-            {typeof value === "string"
-              ? value
-              : typeof value === "number" || typeof value === "boolean"
-                ? String(value)
-                : JSON.stringify(value)}
-          </p>
-        ))}
-        {Object.keys(selected.data).length === 0 && (
-          <p className="text-black/40">No submission data</p>
+        <div className="mt-7 space-y-4 text-base leading-[1.45] font-normal tracking-[2%] text-black sm:mt-10 sm:space-y-7 sm:text-2xl sm:leading-[1.32]">
+          {Object.entries(selected.data).map(([key, value]) => (
+            <p key={key}>
+              <span className="font-bold">
+                {key
+                  .replace(/_/g, " ")
+                  .replace(/\b\w/g, (c) => c.toUpperCase())}
+                :
+              </span>{" "}
+              {typeof value === "string"
+                ? value
+                : typeof value === "number" || typeof value === "boolean"
+                  ? String(value)
+                  : JSON.stringify(value)}
+            </p>
+          ))}
+          {Object.keys(selected.data).length === 0 && (
+            <p className="text-black/40">No submission data</p>
+          )}
+        </div>
+
+        {(selected.replies?.length ?? 0) > 0 && (
+          <div className="mt-8 space-y-3">
+            <p className="text-xs font-normal tracking-[2%] text-black/60 sm:text-sm">
+              Replies
+            </p>
+            {selected.replies!.map((reply, index) => (
+              <div key={index} className="rounded-xl bg-gray-50 p-4">
+                <p className="text-sm whitespace-pre-wrap text-black">
+                  {typeof reply.reply_text === "string"
+                    ? reply.reply_text
+                    : JSON.stringify(reply)}
+                </p>
+                {typeof reply.sent_at === "string" && (
+                  <p className="mt-2 text-xs text-black/40">
+                    {formatSubmissionReceivedAt(reply.sent_at)}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {formType === "online" && (
+          <SubmissionReplyComposer
+            key={selected.id}
+            submissionId={selected.id}
+          />
         )}
       </div>
-
-      {(selected.replies?.length ?? 0) > 0 && (
-        <div className="mt-8 space-y-3">
-          <p className="text-xs font-normal tracking-[0.14em] text-black/60 sm:text-sm sm:tracking-[0.18em]">
-            Replies
-          </p>
-          {selected.replies!.map((reply, index) => (
-            <div key={index} className="rounded-xl bg-gray-50 p-4">
-              <p className="text-sm whitespace-pre-wrap text-black">
-                {typeof reply.reply_text === "string"
-                  ? reply.reply_text
-                  : JSON.stringify(reply)}
-              </p>
-              {typeof reply.sent_at === "string" && (
-                <p className="mt-2 text-xs text-black/40">
-                  {formatSubmissionReceivedAt(reply.sent_at)}
-                </p>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {formType === "online" && (
-        <SubmissionReplyComposer key={selected.id} submissionId={selected.id} />
-      )}
     </div>
   );
 }
@@ -783,7 +822,7 @@ function FormSubmissionList({
                 <SubmissionAvatar name={displayName} />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <div className="min-w-0 truncate text-base font-normal tracking-[0.08em]">
+                    <div className="min-w-0 truncate text-base font-normal tracking-[2%]">
                       {displayName}
                     </div>
                     {isNew && (
@@ -845,7 +884,7 @@ export function PageFormTabs({
   );
 
   return (
-    <div className="flex shrink-0 flex-wrap items-start gap-3">
+    <div className="scrollbar-none flex shrink-0 flex-nowrap items-start gap-2 overflow-x-auto">
       {pages.map((page) => {
         const isActive = page.page_path === selectedPagePath;
         if (!isActive || page.forms.length === 0) {
@@ -854,7 +893,7 @@ export function PageFormTabs({
               key={page.page_path}
               type="button"
               onClick={() => onSelectPage(page.page_path)}
-              className={`flex h-[42px] max-w-[170px] cursor-pointer items-center justify-center rounded-[9px] border border-black/5 px-2.5 text-base tracking-[0.1em] transition-colors ${
+              className={`flex h-9 max-w-35 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-black/5 px-2.5 text-sm tracking-[2%] transition-colors ${
                 isActive
                   ? "bg-[#006BE5] font-medium text-white"
                   : "bg-white font-normal text-black hover:bg-gray-50"
@@ -869,7 +908,7 @@ export function PageFormTabs({
         return (
           <div
             key={page.page_path}
-            className="flex w-[170px] flex-col gap-2 rounded-[9px] border border-black/5 bg-[#006BE5] p-[9px]"
+            className="flex w-35 shrink-0 flex-col gap-1.5 rounded-lg border border-black/5 bg-[#006BE5] p-1.5"
           >
             <button
               type="button"
@@ -879,19 +918,19 @@ export function PageFormTabs({
                   [page.page_path]: !isCollapsed,
                 }))
               }
-              className="flex h-[37px] w-full cursor-pointer items-center gap-1.5 px-2.5 text-base font-medium tracking-[0.1em] text-white"
+              className="flex h-7 w-full cursor-pointer items-center gap-1.5 px-2 text-sm font-medium tracking-[2%] text-white"
               aria-expanded={!isCollapsed}
             >
               <ChevronDown
-                className={`size-4 shrink-0 transition-transform ${isCollapsed ? "-rotate-90" : ""}`}
+                className={`size-3.5 shrink-0 transition-transform ${isCollapsed ? "-rotate-90" : ""}`}
               />
               <span className="min-w-0 flex-1 truncate text-center">
                 {page.page_path}
               </span>
-              <span className="size-4 shrink-0" aria-hidden="true" />
+              <span className="size-3.5 shrink-0" aria-hidden="true" />
             </button>
             {!isCollapsed && (
-              <div className="scrollbar-none flex max-h-[220px] flex-col gap-2 overflow-y-auto">
+              <div className="scrollbar-none flex max-h-40 flex-col gap-1.5 overflow-y-auto">
                 {page.forms.map((group) => {
                   const isActiveForm =
                     group.form_identifier === selectedFormIdentifier;
@@ -902,7 +941,7 @@ export function PageFormTabs({
                       onClick={() =>
                         onSelectFormIdentifier(group.form_identifier)
                       }
-                      className={`flex h-[37px] w-[152px] cursor-pointer items-center justify-center rounded-[9px] border border-black/5 px-2.5 text-xs tracking-[0.1em] transition-colors ${
+                      className={`flex h-8 w-full cursor-pointer items-center justify-center rounded-lg border border-black/5 px-2 text-xs tracking-[2%] transition-colors ${
                         isActiveForm
                           ? "bg-[#F25430] font-medium text-white"
                           : "bg-white font-normal text-black hover:bg-gray-50"
@@ -1285,7 +1324,7 @@ export function FormsTabContent() {
               >
                 <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#6433CC]" />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-xs font-bold tracking-[0.08em] text-black">
+                  <p className="truncate text-xs font-bold tracking-[2%] text-black">
                     New submission — {getSubmissionDisplayName(submission)}
                   </p>
                   <p className="mt-1 truncate text-sm text-[#7E7E7E]">
@@ -1305,29 +1344,31 @@ export function FormsTabContent() {
           ))}
         </div>
       )}
-      <FormsToolbar
-        forms={forms}
-        selectedFormId={selectedFormId}
-        onSelectForm={handleSelectForm}
-        onSelectAll={handleSelectAll}
-        onDelete={handleDelete}
-        onEdit={handleEdit}
-        onCreateWebsiteForm={() => setIsWebsiteFormDrawerOpen(true)}
-        onCreateOnlineForm={() => setIsOnlineFormDrawerOpen(true)}
-      />
-      <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:h-[600px] lg:flex-none lg:grid-cols-12 lg:grid-rows-1 lg:gap-8">
-        <div className="hidden min-w-0 lg:col-span-7 lg:block">
-          {inboxDetail}
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:h-170 lg:flex-none lg:grid-cols-12 lg:grid-rows-1 lg:gap-8">
+        <div className="flex min-w-0 flex-col gap-4 lg:col-span-7 lg:min-h-0">
+          <FormsToolbar
+            forms={forms}
+            selectedFormId={selectedFormId}
+            onSelectForm={handleSelectForm}
+            onSelectAll={handleSelectAll}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
+            onCreateWebsiteForm={() => setIsWebsiteFormDrawerOpen(true)}
+            onCreateOnlineForm={() => setIsOnlineFormDrawerOpen(true)}
+          />
+          <div className="hidden min-h-0 flex-1 lg:block">{inboxDetail}</div>
         </div>
-        <div className="flex min-w-0 flex-col gap-5 lg:col-span-5 lg:gap-7">
+        <div className="flex min-w-0 flex-col gap-3 lg:col-span-5 lg:min-h-0">
           {hasHierarchy && (
-            <PageFormTabs
-              pages={pages}
-              selectedPagePath={selectedPagePath}
-              selectedFormIdentifier={selectedFormIdentifier}
-              onSelectPage={handleSelectPage}
-              onSelectFormIdentifier={handleSelectFormIdentifier}
-            />
+            <div className="flex items-center lg:h-15">
+              <PageFormTabs
+                pages={pages}
+                selectedPagePath={selectedPagePath}
+                selectedFormIdentifier={selectedFormIdentifier}
+                onSelectPage={handleSelectPage}
+                onSelectFormIdentifier={handleSelectFormIdentifier}
+              />
+            </div>
           )}
           <div className="min-h-0 flex-1">
             <FormSubmissionList
@@ -1349,7 +1390,7 @@ export function FormsTabContent() {
         <div className="fixed inset-0 z-10000 bg-black/45 lg:hidden">
           <section className="animate-in slide-in-from-right ml-auto flex h-full w-full max-w-[520px] flex-col bg-white shadow-[-20px_0_70px_rgba(0,0,0,0.18)] duration-300">
             <div className="flex h-14 shrink-0 items-center justify-between border-b border-gray-100 px-4">
-              <h2 className="text-xl font-bold tracking-[-0.02em] text-black">
+              <h2 className="text-xl font-bold tracking-[2%] text-black">
                 Inbox
               </h2>
               <button

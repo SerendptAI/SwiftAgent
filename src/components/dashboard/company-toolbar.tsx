@@ -112,12 +112,15 @@ export function CompanyToolbar({ actions }: CompanyToolbarProps) {
   }, []);
 
   return (
-    <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-[20px] bg-white p-2 shadow-sm md:rounded-3xl">
-      <div ref={dropdownRef} className="relative min-w-0 flex-1 sm:flex-none">
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-white p-2 shadow-sm">
+      <div
+        ref={dropdownRef}
+        className={`relative min-w-0 flex-1 sm:flex-none ${isOpen ? "z-90" : ""}`}
+      >
         <button
           onClick={() => setIsOpen(!isOpen)}
           disabled={isLoading || companies.length === 0}
-          className="flex max-w-full items-center gap-3 rounded-2xl bg-gray-50 px-4 py-3 text-sm font-normal text-gray-900 transition-colors hover:bg-gray-100 disabled:opacity-60"
+          className="flex max-w-full items-center gap-3 rounded-2xl bg-gray-50 px-4 py-2.5 text-sm font-normal text-gray-900 transition-colors hover:bg-gray-100 disabled:opacity-60"
         >
           <ChevronDown
             className={`h-4 w-4 text-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}

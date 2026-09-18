@@ -19,6 +19,43 @@ import { getProfileImage } from "@/lib/utils";
 const ACCEPTED_PFP_TYPES = "image/jpeg,image/png,image/webp,image/gif";
 const MAX_PFP_BYTES = 5 * 1024 * 1024;
 
+// Some ad blockers and privacy extensions block ipify.org, so we fall back
+// through a couple of alternate IP lookup services before giving up.
+const IP_LOOKUP_ENDPOINTS: Array<{
+  url: string;
+  extractIp: (data: unknown) => string | undefined;
+}> = [
+  {
+    url: "https://api.ipify.org?format=json",
+    extractIp: (data) => (data as { ip?: string })?.ip,
+  },
+  {
+    url: "https://api64.ipify.org?format=json",
+    extractIp: (data) => (data as { ip?: string })?.ip,
+  },
+  {
+    url: "https://ipapi.co/json/",
+    extractIp: (data) => (data as { ip?: string })?.ip,
+  },
+];
+
+async function fetchClientIp(): Promise<string | undefined> {
+  for (const endpoint of IP_LOOKUP_ENDPOINTS) {
+    try {
+      const res = await fetch(endpoint.url, {
+        signal: AbortSignal.timeout(4000),
+      });
+      if (!res.ok) continue;
+      const data = await res.json();
+      const ip = endpoint.extractIp(data);
+      if (ip) return ip;
+    } catch {
+      // Try the next provider.
+    }
+  }
+  return undefined;
+}
+
 interface ProfileCardProps {
   name?: string;
   loginMethod?: string;
@@ -48,14 +85,15 @@ export function ProfileCard({
   useScrollLock(showLogoutModal);
 
   useEffect(() => {
-    fetch("https://api.ipify.org?format=json")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.ip) {
-          setCurrentIp(data.ip);
-        }
-      })
-      .catch((error) => console.error("Error fetching IP:", error));
+    let cancelled = false;
+    fetchClientIp().then((ip) => {
+      if (!cancelled && ip) {
+        setCurrentIp(ip);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const name = user?.name || propName;
@@ -202,7 +240,7 @@ export function ProfileCard({
         </div>
       )}
 
-      <div className="mt-2 flex w-full items-center justify-center gap-2 rounded-md border border-gray-100 px-3 py-2 text-xs font-medium text-gray-600 shadow-[-4px_4px_0px_0px_#000000] lg:mt-6 lg:text-sm lg:shadow-[-6px_6px_0px_0px_#000000]">
+      <div className="mt-2 flex w-full items-center justify-center gap-2 rounded-md border border-gray-100 px-3 py-2 text-xs font-medium text-gray-600 shadow-[-3px_3px_0px_0px_#000000] lg:mt-6 lg:text-sm">
         <span>Logged in via</span>
         {loginMethod === "Google" ? (
           <Icons.google className="h-4 w-4" />
@@ -211,14 +249,16 @@ export function ProfileCard({
         )}
       </div>
 
-      <div className="flex w-full items-center justify-center rounded-md border border-gray-100 px-3 py-2 text-xs text-gray-500 shadow-[-4px_4px_0px_0px_#000000] lg:text-sm lg:shadow-[-6px_6px_0px_0px_#000000]">
-        IP: {displayIp}
-      </div>
+      {displayIp && (
+        <div className="flex w-full items-center justify-center rounded-md border border-gray-100 px-3 py-2 text-xs text-gray-500 shadow-[-3px_3px_0px_0px_#000000] lg:text-sm">
+          IP: {displayIp}
+        </div>
+      )}
 
       <button
         onClick={() => setShowLogoutModal(true)}
         disabled={logoutMutation.isPending}
-        className="mt-2 w-full rounded-md bg-red-500 py-2.5 text-xs font-bold tracking-[2%] text-white shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-red-600 disabled:opacity-50 lg:mt-auto lg:text-sm lg:shadow-[-6px_6px_0px_0px_#000000]"
+        className="mt-2 w-full rounded-md bg-red-500 py-2.5 text-xs font-bold tracking-[2%] text-white shadow-[-4px_4px_0px_0px_#000000] transition-colors hover:bg-red-600 disabled:opacity-50 lg:mt-auto lg:text-sm"
       >
         {logoutMutation.isPending ? "Logging out..." : "Log out"}
       </button>
